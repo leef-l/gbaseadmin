@@ -47,10 +47,10 @@ const queryParams = reactive({
 
 /** 列定义 */
 const columns = [
-  { title: '登录用户名', dataIndex: 'username', key: 'username' },
-  { title: '昵称/显示名', dataIndex: 'nickname', key: 'nickname' },
-  { title: '邮箱地址', dataIndex: 'email', key: 'email' },
-  { title: '头像图片 URL', dataIndex: 'avatar', key: 'avatar' },
+  { title: '用户名', dataIndex: 'username', key: 'username' },
+  { title: '昵称', dataIndex: 'nickname', key: 'nickname' },
+  { title: '所属部门', dataIndex: 'deptTitle', key: 'deptTitle' },
+  { title: '邮箱', dataIndex: 'email', key: 'email' },
   { title: '状态', dataIndex: 'status', key: 'status', width: 120 },
   { title: '创建时间', dataIndex: 'createdAt', key: 'createdAt', width: 180 },
   { title: '操作', key: 'action', width: 200, fixed: 'right' as const },

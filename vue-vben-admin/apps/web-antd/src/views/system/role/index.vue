@@ -7,10 +7,14 @@ import {
   DeleteOutlined,
   SearchOutlined,
   ReloadOutlined,
+  KeyOutlined,
+  SafetyCertificateOutlined,
 } from '@ant-design/icons-vue';
 import { getRoleTree, deleteRole } from '#/api/system/role';
 import type { RoleItem } from '#/api/system/role/types';
 import FormModal from './modules/form.vue';
+import GrantMenuModal from './modules/grant-menu.vue';
+import GrantDeptModal from './modules/grant-dept.vue';
 
 /** 标签颜色池 */
 const TAG_COLORS = ['green', 'red', 'blue', 'orange', 'cyan', 'purple', 'geekblue', 'magenta'];
@@ -62,6 +66,8 @@ function getStatusColor(val: number): string {
 const loading = ref(false);
 const dataList = ref<RoleItem[]>([]);
 const formRef = ref();
+const grantMenuRef = ref();
+const grantDeptRef = ref();
 
 const queryParams = reactive({
   dataScope: undefined as number | undefined,
@@ -75,7 +81,7 @@ const columns = [
   { title: '排序（升序）', dataIndex: 'sort', key: 'sort' },
   { title: '状态', dataIndex: 'status', key: 'status', width: 120 },
   { title: '创建时间', dataIndex: 'createdAt', key: 'createdAt', width: 180 },
-  { title: '操作', key: 'action', width: 200, fixed: 'right' as const },
+  { title: '操作', key: 'action', width: 320, fixed: 'right' as const },
 ];
 
 /** 加载数据 */
@@ -116,6 +122,16 @@ function handleCreate() {
 /** 编辑 */
 function handleEdit(record: RoleItem) {
   formRef.value?.open(record.id);
+}
+
+/** 授权菜单 */
+function handleGrantMenu(record: RoleItem) {
+  grantMenuRef.value?.open(record.id, record.title);
+}
+
+/** 数据权限 */
+function handleGrantDept(record: RoleItem) {
+  grantDeptRef.value?.open(record.id, record.title, record.dataScope);
 }
 
 /** 删除 */
@@ -198,6 +214,14 @@ onMounted(() => {
               <template #icon><EditOutlined /></template>
               编辑
             </a-button>
+            <a-button type="link" size="small" @click="handleGrantMenu(record)">
+              <template #icon><KeyOutlined /></template>
+              菜单
+            </a-button>
+            <a-button type="link" size="small" @click="handleGrantDept(record)">
+              <template #icon><SafetyCertificateOutlined /></template>
+              权限
+            </a-button>
             <a-button type="link" danger size="small" @click="handleDelete(record)">
               <template #icon><DeleteOutlined /></template>
               删除
@@ -209,5 +233,9 @@ onMounted(() => {
 
     <!-- 表单弹窗 -->
     <FormModal ref="formRef" @success="loadData" />
+    <!-- 授权菜单弹窗 -->
+    <GrantMenuModal ref="grantMenuRef" @success="loadData" />
+    <!-- 数据权限弹窗 -->
+    <GrantDeptModal ref="grantDeptRef" @success="loadData" />
   </div>
 </template>
