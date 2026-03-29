@@ -1,9 +1,0 @@
-import { EmptyEmit } from "../_util/type.js";
-import { TypographyBaseProps, TypographySlots } from "./interface.js";
-import * as vue459 from "vue";
-import { SlotsType } from "vue";
-
-//#region src/typography/Typography.d.ts
-declare const Typography: vue459.DefineSetupFnComponent<TypographyBaseProps, EmptyEmit, SlotsType<TypographySlots>, TypographyBaseProps, vue459.PublicProps>;
-//#endregion
-export { Typography as default };

@@ -1,6 +1,0 @@
-import * as vue800 from "vue";
-
-//#region src/_util/instance.d.ts
-declare function getVueInstance(): vue800.AppContext | null;
-//#endregion
-export { getVueInstance };

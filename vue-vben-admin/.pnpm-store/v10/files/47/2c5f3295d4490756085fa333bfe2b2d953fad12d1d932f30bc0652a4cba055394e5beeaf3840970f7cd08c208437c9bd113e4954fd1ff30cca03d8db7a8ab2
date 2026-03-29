@@ -1,7 +1,0 @@
-import { TooltipProps } from "../../tooltip/index.js";
-import * as vue1074 from "vue";
-
-//#region src/typography/hooks/useTooltipProps.d.ts
-declare function useTooltipProps(tooltip: any, editConfigText: any, children: any): vue1074.ComputedRef<TooltipProps | undefined>;
-//#endregion
-export { useTooltipProps as default };

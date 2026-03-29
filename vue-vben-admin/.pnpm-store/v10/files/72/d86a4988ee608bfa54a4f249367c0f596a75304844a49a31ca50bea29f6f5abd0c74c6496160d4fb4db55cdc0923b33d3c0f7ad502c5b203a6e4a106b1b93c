@@ -1,9 +1,0 @@
-import { inject, provide } from "vue";
-var PreviewGroupContextKey = Symbol("PreviewGroupContext");
-function usePreviewGroupContext() {
-	return inject(PreviewGroupContextKey, null);
-}
-function usePreviewGroupProvider(value) {
-	provide(PreviewGroupContextKey, value);
-}
-export { usePreviewGroupContext, usePreviewGroupProvider };

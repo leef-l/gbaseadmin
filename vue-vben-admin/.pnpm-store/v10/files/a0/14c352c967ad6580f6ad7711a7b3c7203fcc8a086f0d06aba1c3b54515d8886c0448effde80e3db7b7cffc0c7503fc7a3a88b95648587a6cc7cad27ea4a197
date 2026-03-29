@@ -1,6 +1,0 @@
-import * as vue566 from "vue";
-
-//#region src/empty/empty.d.ts
-declare const Empty: vue566.DefineSetupFnComponent<Record<string, any>, {}, {}, Record<string, any> & {}, vue566.PublicProps>;
-//#endregion
-export { Empty as default };

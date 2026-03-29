@@ -1,8 +1,0 @@
-import * as vue715 from "vue";
-
-//#region src/space/style/compact.d.ts
-/** Component only token. Which will handle additional calculation of alias token */
-interface ComponentToken {}
-declare const _default: (prefixCls: vue715.Ref<string>, rootCls?: vue715.Ref<string | undefined>) => readonly [vue715.Ref<string, string>, vue715.ComputedRef<string | undefined>];
-//#endregion
-export { ComponentToken, _default as default };

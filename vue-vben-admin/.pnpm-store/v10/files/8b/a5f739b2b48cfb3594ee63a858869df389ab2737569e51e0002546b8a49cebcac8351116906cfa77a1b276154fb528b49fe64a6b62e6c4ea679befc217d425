@@ -1,8 +1,0 @@
-import { TabsProps as TabsProps$1 } from "../index.js";
-import * as vue1017 from "vue";
-import { Tab } from "@v-c/tabs";
-
-//#region src/tabs/hooks/useLegacyItems.d.ts
-declare function useLegacyItems(items: () => TabsProps$1['items'] | undefined, slots: any): vue1017.ComputedRef<Tab[]>;
-//#endregion
-export { useLegacyItems as default };

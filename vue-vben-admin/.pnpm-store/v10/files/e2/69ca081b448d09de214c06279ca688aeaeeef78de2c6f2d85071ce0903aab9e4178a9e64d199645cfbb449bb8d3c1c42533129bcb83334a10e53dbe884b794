@@ -1,6 +1,0 @@
-import * as vue483 from "vue";
-
-//#region src/empty/simple.d.ts
-declare const Simple: vue483.DefineSetupFnComponent<Record<string, any>, {}, {}, Record<string, any> & {}, vue483.PublicProps>;
-//#endregion
-export { Simple as default };

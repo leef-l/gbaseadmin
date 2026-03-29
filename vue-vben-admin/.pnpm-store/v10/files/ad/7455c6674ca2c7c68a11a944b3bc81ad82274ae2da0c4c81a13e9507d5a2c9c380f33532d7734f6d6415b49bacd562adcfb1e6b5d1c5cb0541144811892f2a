@@ -1,2 +1,0 @@
-import Progress, { ProgressAriaProps, ProgressProps, ProgressSemanticClassNames, ProgressSemanticName, ProgressSemanticStyles } from "./progress.js";
-export { type ProgressAriaProps, type ProgressProps, type ProgressSemanticClassNames, type ProgressSemanticName, type ProgressSemanticStyles, Progress as default };

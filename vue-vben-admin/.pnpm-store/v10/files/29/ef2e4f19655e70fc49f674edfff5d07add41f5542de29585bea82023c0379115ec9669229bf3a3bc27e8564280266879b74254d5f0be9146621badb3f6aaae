@@ -1,9 +1,0 @@
-import * as vue680 from "vue";
-
-//#region src/steps/PanelArrow.d.ts
-interface PanelArrowProps {
-  prefixCls: string;
-}
-declare const PanelArrow: vue680.DefineSetupFnComponent<PanelArrowProps, {}, {}, PanelArrowProps & {}, vue680.PublicProps>;
-//#endregion
-export { PanelArrowProps, PanelArrow as default };

@@ -1,6 +1,0 @@
-import * as vue365 from "vue";
-
-//#region src/badge/style/ribbon.d.ts
-declare const _default: (prefixCls: vue365.Ref<string>, rootCls?: vue365.Ref<string | undefined>) => readonly [vue365.Ref<string, string>, vue365.ComputedRef<string | undefined>];
-//#endregion
-export { _default as default };

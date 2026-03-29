@@ -1,6 +1,0 @@
-import Image_default from "./Image.js";
-import PreviewGroup_default from "./PreviewGroup.js";
-var ExportImage = Image_default;
-ExportImage.PreviewGroup = PreviewGroup_default;
-var src_default = ExportImage;
-export { PreviewGroup_default as PreviewGroup, src_default as default };

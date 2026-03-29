@@ -1,7 +1,0 @@
-import { createVNode, defineComponent } from "vue";
-var Panel_default = /* @__PURE__ */ defineComponent((_, { attrs, slots }) => {
-	return () => {
-		return createVNode("div", attrs, [slots?.default?.()]);
-	};
-});
-export { Panel_default as default };

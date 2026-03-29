@@ -1,6 +1,0 @@
-import * as vue47 from "vue";
-
-//#region src/layout/style/sider.d.ts
-declare const _default: (prefixCls: vue47.Ref<string>, rootCls?: vue47.Ref<string | undefined>) => readonly [vue47.Ref<string, string>, vue47.ComputedRef<string | undefined>];
-//#endregion
-export { _default as default };

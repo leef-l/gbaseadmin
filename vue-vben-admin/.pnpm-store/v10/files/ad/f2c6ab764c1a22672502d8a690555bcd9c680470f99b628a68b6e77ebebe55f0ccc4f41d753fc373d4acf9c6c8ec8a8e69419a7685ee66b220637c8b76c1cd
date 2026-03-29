@@ -1,2 +1,0 @@
-var tuple = (...args) => args;
-export { tuple };

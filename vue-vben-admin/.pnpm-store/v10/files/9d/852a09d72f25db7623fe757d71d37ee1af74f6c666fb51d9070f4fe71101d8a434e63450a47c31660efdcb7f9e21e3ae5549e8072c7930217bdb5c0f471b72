@@ -1,6 +1,0 @@
-import * as vue723 from "vue";
-
-//#region src/color-picker/components/PanelPresets.d.ts
-declare const _default: vue723.DefineSetupFnComponent<Record<string, any>, {}, {}, Record<string, any> & {}, vue723.PublicProps>;
-//#endregion
-export { _default as default };

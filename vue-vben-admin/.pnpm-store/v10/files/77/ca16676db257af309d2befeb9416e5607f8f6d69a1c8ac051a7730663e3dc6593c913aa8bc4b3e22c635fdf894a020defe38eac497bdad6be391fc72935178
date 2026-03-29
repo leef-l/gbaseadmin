@@ -1,3 +1,0 @@
-const EXPAND_COLUMN = {};
-const INTERNAL_HOOKS = "vc-table-internal-hook";
-export { EXPAND_COLUMN, INTERNAL_HOOKS };

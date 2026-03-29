@@ -1,7 +1,0 @@
-import { ComponentToken } from "./token.js";
-import * as vue619 from "vue";
-
-//#region src/input-number/style/index.d.ts
-declare const _default: (prefixCls: vue619.Ref<string>, rootCls?: vue619.Ref<string | undefined>) => readonly [vue619.Ref<string, string>, vue619.ComputedRef<string | undefined>];
-//#endregion
-export { type ComponentToken, _default as default };

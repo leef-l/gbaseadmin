@@ -1,1 +1,0 @@
-export declare const QRCodeSVG: import('vue').DefineComponent<import('./interface.ts').QRProps, {}, {}, {}, {}, import('vue').ComponentOptionsMixin, import('vue').ComponentOptionsMixin, {}, string, import('vue').PublicProps, Readonly<import('./interface.ts').QRProps> & Readonly<{}>, {}, {}, {}, {}, string, import('vue').ComponentProvideOptions, false, {}, any>;

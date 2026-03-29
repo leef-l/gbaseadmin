@@ -1,4 +1,0 @@
-function getEntity(keyEntities, key) {
-	return keyEntities[String(key)];
-}
-export { getEntity as default };

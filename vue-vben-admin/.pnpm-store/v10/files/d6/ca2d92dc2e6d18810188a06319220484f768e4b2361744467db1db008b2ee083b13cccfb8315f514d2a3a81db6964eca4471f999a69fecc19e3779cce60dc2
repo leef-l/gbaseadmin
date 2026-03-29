@@ -1,6 +1,0 @@
-import * as vue397 from "vue";
-
-//#region src/cascader/style/panel.d.ts
-declare const _default: (prefixCls: vue397.Ref<string>, rootCls?: vue397.Ref<string | undefined>) => vue397.Ref<string, string>;
-//#endregion
-export { _default as default };

@@ -1,8 +1,0 @@
-import { SkeletonNodeProps } from "./Node.js";
-import * as vue295 from "vue";
-
-//#region src/skeleton/Image.d.ts
-interface SkeletonImageProps extends Omit<SkeletonNodeProps, 'internalClassName'> {}
-declare const SkeletonImage: vue295.DefineSetupFnComponent<SkeletonImageProps, {}, {}, SkeletonImageProps & {}, vue295.PublicProps>;
-//#endregion
-export { SkeletonImageProps, SkeletonImage as default };

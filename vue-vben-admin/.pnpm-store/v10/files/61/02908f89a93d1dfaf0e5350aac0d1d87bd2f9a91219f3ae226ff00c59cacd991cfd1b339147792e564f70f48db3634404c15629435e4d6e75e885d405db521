@@ -1,6 +1,0 @@
-import * as vue1077 from "vue";
-
-//#region src/color-picker/components/PanelPicker/index.d.ts
-declare const _default: vue1077.DefineSetupFnComponent<Record<string, any>, {}, {}, Record<string, any> & {}, vue1077.PublicProps>;
-//#endregion
-export { _default as default };

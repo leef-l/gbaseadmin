@@ -26,3 +26,4 @@ dist/
 vendor/
 .claude/settings.local.json
 lefthook.yml
+vue-vben-admin/.pnpm-store/

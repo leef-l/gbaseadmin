@@ -1,6 +1,0 @@
-import * as vue660 from "vue";
-
-//#region src/input/style/search.d.ts
-declare const _default: (prefixCls: vue660.Ref<string>, rootCls?: vue660.Ref<string | undefined>) => readonly [vue660.Ref<string, string>, vue660.ComputedRef<string | undefined>];
-//#endregion
-export { _default as default };

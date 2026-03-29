@@ -1,7 +1,0 @@
-import * as vue906 from "vue";
-import { Ref } from "vue";
-
-//#region src/spin/usePercent.d.ts
-declare function usePercent(spinning: Ref<boolean>, percent: Ref<number | 'auto' | undefined>): vue906.ComputedRef<number | "auto" | undefined>;
-//#endregion
-export { usePercent as default };

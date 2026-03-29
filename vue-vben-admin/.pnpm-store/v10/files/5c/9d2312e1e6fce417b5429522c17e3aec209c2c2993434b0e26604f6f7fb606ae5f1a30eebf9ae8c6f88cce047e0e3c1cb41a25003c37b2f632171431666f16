@@ -1,8 +1,0 @@
-import * as vue886 from "vue";
-
-//#region src/empty/style/index.d.ts
-/** Component only token. Which will handle additional calculation of alias token */
-interface ComponentToken {}
-declare const _default: (prefixCls: vue886.Ref<string>, rootCls?: vue886.Ref<string | undefined>) => readonly [vue886.Ref<string, string>, vue886.ComputedRef<string | undefined>];
-//#endregion
-export { ComponentToken, _default as default };
