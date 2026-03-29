@@ -102,7 +102,7 @@ services:
     container_name: gbaseadmin_frontend
     restart: always
     volumes:
-      - ./vue-vben-admin/apps/web-antd/dist:/usr/share/nginx/html:ro
+      - ../vue-vben-admin/apps/web-antd/dist:/usr/share/nginx/html:ro
       - ./deploy/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
     ports:
       - "${FRONTEND_PORT:-80}:80"
