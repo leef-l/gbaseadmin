@@ -1,0 +1,109 @@
+/**
+ * tdesign v1.18.5
+ * (c) 2026 tdesign
+ * @license MIT
+ */
+
+import { useVModel } from '../utils/adapt.js';
+import { ref, toRefs } from 'vue';
+import 'lodash-es';
+import '@babel/runtime/helpers/toConsumableArray';
+import '@babel/runtime/helpers/typeof';
+import '../../_chunks/dep-077711e4.js';
+import '../../_chunks/dep-ce831931.js';
+import '../../_chunks/dep-bb7ae0b5.js';
+import '../../_chunks/dep-7ab3d4f5.js';
+import '../../config-provider/hooks/useConfig.js';
+import '../../config-provider/utils/context.js';
+import '../../_chunks/dep-ee9d4a0b.js';
+import 'dayjs';
+import '@babel/runtime/helpers/slicedToArray';
+import '../../_chunks/dep-50609446.js';
+import '../../_chunks/dep-aee61152.js';
+import '../../_chunks/dep-a1f09b4f.js';
+import '@babel/runtime/helpers/createClass';
+import '@babel/runtime/helpers/classCallCheck';
+import '@babel/runtime/helpers/defineProperty';
+import '../../_chunks/dep-8fa4913b.js';
+import '../../_chunks/dep-0da02ae4.js';
+import '../../_chunks/dep-70a98c88.js';
+import '../../_chunks/dep-874d2478.js';
+import '../../_chunks/dep-89fa4f64.js';
+import '../../_chunks/dep-dc03a46d.js';
+import 'tdesign-icons-vue-next';
+import '../../checkbox/index.js';
+import '../../checkbox/checkbox.js';
+import '../../checkbox/props.js';
+import '../../_chunks/dep-160bde3e.js';
+import '../../_chunks/dep-0a649227.js';
+import '../../_chunks/dep-817a0576.js';
+import '../../_chunks/dep-fbb34096.js';
+import '../../_chunks/dep-5e7eed7e.js';
+import '../../_chunks/dep-562f17b3.js';
+import '../../_chunks/dep-efc4c3b2.js';
+import '../../checkbox/constants/index.js';
+import '../../checkbox/hooks/useCheckboxLazyLoad.js';
+import '../../checkbox/hooks/useKeyboardEvent.js';
+import '../../_chunks/dep-8323c105.js';
+import '../../checkbox/group.js';
+import '../../checkbox/checkbox-group-props.js';
+import '../../_chunks/dep-01cb1fbc.js';
+import 'tdesign-vue-next/esm/common/style/web/components/checkbox/_index.less';
+import '../../loading/index.js';
+import '../../loading/directive.js';
+import '../../loading/plugin.js';
+import '../../_chunks/dep-59743e2d.js';
+import '../../loading/icon/gradient.js';
+import '../../_chunks/dep-82ae8f2e.js';
+import '@babel/runtime/helpers/objectWithoutProperties';
+import '../../loading/props.js';
+import 'tdesign-vue-next/esm/common/style/web/components/loading/_index.less';
+import '../../_chunks/dep-a48e8625.js';
+import '@babel/runtime/helpers/asyncToGenerator';
+import '@babel/runtime/regenerator';
+import '../../_chunks/dep-320e4648.js';
+
+function useTreeState(props, context) {
+  var treeContentRef = ref();
+  var nodes = ref([]);
+  var allNodes = ref([]);
+  var isScrolling = ref(false);
+  var refProps = toRefs(props);
+  var vmValue = useVModel(props, refProps, "value", "defaultValue", "onChange", "change");
+  var vmActived = useVModel(props, refProps, "actived", "defaultActived", "onActive", "active");
+  var vmExpanded = useVModel(props, refProps, "expanded", "defaultExpanded", "onExpand", "expand");
+  function setStore(store) {
+    state.store = store;
+    state.scope.store = store;
+    allNodes.value = store.getNodes();
+  }
+  var state = {
+    props: props,
+    context: context,
+    store: null,
+    treeContentRef: treeContentRef,
+    nodes: nodes,
+    allNodes: allNodes,
+    isScrolling: isScrolling,
+    mouseEvent: null,
+    virtualConfig: null,
+    scope: {
+      store: null,
+      treeContentRef: treeContentRef,
+      treeProps: props,
+      scopedSlots: {},
+      virtualConfig: null
+    },
+    setStore: setStore,
+    refProps: refProps,
+    vmValue: vmValue,
+    vmActived: vmActived,
+    vmExpanded: vmExpanded
+  };
+  return {
+    state: state
+  };
+}
+
+export { useTreeState as default };
+//# sourceMappingURL=useTreeState.js.map

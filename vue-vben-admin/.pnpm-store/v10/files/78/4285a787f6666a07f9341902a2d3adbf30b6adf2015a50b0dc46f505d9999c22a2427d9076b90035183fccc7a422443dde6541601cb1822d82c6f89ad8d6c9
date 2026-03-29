@@ -1,0 +1,236 @@
+Object.defineProperties(exports, {
+	__esModule: { value: true },
+	[Symbol.toStringTag]: { value: "Module" }
+});
+const require_rolldown_runtime = require("./_virtual/rolldown_runtime.cjs");
+const require_commonUtils = require("./utils/commonUtils.cjs");
+let vue = require("vue");
+let _v_c_util = require("@v-c/util");
+let _v_c_util_dist_props_util = require("@v-c/util/dist/props-util");
+function _isSlot(s) {
+	return typeof s === "function" || Object.prototype.toString.call(s) === "[object Object]" && !(0, vue.isVNode)(s);
+}
+var BaseInput = /* @__PURE__ */ (0, vue.defineComponent)((props, { slots, expose, attrs }) => {
+	const containerRef = (0, vue.shallowRef)();
+	const onInputClick = (e) => {
+		if (containerRef.value?.contains(e.target)) props?.triggerFocus?.();
+	};
+	const hasAffix = (0, vue.computed)(() => require_commonUtils.hasPrefixSuffix(props));
+	const groupRef = (0, vue.shallowRef)();
+	expose({ nativeElement: (0, vue.computed)(() => groupRef.value || containerRef.value) });
+	return () => {
+		const { components, allowClear, readOnly, disabled, value, prefixCls, handleReset, onClear, suffix, focused, classNames, styles, dataAttrs, prefix, addonAfter, addonBefore, hidden } = props;
+		let children = (0, _v_c_util_dist_props_util.filterEmpty)(slots?.default?.() ?? []);
+		if (children.length === 1) children = children[0];
+		else children = (0, vue.createVNode)(vue.Fragment, null, children);
+		const inputElement = children;
+		const AffixWrapperComponent = components?.affixWrapper || "span";
+		const GroupWrapperComponent = components?.groupWrapper || "span";
+		const WrapperComponent = components?.wrapper || "span";
+		const GroupAddonComponent = components?.groupAddon || "span";
+		let element = (0, vue.createVNode)(inputElement, {
+			value,
+			class: !hasAffix.value && classNames?.variant
+		});
+		if (hasAffix.value) {
+			let clearIcon = null;
+			if (allowClear) {
+				const needClear = !disabled && !readOnly && value;
+				const clearIconCls = `${prefixCls}-clear-icon`;
+				const iconNode = typeof allowClear === "object" && allowClear?.clearIcon ? allowClear.clearIcon : "✖";
+				clearIcon = (0, vue.createVNode)("button", {
+					"type": "button",
+					"tabindex": -1,
+					"onClick": (event) => {
+						handleReset?.(event);
+						onClear?.();
+					},
+					"onMousedown": (e) => e.preventDefault(),
+					"class": (0, _v_c_util.clsx)(clearIconCls, {
+						[`${clearIconCls}-hidden`]: !needClear,
+						[`${clearIconCls}-has-suffix`]: !!suffix
+					})
+				}, [iconNode]);
+			}
+			const affixWrapperPrefixCls = `${prefixCls}-affix-wrapper`;
+			const affixWrapperCls = (0, _v_c_util.clsx)(affixWrapperPrefixCls, {
+				[`${prefixCls}-disabled`]: disabled,
+				[`${affixWrapperPrefixCls}-disabled`]: disabled,
+				[`${affixWrapperPrefixCls}-focused`]: focused,
+				[`${affixWrapperPrefixCls}-readonly`]: readOnly,
+				[`${affixWrapperPrefixCls}-input-with-clear-btn`]: suffix && allowClear && value
+			}, classNames?.affixWrapper, classNames?.variant);
+			const suffixNode = (suffix || allowClear) && (0, vue.createVNode)("span", {
+				"class": (0, _v_c_util.clsx)(`${prefixCls}-suffix`, classNames?.suffix),
+				"style": styles?.suffix
+			}, [clearIcon, suffix]);
+			const _element = function() {
+				return element;
+			}();
+			element = (0, vue.createVNode)(AffixWrapperComponent, (0, vue.mergeProps)({
+				"class": affixWrapperCls,
+				"style": styles?.affixWrapper,
+				"onClick": onInputClick
+			}, dataAttrs?.affixWrapper, { "ref": containerRef }), { default: () => [
+				prefix && (0, vue.createVNode)("span", {
+					"class": (0, _v_c_util.clsx)(`${prefixCls}-prefix`, classNames?.prefix),
+					"style": styles?.prefix
+				}, [prefix]),
+				_element,
+				suffixNode
+			] });
+		}
+		if (require_commonUtils.hasAddon(props)) {
+			const wrapperCls = `${prefixCls}-group`;
+			const addonCls = `${wrapperCls}-addon`;
+			const groupWrapperCls = `${wrapperCls}-wrapper`;
+			const mergedWrapperClassName = (0, _v_c_util.clsx)(`${prefixCls}-wrapper`, wrapperCls, classNames?.wrapper);
+			const mergedGroupClassName = (0, _v_c_util.clsx)(groupWrapperCls, { [`${groupWrapperCls}-disabled`]: disabled }, classNames?.groupWrapper);
+			element = (0, vue.createVNode)(GroupWrapperComponent, {
+				"class": mergedGroupClassName,
+				"ref": groupRef
+			}, { default: () => [(0, vue.createVNode)(WrapperComponent, { "class": mergedWrapperClassName }, { default: () => [
+				addonBefore && (0, vue.createVNode)(GroupAddonComponent, { "class": addonCls }, _isSlot(addonBefore) ? addonBefore : { default: () => [addonBefore] }),
+				element,
+				addonAfter && (0, vue.createVNode)(GroupAddonComponent, { "class": addonCls }, _isSlot(addonAfter) ? addonAfter : { default: () => [addonAfter] })
+			] })] });
+		}
+		return (0, vue.createVNode)(element, {
+			...attrs,
+			hidden
+		});
+	};
+}, {
+	props: {
+		value: {
+			required: false,
+			default: void 0
+		},
+		prefixCls: {
+			type: String,
+			required: false,
+			default: void 0
+		},
+		disabled: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		focused: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		triggerFocus: {
+			type: Function,
+			required: false,
+			default: void 0
+		},
+		readOnly: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		handleReset: {
+			type: Function,
+			required: false,
+			default: void 0
+		},
+		onClear: {
+			type: Function,
+			required: false,
+			default: void 0
+		},
+		hidden: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		dataAttrs: {
+			type: Object,
+			required: false,
+			default: void 0
+		},
+		components: {
+			type: Object,
+			required: false,
+			default: void 0
+		},
+		prefix: {
+			type: [
+				Object,
+				Function,
+				String,
+				Number,
+				null,
+				Boolean,
+				Array
+			],
+			required: false,
+			default: void 0
+		},
+		suffix: {
+			type: [
+				Object,
+				Function,
+				String,
+				Number,
+				null,
+				Boolean,
+				Array
+			],
+			required: false,
+			default: void 0
+		},
+		addonBefore: {
+			type: [
+				Object,
+				Function,
+				String,
+				Number,
+				null,
+				Boolean,
+				Array
+			],
+			required: false,
+			default: void 0
+		},
+		addonAfter: {
+			type: [
+				Object,
+				Function,
+				String,
+				Number,
+				null,
+				Boolean,
+				Array
+			],
+			required: false,
+			default: void 0
+		},
+		classes: {
+			type: Object,
+			required: false,
+			default: void 0
+		},
+		classNames: {
+			type: Object,
+			required: false,
+			default: void 0
+		},
+		styles: {
+			type: Object,
+			required: false,
+			default: void 0
+		},
+		allowClear: {
+			type: [Boolean, Object],
+			required: false,
+			default: void 0
+		}
+	},
+	name: "BaseInput",
+	inheritAttrs: false
+});
+var BaseInput_default = BaseInput;
+exports.default = BaseInput_default;

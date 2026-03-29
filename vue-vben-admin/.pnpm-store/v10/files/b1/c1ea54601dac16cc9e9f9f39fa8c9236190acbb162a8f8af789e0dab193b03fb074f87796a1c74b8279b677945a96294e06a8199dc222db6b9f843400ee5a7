@@ -1,0 +1,75 @@
+/**
+ * tdesign v1.18.5
+ * (c) 2026 tdesign
+ * @license MIT
+ */
+
+import { defineComponent, computed, createVNode } from 'vue';
+import ColorSlider from './slider.js';
+import { useBaseClassName } from '../../hooks/index.js';
+import '@babel/runtime/helpers/defineProperty';
+import '../../../_chunks/dep-0236e97c.js';
+import '../../../_chunks/dep-ef6694b9.js';
+import '@babel/runtime/helpers/slicedToArray';
+import '@babel/runtime/helpers/classCallCheck';
+import '@babel/runtime/helpers/createClass';
+import 'tinycolor2';
+import 'lodash-es';
+import '../../../_chunks/dep-8377ae97.js';
+import '@babel/runtime/helpers/toConsumableArray';
+import './base-props.js';
+import '@babel/runtime/helpers/typeof';
+import '../../../_chunks/dep-077711e4.js';
+import '../../../_chunks/dep-ce831931.js';
+import '../../../_chunks/dep-7ab3d4f5.js';
+import '../../../config-provider/hooks/useConfig.js';
+import '../../../config-provider/utils/context.js';
+import '../../../_chunks/dep-ee9d4a0b.js';
+import 'dayjs';
+import '../../../_chunks/dep-a1f09b4f.js';
+
+var AlphaSlider = defineComponent({
+  name: "AlphaSlider",
+  inheritAttrs: false,
+  props: {
+    color: {
+      type: Object
+    },
+    disabled: {
+      type: Boolean,
+      "default": false
+    },
+    onChange: {
+      type: Function,
+      "default": function _default() {
+        return function () {};
+      }
+    }
+  },
+  setup: function setup(props) {
+    var baseClassName = useBaseClassName();
+    var handleChange = function handleChange(v, isDragEnd) {
+      props.onChange(v / 100, isDragEnd);
+    };
+    var railStyle = computed(function () {
+      return {
+        background: "linear-gradient(to right, rgba(0, 0, 0, 0), ".concat(props.color.rgb, ")")
+      };
+    });
+    return function () {
+      return createVNode(ColorSlider, {
+        "class": ["".concat(baseClassName.value, "__alpha"), "".concat(baseClassName.value, "--bg-alpha")],
+        "color": props.color,
+        "value": props.color.alpha * 100,
+        "onChange": handleChange,
+        "rail-style": railStyle.value,
+        "max-value": 100,
+        "disabled": props.disabled,
+        "type": "alpha"
+      }, null);
+    };
+  }
+});
+
+export { AlphaSlider as default };
+//# sourceMappingURL=alpha.js.map

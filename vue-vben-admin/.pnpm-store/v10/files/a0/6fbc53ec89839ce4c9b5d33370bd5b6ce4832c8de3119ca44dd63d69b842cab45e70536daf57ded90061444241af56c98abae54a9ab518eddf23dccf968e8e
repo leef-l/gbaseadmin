@@ -1,0 +1,19 @@
+/**
+ * tdesign v1.18.5
+ * (c) 2026 tdesign
+ * @license MIT
+ */
+
+'use strict';
+
+Object.defineProperty(exports, '__esModule', { value: true });
+
+var zh_CN = require('../_chunks/dep-49cc4657.js');
+require('@babel/runtime/helpers/typeof');
+require('../_chunks/dep-14f9daef.js');
+require('dayjs');
+
+
+
+exports["default"] = zh_CN.zhCn;
+//# sourceMappingURL=zh_CN.js.map

@@ -1,0 +1,9 @@
+Object.defineProperties(exports, {
+	__esModule: { value: true },
+	[Symbol.toStringTag]: { value: "Module" }
+});
+const require_ResizableTextArea = require("./ResizableTextArea.cjs");
+const require_TextArea = require("./TextArea.cjs");
+var src_default = require_TextArea.default;
+exports.ResizableTextArea = require_ResizableTextArea.default;
+exports.default = src_default;

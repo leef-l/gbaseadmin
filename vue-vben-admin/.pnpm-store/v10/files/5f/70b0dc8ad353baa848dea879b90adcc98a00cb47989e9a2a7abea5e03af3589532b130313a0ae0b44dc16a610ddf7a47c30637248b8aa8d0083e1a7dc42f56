@@ -1,0 +1,7 @@
+import { ComponentToken } from "./token.js";
+import * as vue651 from "vue";
+
+//#region src/select/style/index.d.ts
+declare const _default: (prefixCls: vue651.Ref<string>, rootCls?: vue651.Ref<string | undefined>) => readonly [vue651.Ref<string, string>, vue651.ComputedRef<string | undefined>];
+//#endregion
+export { type ComponentToken, _default as default };

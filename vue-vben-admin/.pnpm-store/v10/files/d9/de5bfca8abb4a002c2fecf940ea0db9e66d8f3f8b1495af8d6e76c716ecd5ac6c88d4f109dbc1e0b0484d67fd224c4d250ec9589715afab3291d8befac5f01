@@ -1,0 +1,29 @@
+/**
+ * tdesign v1.18.5
+ * (c) 2026 tdesign
+ * @license MIT
+ */
+
+import 'vue';
+import '@babel/runtime/helpers/defineProperty';
+import 'lodash-es';
+import 'dayjs';
+import '../../_chunks/dep-879d5a5b.js';
+import '../../_chunks/dep-f6aeff47.js';
+export { S as default } from '../../_chunks/dep-bf438224.js';
+import '@babel/runtime/helpers/toConsumableArray';
+import '@babel/runtime/helpers/typeof';
+import '../../_chunks/dep-077711e4.js';
+import '../../_chunks/dep-817a0576.js';
+import '../../_chunks/dep-7ab3d4f5.js';
+import '@babel/runtime/helpers/slicedToArray';
+import '../../_chunks/dep-a1f09b4f.js';
+import '../../config-provider/hooks/useConfig.js';
+import '../../_chunks/dep-ce831931.js';
+import '../props.js';
+import '../../_chunks/dep-98062b6d.js';
+import '../../config-provider/utils/context.js';
+import '../../_chunks/dep-ee9d4a0b.js';
+import '@babel/runtime/helpers/createClass';
+import '@babel/runtime/helpers/classCallCheck';
+//# sourceMappingURL=single-panel.js.map

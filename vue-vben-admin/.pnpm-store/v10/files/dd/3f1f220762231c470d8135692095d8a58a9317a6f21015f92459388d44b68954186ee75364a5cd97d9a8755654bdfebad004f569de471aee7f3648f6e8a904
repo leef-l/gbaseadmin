@@ -1,0 +1,190 @@
+/**
+ * tdesign v1.18.5
+ * (c) 2026 tdesign
+ * @license MIT
+ */
+
+'use strict';
+
+Object.defineProperty(exports, '__esModule', { value: true });
+
+var Vue = require('vue');
+var _defineProperty = require('@babel/runtime/helpers/defineProperty');
+var message_message = require('../_chunks/dep-cc7f8cd4.js');
+require('@babel/runtime/helpers/toConsumableArray');
+require('@babel/runtime/helpers/typeof');
+require('../_chunks/dep-53119973.js');
+var index = require('../_chunks/dep-f3e5112c.js');
+require('@babel/runtime/helpers/slicedToArray');
+require('../_chunks/dep-fc2afb75.js');
+require('tdesign-icons-vue-next');
+require('../_chunks/dep-de0929e1.js');
+require('../_chunks/dep-dcc7b0e8.js');
+require('../_chunks/dep-6dd9a89c.js');
+require('../_chunks/dep-0f9ffd23.js');
+require('../_chunks/dep-444f3270.js');
+require('../_chunks/dep-52ed1a7d.js');
+require('../_chunks/dep-777ccded.js');
+require('../_chunks/dep-aa6a0799.js');
+require('../_chunks/dep-3c0a7227.js');
+require('../_chunks/dep-c5c3bf68.js');
+require('../_chunks/dep-5c669d65.js');
+require('../_chunks/dep-f09dab04.js');
+require('../_chunks/dep-3f7d6634.js');
+require('../_chunks/dep-846a1dc8.js');
+require('../_chunks/dep-59a45986.js');
+require('../_chunks/dep-42307533.js');
+require('../config-provider/hooks/useConfig.js');
+require('../_chunks/dep-165d2e7f.js');
+require('../_chunks/dep-49cc4657.js');
+require('../_chunks/dep-14f9daef.js');
+require('dayjs');
+require('../_chunks/dep-5e473554.js');
+require('../_chunks/dep-489984e1.js');
+require('../_chunks/dep-4bcc15b5.js');
+require('../_chunks/dep-9e7e6f13.js');
+require('../_chunks/dep-0dd0cc87.js');
+require('../_chunks/dep-3f878e23.js');
+require('../_chunks/dep-3f900750.js');
+require('../_chunks/dep-a4a92350.js');
+require('../_chunks/dep-e3725791.js');
+require('../_chunks/dep-337c2221.js');
+require('../_chunks/dep-dadc1e14.js');
+require('../_chunks/dep-c661b39a.js');
+require('../_chunks/dep-f460fd6a.js');
+require('../_chunks/dep-02902f8e.js');
+require('../_chunks/dep-2b016e68.js');
+require('../loading/index.js');
+require('../_chunks/dep-cf51f87b.js');
+require('../loading/plugin.js');
+require('../_chunks/dep-7a8df3cd.js');
+require('../loading/icon/gradient.js');
+require('../_chunks/dep-5ede1e84.js');
+require('../_chunks/dep-b6c3112c.js');
+require('@babel/runtime/helpers/objectWithoutProperties');
+require('../_chunks/dep-601eb54d.js');
+require('../_chunks/dep-545102c6.js');
+require('../_chunks/dep-b4c7bacb.js');
+require('../_chunks/dep-322656f4.js');
+require('../loading/props.js');
+require('@babel/runtime/helpers/createClass');
+require('@babel/runtime/helpers/classCallCheck');
+require('../_chunks/dep-31cd2bcc.js');
+require('../_chunks/dep-b049e2e9.js');
+require('../_chunks/dep-de6dd479.js');
+require('../_chunks/dep-b4d902ac.js');
+require('../_chunks/dep-d8132460.js');
+require('../_chunks/dep-9e5869f7.js');
+require('../_chunks/dep-11056e53.js');
+require('../_chunks/dep-72f9922c.js');
+require('../_chunks/dep-e90a36a9.js');
+require('../_chunks/dep-44019bf3.js');
+require('./props.js');
+
+function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
+
+var _defineProperty__default = /*#__PURE__*/_interopDefaultLegacy(_defineProperty);
+
+function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
+function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty__default["default"](e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
+var DEFAULT_Z_INDEX = 6e3;
+var getUniqueId = function () {
+  var id = 0;
+  return function () {
+    id += 1;
+    return id;
+  };
+}();
+var MessageList = Vue.defineComponent({
+  name: "TMessageList",
+  props: {
+    zIndex: {
+      type: Number,
+      "default": 0
+    },
+    placement: {
+      type: String,
+      "default": ""
+    }
+  },
+  setup: function setup(props, _ref) {
+    var expose = _ref.expose;
+    var COMPONENT_NAME = index.usePrefixClass("message__list");
+    var list = Vue.ref([]);
+    var messageList = Vue.ref([]);
+    var styles = Vue.computed(function () {
+      return _objectSpread(_objectSpread({}, message_message.PLACEMENT_OFFSET[props.placement]), {}, {
+        zIndex: props.zIndex !== DEFAULT_Z_INDEX ? props.zIndex : DEFAULT_Z_INDEX
+      });
+    });
+    var add = function add(msg) {
+      var mg = _objectSpread(_objectSpread({}, msg), {}, {
+        key: getUniqueId()
+      });
+      list.value.push(mg);
+      return mg.key;
+    };
+    var remove = function remove(index) {
+      list.value.splice(index, 1);
+    };
+    var removeAll = function removeAll() {
+      list.value = [];
+    };
+    var getOffset = function getOffset(val) {
+      if (!val) return;
+      return isNaN(Number(val)) ? val : "".concat(val, "px");
+    };
+    var msgStyles = function msgStyles(item) {
+      return item.offset && {
+        position: "relative",
+        left: getOffset(item.offset[0]),
+        top: getOffset(item.offset[1])
+      };
+    };
+    var getProps = function getProps(index, item) {
+      return _objectSpread(_objectSpread({}, item), {}, {
+        onCloseBtnClick: function onCloseBtnClick(e) {
+          if (item.onCloseBtnClick) {
+            item.onCloseBtnClick(e);
+          }
+          return remove(index);
+        },
+        onDurationEnd: function onDurationEnd() {
+          if (item.onDurationEnd) {
+            item.onDurationEnd();
+          }
+          return remove(index);
+        }
+      });
+    };
+    var addChild = function addChild(el) {
+      if (el) {
+        messageList.value.push(el);
+      }
+    };
+    expose({
+      add: add,
+      removeAll: removeAll,
+      list: list,
+      messageList: messageList
+    });
+    return function () {
+      if (!list.value.length) return;
+      return Vue.createVNode("div", {
+        "class": COMPONENT_NAME.value,
+        "style": styles.value
+      }, [list.value.map(function (item, index) {
+        return Vue.createVNode(message_message._Message, Vue.mergeProps({
+          "key": item.key,
+          "style": msgStyles(item),
+          "ref": addChild
+        }, getProps(index, item)), null);
+      })]);
+    };
+  }
+});
+
+exports.DEFAULT_Z_INDEX = DEFAULT_Z_INDEX;
+exports.MessageList = MessageList;
+exports["default"] = MessageList;
+//# sourceMappingURL=message-list.js.map

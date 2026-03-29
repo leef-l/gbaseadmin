@@ -1,0 +1,12 @@
+import * as vue573 from "vue";
+
+//#region src/modal/style/confirm.d.ts
+declare const _default: vue573.DefineComponent<vue573.ExtractPropTypes<{
+  prefixCls: StringConstructor;
+  rootCls: StringConstructor;
+}>, () => null, {}, {}, {}, vue573.ComponentOptionsMixin, vue573.ComponentOptionsMixin, {}, string, vue573.PublicProps, Readonly<vue573.ExtractPropTypes<{
+  prefixCls: StringConstructor;
+  rootCls: StringConstructor;
+}>> & Readonly<{}>, {}, {}, {}, {}, string, vue573.ComponentProvideOptions, true, {}, any>;
+//#endregion
+export { _default as default };

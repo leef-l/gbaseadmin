@@ -1,0 +1,6 @@
+import * as vue593 from "vue";
+
+//#region src/input/style/otp.d.ts
+declare const _default: (prefixCls: vue593.Ref<string>, rootCls?: vue593.Ref<string | undefined>) => readonly [vue593.Ref<string, string>, vue593.ComputedRef<string | undefined>];
+//#endregion
+export { _default as default };

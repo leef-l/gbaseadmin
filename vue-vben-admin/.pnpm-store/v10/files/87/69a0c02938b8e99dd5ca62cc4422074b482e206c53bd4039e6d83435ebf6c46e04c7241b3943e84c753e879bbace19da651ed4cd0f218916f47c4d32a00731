@@ -1,0 +1,139 @@
+/**
+ * tdesign v1.18.5
+ * (c) 2026 tdesign
+ * @license MIT
+ */
+
+'use strict';
+
+Object.defineProperty(exports, '__esModule', { value: true });
+
+var _slicedToArray = require('@babel/runtime/helpers/slicedToArray');
+var Vue = require('vue');
+require('@babel/runtime/helpers/toConsumableArray');
+require('@babel/runtime/helpers/typeof');
+require('../../_chunks/dep-53119973.js');
+require('../../config-provider/hooks/useConfig.js');
+require('../../_chunks/dep-fc2afb75.js');
+var index = require('../../_chunks/dep-c9a21163.js');
+require('@babel/runtime/helpers/defineProperty');
+var format = require('../../_chunks/dep-d9e0ea95.js');
+var isArray = require('../../_chunks/dep-777ccded.js');
+require('../../_chunks/dep-14f9daef.js');
+require('../../_chunks/dep-165d2e7f.js');
+require('../../_chunks/dep-49cc4657.js');
+require('dayjs');
+require('../../_chunks/dep-5e473554.js');
+require('../../_chunks/dep-489984e1.js');
+require('../../_chunks/dep-4bcc15b5.js');
+require('../../_chunks/dep-6dd9a89c.js');
+require('../../_chunks/dep-0f9ffd23.js');
+require('../../_chunks/dep-444f3270.js');
+require('../../_chunks/dep-9e7e6f13.js');
+require('../../_chunks/dep-0dd0cc87.js');
+require('../../_chunks/dep-3f878e23.js');
+require('../../_chunks/dep-3f900750.js');
+require('../../_chunks/dep-a4a92350.js');
+require('../../_chunks/dep-e3725791.js');
+require('../../_chunks/dep-337c2221.js');
+require('../../_chunks/dep-dadc1e14.js');
+require('../../_chunks/dep-52ed1a7d.js');
+require('../../_chunks/dep-c661b39a.js');
+require('../../_chunks/dep-f460fd6a.js');
+require('../../_chunks/dep-02902f8e.js');
+require('../../_chunks/dep-2b016e68.js');
+require('@babel/runtime/helpers/createClass');
+require('@babel/runtime/helpers/classCallCheck');
+require('../../_chunks/dep-59a45986.js');
+require('../../_chunks/dep-846a1dc8.js');
+require('../../_chunks/dep-c5c3bf68.js');
+require('../../_chunks/dep-5c669d65.js');
+require('../../_chunks/dep-07dd295b.js');
+require('../../_chunks/dep-fcd66f3d.js');
+
+function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
+
+var _slicedToArray__default = /*#__PURE__*/_interopDefaultLegacy(_slicedToArray);
+
+function useRangeValue(props) {
+  var _toRefs = Vue.toRefs(props),
+    valueFromProps = _toRefs.value,
+    modelValue = _toRefs.modelValue;
+  var _useVModel = index.useVModel(valueFromProps, modelValue, props.defaultValue, props.onChange),
+    _useVModel2 = _slicedToArray__default["default"](_useVModel, 2),
+    value = _useVModel2[0],
+    onChange = _useVModel2[1];
+  var formatRef = Vue.computed(function () {
+    return format.getDefaultFormat({
+      mode: props.mode,
+      format: props.format,
+      valueType: props.valueType,
+      enableTimePicker: props.enableTimePicker
+    });
+  });
+  if (props.enableTimePicker) {
+    if (!format.extractTimeFormat(formatRef.value.format)) console.error("format: ".concat(formatRef.value.format, " \u4E0D\u89C4\u8303\uFF0C\u5305\u542B\u65F6\u95F4\u9009\u62E9\u5FC5\u987B\u8981\u6709\u65F6\u95F4\u683C\u5F0F\u5316 HH:mm:ss"));
+  }
+  if (!isArray.isArray(value.value)) {
+    console.error("typeof value: ".concat(value.value, " must be Array!"));
+  } else if (!format.isValidDate(value.value, formatRef.value.format)) {
+    console.error("value: ".concat(value.value, " is invalid dateTime! Check whether the value is consistent with format: ").concat(formatRef.value.format));
+  }
+  var isFirstValueSelected = Vue.ref(false);
+  var time = Vue.ref(format.initYearMonthTime({
+    value: value.value,
+    mode: props.mode,
+    format: formatRef.value.format,
+    timeFormat: formatRef.value.timeFormat
+  }).time);
+  var month = Vue.ref(format.initYearMonthTime({
+    value: value.value,
+    mode: props.mode,
+    format: formatRef.value.format,
+    enableTimePicker: props.enableTimePicker
+  }).month);
+  var year = Vue.ref(format.initYearMonthTime({
+    value: value.value,
+    mode: props.mode,
+    format: formatRef.value.format
+  }).year);
+  var cacheValue = Vue.ref(format.formatDate(value.value, {
+    format: formatRef.value.format
+  }));
+  Vue.watch(function () {
+    return isFirstValueSelected.value;
+  }, function () {
+    if (year.value[1] < year.value[0]) {
+      year.value[1] = year.value[0];
+    }
+    if (year.value[0] === year.value[1] && month.value[1] < month.value[0]) {
+      month.value[1] = month.value[0];
+    }
+  });
+  Vue.watch(value, function (newValue) {
+    if (!newValue) {
+      cacheValue.value = [];
+      return;
+    }
+    if (!format.isValidDate(newValue, formatRef.value.format)) return;
+    cacheValue.value = format.formatDate(newValue, {
+      format: formatRef.value.valueType,
+      targetFormat: formatRef.value.format
+    });
+    time.value = format.formatTime(newValue, formatRef.value.format, formatRef.value.timeFormat, props.defaultTime);
+  }, {
+    immediate: true
+  });
+  return {
+    year: year,
+    month: month,
+    value: value,
+    time: time,
+    isFirstValueSelected: isFirstValueSelected,
+    cacheValue: cacheValue,
+    onChange: onChange
+  };
+}
+
+exports.useRangeValue = useRangeValue;
+//# sourceMappingURL=useRangeValue.js.map

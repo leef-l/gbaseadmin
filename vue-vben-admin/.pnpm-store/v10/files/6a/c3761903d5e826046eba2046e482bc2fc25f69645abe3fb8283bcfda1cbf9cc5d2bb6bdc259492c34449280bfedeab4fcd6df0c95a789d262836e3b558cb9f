@@ -1,0 +1,21 @@
+import { VueNode } from "../_util/type.js";
+import { PopoverProps, PopoverSemanticClassNames, PopoverSemanticStyles } from "./index.js";
+import * as vue900 from "vue";
+
+//#region src/popover/PurePanel.d.ts
+interface OverlayProps {
+  prefixCls?: string;
+  title?: VueNode;
+  content?: VueNode;
+  classes?: PopoverSemanticClassNames;
+  styles?: PopoverSemanticStyles;
+}
+declare const Overlay: vue900.DefineSetupFnComponent<OverlayProps, {}, {}, OverlayProps & {}, vue900.PublicProps>;
+interface PurePanelProps extends PopoverProps {}
+interface RawPurePanelProps extends PopoverProps {
+  hashId: string;
+}
+declare const RawPurePanel: vue900.DefineSetupFnComponent<RawPurePanelProps, {}, {}, RawPurePanelProps & {}, vue900.PublicProps>;
+declare const PurePanel: vue900.DefineSetupFnComponent<PurePanelProps, {}, {}, PurePanelProps & {}, vue900.PublicProps>;
+//#endregion
+export { Overlay, PurePanelProps, RawPurePanel, PurePanel as default };

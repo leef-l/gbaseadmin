@@ -1,0 +1,10 @@
+import { GetDefaultToken } from "../../theme/interface/cssinjs-utils.js";
+import "../../theme/internal.js";
+import * as vue765 from "vue";
+
+//#region src/app/style/index.d.ts
+interface ComponentToken {}
+declare const prepareComponentToken: GetDefaultToken<'App'>;
+declare const _default: (prefixCls: vue765.Ref<string>, rootCls?: vue765.Ref<string | undefined>) => readonly [vue765.Ref<string, string>, vue765.ComputedRef<string | undefined>];
+//#endregion
+export { ComponentToken, _default as default, prepareComponentToken };

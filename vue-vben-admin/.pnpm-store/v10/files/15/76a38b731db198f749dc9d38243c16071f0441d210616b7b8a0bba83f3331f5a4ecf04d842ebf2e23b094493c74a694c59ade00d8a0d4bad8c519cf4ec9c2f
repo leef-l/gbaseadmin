@@ -1,0 +1,19 @@
+import { ComponentBaseProps } from "../config-provider/context.js";
+import * as vue152 from "vue";
+
+//#region src/layout/layout.d.ts
+interface GeneratorProps {
+  suffixCls?: string;
+  tagName: 'header' | 'footer' | 'main' | 'div';
+  displayName: string;
+}
+interface BasicProps extends ComponentBaseProps {
+  suffixCls?: string;
+  hasSider?: boolean;
+}
+declare const Layout: vue152.DefineSetupFnComponent<BasicProps, {}, {}, BasicProps & {}, vue152.PublicProps>;
+declare const Header: vue152.DefineSetupFnComponent<BasicProps, {}, {}, BasicProps & {}, vue152.PublicProps>;
+declare const Footer: vue152.DefineSetupFnComponent<BasicProps, {}, {}, BasicProps & {}, vue152.PublicProps>;
+declare const Content: vue152.DefineSetupFnComponent<BasicProps, {}, {}, BasicProps & {}, vue152.PublicProps>;
+//#endregion
+export { BasicProps, Content, Footer, GeneratorProps, Header, Layout as default };

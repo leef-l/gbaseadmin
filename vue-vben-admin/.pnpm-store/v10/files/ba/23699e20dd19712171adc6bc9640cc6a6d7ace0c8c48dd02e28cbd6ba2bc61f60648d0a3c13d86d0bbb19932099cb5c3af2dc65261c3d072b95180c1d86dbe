@@ -1,0 +1,9 @@
+import * as vue146 from "vue";
+
+//#region src/breadcrumb/BreadcrumbSeparator.d.ts
+declare const BreadcrumbSeparator: vue146.DefineSetupFnComponent<Record<string, any>, {}, {}, Record<string, any> & {}, vue146.PublicProps>;
+declare const _default: typeof BreadcrumbSeparator & {
+  /** @internal */__ANT_BREADCRUMB_SEPARATOR: boolean;
+};
+//#endregion
+export { _default as default };

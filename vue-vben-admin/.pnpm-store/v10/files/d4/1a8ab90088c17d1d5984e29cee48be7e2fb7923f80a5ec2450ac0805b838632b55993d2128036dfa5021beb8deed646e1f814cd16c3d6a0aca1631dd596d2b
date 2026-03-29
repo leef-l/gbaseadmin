@@ -1,0 +1,44 @@
+/**
+ * tdesign v1.18.5
+ * (c) 2026 tdesign
+ * @license MIT
+ */
+
+import _Image from './image.js';
+import 'vue';
+import '../_chunks/dep-077711e4.js';
+import 'lodash-es';
+import { w as withInstall } from '../_chunks/dep-bb7ae0b5.js';
+import '@babel/runtime/helpers/slicedToArray';
+import '@babel/runtime/helpers/defineProperty';
+import 'tdesign-icons-vue-next';
+import '../_chunks/dep-0da02ae4.js';
+import '../config-provider/hooks/useConfig.js';
+import '../config-provider/utils/context.js';
+import '../_chunks/dep-ee9d4a0b.js';
+import '@babel/runtime/helpers/typeof';
+import '../_chunks/dep-ce831931.js';
+import 'dayjs';
+import '@babel/runtime/helpers/toConsumableArray';
+import '../_chunks/dep-160bde3e.js';
+import '../_chunks/dep-70a98c88.js';
+import '../_chunks/dep-0a649227.js';
+import '../_chunks/dep-fd1cd1c4.js';
+import '../_chunks/dep-e419194d.js';
+import '../_chunks/dep-320e4648.js';
+import '../_chunks/dep-a1f09b4f.js';
+import '@babel/runtime/helpers/createClass';
+import '@babel/runtime/helpers/classCallCheck';
+import './props.js';
+import '../space/index.js';
+import '../space/space.js';
+import '../space/props.js';
+import '../_chunks/dep-01cb1fbc.js';
+import '../_chunks/dep-7ab3d4f5.js';
+import '../_chunks/dep-82ae8f2e.js';
+import '@babel/runtime/helpers/objectWithoutProperties';
+
+var Image = withInstall(_Image);
+
+export { Image, Image as default };
+//# sourceMappingURL=index.js.map

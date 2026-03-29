@@ -1,0 +1,8 @@
+import { InternalPanelProps, PanelProps } from "./interface.js";
+import * as vue844 from "vue";
+
+//#region src/splitter/Panel.d.ts
+declare const InternalPanel: vue844.DefineSetupFnComponent<InternalPanelProps, {}, {}, InternalPanelProps & {}, vue844.PublicProps>;
+declare const Panel: vue844.DefineSetupFnComponent<PanelProps, {}, {}, PanelProps & {}, vue844.PublicProps>;
+//#endregion
+export { InternalPanel, Panel as default };

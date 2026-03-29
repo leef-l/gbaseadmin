@@ -1,0 +1,29 @@
+Object.defineProperties(exports, {
+	__esModule: { value: true },
+	[Symbol.toStringTag]: { value: "Module" }
+});
+const require_rolldown_runtime = require("../_virtual/rolldown_runtime.cjs");
+let vue = require("vue");
+function inCountRange(value, countConfig) {
+	if (!countConfig.max) return true;
+	return countConfig.strategy(value) <= countConfig.max;
+}
+function useCount(count, showCount) {
+	return (0, vue.computed)(() => {
+		let mergedConfig = {};
+		if (showCount?.value) mergedConfig.show = typeof showCount.value === "object" && showCount.value?.formatter ? showCount.value?.formatter : !!showCount.value;
+		mergedConfig = {
+			...mergedConfig,
+			...count?.value
+		};
+		const { show, ...rest } = mergedConfig;
+		return {
+			...rest,
+			show: !!show,
+			showFormatter: typeof show === "function" ? show : void 0,
+			strategy: rest.strategy || ((value) => value.length)
+		};
+	});
+}
+exports.default = useCount;
+exports.inCountRange = inCountRange;

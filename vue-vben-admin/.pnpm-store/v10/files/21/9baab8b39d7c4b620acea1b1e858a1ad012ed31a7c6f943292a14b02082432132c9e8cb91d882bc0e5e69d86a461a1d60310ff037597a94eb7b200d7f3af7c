@@ -1,0 +1,145 @@
+/**
+ * tdesign v1.18.5
+ * (c) 2026 tdesign
+ * @license MIT
+ */
+
+'use strict';
+
+Object.defineProperty(exports, '__esModule', { value: true });
+
+var Vue = require('vue');
+var _defineProperty = require('@babel/runtime/helpers/defineProperty');
+require('@babel/runtime/helpers/toConsumableArray');
+require('@babel/runtime/helpers/typeof');
+require('../../../_chunks/dep-53119973.js');
+var index = require('../../../_chunks/dep-f3e5112c.js');
+require('@babel/runtime/helpers/slicedToArray');
+require('../../../_chunks/dep-fc2afb75.js');
+var utils = require('../../../_chunks/dep-026c2929.js');
+var dayjs = require('dayjs');
+require('../../../_chunks/dep-14f9daef.js');
+require('../../../config-provider/hooks/useConfig.js');
+require('../../../_chunks/dep-165d2e7f.js');
+require('../../../_chunks/dep-49cc4657.js');
+require('../../../_chunks/dep-5e473554.js');
+require('../../../_chunks/dep-489984e1.js');
+require('../../../_chunks/dep-4bcc15b5.js');
+require('../../../_chunks/dep-6dd9a89c.js');
+require('../../../_chunks/dep-0f9ffd23.js');
+require('../../../_chunks/dep-444f3270.js');
+require('../../../_chunks/dep-9e7e6f13.js');
+require('../../../_chunks/dep-0dd0cc87.js');
+require('../../../_chunks/dep-777ccded.js');
+require('../../../_chunks/dep-3f878e23.js');
+require('../../../_chunks/dep-3f900750.js');
+require('../../../_chunks/dep-a4a92350.js');
+require('../../../_chunks/dep-e3725791.js');
+require('../../../_chunks/dep-337c2221.js');
+require('../../../_chunks/dep-dadc1e14.js');
+require('../../../_chunks/dep-52ed1a7d.js');
+require('../../../_chunks/dep-c661b39a.js');
+require('../../../_chunks/dep-f460fd6a.js');
+require('../../../_chunks/dep-02902f8e.js');
+require('../../../_chunks/dep-2b016e68.js');
+require('@babel/runtime/helpers/createClass');
+require('@babel/runtime/helpers/classCallCheck');
+require('@babel/runtime/helpers/objectDestructuringEmpty');
+require('@babel/runtime/helpers/extends');
+require('../../../_chunks/dep-64d11d52.js');
+require('../../../_chunks/dep-712a3a80.js');
+require('../../../_chunks/dep-053e3bf6.js');
+require('../../../_chunks/dep-5c669d65.js');
+require('../../../_chunks/dep-07dd295b.js');
+require('../../../_chunks/dep-d9e0ea95.js');
+require('../../../_chunks/dep-fcd66f3d.js');
+require('../../../_chunks/dep-3f7d6634.js');
+
+function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
+
+var _defineProperty__default = /*#__PURE__*/_interopDefaultLegacy(_defineProperty);
+
+var TDatePickerCell = Vue.defineComponent({
+  name: "TDatePickerCell",
+  props: {
+    time: String,
+    text: [String, Number],
+    value: Date,
+    active: Boolean,
+    highlight: Boolean,
+    disabled: Boolean,
+    startOfRange: Boolean,
+    endOfRange: Boolean,
+    hoverHighlight: Boolean,
+    hoverStartOfRange: Boolean,
+    hoverEndOfRange: Boolean,
+    additional: Boolean,
+    now: Boolean,
+    firstDayOfMonth: Boolean,
+    lastDayOfMonth: Boolean,
+    onClick: Function,
+    onMouseEnter: Function,
+    dayjsObj: dayjs.Dayjs
+  },
+  setup: function setup(props) {
+    var COMPONENT_NAME = index.usePrefixClass("date-picker__cell");
+    var cellClass = Vue.computed(function () {
+      var _ref;
+      return [COMPONENT_NAME.value, (_ref = {}, _defineProperty__default["default"](_defineProperty__default["default"](_defineProperty__default["default"](_defineProperty__default["default"](_defineProperty__default["default"](_defineProperty__default["default"](_defineProperty__default["default"](_defineProperty__default["default"](_defineProperty__default["default"](_defineProperty__default["default"](_ref, "".concat(COMPONENT_NAME.value, "--now"), props.now), "".concat(COMPONENT_NAME.value, "--active"), props.active), "".concat(COMPONENT_NAME.value, "--disabled"), props.disabled), "".concat(COMPONENT_NAME.value, "--highlight"), props.highlight), "".concat(COMPONENT_NAME.value, "--hover-highlight"), props.hoverHighlight), "".concat(COMPONENT_NAME.value, "--active-start"), props.startOfRange), "".concat(COMPONENT_NAME.value, "--active-end"), props.endOfRange), "".concat(COMPONENT_NAME.value, "--hover-start"), props.hoverStartOfRange), "".concat(COMPONENT_NAME.value, "--hover-end"), props.hoverEndOfRange), "".concat(COMPONENT_NAME.value, "--additional"), props.additional), _defineProperty__default["default"](_defineProperty__default["default"](_ref, "".concat(COMPONENT_NAME.value, "--first-day-of-month"), props.firstDayOfMonth), "".concat(COMPONENT_NAME.value, "--last-day-of-month"), props.lastDayOfMonth))];
+    });
+    function handleClick(e) {
+      var _props$onClick;
+      if (props.disabled) return;
+      if (props.time) {
+        var _extractTimeObj = utils.extractTimeObj(props.time),
+          hours = _extractTimeObj.hours,
+          minutes = _extractTimeObj.minutes,
+          seconds = _extractTimeObj.seconds,
+          milliseconds = _extractTimeObj.milliseconds,
+          meridiem = _extractTimeObj.meridiem;
+        var nextHours = hours;
+        if (/am/i.test(meridiem) && nextHours === 12) nextHours -= 12;
+        if (/pm/i.test(meridiem) && nextHours < 12) nextHours += 12;
+        props.value.setHours(nextHours);
+        props.value.setMinutes(minutes);
+        props.value.setSeconds(seconds);
+        props.value.setMilliseconds(milliseconds);
+      }
+      (_props$onClick = props.onClick) === null || _props$onClick === void 0 || _props$onClick.call(props, props.value, {
+        e: e
+      });
+    }
+    function handleMouseEnter() {
+      var _props$onMouseEnter;
+      if (props.disabled) return;
+      if (props.time) {
+        var _extractTimeObj2 = utils.extractTimeObj(props.time),
+          hours = _extractTimeObj2.hours,
+          minutes = _extractTimeObj2.minutes,
+          seconds = _extractTimeObj2.seconds,
+          milliseconds = _extractTimeObj2.milliseconds,
+          meridiem = _extractTimeObj2.meridiem;
+        var nextHours = hours;
+        if (/am/i.test(meridiem) && nextHours === 12) nextHours -= 12;
+        if (/pm/i.test(meridiem) && nextHours < 12) nextHours += 12;
+        props.value.setHours(nextHours);
+        props.value.setMinutes(minutes);
+        props.value.setSeconds(seconds);
+        props.value.setMilliseconds(milliseconds);
+      }
+      (_props$onMouseEnter = props.onMouseEnter) === null || _props$onMouseEnter === void 0 || _props$onMouseEnter.call(props, props.value);
+    }
+    return function () {
+      return Vue.createVNode("td", {
+        "class": cellClass.value,
+        "onClick": handleClick,
+        "onMouseenter": handleMouseEnter
+      }, [Vue.createVNode("div", {
+        "class": "".concat(COMPONENT_NAME.value, "-inner")
+      }, [props.text])]);
+    };
+  }
+});
+
+exports["default"] = TDatePickerCell;
+//# sourceMappingURL=Cell.js.map

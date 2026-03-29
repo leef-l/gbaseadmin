@@ -1,0 +1,11 @@
+import * as vue160 from "vue";
+
+//#region src/steps/ProgressIcon.d.ts
+interface ProgressIconProps {
+  prefixCls: string;
+  rootPrefixCls: string;
+  percent: number;
+}
+declare const ProgressIcon: vue160.DefineSetupFnComponent<ProgressIconProps, {}, {}, ProgressIconProps & {}, vue160.PublicProps>;
+//#endregion
+export { ProgressIconProps, ProgressIcon as default };

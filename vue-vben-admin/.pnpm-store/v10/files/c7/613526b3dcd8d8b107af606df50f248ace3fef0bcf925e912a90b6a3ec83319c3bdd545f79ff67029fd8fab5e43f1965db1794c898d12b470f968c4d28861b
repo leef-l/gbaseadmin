@@ -1,0 +1,14 @@
+import Cell_default from "./Cell.js";
+import Row_default from "./Row.js";
+import { defineComponent } from "vue";
+var Summary = /* @__PURE__ */ defineComponent({
+	name: "TableSummary",
+	props: ["fixed"],
+	setup(_props, { slots }) {
+		return () => slots.default?.();
+	}
+});
+Summary.Row = Row_default;
+Summary.Cell = Cell_default;
+var Summary_default = Summary;
+export { Summary_default as default };

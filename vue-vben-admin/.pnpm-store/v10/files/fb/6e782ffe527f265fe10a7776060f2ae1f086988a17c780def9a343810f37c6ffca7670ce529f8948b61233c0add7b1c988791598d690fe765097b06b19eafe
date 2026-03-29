@@ -1,0 +1,32 @@
+import { MaskType } from "../_util/hooks/useMergedMask.js";
+import "../_util/hooks/index.js";
+import { DeprecatedPreviewConfig, ImageClassNamesType, ImageStylesType } from "./index.js";
+import * as vue68 from "vue";
+import { PreviewGroupProps as PreviewGroupProps$1 } from "@v-c/image";
+import * as vue_jsx_runtime4 from "vue/jsx-runtime";
+
+//#region src/image/PreviewGroup.d.ts
+declare const icons: {
+  rotateLeft: vue_jsx_runtime4.JSX.Element;
+  rotateRight: vue_jsx_runtime4.JSX.Element;
+  zoomIn: vue_jsx_runtime4.JSX.Element;
+  zoomOut: vue_jsx_runtime4.JSX.Element;
+  close: vue_jsx_runtime4.JSX.Element;
+  left: vue_jsx_runtime4.JSX.Element;
+  right: vue_jsx_runtime4.JSX.Element;
+  flipX: vue_jsx_runtime4.JSX.Element;
+  flipY: vue_jsx_runtime4.JSX.Element;
+};
+type OriginPreviewConfig = NonNullable<Exclude<PreviewGroupProps$1['preview'], boolean>>;
+type GroupPreviewConfig = OriginPreviewConfig & DeprecatedPreviewConfig & {
+  /** @deprecated Use `onOpenChange` instead */onVisibleChange?: (visible: boolean, prevVisible: boolean, current: number) => void;
+  mask?: MaskType;
+};
+interface PreviewGroupProps extends Omit<PreviewGroupProps$1, 'preview' | 'styles'> {
+  preview?: boolean | GroupPreviewConfig;
+  classes?: ImageClassNamesType;
+  styles?: ImageStylesType;
+}
+declare const InternalPreviewGroup: vue68.DefineSetupFnComponent<PreviewGroupProps, {}, {}, PreviewGroupProps & {}, vue68.PublicProps>;
+//#endregion
+export { GroupPreviewConfig, PreviewGroupProps, InternalPreviewGroup as default, icons };

@@ -1,0 +1,222 @@
+/**
+ * tdesign v1.18.5
+ * (c) 2026 tdesign
+ * @license MIT
+ */
+
+'use strict';
+
+Object.defineProperty(exports, '__esModule', { value: true });
+
+var _defineProperty = require('@babel/runtime/helpers/defineProperty');
+require('vue');
+require('@babel/runtime/helpers/toConsumableArray');
+require('@babel/runtime/helpers/typeof');
+require('../../_chunks/dep-53119973.js');
+require('../../config-provider/hooks/useConfig.js');
+require('@babel/runtime/helpers/slicedToArray');
+require('../../_chunks/dep-fc2afb75.js');
+require('tdesign-icons-vue-next');
+require('../../checkbox/index.js');
+require('../../loading/index.js');
+require('@babel/runtime/helpers/asyncToGenerator');
+require('@babel/runtime/helpers/classCallCheck');
+require('@babel/runtime/helpers/createClass');
+require('@babel/runtime/regenerator');
+var camelCase = require('../../_chunks/dep-3c0a7227.js');
+require('../../_chunks/dep-14f9daef.js');
+require('../../_chunks/dep-165d2e7f.js');
+require('../../_chunks/dep-49cc4657.js');
+require('dayjs');
+require('../../_chunks/dep-5e473554.js');
+require('../../_chunks/dep-489984e1.js');
+require('../../_chunks/dep-4bcc15b5.js');
+require('../../_chunks/dep-6dd9a89c.js');
+require('../../_chunks/dep-0f9ffd23.js');
+require('../../_chunks/dep-444f3270.js');
+require('../../_chunks/dep-9e7e6f13.js');
+require('../../_chunks/dep-0dd0cc87.js');
+require('../../_chunks/dep-777ccded.js');
+require('../../_chunks/dep-3f878e23.js');
+require('../../_chunks/dep-3f900750.js');
+require('../../_chunks/dep-a4a92350.js');
+require('../../_chunks/dep-e3725791.js');
+require('../../_chunks/dep-337c2221.js');
+require('../../_chunks/dep-dadc1e14.js');
+require('../../_chunks/dep-52ed1a7d.js');
+require('../../_chunks/dep-c661b39a.js');
+require('../../_chunks/dep-f460fd6a.js');
+require('../../_chunks/dep-02902f8e.js');
+require('../../_chunks/dep-2b016e68.js');
+require('../../checkbox/checkbox.js');
+require('../../checkbox/props.js');
+require('../../_chunks/dep-de0929e1.js');
+require('../../_chunks/dep-dcc7b0e8.js');
+require('../../_chunks/dep-aa6a0799.js');
+require('../../_chunks/dep-59a45986.js');
+require('../../_chunks/dep-846a1dc8.js');
+require('../../_chunks/dep-c5c3bf68.js');
+require('../../_chunks/dep-5c669d65.js');
+require('../../_chunks/dep-322656f4.js');
+require('../../_chunks/dep-f3e5112c.js');
+require('../../_chunks/dep-197706c1.js');
+require('../../_chunks/dep-36ae7e4f.js');
+require('../../_chunks/dep-78889904.js');
+require('../../_chunks/dep-8c742535.js');
+require('../../_chunks/dep-5ede1e84.js');
+require('../../_chunks/dep-c9a21163.js');
+require('../../checkbox/constants/index.js');
+require('../../checkbox/hooks/useCheckboxLazyLoad.js');
+require('../../_chunks/dep-ebf43fe5.js');
+require('../../checkbox/hooks/useKeyboardEvent.js');
+require('../../_chunks/dep-728d78c4.js');
+require('../../_chunks/dep-f09dab04.js');
+require('../../_chunks/dep-3f7d6634.js');
+require('../../checkbox/group.js');
+require('../../checkbox/checkbox-group-props.js');
+require('../../_chunks/dep-91416192.js');
+require('../../_chunks/dep-4b457a69.js');
+require('../../_chunks/dep-de6dd479.js');
+require('../../_chunks/dep-af07c856.js');
+require('../../_chunks/dep-601eb54d.js');
+require('../../_chunks/dep-44019bf3.js');
+require('../../_chunks/dep-cf51f87b.js');
+require('../../loading/plugin.js');
+require('../../_chunks/dep-7a8df3cd.js');
+require('../../loading/icon/gradient.js');
+require('../../_chunks/dep-b6c3112c.js');
+require('@babel/runtime/helpers/objectWithoutProperties');
+require('../../_chunks/dep-545102c6.js');
+require('../../_chunks/dep-b4c7bacb.js');
+require('../../loading/props.js');
+require('../../_chunks/dep-31cd2bcc.js');
+require('../../_chunks/dep-b049e2e9.js');
+require('../../_chunks/dep-b4d902ac.js');
+require('../../_chunks/dep-d8132460.js');
+require('../../_chunks/dep-9e5869f7.js');
+require('../../_chunks/dep-11056e53.js');
+require('../../_chunks/dep-72f9922c.js');
+require('../../_chunks/dep-e90a36a9.js');
+
+function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
+
+var _defineProperty__default = /*#__PURE__*/_interopDefaultLegacy(_defineProperty);
+
+function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
+function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty__default["default"](e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
+function emitEvent(props, context, evtName) {
+  var apiName = camelCase.camelCase("on-".concat(evtName));
+  evtName.replace(/^on/, "").toLowerCase();
+  for (var _len = arguments.length, args = new Array(_len > 3 ? _len - 3 : 0), _key = 3; _key < _len; _key++) {
+    args[_key - 3] = arguments[_key];
+  }
+  if (typeof props[apiName] === "function") {
+    props[apiName].apply(props, args);
+  }
+}
+function getParentsToRoot(element, root) {
+  var list = [];
+  var el = element;
+  while (el && el.parentNode) {
+    list.push(el);
+    if (el === root) {
+      break;
+    }
+    el = el.parentNode;
+  }
+  return list;
+}
+function getParentMarks(name, element, root) {
+  var list = getParentsToRoot(element, root);
+  return list.map(function (el) {
+    var mark = {
+      name: name,
+      value: (el === null || el === void 0 ? void 0 : el.getAttribute(name)) || "",
+      el: el
+    };
+    return mark;
+  }).filter(function (mark) {
+    return mark.value;
+  });
+}
+function getMark(name, element, root) {
+  var list = getParentMarks(name, element, root);
+  var info = list.pop() || null;
+  return info;
+}
+function pathMatchClass(name, element, root) {
+  var list = getParentsToRoot(element, root);
+  var rs = list.some(function (el) {
+    return el.classList.contains(name);
+  });
+  return rs;
+}
+function getTNode(prop, options) {
+  var tnode = null;
+  var item = null;
+  var conf = _objectSpread({}, options);
+  if (typeof prop === "function") {
+    var _conf$node;
+    item = prop(conf.createElement, (_conf$node = conf.node) === null || _conf$node === void 0 ? void 0 : _conf$node.getModel());
+  } else if (typeof prop === "string") {
+    item = prop;
+  }
+  if (typeof item === "string") {
+    tnode = item;
+  } else if (item) {
+    tnode = item;
+  }
+  return tnode;
+}
+function getLineModel(nodes, node, index) {
+  var lineModel = {
+    top: false,
+    right: false,
+    bottom: false,
+    left: false
+  };
+  var nodeChildren = [];
+  if (Array.isArray(node.children)) {
+    nodeChildren = node.children;
+  }
+  var childNode = nodes[index - 1] || null;
+  var nodeItemIndex = childNode ? childNode.getIndex() : 0;
+  if (index === 0) {
+    lineModel.left = !!node.parent;
+    lineModel.bottom = node.children && node.expanded;
+    lineModel.right = node.parent && !node.children;
+  } else if (index === 1) {
+    lineModel.top = true;
+    lineModel.right = true;
+    lineModel.bottom = nodeItemIndex < nodeChildren.length - 1;
+  } else if (nodeItemIndex < nodeChildren.length - 1) {
+    lineModel.top = true;
+    lineModel.bottom = true;
+  }
+  return lineModel;
+}
+function isTreeNodeValue(item) {
+  return typeof item === "string" || typeof item === "number";
+}
+function getNode(store, item) {
+  var node = null;
+  var val = null;
+  if (typeof item === "string" || typeof item === "number") {
+    val = item;
+  } else if (item && isTreeNodeValue(item.value)) {
+    val = item.value;
+  }
+  node = store.getNode(val);
+  return node;
+}
+
+exports.emitEvent = emitEvent;
+exports.getLineModel = getLineModel;
+exports.getMark = getMark;
+exports.getNode = getNode;
+exports.getParentMarks = getParentMarks;
+exports.getParentsToRoot = getParentsToRoot;
+exports.getTNode = getTNode;
+exports.isTreeNodeValue = isTreeNodeValue;
+exports.pathMatchClass = pathMatchClass;
+//# sourceMappingURL=index.js.map

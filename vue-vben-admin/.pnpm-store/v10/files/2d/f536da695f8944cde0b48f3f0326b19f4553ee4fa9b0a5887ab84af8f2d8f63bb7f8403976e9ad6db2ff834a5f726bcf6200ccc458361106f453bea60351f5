@@ -1,0 +1,4 @@
+import ResizableTextArea_default from "./ResizableTextArea.js";
+import TextArea_default from "./TextArea.js";
+var src_default = TextArea_default;
+export { ResizableTextArea_default as ResizableTextArea, src_default as default };

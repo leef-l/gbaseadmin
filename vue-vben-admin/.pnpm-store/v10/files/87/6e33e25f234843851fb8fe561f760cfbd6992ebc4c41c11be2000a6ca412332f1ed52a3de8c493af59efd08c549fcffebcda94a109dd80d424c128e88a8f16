@@ -1,0 +1,109 @@
+/**
+ * tdesign v1.18.5
+ * (c) 2026 tdesign
+ * @license MIT
+ */
+
+'use strict';
+
+Object.defineProperty(exports, '__esModule', { value: true });
+
+var _defineProperty = require('@babel/runtime/helpers/defineProperty');
+var Vue = require('vue');
+require('@babel/runtime/helpers/toConsumableArray');
+require('@babel/runtime/helpers/typeof');
+require('../_chunks/dep-53119973.js');
+var index$1 = require('../_chunks/dep-de0929e1.js');
+var index = require('../_chunks/dep-f3e5112c.js');
+require('@babel/runtime/helpers/slicedToArray');
+require('../_chunks/dep-fc2afb75.js');
+var inputAdornment_props = require('./props.js');
+var isString = require('../_chunks/dep-52ed1a7d.js');
+var isNumber = require('../_chunks/dep-b4c7bacb.js');
+var isFunction = require('../_chunks/dep-6dd9a89c.js');
+require('../_chunks/dep-14f9daef.js');
+require('../_chunks/dep-dcc7b0e8.js');
+require('../_chunks/dep-aa6a0799.js');
+require('../_chunks/dep-444f3270.js');
+require('../_chunks/dep-777ccded.js');
+require('../_chunks/dep-3c0a7227.js');
+require('../_chunks/dep-c5c3bf68.js');
+require('../_chunks/dep-0f9ffd23.js');
+require('../_chunks/dep-5c669d65.js');
+require('../_chunks/dep-f09dab04.js');
+require('../_chunks/dep-3f7d6634.js');
+require('../_chunks/dep-846a1dc8.js');
+require('../_chunks/dep-59a45986.js');
+require('../config-provider/hooks/useConfig.js');
+require('../_chunks/dep-165d2e7f.js');
+require('../_chunks/dep-49cc4657.js');
+require('dayjs');
+require('../_chunks/dep-5e473554.js');
+require('../_chunks/dep-489984e1.js');
+require('../_chunks/dep-4bcc15b5.js');
+require('../_chunks/dep-9e7e6f13.js');
+require('../_chunks/dep-0dd0cc87.js');
+require('../_chunks/dep-3f878e23.js');
+require('../_chunks/dep-3f900750.js');
+require('../_chunks/dep-a4a92350.js');
+require('../_chunks/dep-e3725791.js');
+require('../_chunks/dep-337c2221.js');
+require('../_chunks/dep-dadc1e14.js');
+require('../_chunks/dep-c661b39a.js');
+require('../_chunks/dep-f460fd6a.js');
+require('../_chunks/dep-02902f8e.js');
+require('../_chunks/dep-2b016e68.js');
+require('@babel/runtime/helpers/createClass');
+require('@babel/runtime/helpers/classCallCheck');
+
+function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
+
+var _defineProperty__default = /*#__PURE__*/_interopDefaultLegacy(_defineProperty);
+
+var _InputAdornment = Vue.defineComponent({
+  name: "TInputAdornment",
+  props: inputAdornment_props["default"],
+  setup: function setup(props2, _ref) {
+    var slots = _ref.slots;
+    var COMPONENT_NAME = index.usePrefixClass("input-adornment");
+    var renderTNodeJSX = index$1.useTNodeJSX();
+    var renderAddon = function renderAddon(h2, type, addon) {
+      var addonNode;
+      var isContentNode = isString.isString(addon) || isNumber.isNumber(addon);
+      if (!slots[type] && isString.isString(addon) && !addon) return null;
+      if (slots[type]) {
+        if (slots[type](null).length === 1 && typeof slots[type](null)[0].children === "string") {
+          addonNode = Vue.createVNode("span", {
+            "class": "".concat(COMPONENT_NAME.value, "__text")
+          }, [slots[type](null)]);
+        } else {
+          addonNode = slots[type](null);
+        }
+      } else if (isFunction.isFunction(addon)) {
+        addonNode = addon(h2);
+      } else {
+        addonNode = isContentNode ? Vue.createVNode("span", {
+          "class": "".concat(COMPONENT_NAME.value, "__text")
+        }, [addon]) : addon;
+      }
+      return addonNode ? Vue.createVNode("span", {
+        "class": "".concat(COMPONENT_NAME.value, "__").concat(type)
+      }, [addonNode]) : addonNode;
+    };
+    return function () {
+      var prepend = renderAddon(Vue.h, "prepend", props2.prepend);
+      var append = renderAddon(Vue.h, "append", props2.append);
+      var defaultSlot = renderTNodeJSX("default") || [null];
+      var className = [COMPONENT_NAME.value, _defineProperty__default["default"](_defineProperty__default["default"]({}, "".concat(COMPONENT_NAME.value, "--prepend"), prepend), "".concat(COMPONENT_NAME.value, "--append"), append)];
+      if (!prepend && !append) {
+        return defaultSlot[0];
+      }
+      return Vue.createVNode("div", {
+        "class": className
+      }, [prepend, defaultSlot[0], append]);
+    };
+  }
+});
+
+exports["default"] = _InputAdornment;
+//# sourceMappingURL=input-adornment.js.map

@@ -1,0 +1,9 @@
+import { inject, provide } from "vue";
+var SummaryContextKey = Symbol("TableSummaryContext");
+function useProvideSummaryContext(value) {
+	provide(SummaryContextKey, value);
+}
+function useInjectSummaryContext() {
+	return inject(SummaryContextKey, {});
+}
+export { useInjectSummaryContext, useProvideSummaryContext };

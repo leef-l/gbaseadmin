@@ -1,0 +1,188 @@
+/**
+ * tdesign v1.18.5
+ * (c) 2026 tdesign
+ * @license MIT
+ */
+
+'use strict';
+
+Object.defineProperty(exports, '__esModule', { value: true });
+
+var Vue = require('vue');
+var _defineProperty = require('@babel/runtime/helpers/defineProperty');
+var _slicedToArray = require('@babel/runtime/helpers/slicedToArray');
+var tabs_tabPanel = require('./tab-panel.js');
+var tabs_tabNav = require('./tab-nav.js');
+var tabs_props = require('./props.js');
+require('@babel/runtime/helpers/toConsumableArray');
+require('@babel/runtime/helpers/typeof');
+require('../_chunks/dep-53119973.js');
+var index$1 = require('../_chunks/dep-de0929e1.js');
+var index = require('../_chunks/dep-f3e5112c.js');
+require('../_chunks/dep-fc2afb75.js');
+var index$2 = require('../_chunks/dep-c9a21163.js');
+var isArray = require('../_chunks/dep-777ccded.js');
+require('./tab-panel-props.js');
+require('../_chunks/dep-322656f4.js');
+require('../config-provider/hooks/useConfig.js');
+require('../_chunks/dep-165d2e7f.js');
+require('../_chunks/dep-49cc4657.js');
+require('../_chunks/dep-14f9daef.js');
+require('dayjs');
+require('../_chunks/dep-5e473554.js');
+require('../_chunks/dep-489984e1.js');
+require('../_chunks/dep-4bcc15b5.js');
+require('../_chunks/dep-6dd9a89c.js');
+require('../_chunks/dep-0f9ffd23.js');
+require('../_chunks/dep-444f3270.js');
+require('../_chunks/dep-9e7e6f13.js');
+require('../_chunks/dep-0dd0cc87.js');
+require('../_chunks/dep-3f878e23.js');
+require('../_chunks/dep-3f900750.js');
+require('../_chunks/dep-a4a92350.js');
+require('../_chunks/dep-e3725791.js');
+require('../_chunks/dep-337c2221.js');
+require('../_chunks/dep-dadc1e14.js');
+require('../_chunks/dep-52ed1a7d.js');
+require('../_chunks/dep-c661b39a.js');
+require('../_chunks/dep-f460fd6a.js');
+require('../_chunks/dep-02902f8e.js');
+require('../_chunks/dep-2b016e68.js');
+require('../_chunks/dep-2674e85f.js');
+require('tdesign-icons-vue-next');
+require('./tab-nav-item.js');
+require('../_chunks/dep-42307533.js');
+require('../_chunks/dep-8c742535.js');
+require('../_chunks/dep-5ede1e84.js');
+require('./tab-nav-bar.js');
+require('../_chunks/dep-ff39d539.js');
+require('../_chunks/dep-364cb786.js');
+require('../_chunks/dep-053e3bf6.js');
+require('../_chunks/dep-5c669d65.js');
+require('../_chunks/dep-8dd39d4b.js');
+require('../_chunks/dep-dcc7b0e8.js');
+require('../_chunks/dep-aa6a0799.js');
+require('../_chunks/dep-3c0a7227.js');
+require('../_chunks/dep-c5c3bf68.js');
+require('../_chunks/dep-f09dab04.js');
+require('../_chunks/dep-3f7d6634.js');
+require('../_chunks/dep-846a1dc8.js');
+require('../_chunks/dep-59a45986.js');
+require('@babel/runtime/helpers/createClass');
+require('@babel/runtime/helpers/classCallCheck');
+
+function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
+
+var _defineProperty__default = /*#__PURE__*/_interopDefaultLegacy(_defineProperty);
+var _slicedToArray__default = /*#__PURE__*/_interopDefaultLegacy(_slicedToArray);
+
+var _Tabs = Vue.defineComponent({
+  name: "TTabs",
+  props: tabs_props["default"],
+  setup: function setup(props2) {
+    var COMPONENT_NAME = index.usePrefixClass("tabs");
+    var classPrefix = index.usePrefixClass();
+    var renderTNodeJSX = index$1.useTNodeJSX();
+    var _toRefs = Vue.toRefs(props2),
+      value = _toRefs.value,
+      modelValue = _toRefs.modelValue;
+    var _useVModel = index$2.useVModel(value, modelValue, props2.defaultValue || "", props2.onChange),
+      _useVModel2 = _slicedToArray__default["default"](_useVModel, 2),
+      tabValue = _useVModel2[0],
+      setTabValue = _useVModel2[1];
+    Vue.provide("tabs", {
+      value: tabValue
+    });
+    var onTabAdd = function onTabAdd(context) {
+      var _props2$onAdd;
+      (_props2$onAdd = props2.onAdd) === null || _props2$onAdd === void 0 || _props2$onAdd.call(props2, {
+        e: context.e
+      });
+    };
+    var onTabChange = function onTabChange(value2) {
+      setTabValue(value2);
+    };
+    var onTabRemove = function onTabRemove(_ref) {
+      var _props2$onRemove;
+      var e = _ref.e,
+        value2 = _ref.value,
+        index = _ref.index;
+      (_props2$onRemove = props2.onRemove) === null || _props2$onRemove === void 0 || _props2$onRemove.call(props2, {
+        value: value2,
+        index: index,
+        e: e
+      });
+    };
+    var getSlotPanels = function getSlotPanels() {
+      var content = renderTNodeJSX("default");
+      if (!content) return [];
+      var _flatContent = function flatContent(ct) {
+        return ct.map(function (item) {
+          if (item.children && isArray.isArray(item.children)) return _flatContent(item.children);
+          return item;
+        }).flat().filter(function (item) {
+          return item.type.name === "TTabPanel";
+        });
+      };
+      return _flatContent(content);
+    };
+    var renderHeader = function renderHeader() {
+      var _props2$list;
+      var panels = ((_props2$list = props2.list) !== null && _props2$list !== void 0 && _props2$list.length ? props2.list : getSlotPanels()) || [];
+      var actionContent = renderTNodeJSX("action");
+      var panelsData = panels.map(function (item) {
+        var selfItem = item;
+        if (item.props) {
+          Object.keys(item.props).forEach(function (key) {
+            selfItem[key] = item.props[key];
+          });
+        }
+        return selfItem;
+      });
+      var tabNavProps = {
+        theme: props2.theme,
+        value: tabValue.value,
+        size: props2.size,
+        disabled: props2.disabled,
+        placement: props2.placement,
+        scrollPosition: props2.scrollPosition,
+        addable: props2.addable,
+        panels: panelsData,
+        dragSort: props2.dragSort,
+        action: actionContent
+      };
+      return Vue.createVNode("div", {
+        "class": _defineProperty__default["default"](_defineProperty__default["default"]({}, "".concat(classPrefix.value, "-tabs__header"), true), "".concat(classPrefix.value, "-is-").concat(props2.placement), true)
+      }, [Vue.createVNode(tabs_tabNav["default"], Vue.mergeProps(tabNavProps, {
+        "onDragSort": props2.onDragSort,
+        "onChange": onTabChange,
+        "onAdd": onTabAdd,
+        "onRemove": onTabRemove
+      }), null)]);
+    };
+    var renderContent = function renderContent() {
+      var _props2$list2;
+      var panels = getSlotPanels();
+      if ((_props2$list2 = props2.list) !== null && _props2$list2 !== void 0 && _props2$list2.length) {
+        return props2.list.map(function (item) {
+          return Vue.createVNode(tabs_tabPanel["default"], Vue.mergeProps(item, {
+            "onRemove": onTabRemove
+          }), null);
+        });
+      }
+      if (panels && panels.length) {
+        return Vue.createVNode("div", {
+          "class": ["".concat(classPrefix.value, "-tabs__content")]
+        }, [panels]);
+      }
+    };
+    return function () {
+      return Vue.createVNode("div", {
+        "class": [COMPONENT_NAME.value]
+      }, [props2.placement !== "bottom" ? [renderHeader(), renderContent()] : [renderContent(), renderHeader()]]);
+    };
+  }
+});
+
+exports["default"] = _Tabs;
+//# sourceMappingURL=tabs.js.map

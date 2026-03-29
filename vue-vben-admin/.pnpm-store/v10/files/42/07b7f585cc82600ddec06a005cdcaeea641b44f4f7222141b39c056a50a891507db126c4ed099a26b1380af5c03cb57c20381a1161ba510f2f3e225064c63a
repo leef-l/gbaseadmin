@@ -1,0 +1,6 @@
+import * as vue1022 from "vue";
+
+//#region src/tooltip/UniqueProvider/index.d.ts
+declare const UniqueProvider: vue1022.DefineSetupFnComponent<Record<string, any>, {}, {}, Record<string, any> & {}, vue1022.PublicProps>;
+//#endregion
+export { UniqueProvider as default };

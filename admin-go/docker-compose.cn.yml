@@ -82,8 +82,8 @@ services:
       - TZ=Asia/Shanghai
     ports:
       - "${SYSTEM_PORT:-8000}:8000"
-    volumes:
-      - ./app:/app  # 挂载源码目录（开发热重载用）
+    # volumes:
+    #   - ./app:/app  # 挂载源码目录（开发热重载用，生产环境需注释）
     networks:
       - gbaseadmin_net
 

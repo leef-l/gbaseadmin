@@ -1,0 +1,14 @@
+import { inject, provide, ref } from "vue";
+const TableContextKey = Symbol("TableContextProps");
+function useProvideTableContext(props) {
+	provide(TableContextKey, props);
+}
+function useInjectTableContext() {
+	return inject(TableContextKey, {});
+}
+const makeImmutable = (component, _shouldTriggerRender) => component;
+const responseImmutable = (component) => component;
+function useImmutableMark() {
+	return ref(0);
+}
+export { TableContextKey, makeImmutable, responseImmutable, useImmutableMark, useInjectTableContext, useProvideTableContext };

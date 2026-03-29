@@ -1,0 +1,9 @@
+import * as vue1 from "vue";
+
+//#region src/button/IconWrapper.d.ts
+interface IconWrapperProps {
+  prefixCls: string;
+}
+declare const IconWrapper: vue1.DefineSetupFnComponent<IconWrapperProps, {}, {}, IconWrapperProps & {}, vue1.PublicProps>;
+//#endregion
+export { IconWrapperProps, IconWrapper as default };

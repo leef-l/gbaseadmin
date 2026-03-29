@@ -1,0 +1,39 @@
+import { createVNode, defineComponent } from "vue";
+var CloseBtn_default = /* @__PURE__ */ defineComponent((props) => {
+	return () => {
+		const { prefixCls, icon, onClick } = props;
+		return createVNode("button", {
+			"class": `${prefixCls}-close`,
+			"type": "button",
+			"onClick": onClick
+		}, [icon]);
+	};
+}, {
+	props: {
+		prefixCls: {
+			type: String,
+			required: true,
+			default: void 0
+		},
+		icon: {
+			type: [
+				Object,
+				Function,
+				String,
+				Number,
+				null,
+				Boolean,
+				Array
+			],
+			required: false,
+			default: void 0
+		},
+		onClick: {
+			type: Function,
+			required: true,
+			default: void 0
+		}
+	},
+	name: "ImagePreviewCloseBtn"
+});
+export { CloseBtn_default as default };

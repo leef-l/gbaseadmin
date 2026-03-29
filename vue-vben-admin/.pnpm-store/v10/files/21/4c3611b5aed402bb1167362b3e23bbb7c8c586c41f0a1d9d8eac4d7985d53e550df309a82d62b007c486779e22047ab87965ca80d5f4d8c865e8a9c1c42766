@@ -1,0 +1,24 @@
+import { getClientSize } from "./util.js";
+function fixPoint(key, start, width, clientWidth) {
+	const startAddWidth = start + width;
+	const offsetStart = (width - clientWidth) / 2;
+	if (width > clientWidth) {
+		if (start > 0) return { [key]: offsetStart };
+		if (start < 0 && startAddWidth < clientWidth) return { [key]: -offsetStart };
+	} else if (start < 0 || startAddWidth > clientWidth) return { [key]: start < 0 ? offsetStart : -offsetStart };
+	return {};
+}
+function getFixScaleEleTransPosition(width, height, left, top) {
+	const { width: clientWidth, height: clientHeight } = getClientSize();
+	let fixPos = null;
+	if (width <= clientWidth && height <= clientHeight) fixPos = {
+		x: 0,
+		y: 0
+	};
+	else if (width > clientWidth || height > clientHeight) fixPos = {
+		...fixPoint("x", left, width, clientWidth),
+		...fixPoint("y", top, height, clientHeight)
+	};
+	return fixPos;
+}
+export { getFixScaleEleTransPosition as default };

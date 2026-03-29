@@ -1,0 +1,6 @@
+import * as vue_jsx_runtime28 from "vue/jsx-runtime";
+
+//#region src/cascader/hooks/useCheckable.d.ts
+declare function useCheckable(cascaderPrefixCls: string, multiple?: boolean): false | vue_jsx_runtime28.JSX.Element;
+//#endregion
+export { useCheckable as default };

@@ -1,0 +1,157 @@
+/**
+ * tdesign v1.18.5
+ * (c) 2026 tdesign
+ * @license MIT
+ */
+
+'use strict';
+
+Object.defineProperty(exports, '__esModule', { value: true });
+
+var Vue = require('vue');
+var _slicedToArray = require('@babel/runtime/helpers/slicedToArray');
+require('@babel/runtime/helpers/toConsumableArray');
+require('@babel/runtime/helpers/typeof');
+require('../_chunks/dep-53119973.js');
+var index = require('../_chunks/dep-f3e5112c.js');
+require('../_chunks/dep-fc2afb75.js');
+var index$1 = require('../_chunks/dep-c9a21163.js');
+require('@babel/runtime/helpers/defineProperty');
+var tag_checkTagGroupProps = require('./check-tag-group-props.js');
+var tag_checkTag = require('./check-tag.js');
+var isFunction = require('../_chunks/dep-6dd9a89c.js');
+require('../_chunks/dep-14f9daef.js');
+require('../config-provider/hooks/useConfig.js');
+require('../_chunks/dep-165d2e7f.js');
+require('../_chunks/dep-49cc4657.js');
+require('dayjs');
+require('../_chunks/dep-5e473554.js');
+require('../_chunks/dep-489984e1.js');
+require('../_chunks/dep-4bcc15b5.js');
+require('../_chunks/dep-0f9ffd23.js');
+require('../_chunks/dep-444f3270.js');
+require('../_chunks/dep-9e7e6f13.js');
+require('../_chunks/dep-0dd0cc87.js');
+require('../_chunks/dep-777ccded.js');
+require('../_chunks/dep-3f878e23.js');
+require('../_chunks/dep-3f900750.js');
+require('../_chunks/dep-a4a92350.js');
+require('../_chunks/dep-e3725791.js');
+require('../_chunks/dep-337c2221.js');
+require('../_chunks/dep-dadc1e14.js');
+require('../_chunks/dep-52ed1a7d.js');
+require('../_chunks/dep-c661b39a.js');
+require('../_chunks/dep-f460fd6a.js');
+require('../_chunks/dep-02902f8e.js');
+require('../_chunks/dep-2b016e68.js');
+require('@babel/runtime/helpers/createClass');
+require('@babel/runtime/helpers/classCallCheck');
+require('../_chunks/dep-59a45986.js');
+require('../_chunks/dep-846a1dc8.js');
+require('../_chunks/dep-c5c3bf68.js');
+require('../_chunks/dep-5c669d65.js');
+require('./check-tag-props.js');
+require('../_chunks/dep-de0929e1.js');
+require('../_chunks/dep-dcc7b0e8.js');
+require('../_chunks/dep-aa6a0799.js');
+require('../_chunks/dep-3c0a7227.js');
+require('../_chunks/dep-f09dab04.js');
+require('../_chunks/dep-3f7d6634.js');
+require('../_chunks/dep-322656f4.js');
+require('../_chunks/dep-728d78c4.js');
+require('./tag.js');
+require('tdesign-icons-vue-next');
+require('tinycolor2');
+require('./props.js');
+require('../_chunks/dep-42307533.js');
+
+function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
+
+var _slicedToArray__default = /*#__PURE__*/_interopDefaultLegacy(_slicedToArray);
+
+function _isSlot(s) {
+  return typeof s === 'function' || Object.prototype.toString.call(s) === '[object Object]' && !Vue.isVNode(s);
+}
+var _CheckTagGroup = Vue.defineComponent({
+  name: "TCheckTagGroup",
+  props: tag_checkTagGroupProps["default"],
+  setup: function setup(props2, context) {
+    var _toRefs = Vue.toRefs(props2),
+      value = _toRefs.value,
+      modelValue = _toRefs.modelValue,
+      options = _toRefs.options;
+    var componentName = index.usePrefixClass("check-tag-group");
+    var checkTagGroupClasses = Vue.computed(function () {
+      return [componentName.value];
+    });
+    var _useVModel = index$1.useVModel(value, modelValue, props2.defaultValue, props2.onChange),
+      _useVModel2 = _slicedToArray__default["default"](_useVModel, 2),
+      innerValue = _useVModel2[0],
+      setInnerValue = _useVModel2[1];
+    var onCheckTagChange = function onCheckTagChange(checked, ctx) {
+      var value2 = ctx.value;
+      if (checked) {
+        if (props2.multiple) {
+          setInnerValue(innerValue.value.concat(value2), {
+            e: ctx.e,
+            type: "check",
+            value: value2
+          });
+        } else {
+          setInnerValue([value2], {
+            e: ctx.e,
+            type: "check",
+            value: value2
+          });
+        }
+      } else {
+        var newValue = [];
+        if (props2.multiple) {
+          newValue = innerValue.value.filter(function (t) {
+            return t !== value2;
+          });
+        }
+        setInnerValue(newValue, {
+          e: ctx.e,
+          type: "uncheck",
+          value: value2
+        });
+      }
+    };
+    var getTagContent = function getTagContent(option) {
+      if (context.slots.option) return context.slots.option(option);
+      if (context.slots.label) return context.slots.label(option);
+      if (option.label) {
+        return isFunction.isFunction(option.label) ? option.label(Vue.h) : option.label;
+      }
+      if (option.content && isFunction.isFunction(option.content)) return option.content(Vue.h);
+      if (option["default"] && isFunction.isFunction(option["default"])) return option["default"](Vue.h);
+      return option.value;
+    };
+    return function () {
+      return Vue.createVNode("div", {
+        "class": checkTagGroupClasses.value
+      }, [(options.value || []).map(function (option) {
+        var _slot;
+        return Vue.createVNode(tag_checkTag["default"], {
+          "key": option.value,
+          "value": option.value,
+          "checkedProps": props2.checkedProps,
+          "uncheckedProps": props2.uncheckedProps,
+          "checked": innerValue.value.includes(option.value),
+          "onChange": onCheckTagChange,
+          "disabled": option.disabled,
+          "size": option.size,
+          "data-value": option.value
+        }, _isSlot(_slot = getTagContent(option)) ? _slot : {
+          "default": function _default() {
+            return [_slot];
+          }
+        });
+      })]);
+    };
+  }
+});
+
+exports["default"] = _CheckTagGroup;
+//# sourceMappingURL=check-tag-group.js.map

@@ -1,0 +1,12 @@
+import * as vue400 from "vue";
+
+//#region src/button/style/compact.d.ts
+declare const _default: vue400.DefineComponent<vue400.ExtractPropTypes<{
+  prefixCls: StringConstructor;
+  rootCls: StringConstructor;
+}>, () => null, {}, {}, {}, vue400.ComponentOptionsMixin, vue400.ComponentOptionsMixin, {}, string, vue400.PublicProps, Readonly<vue400.ExtractPropTypes<{
+  prefixCls: StringConstructor;
+  rootCls: StringConstructor;
+}>> & Readonly<{}>, {}, {}, {}, {}, string, vue400.ComponentProvideOptions, true, {}, any>;
+//#endregion
+export { _default as default };

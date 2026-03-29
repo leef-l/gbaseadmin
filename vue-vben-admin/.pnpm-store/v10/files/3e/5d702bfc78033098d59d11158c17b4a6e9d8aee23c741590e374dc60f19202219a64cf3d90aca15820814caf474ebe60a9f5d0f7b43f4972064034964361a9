@@ -1,0 +1,25 @@
+/**
+ * tdesign v1.18.5
+ * (c) 2026 tdesign
+ * @license MIT
+ */
+
+'use strict';
+
+Object.defineProperty(exports, '__esModule', { value: true });
+
+require('vue');
+var descriptions_utils_index = require('../../_chunks/dep-6e58b2ab.js');
+require('../../_chunks/dep-52ed1a7d.js');
+require('../../_chunks/dep-6dd9a89c.js');
+require('../../_chunks/dep-0f9ffd23.js');
+require('@babel/runtime/helpers/typeof');
+require('../../_chunks/dep-777ccded.js');
+require('../../_chunks/dep-444f3270.js');
+
+
+
+exports.itemTypeIsProps = descriptions_utils_index.itemTypeIsProps;
+exports.renderCustomNode = descriptions_utils_index.renderCustomNode;
+exports.renderVNodeTNode = descriptions_utils_index.renderVNodeTNode;
+//# sourceMappingURL=index.js.map

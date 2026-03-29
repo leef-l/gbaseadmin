@@ -1,0 +1,7 @@
+import { KeyWiseTransferItem, TransferListProps } from "./interface.js";
+import * as vue607 from "vue";
+
+//#region src/transfer/Section.d.ts
+declare const TransferSection: vue607.DefineSetupFnComponent<TransferListProps<KeyWiseTransferItem>, {}, {}, TransferListProps<KeyWiseTransferItem> & {}, vue607.PublicProps>;
+//#endregion
+export { TransferSection as default };

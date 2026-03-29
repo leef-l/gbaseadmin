@@ -1,0 +1,196 @@
+/**
+ * tdesign v1.18.5
+ * (c) 2026 tdesign
+ * @license MIT
+ */
+
+'use strict';
+
+Object.defineProperty(exports, '__esModule', { value: true });
+
+var Vue = require('vue');
+var _defineProperty = require('@babel/runtime/helpers/defineProperty');
+var _toConsumableArray = require('@babel/runtime/helpers/toConsumableArray');
+var _slicedToArray = require('@babel/runtime/helpers/slicedToArray');
+require('@babel/runtime/helpers/typeof');
+require('../_chunks/dep-53119973.js');
+var index$5 = require('../_chunks/dep-de0929e1.js');
+var index$3 = require('../_chunks/dep-322656f4.js');
+var index$4 = require('../_chunks/dep-f3e5112c.js');
+var index$1 = require('../_chunks/dep-197706c1.js');
+require('../_chunks/dep-fc2afb75.js');
+var index$2 = require('../_chunks/dep-78889904.js');
+var index = require('../_chunks/dep-c9a21163.js');
+var radio_props = require('./props.js');
+var radio_constants_index = require('./constants/index.js');
+var helper = require('../_chunks/dep-b6c3112c.js');
+var omit = require('../_chunks/dep-4162c3d5.js');
+var isString = require('../_chunks/dep-52ed1a7d.js');
+require('../_chunks/dep-14f9daef.js');
+require('../_chunks/dep-dcc7b0e8.js');
+require('../_chunks/dep-6dd9a89c.js');
+require('../_chunks/dep-0f9ffd23.js');
+require('../_chunks/dep-444f3270.js');
+require('../_chunks/dep-aa6a0799.js');
+require('../_chunks/dep-777ccded.js');
+require('../_chunks/dep-3c0a7227.js');
+require('../_chunks/dep-c5c3bf68.js');
+require('../_chunks/dep-5c669d65.js');
+require('../_chunks/dep-f09dab04.js');
+require('../_chunks/dep-3f7d6634.js');
+require('../_chunks/dep-846a1dc8.js');
+require('../_chunks/dep-59a45986.js');
+require('../config-provider/hooks/useConfig.js');
+require('../_chunks/dep-165d2e7f.js');
+require('../_chunks/dep-49cc4657.js');
+require('dayjs');
+require('../_chunks/dep-5e473554.js');
+require('../_chunks/dep-489984e1.js');
+require('../_chunks/dep-4bcc15b5.js');
+require('../_chunks/dep-9e7e6f13.js');
+require('../_chunks/dep-0dd0cc87.js');
+require('../_chunks/dep-3f878e23.js');
+require('../_chunks/dep-3f900750.js');
+require('../_chunks/dep-a4a92350.js');
+require('../_chunks/dep-e3725791.js');
+require('../_chunks/dep-337c2221.js');
+require('../_chunks/dep-dadc1e14.js');
+require('../_chunks/dep-c661b39a.js');
+require('../_chunks/dep-f460fd6a.js');
+require('../_chunks/dep-02902f8e.js');
+require('../_chunks/dep-2b016e68.js');
+require('../_chunks/dep-36ae7e4f.js');
+require('@babel/runtime/helpers/createClass');
+require('@babel/runtime/helpers/classCallCheck');
+require('@babel/runtime/helpers/objectWithoutProperties');
+require('../_chunks/dep-601eb54d.js');
+require('../_chunks/dep-545102c6.js');
+require('../_chunks/dep-b4c7bacb.js');
+require('../_chunks/dep-11056e53.js');
+require('../_chunks/dep-f00cf15d.js');
+require('../_chunks/dep-eb23395f.js');
+
+function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
+
+var _defineProperty__default = /*#__PURE__*/_interopDefaultLegacy(_defineProperty);
+var _toConsumableArray__default = /*#__PURE__*/_interopDefaultLegacy(_toConsumableArray);
+var _slicedToArray__default = /*#__PURE__*/_interopDefaultLegacy(_slicedToArray);
+
+var _Radio = Vue.defineComponent({
+  name: "TRadio",
+  inheritAttrs: false,
+  props: radio_props["default"],
+  setup: function setup(props2, _ref) {
+    var attrs = _ref.attrs;
+    var inputRef = Vue.ref();
+    var _toRefs = Vue.toRefs(props2),
+      checked = _toRefs.checked,
+      modelValue = _toRefs.modelValue;
+    var _useVModel = index.useVModel(checked, modelValue, props2.defaultChecked, props2.onChange, "checked"),
+      _useVModel2 = _slicedToArray__default["default"](_useVModel, 2),
+      innerChecked = _useVModel2[0],
+      setInnerChecked = _useVModel2[1];
+    var radioChecked = Vue.computed(function () {
+      return radioGroup ? props2.value === radioGroup.value : innerChecked.value;
+    });
+    var radioGroup = Vue.inject(radio_constants_index.RadioGroupInjectionKey, void 0);
+    var allowUncheck = Vue.computed(function () {
+      return Boolean(props2.allowUncheck || (radioGroup === null || radioGroup === void 0 ? void 0 : radioGroup.allowUncheck));
+    });
+    var handleClick = function handleClick(e) {
+      e.stopPropagation();
+    };
+    var onLabelClick = function onLabelClick(e) {
+      var _props2$onClick;
+      if (isDisabled.value || isReadonly.value) return;
+      (_props2$onClick = props2.onClick) === null || _props2$onClick === void 0 || _props2$onClick.call(props2, {
+        e: e
+      });
+      if (radioChecked.value && !allowUncheck.value) return;
+      if (radioGroup) {
+        var value = radioChecked.value && allowUncheck.value ? void 0 : props2.value;
+        radioGroup.setValue(value, {
+          e: e,
+          name: radioGroup.name
+        });
+      } else {
+        var _value = allowUncheck.value ? !radioChecked.value : true;
+        setInnerChecked(_value, {
+          e: e
+        });
+      }
+    };
+    var inputEvents = Vue.computed(function () {
+      return helper.getValidAttrs({
+        focus: attrs.onFocus,
+        blur: attrs.onBlur,
+        keydown: attrs.onKeydown,
+        keyup: attrs.onKeyup,
+        keypresss: attrs.onKeypresss
+      });
+    });
+    var wrapperAttrs = Vue.computed(function () {
+      var events = [].concat(_toConsumableArray__default["default"](Object.keys(inputEvents.value)), ["input", "change"]).map(function (str) {
+        return "on".concat(str[0].toUpperCase()).concat(str.slice(1));
+      });
+      return omit.omit(attrs, events);
+    });
+    var groupDisabled = Vue.computed(function () {
+      return radioGroup === null || radioGroup === void 0 ? void 0 : radioGroup.disabled;
+    });
+    var groupReadonly = Vue.computed(function () {
+      return radioGroup === null || radioGroup === void 0 ? void 0 : radioGroup.readonly;
+    });
+    var isDisabled = index$1.useDisabled({
+      afterDisabled: groupDisabled
+    });
+    var isReadonly = index$2.useReadonly({
+      afterReadonly: groupReadonly
+    });
+    var inputProps = Vue.computed(function () {
+      return {
+        name: radioGroup ? radioGroup.name : props2.name,
+        checked: radioChecked.value,
+        disabled: isDisabled.value,
+        readonly: isReadonly.value,
+        value: props2.value
+      };
+    });
+    var _useCommonClassName = index$3.useCommonClassName(),
+      STATUS = _useCommonClassName.STATUS;
+    var radioButton = Vue.inject(radio_constants_index.RadioButtonInjectionKey, void 0);
+    var radioBtnName = index$4.usePrefixClass("radio-button");
+    var COMPONENT_NAME = index$4.usePrefixClass("radio");
+    var prefixCls = Vue.computed(function () {
+      return radioButton ? radioBtnName.value : COMPONENT_NAME.value;
+    });
+    var inputClass = Vue.computed(function () {
+      return ["".concat(prefixCls.value), _defineProperty__default["default"](_defineProperty__default["default"]({}, STATUS.value.checked, inputProps.value.checked), STATUS.value.disabled, inputProps.value.disabled)];
+    });
+    var renderContent = index$5.useContent();
+    return function () {
+      return Vue.createVNode("label", Vue.mergeProps({
+        "ref": inputRef,
+        "class": inputClass.value
+      }, wrapperAttrs.value, {
+        "tabindex": isDisabled.value ? void 0 : "0",
+        "onClick": onLabelClick
+      }), [Vue.createVNode("input", Vue.mergeProps({
+        "type": "radio",
+        "class": "".concat(prefixCls.value, "__former")
+      }, inputEvents.value, inputProps.value, {
+        "onClick": handleClick,
+        "tabindex": "-1",
+        "data-value": isString.isString(props2.value) ? "'".concat(props2.value, "'") : props2.value,
+        "data-allow-uncheck": allowUncheck.value || void 0
+      }), null), Vue.createVNode("span", {
+        "class": "".concat(prefixCls.value, "__input")
+      }, null), Vue.createVNode("span", {
+        "class": "".concat(prefixCls.value, "__label")
+      }, [renderContent("default", "label")])]);
+    };
+  }
+});
+
+exports["default"] = _Radio;
+//# sourceMappingURL=radio.js.map

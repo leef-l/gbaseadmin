@@ -1,0 +1,90 @@
+/**
+ * tdesign v1.18.5
+ * (c) 2026 tdesign
+ * @license MIT
+ */
+
+'use strict';
+
+Object.defineProperty(exports, '__esModule', { value: true });
+
+var Vue = require('vue');
+require('@babel/runtime/helpers/toConsumableArray');
+require('@babel/runtime/helpers/typeof');
+require('../../_chunks/dep-53119973.js');
+require('../../config-provider/hooks/useConfig.js');
+require('@babel/runtime/helpers/slicedToArray');
+require('../../_chunks/dep-fc2afb75.js');
+var index = require('../../_chunks/dep-ff39d539.js');
+require('@babel/runtime/helpers/defineProperty');
+require('../../_chunks/dep-14f9daef.js');
+require('../../_chunks/dep-165d2e7f.js');
+require('../../_chunks/dep-49cc4657.js');
+require('dayjs');
+require('../../_chunks/dep-5e473554.js');
+require('../../_chunks/dep-489984e1.js');
+require('../../_chunks/dep-4bcc15b5.js');
+require('../../_chunks/dep-6dd9a89c.js');
+require('../../_chunks/dep-0f9ffd23.js');
+require('../../_chunks/dep-444f3270.js');
+require('../../_chunks/dep-9e7e6f13.js');
+require('../../_chunks/dep-0dd0cc87.js');
+require('../../_chunks/dep-777ccded.js');
+require('../../_chunks/dep-3f878e23.js');
+require('../../_chunks/dep-3f900750.js');
+require('../../_chunks/dep-a4a92350.js');
+require('../../_chunks/dep-e3725791.js');
+require('../../_chunks/dep-337c2221.js');
+require('../../_chunks/dep-dadc1e14.js');
+require('../../_chunks/dep-52ed1a7d.js');
+require('../../_chunks/dep-c661b39a.js');
+require('../../_chunks/dep-f460fd6a.js');
+require('../../_chunks/dep-02902f8e.js');
+require('../../_chunks/dep-2b016e68.js');
+require('@babel/runtime/helpers/createClass');
+require('@babel/runtime/helpers/classCallCheck');
+
+var ANIMATION_TIME = 100;
+function useInputWidth(props, inputRef, innerValue) {
+  var _toRefs = Vue.toRefs(props),
+    autoWidth = _toRefs.autoWidth,
+    placeholder = _toRefs.placeholder;
+  var inputPreRef = Vue.ref();
+  var observerTimer = Vue.ref(null);
+  var updateInputWidth = function updateInputWidth() {
+    if (!inputPreRef.value || !inputRef.value) return;
+    inputRef.value.style.width = getComputedStyle(inputPreRef.value).width;
+  };
+  index.useResizeObserver(inputPreRef, function () {
+    if (autoWidth.value) {
+      observerTimer.value = setTimeout(function () {
+        updateInputWidth();
+        clearTimeout(observerTimer.value);
+      }, ANIMATION_TIME);
+    }
+  });
+  Vue.onBeforeUnmount(function () {
+    clearTimeout(observerTimer.value);
+  });
+  var addListeners = function addListeners() {
+    Vue.watch([innerValue, placeholder], function () {
+      if (!autoWidth.value) return;
+      Vue.nextTick(function () {
+        updateInputWidth();
+      });
+    }, {
+      immediate: true
+    });
+  };
+  Vue.onMounted(function () {
+    if (autoWidth.value) {
+      addListeners();
+    }
+  });
+  return {
+    inputPreRef: inputPreRef
+  };
+}
+
+exports.useInputWidth = useInputWidth;
+//# sourceMappingURL=useInputWidth.js.map

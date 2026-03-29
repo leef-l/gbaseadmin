@@ -1,0 +1,31 @@
+/**
+ * tdesign v1.18.5
+ * (c) 2026 tdesign
+ * @license MIT
+ */
+
+'use strict';
+
+Object.defineProperty(exports, '__esModule', { value: true });
+
+var dom = require('../../_chunks/dep-dcc7b0e8.js');
+require('vue');
+require('../../_chunks/dep-53119973.js');
+require('../../_chunks/dep-14f9daef.js');
+require('../../_chunks/dep-6dd9a89c.js');
+require('../../_chunks/dep-0f9ffd23.js');
+require('@babel/runtime/helpers/typeof');
+require('../../_chunks/dep-444f3270.js');
+require('../../_chunks/dep-52ed1a7d.js');
+require('../../_chunks/dep-777ccded.js');
+
+function scrollToElm(elm) {
+  var rect = elm.getBoundingClientRect();
+  if (!dom.elementInViewport(elm)) {
+    var winHeight = dom.getWindowSize().height;
+    dom.scrollTo(rect.top - (winHeight / 2 - rect.height / 2), {});
+  }
+}
+
+exports.scrollToElm = scrollToElm;
+//# sourceMappingURL=scrollToElm.js.map

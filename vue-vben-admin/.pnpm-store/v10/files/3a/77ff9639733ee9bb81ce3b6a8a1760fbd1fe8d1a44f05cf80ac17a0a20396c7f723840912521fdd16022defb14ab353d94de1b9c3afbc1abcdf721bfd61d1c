@@ -1,0 +1,16 @@
+/**
+ * tdesign v1.18.5
+ * (c) 2026 tdesign
+ * @license MIT
+ */
+
+export { getScrollParent, scrollToParentVisibleArea } from './getScrollParent.js';
+export { getRelativePosition } from './getRelativePosition.js';
+export { getTargetElm } from './getTargetElm.js';
+export { scrollToElm } from './scrollToElm.js';
+import '../../_chunks/dep-70a98c88.js';
+import 'vue';
+import '../../_chunks/dep-077711e4.js';
+import '../../_chunks/dep-ce831931.js';
+import 'lodash-es';
+//# sourceMappingURL=index.js.map

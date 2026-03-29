@@ -1,0 +1,219 @@
+/**
+ * tdesign v1.18.5
+ * (c) 2026 tdesign
+ * @license MIT
+ */
+
+'use strict';
+
+Object.defineProperty(exports, '__esModule', { value: true });
+
+var Vue = require('vue');
+var tdesignIconsVueNext = require('tdesign-icons-vue-next');
+var cascader_utils_className = require('../utils/className.js');
+require('@babel/runtime/helpers/slicedToArray');
+var cascader_utils_helper = require('../utils/helper.js');
+var checkbox_index = require('../../checkbox/index.js');
+var loading_index = require('../../loading/index.js');
+require('@babel/runtime/helpers/toConsumableArray');
+require('@babel/runtime/helpers/typeof');
+require('../../_chunks/dep-53119973.js');
+var index$3 = require('../../_chunks/dep-322656f4.js');
+var index$1 = require('../../_chunks/dep-f3e5112c.js');
+var index$2 = require('../../_chunks/dep-42307533.js');
+require('../../_chunks/dep-fc2afb75.js');
+var index = require('../../_chunks/dep-8c742535.js');
+require('@babel/runtime/helpers/defineProperty');
+require('../../_chunks/dep-777ccded.js');
+require('../../_chunks/dep-444f3270.js');
+require('../../_chunks/dep-b4c7bacb.js');
+require('../../_chunks/dep-0f9ffd23.js');
+require('../../_chunks/dep-196430fc.js');
+require('../../_chunks/dep-f460fd6a.js');
+require('../../_chunks/dep-3f878e23.js');
+require('../../_chunks/dep-3f900750.js');
+require('../../_chunks/dep-6dd9a89c.js');
+require('../../_chunks/dep-0dd0cc87.js');
+require('../../_chunks/dep-4bcc15b5.js');
+require('../../_chunks/dep-02902f8e.js');
+require('../../checkbox/checkbox.js');
+require('../../checkbox/props.js');
+require('../../_chunks/dep-de0929e1.js');
+require('../../_chunks/dep-dcc7b0e8.js');
+require('../../_chunks/dep-52ed1a7d.js');
+require('../../_chunks/dep-aa6a0799.js');
+require('../../_chunks/dep-3c0a7227.js');
+require('../../_chunks/dep-c5c3bf68.js');
+require('../../_chunks/dep-5c669d65.js');
+require('../../_chunks/dep-f09dab04.js');
+require('../../_chunks/dep-3f7d6634.js');
+require('../../_chunks/dep-846a1dc8.js');
+require('../../_chunks/dep-59a45986.js');
+require('../../_chunks/dep-197706c1.js');
+require('../../_chunks/dep-36ae7e4f.js');
+require('../../_chunks/dep-78889904.js');
+require('../../_chunks/dep-c9a21163.js');
+require('../../checkbox/constants/index.js');
+require('../../checkbox/hooks/useCheckboxLazyLoad.js');
+require('../../_chunks/dep-ebf43fe5.js');
+require('../../checkbox/hooks/useKeyboardEvent.js');
+require('../../_chunks/dep-728d78c4.js');
+require('../../_chunks/dep-14f9daef.js');
+require('../../config-provider/hooks/useConfig.js');
+require('../../_chunks/dep-165d2e7f.js');
+require('../../_chunks/dep-49cc4657.js');
+require('dayjs');
+require('../../_chunks/dep-5e473554.js');
+require('../../_chunks/dep-489984e1.js');
+require('../../_chunks/dep-9e7e6f13.js');
+require('../../_chunks/dep-a4a92350.js');
+require('../../_chunks/dep-e3725791.js');
+require('../../_chunks/dep-337c2221.js');
+require('../../_chunks/dep-dadc1e14.js');
+require('../../_chunks/dep-c661b39a.js');
+require('../../_chunks/dep-2b016e68.js');
+require('@babel/runtime/helpers/createClass');
+require('@babel/runtime/helpers/classCallCheck');
+require('../../_chunks/dep-5ede1e84.js');
+require('../../checkbox/group.js');
+require('../../checkbox/checkbox-group-props.js');
+require('../../_chunks/dep-91416192.js');
+require('../../_chunks/dep-4b457a69.js');
+require('../../_chunks/dep-de6dd479.js');
+require('../../_chunks/dep-af07c856.js');
+require('../../_chunks/dep-601eb54d.js');
+require('../../_chunks/dep-44019bf3.js');
+require('../../_chunks/dep-cf51f87b.js');
+require('../../loading/plugin.js');
+require('../../_chunks/dep-7a8df3cd.js');
+require('../../loading/icon/gradient.js');
+require('../../_chunks/dep-b6c3112c.js');
+require('@babel/runtime/helpers/objectWithoutProperties');
+require('../../_chunks/dep-545102c6.js');
+require('../../loading/props.js');
+require('../../_chunks/dep-31cd2bcc.js');
+require('../../_chunks/dep-b049e2e9.js');
+require('../../_chunks/dep-b4d902ac.js');
+require('../../_chunks/dep-d8132460.js');
+require('../../_chunks/dep-9e5869f7.js');
+require('../../_chunks/dep-11056e53.js');
+require('../../_chunks/dep-72f9922c.js');
+require('../../_chunks/dep-e90a36a9.js');
+
+function _isSlot(s) {
+  return typeof s === 'function' || Object.prototype.toString.call(s) === '[object Object]' && !Vue.isVNode(s);
+}
+var props = {
+  node: {
+    type: Object,
+    "default": function _default() {
+      return {};
+    }
+  },
+  optionChild: {
+    type: [Object, Array]
+  },
+  cascaderContext: {
+    type: Object
+  },
+  onChange: Function,
+  onClick: Function,
+  onMouseenter: Function
+};
+var Item = Vue.defineComponent({
+  name: "TCascaderItem",
+  props: props,
+  setup: function setup(props2) {
+    var liRef = Vue.ref();
+    index.useRipple(liRef);
+    var COMPONENT_NAME = index$1.usePrefixClass("cascader__item");
+    var classPrefix = index$1.usePrefixClass();
+    var _useGlobalIcon = index$2.useGlobalIcon({
+        ChevronRightIcon: tdesignIconsVueNext.ChevronRightIcon
+      }),
+      ChevronRightIcon = _useGlobalIcon.ChevronRightIcon;
+    var _useCommonClassName = index$3.useCommonClassName(),
+      STATUS = _useCommonClassName.STATUS,
+      SIZE = _useCommonClassName.SIZE;
+    var itemClass = Vue.computed(function () {
+      return cascader_utils_className.getCascaderItemClass(classPrefix.value, props2.node, SIZE.value, STATUS.value, props2.cascaderContext);
+    });
+    var iconClass = Vue.computed(function () {
+      return cascader_utils_className.getCascaderItemIconClass(classPrefix.value, props2.node, STATUS.value, props2.cascaderContext);
+    });
+    function RenderLabelInner(node, cascaderContext) {
+      var inputVal = cascaderContext.inputVal;
+      var labelText = inputVal ? cascader_utils_helper.getFullPathLabel(node) : node.label;
+      if (inputVal) {
+        var texts = labelText.split(inputVal);
+        var doms = [];
+        for (var index = 0; index < texts.length; index++) {
+          doms.push(Vue.createVNode("span", {
+            "key": index
+          }, [texts[index]]));
+          if (index === texts.length - 1) break;
+          doms.push(Vue.createVNode("span", {
+            "key": "".concat(index, "filter"),
+            "class": "".concat(COMPONENT_NAME.value, "-label--filter")
+          }, [inputVal]));
+        }
+        return doms;
+      }
+      return labelText;
+    }
+    var renderTitle = function renderTitle(node) {
+      if (typeof node.label === "string") return node.label;
+      return null;
+    };
+    function RenderLabelContent(node, cascaderContext) {
+      var label = RenderLabelInner(node, cascaderContext);
+      var labelCont = Vue.createVNode("span", {
+        "title": cascaderContext.inputVal ? cascader_utils_helper.getFullPathLabel(node) : renderTitle(node),
+        "class": ["".concat(COMPONENT_NAME.value, "-label"), "".concat(COMPONENT_NAME.value, "-label--ellipsis")],
+        "role": "label"
+      }, [label]);
+      return labelCont;
+    }
+    function RenderCheckBox(node, cascaderContext) {
+      var checkProps = cascaderContext.checkProps,
+        value = cascaderContext.value,
+        max = cascaderContext.max,
+        inputVal = cascaderContext.inputVal;
+      var label = RenderLabelInner(node, cascaderContext);
+      return Vue.createVNode(checkbox_index.Checkbox, Vue.mergeProps({
+        "checked": node.checked,
+        "indeterminate": node.indeterminate,
+        "disabled": node.isDisabled() || value.length >= max && max !== 0,
+        "name": String(node.value),
+        "stopLabelTrigger": !!node.children && !props2.cascaderContext.isParentFilterable,
+        "title": inputVal ? cascader_utils_helper.getFullPathLabel(node) : renderTitle(node),
+        "onChange": function onChange() {
+          props2.onChange();
+        }
+      }, checkProps), _isSlot(label) ? label : {
+        "default": function _default() {
+          return [label];
+        }
+      });
+    }
+    return function () {
+      var cascaderContext = props2.cascaderContext,
+        node = props2.node,
+        optionChild = props2.optionChild;
+      return Vue.createVNode("li", {
+        "ref": liRef,
+        "class": itemClass.value,
+        "onClick": props2.onClick,
+        "onMouseenter": props2.onMouseenter
+      }, [optionChild || (cascaderContext.multiple ? RenderCheckBox(node, cascaderContext) : RenderLabelContent(node, cascaderContext)), node.children && !props2.cascaderContext.isParentFilterable && (node.loading ? Vue.createVNode(loading_index.Loading, {
+        "class": iconClass.value,
+        "size": "small"
+      }, null) : Vue.createVNode(ChevronRightIcon, {
+        "class": iconClass.value
+      }, null))]);
+    };
+  }
+});
+
+exports["default"] = Item;
+//# sourceMappingURL=Item.js.map

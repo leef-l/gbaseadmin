@@ -1,0 +1,12 @@
+import { EmptyEmit } from "../_util/type.js";
+import { FlexProps } from "./interface.js";
+import * as vue409 from "vue";
+import { SlotsType } from "vue";
+
+//#region src/flex/index.d.ts
+interface FlexSlots {
+  default: () => any;
+}
+declare const Flex: vue409.DefineSetupFnComponent<FlexProps, EmptyEmit, SlotsType<FlexSlots>, FlexProps, vue409.PublicProps>;
+//#endregion
+export { type FlexProps, FlexSlots, Flex as default };

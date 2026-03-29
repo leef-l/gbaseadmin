@@ -1,0 +1,3 @@
+import TabNode_vue_vue_type_script_setup_true_lang_default from "./TabNode.vue_vue_type_script_setup_true_lang.js";
+var TabNode_default = TabNode_vue_vue_type_script_setup_true_lang_default;
+export { TabNode_default as default };

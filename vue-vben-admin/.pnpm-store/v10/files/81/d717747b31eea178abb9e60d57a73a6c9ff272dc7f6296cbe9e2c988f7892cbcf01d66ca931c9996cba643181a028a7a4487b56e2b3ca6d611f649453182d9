@@ -1,0 +1,14 @@
+import { EmptyEmit } from "../../../_util/type.js";
+import * as vue1015 from "vue";
+import { SlotsType } from "vue";
+
+//#region src/table/hooks/useFilter/FilterWrapper.d.ts
+interface FilterDropdownMenuWrapperProps {
+  class?: string;
+  className?: string;
+}
+declare const FilterDropdownMenuWrapper: vue1015.DefineSetupFnComponent<FilterDropdownMenuWrapperProps, EmptyEmit, SlotsType<{
+  default?: () => any;
+}>, FilterDropdownMenuWrapperProps, vue1015.PublicProps>;
+//#endregion
+export { FilterDropdownMenuWrapperProps, FilterDropdownMenuWrapper as default };

@@ -1,0 +1,21 @@
+import { tuple } from "../type.js";
+import { nextTick } from "vue";
+tuple("bottomLeft", "bottomRight", "topLeft", "topRight");
+function getTransitionProps(transitionName, opt = {}) {
+	if (!transitionName) return {};
+	return transitionName ? {
+		name: transitionName,
+		appear: true,
+		enterFromClass: `${transitionName} ${transitionName}-enter ${transitionName}-appear ${transitionName}-appear-prepare ${transitionName}-enter-prepare ${transitionName}-enter-start`,
+		enterActiveClass: `${transitionName} ${transitionName}-enter ${transitionName}-appear ${transitionName}-appear-prepare ${transitionName}-enter-prepare `,
+		enterToClass: `${transitionName} ${transitionName}-enter ${transitionName}-appear ${transitionName}-appear-active ${transitionName}-enter-active`,
+		leaveFromClass: `${transitionName} ${transitionName}-leave`,
+		leaveActiveClass: `${transitionName} ${transitionName}-leave ${transitionName}-leave-active`,
+		leaveToClass: `${transitionName} ${transitionName}-leave ${transitionName}-leave-active`,
+		...opt
+	} : {
+		css: false,
+		...opt
+	};
+}
+export { getTransitionProps };

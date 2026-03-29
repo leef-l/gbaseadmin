@@ -1,0 +1,160 @@
+/**
+ * tdesign v1.18.5
+ * (c) 2026 tdesign
+ * @license MIT
+ */
+
+'use strict';
+
+Object.defineProperty(exports, '__esModule', { value: true });
+
+var Vue = require('vue');
+require('@babel/runtime/helpers/toConsumableArray');
+require('@babel/runtime/helpers/typeof');
+require('../../_chunks/dep-53119973.js');
+var index = require('../../_chunks/dep-f3e5112c.js');
+require('@babel/runtime/helpers/slicedToArray');
+require('../../_chunks/dep-fc2afb75.js');
+require('@babel/runtime/helpers/defineProperty');
+require('tdesign-icons-vue-next');
+require('../../checkbox/index.js');
+require('../../loading/index.js');
+require('@babel/runtime/helpers/asyncToGenerator');
+require('@babel/runtime/helpers/classCallCheck');
+require('@babel/runtime/helpers/createClass');
+require('@babel/runtime/regenerator');
+var tree_utils_index = require('../utils/index.js');
+require('../../_chunks/dep-14f9daef.js');
+require('../../config-provider/hooks/useConfig.js');
+require('../../_chunks/dep-165d2e7f.js');
+require('../../_chunks/dep-49cc4657.js');
+require('dayjs');
+require('../../_chunks/dep-5e473554.js');
+require('../../_chunks/dep-489984e1.js');
+require('../../_chunks/dep-4bcc15b5.js');
+require('../../_chunks/dep-6dd9a89c.js');
+require('../../_chunks/dep-0f9ffd23.js');
+require('../../_chunks/dep-444f3270.js');
+require('../../_chunks/dep-9e7e6f13.js');
+require('../../_chunks/dep-0dd0cc87.js');
+require('../../_chunks/dep-777ccded.js');
+require('../../_chunks/dep-3f878e23.js');
+require('../../_chunks/dep-3f900750.js');
+require('../../_chunks/dep-a4a92350.js');
+require('../../_chunks/dep-e3725791.js');
+require('../../_chunks/dep-337c2221.js');
+require('../../_chunks/dep-dadc1e14.js');
+require('../../_chunks/dep-52ed1a7d.js');
+require('../../_chunks/dep-c661b39a.js');
+require('../../_chunks/dep-f460fd6a.js');
+require('../../_chunks/dep-02902f8e.js');
+require('../../_chunks/dep-2b016e68.js');
+require('../../checkbox/checkbox.js');
+require('../../checkbox/props.js');
+require('../../_chunks/dep-de0929e1.js');
+require('../../_chunks/dep-dcc7b0e8.js');
+require('../../_chunks/dep-aa6a0799.js');
+require('../../_chunks/dep-3c0a7227.js');
+require('../../_chunks/dep-c5c3bf68.js');
+require('../../_chunks/dep-5c669d65.js');
+require('../../_chunks/dep-f09dab04.js');
+require('../../_chunks/dep-3f7d6634.js');
+require('../../_chunks/dep-846a1dc8.js');
+require('../../_chunks/dep-59a45986.js');
+require('../../_chunks/dep-322656f4.js');
+require('../../_chunks/dep-197706c1.js');
+require('../../_chunks/dep-36ae7e4f.js');
+require('../../_chunks/dep-78889904.js');
+require('../../_chunks/dep-8c742535.js');
+require('../../_chunks/dep-5ede1e84.js');
+require('../../_chunks/dep-c9a21163.js');
+require('../../checkbox/constants/index.js');
+require('../../checkbox/hooks/useCheckboxLazyLoad.js');
+require('../../_chunks/dep-ebf43fe5.js');
+require('../../checkbox/hooks/useKeyboardEvent.js');
+require('../../_chunks/dep-728d78c4.js');
+require('../../checkbox/group.js');
+require('../../checkbox/checkbox-group-props.js');
+require('../../_chunks/dep-91416192.js');
+require('../../_chunks/dep-4b457a69.js');
+require('../../_chunks/dep-de6dd479.js');
+require('../../_chunks/dep-af07c856.js');
+require('../../_chunks/dep-601eb54d.js');
+require('../../_chunks/dep-44019bf3.js');
+require('../../_chunks/dep-cf51f87b.js');
+require('../../loading/plugin.js');
+require('../../_chunks/dep-7a8df3cd.js');
+require('../../loading/icon/gradient.js');
+require('../../_chunks/dep-b6c3112c.js');
+require('@babel/runtime/helpers/objectWithoutProperties');
+require('../../_chunks/dep-545102c6.js');
+require('../../_chunks/dep-b4c7bacb.js');
+require('../../loading/props.js');
+require('../../_chunks/dep-31cd2bcc.js');
+require('../../_chunks/dep-b049e2e9.js');
+require('../../_chunks/dep-b4d902ac.js');
+require('../../_chunks/dep-d8132460.js');
+require('../../_chunks/dep-9e5869f7.js');
+require('../../_chunks/dep-11056e53.js');
+require('../../_chunks/dep-72f9922c.js');
+require('../../_chunks/dep-e90a36a9.js');
+
+function useRenderLine(state) {
+  var componentName = index.usePrefixClass("tree").value;
+  var renderLine = function renderLine(h) {
+    var node = state.node,
+      treeScope = state.treeScope;
+    var scopedSlots = treeScope.scopedSlots;
+    var treeProps = (treeScope === null || treeScope === void 0 ? void 0 : treeScope.treeProps) || {};
+    var line = treeProps.line;
+    var iconVisible = !!treeProps.icon;
+    var lineNode = null;
+    if (line === true) {
+      if (scopedSlots !== null && scopedSlots !== void 0 && scopedSlots.line) {
+        lineNode = scopedSlots.line({
+          node: node === null || node === void 0 ? void 0 : node.getModel()
+        });
+      } else if (node.parent && node.tree) {
+        var vmIsLeaf = node.vmIsLeaf,
+          vmIsFirst = node.vmIsFirst,
+          level = node.level;
+        var lineClasses = [];
+        lineClasses.push("".concat(componentName, "__line"));
+        if (vmIsLeaf || !iconVisible) {
+          lineClasses.push("".concat(componentName, "__line--leaf"));
+        }
+        if (vmIsFirst && iconVisible) {
+          lineClasses.push("".concat(componentName, "__line--first"));
+        }
+        var shadowStyles = [];
+        var parents = node.getParents();
+        parents.pop();
+        parents.forEach(function (pnode, index) {
+          if (!pnode.vmIsLast) {
+            shadowStyles.push("calc(-".concat(index + 1, " * var(--space)) 0 var(--color)"));
+          }
+        });
+        var styles = {
+          "--level": level ? String(level) : void 0,
+          "box-shadow": shadowStyles.join(",")
+        };
+        lineNode = Vue.createVNode("span", {
+          "class": lineClasses,
+          "style": styles
+        }, null);
+      }
+    } else {
+      lineNode = tree_utils_index.getTNode(line, {
+        createElement: h,
+        node: node
+      });
+    }
+    return lineNode;
+  };
+  return {
+    renderLine: renderLine
+  };
+}
+
+exports["default"] = useRenderLine;
+//# sourceMappingURL=useRenderLine.js.map

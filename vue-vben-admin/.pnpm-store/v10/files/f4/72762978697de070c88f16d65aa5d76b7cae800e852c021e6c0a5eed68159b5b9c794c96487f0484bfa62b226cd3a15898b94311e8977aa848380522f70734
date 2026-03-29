@@ -1,0 +1,506 @@
+/**
+ * tdesign v1.18.5
+ * (c) 2026 tdesign
+ * @license MIT
+ */
+
+'use strict';
+
+Object.defineProperty(exports, '__esModule', { value: true });
+
+var Vue = require('vue');
+var _objectWithoutProperties = require('@babel/runtime/helpers/objectWithoutProperties');
+var _slicedToArray = require('@babel/runtime/helpers/slicedToArray');
+var tdesignIconsVueNext = require('tdesign-icons-vue-next');
+require('@babel/runtime/helpers/toConsumableArray');
+require('@babel/runtime/helpers/typeof');
+require('../_chunks/dep-53119973.js');
+var index = require('../_chunks/dep-de0929e1.js');
+var index$3 = require('../_chunks/dep-f3e5112c.js');
+var index$2 = require('../_chunks/dep-d980f2ab.js');
+var index$4 = require('../_chunks/dep-42307533.js');
+require('../_chunks/dep-fc2afb75.js');
+var index$1 = require('../_chunks/dep-c9a21163.js');
+require('@babel/runtime/helpers/defineProperty');
+var inputNumber_index = require('../input-number/index.js');
+var select_index = require('../select/index.js');
+var inputAdornment_index = require('../input-adornment/index.js');
+var pagination_props = require('./props.js');
+var pagination_hooks_useMoreAction = require('./hooks/useMoreAction.js');
+var pagination_hooks_usePaginationClasses = require('./hooks/usePaginationClasses.js');
+var isObject = require('../_chunks/dep-444f3270.js');
+var isNumber = require('../_chunks/dep-b4c7bacb.js');
+var configProvider_hooks_useConfig = require('../config-provider/hooks/useConfig.js');
+require('../_chunks/dep-14f9daef.js');
+require('../_chunks/dep-dcc7b0e8.js');
+require('../_chunks/dep-6dd9a89c.js');
+require('../_chunks/dep-0f9ffd23.js');
+require('../_chunks/dep-52ed1a7d.js');
+require('../_chunks/dep-777ccded.js');
+require('../_chunks/dep-aa6a0799.js');
+require('../_chunks/dep-3c0a7227.js');
+require('../_chunks/dep-c5c3bf68.js');
+require('../_chunks/dep-5c669d65.js');
+require('../_chunks/dep-f09dab04.js');
+require('../_chunks/dep-3f7d6634.js');
+require('../_chunks/dep-846a1dc8.js');
+require('../_chunks/dep-59a45986.js');
+require('../_chunks/dep-165d2e7f.js');
+require('../_chunks/dep-49cc4657.js');
+require('dayjs');
+require('../_chunks/dep-5e473554.js');
+require('../_chunks/dep-489984e1.js');
+require('../_chunks/dep-4bcc15b5.js');
+require('../_chunks/dep-9e7e6f13.js');
+require('../_chunks/dep-0dd0cc87.js');
+require('../_chunks/dep-3f878e23.js');
+require('../_chunks/dep-3f900750.js');
+require('../_chunks/dep-a4a92350.js');
+require('../_chunks/dep-e3725791.js');
+require('../_chunks/dep-337c2221.js');
+require('../_chunks/dep-dadc1e14.js');
+require('@babel/runtime/helpers/createClass');
+require('@babel/runtime/helpers/classCallCheck');
+require('../input-number/input-number.js');
+require('../button/index.js');
+require('../button/button.js');
+require('../loading/index.js');
+require('../_chunks/dep-cf51f87b.js');
+require('../loading/plugin.js');
+require('../_chunks/dep-7a8df3cd.js');
+require('../loading/icon/gradient.js');
+require('../_chunks/dep-5ede1e84.js');
+require('../_chunks/dep-b6c3112c.js');
+require('../_chunks/dep-601eb54d.js');
+require('../_chunks/dep-545102c6.js');
+require('../_chunks/dep-322656f4.js');
+require('../loading/props.js');
+require('../_chunks/dep-c661b39a.js');
+require('../_chunks/dep-f460fd6a.js');
+require('../_chunks/dep-02902f8e.js');
+require('../_chunks/dep-2b016e68.js');
+require('../_chunks/dep-31cd2bcc.js');
+require('../_chunks/dep-b049e2e9.js');
+require('../_chunks/dep-de6dd479.js');
+require('../_chunks/dep-b4d902ac.js');
+require('../_chunks/dep-d8132460.js');
+require('../_chunks/dep-9e5869f7.js');
+require('../_chunks/dep-11056e53.js');
+require('../_chunks/dep-72f9922c.js');
+require('../_chunks/dep-e90a36a9.js');
+require('../_chunks/dep-44019bf3.js');
+require('../button/props.js');
+require('../_chunks/dep-197706c1.js');
+require('../_chunks/dep-36ae7e4f.js');
+require('../_chunks/dep-8c742535.js');
+require('../input/index.js');
+require('../input/input.js');
+require('../input/props.js');
+require('../_chunks/dep-78889904.js');
+require('../input/hooks/useInput.js');
+require('../form/constants/index.js');
+require('../input/hooks/useLengthLimit.js');
+require('../_chunks/dep-fcd66f3d.js');
+require('../input/hooks/useInputEventHandler.js');
+require('../input/hooks/useInputWidth.js');
+require('../_chunks/dep-ff39d539.js');
+require('../input/input-group.js');
+require('../input/input-group-props.js');
+require('../input-number/props.js');
+require('../_chunks/dep-dbabff33.js');
+require('../input-number/hooks/useInputNumber.js');
+require('../_chunks/dep-8a905aba.js');
+require('../_chunks/dep-161f72b8.js');
+require('../select/select.js');
+require('@babel/runtime/helpers/asyncToGenerator');
+require('@babel/runtime/regenerator');
+require('../common-components/fake-arrow.js');
+require('../select-input/index.js');
+require('../select-input/select-input.js');
+require('../popup/index.js');
+require('../popup/popup.js');
+require('@popperjs/core');
+require('../popup/container.js');
+require('../popup/props.js');
+require('../_chunks/dep-712a3a80.js');
+require('../_chunks/dep-053e3bf6.js');
+require('../_chunks/dep-287f7162.js');
+require('../_chunks/dep-364cb786.js');
+require('../select-input/props.js');
+require('../select-input/hooks/useMultiple.js');
+require('../tag-input/index.js');
+require('../tag-input/tag-input.js');
+require('../tag-input/props.js');
+require('../tag-input/hooks/useDragSorter.js');
+require('../tag-input/hooks/useHover.js');
+require('../tag-input/hooks/useTagScroll.js');
+require('../tag-input/hooks/useTagList.js');
+require('../tag/index.js');
+require('../tag/tag.js');
+require('tinycolor2');
+require('../tag/props.js');
+require('../tag/check-tag.js');
+require('../tag/check-tag-props.js');
+require('../_chunks/dep-728d78c4.js');
+require('../tag/check-tag-group.js');
+require('../tag/check-tag-group-props.js');
+require('../select-input/hooks/useOverlayInnerStyle.js');
+require('../select-input/hooks/useSingle.js');
+require('../_chunks/dep-fc128b15.js');
+require('../_chunks/dep-0090338d.js');
+require('../_chunks/dep-eb23395f.js');
+require('../select/components/select-panel.js');
+require('../select/option.js');
+require('../select/option-props.js');
+require('../checkbox/index.js');
+require('../checkbox/checkbox.js');
+require('../checkbox/props.js');
+require('../checkbox/constants/index.js');
+require('../checkbox/hooks/useCheckboxLazyLoad.js');
+require('../_chunks/dep-ebf43fe5.js');
+require('../checkbox/hooks/useKeyboardEvent.js');
+require('../checkbox/group.js');
+require('../checkbox/checkbox-group-props.js');
+require('../_chunks/dep-91416192.js');
+require('../_chunks/dep-4b457a69.js');
+require('../_chunks/dep-af07c856.js');
+require('../select/utils/index.js');
+require('../select/constants/index.js');
+require('../select/option-group.js');
+require('../select/option-group-props.js');
+require('../select/props.js');
+require('../select/hooks/usePanelVirtualScroll.js');
+require('../_chunks/dep-4162c3d5.js');
+require('../_chunks/dep-f00cf15d.js');
+require('../select/hooks/useKeyboardControl.js');
+require('../select/hooks/useSelectOptions.js');
+require('../_chunks/dep-7e807b1c.js');
+require('../input-adornment/input-adornment.js');
+require('../input-adornment/props.js');
+
+function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
+
+var _objectWithoutProperties__default = /*#__PURE__*/_interopDefaultLegacy(_objectWithoutProperties);
+var _slicedToArray__default = /*#__PURE__*/_interopDefaultLegacy(_slicedToArray);
+
+/**
+ * Checks if `value` is `NaN`.
+ *
+ * **Note:** This method is based on
+ * [`Number.isNaN`](https://mdn.io/Number/isNaN) and is not the same as
+ * global [`isNaN`](https://mdn.io/isNaN) which returns `true` for
+ * `undefined` and other non-number values.
+ *
+ * @static
+ * @memberOf _
+ * @since 0.1.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is `NaN`, else `false`.
+ * @example
+ *
+ * _.isNaN(NaN);
+ * // => true
+ *
+ * _.isNaN(new Number(NaN));
+ * // => true
+ *
+ * isNaN(undefined);
+ * // => true
+ *
+ * _.isNaN(undefined);
+ * // => false
+ */
+function isNaN(value) {
+  // An `NaN` primitive is the only value that is not equal to itself.
+  // Perform the `toStringTag` check first to avoid errors with some
+  // ActiveX objects in IE.
+  return isNumber.isNumber(value) && value != +value;
+}
+
+var _excluded = ["pageCount"];
+var min = 1;
+var _Pagination = Vue.defineComponent({
+  name: "TPagination",
+  props: pagination_props["default"],
+  setup: function setup(props2) {
+    var _toRefs = Vue.toRefs(props2),
+      modelValue = _toRefs.modelValue,
+      pageSize = _toRefs.pageSize,
+      current = _toRefs.current;
+    var renderTNodeJSX = index.useTNodeJSX();
+    var _useVModel = index$1.useVModel(current, modelValue, props2.defaultCurrent, props2.onCurrentChange, "current"),
+      _useVModel2 = _slicedToArray__default["default"](_useVModel, 2),
+      innerCurrent = _useVModel2[0],
+      setInnerCurrent = _useVModel2[1];
+    var _useDefaultValue = index$2.useDefaultValue(pageSize, props2.defaultPageSize, props2.onPageSizeChange, "pageSize"),
+      _useDefaultValue2 = _slicedToArray__default["default"](_useDefaultValue, 2),
+      innerPageSize = _useDefaultValue2[0],
+      setInnerPageSize = _useDefaultValue2[1];
+    var _useConfig = configProvider_hooks_useConfig.useConfig("pagination"),
+      t = _useConfig.t,
+      globalConfig = _useConfig.globalConfig;
+    var COMPONENT_NAME = index$3.usePrefixClass("pagination");
+    var _useGlobalIcon = index$4.useGlobalIcon({
+        PageFirstIcon: tdesignIconsVueNext.PageFirstIcon,
+        PageLastIcon: tdesignIconsVueNext.PageLastIcon,
+        ChevronLeftIcon: tdesignIconsVueNext.ChevronLeftIcon,
+        ChevronRightIcon: tdesignIconsVueNext.ChevronRightIcon,
+        ChevronLeftDoubleIcon: tdesignIconsVueNext.ChevronLeftDoubleIcon,
+        ChevronRightDoubleIcon: tdesignIconsVueNext.ChevronRightDoubleIcon,
+        EllipsisIcon: tdesignIconsVueNext.EllipsisIcon
+      }),
+      PageFirstIcon = _useGlobalIcon.PageFirstIcon,
+      PageLastIcon = _useGlobalIcon.PageLastIcon,
+      ChevronLeftIcon = _useGlobalIcon.ChevronLeftIcon,
+      ChevronRightIcon = _useGlobalIcon.ChevronRightIcon,
+      ChevronLeftDoubleIcon = _useGlobalIcon.ChevronLeftDoubleIcon,
+      ChevronRightDoubleIcon = _useGlobalIcon.ChevronRightDoubleIcon,
+      EllipsisIcon = _useGlobalIcon.EllipsisIcon;
+    var _usePaginationClasses = pagination_hooks_usePaginationClasses.usePaginationClasses(props2, innerCurrent, innerPageSize, COMPONENT_NAME),
+      pageCount = _usePaginationClasses.pageCount,
+      CLASS_MAP = _objectWithoutProperties__default["default"](_usePaginationClasses, _excluded);
+    var _useMoreAction = pagination_hooks_useMoreAction.useMoreAction(props2, pageCount, innerCurrent),
+      prevMore = _useMoreAction.prevMore,
+      isPrevMoreShow = _useMoreAction.isPrevMoreShow,
+      curPageLeftCount = _useMoreAction.curPageLeftCount,
+      nextMore = _useMoreAction.nextMore,
+      isNextMoreShow = _useMoreAction.isNextMoreShow,
+      curPageRightCount = _useMoreAction.curPageRightCount;
+    var jumpIndex = Vue.ref(innerCurrent.value);
+    var isFolded = Vue.computed(function () {
+      return pageCount.value > props2.maxPageBtn;
+    });
+    var sizeOptions = Vue.computed(function () {
+      var pageSizeOptions = props2.pageSizeOptions;
+      var options = pageSizeOptions.map(function (option) {
+        return isObject.isObject(option) ? option : {
+          label: t(globalConfig.value.itemsPerPage, {
+            size: option
+          }),
+          value: Number(option)
+        };
+      });
+      return options.sort(function (a, b) {
+        return a.value - b.value;
+      });
+    });
+    var isMidEllipsis = Vue.computed(function () {
+      return props2.pageEllipsisMode === "mid";
+    });
+    var pages = Vue.computed(function () {
+      var array = [];
+      var start;
+      var end;
+      if (isFolded.value) {
+        if (isPrevMoreShow.value && isNextMoreShow.value) {
+          start = innerCurrent.value - curPageLeftCount.value;
+          end = innerCurrent.value + curPageRightCount.value;
+        } else {
+          var foldedStart = isMidEllipsis.value ? 2 : 1;
+          var foldedEnd = isMidEllipsis.value ? pageCount.value - 1 : pageCount.value;
+          if (isPrevMoreShow.value) {
+            start = Math.min(innerCurrent.value - 1, pageCount.value - props2.foldedMaxPageBtn + 1);
+          } else {
+            start = foldedStart;
+          }
+          if (isNextMoreShow.value) {
+            end = Math.max(innerCurrent.value + 1, props2.foldedMaxPageBtn);
+          } else {
+            end = foldedEnd;
+          }
+        }
+      } else {
+        start = 1;
+        end = pageCount.value;
+      }
+      for (var i = start; i <= end; i++) {
+        array.push(i);
+      }
+      return array;
+    });
+    Vue.watch(function () {
+      return innerCurrent.value;
+    }, function (val) {
+      return jumpIndex.value = val;
+    });
+    var toPage = function toPage(pageIndex, pageInfo) {
+      var _props2$onChange;
+      if (props2.disabled) {
+        return;
+      }
+      var toPageCurrent = pageIndex;
+      if (pageIndex < min) {
+        toPageCurrent = min;
+      } else if (pageIndex > pageCount.value) {
+        toPageCurrent = pageCount.value;
+      }
+      pageInfo = pageInfo || {
+        current: toPageCurrent,
+        previous: innerCurrent.value,
+        pageSize: innerPageSize.value
+      };
+      setInnerCurrent(toPageCurrent, pageInfo);
+      (_props2$onChange = props2.onChange) === null || _props2$onChange === void 0 || _props2$onChange.call(props2, pageInfo);
+    };
+    var handlePageChange = function handlePageChange(type) {
+      var pageChangeMap = {
+        prevPage: function prevPage() {
+          return toPage(innerCurrent.value - 1);
+        },
+        nextPage: function nextPage() {
+          return toPage(innerCurrent.value + 1);
+        },
+        prevMorePage: function prevMorePage() {
+          return toPage(Math.max(2, innerCurrent.value - props2.foldedMaxPageBtn));
+        },
+        nextMorePage: function nextMorePage() {
+          return toPage(Math.min(innerCurrent.value + props2.foldedMaxPageBtn, pageCount.value - 1));
+        }
+      };
+      pageChangeMap[type]();
+    };
+    var onSelectorChange = function onSelectorChange(val) {
+      if (props2.disabled) return;
+      var pageSize2 = Number(val);
+      var newPageCount = pageSize2 > 0 ? Math.max(Math.ceil(props2.total / pageSize2), 1) : 1;
+      var previousCurrent = innerCurrent.value;
+      var indexExceeds = previousCurrent > newPageCount;
+      setInnerPageSize(pageSize2, {
+        current: indexExceeds ? newPageCount : previousCurrent,
+        previous: previousCurrent,
+        pageSize: pageSize2
+      });
+      Vue.nextTick(function () {
+        var userChanged = innerCurrent.value !== previousCurrent;
+        var targetCurrent = userChanged ? innerCurrent.value : indexExceeds ? newPageCount : innerCurrent.value;
+        var pageInfo = {
+          current: targetCurrent,
+          previous: previousCurrent,
+          pageSize: pageSize2
+        };
+        if (userChanged || !indexExceeds) {
+          var _props2$onChange2;
+          (_props2$onChange2 = props2.onChange) === null || _props2$onChange2 === void 0 || _props2$onChange2.call(props2, pageInfo);
+        } else {
+          toPage(targetCurrent, pageInfo);
+        }
+      });
+    };
+    var onJumperChange = function onJumperChange(val) {
+      var currentIndex = Math.trunc(+val);
+      if (isNaN(currentIndex)) return;
+      jumpIndex.value = currentIndex;
+      toPage(currentIndex);
+    };
+    return function () {
+      var total = props2.total,
+        pageSizeOptions = props2.pageSizeOptions,
+        size = props2.size,
+        disabled = props2.disabled,
+        showPageSize = props2.showPageSize;
+      if (pageCount.value < 1) return null;
+      var Jumper = Vue.createVNode("div", {
+        "class": CLASS_MAP.jumperClass.value
+      }, [t(globalConfig.value.jumpTo), Vue.createVNode(inputAdornment_index.InputAdornment, {
+        "append": "/ ".concat(pageCount.value, " ").concat(t(globalConfig.value.page))
+      }, {
+        "default": function _default() {
+          return [Vue.createVNode(inputNumber_index.InputNumber, {
+            "class": CLASS_MAP.jumperInputClass.value,
+            "modelValue": jumpIndex.value,
+            "onUpdate:modelValue": function onUpdateModelValue($event) {
+              return jumpIndex.value = $event;
+            },
+            "onBlur": onJumperChange,
+            "onEnter": onJumperChange,
+            "max": pageCount.value,
+            "min": min,
+            "size": size,
+            "disabled": disabled,
+            "theme": "normal",
+            "placeholder": ""
+          }, null)];
+        }
+      })]);
+      return Vue.createVNode("div", {
+        "class": CLASS_MAP.paginationClass.value
+      }, [renderTNodeJSX("totalContent", Vue.createVNode("div", {
+        "class": CLASS_MAP.totalClass.value
+      }, [t(globalConfig.value.total, total)])), showPageSize && pageSizeOptions.length > 0 && Vue.createVNode(select_index.Select, Vue.mergeProps({
+        "size": size,
+        "value": innerPageSize,
+        "disabled": disabled,
+        "class": CLASS_MAP.sizerClass.value,
+        "autoWidth": true,
+        "onChange": onSelectorChange,
+        "options": sizeOptions.value
+      }, props2.selectProps), null), props2.showFirstAndLastPageBtn ? Vue.createVNode("div", {
+        "class": CLASS_MAP.preBtnClass.value,
+        "onClick": function onClick() {
+          return toPage(1);
+        }
+      }, [Vue.createVNode(PageFirstIcon, null, null)]) : null, props2.showPreviousAndNextBtn ? Vue.createVNode("div", {
+        "class": CLASS_MAP.preBtnClass.value,
+        "onClick": function onClick() {
+          return handlePageChange("prevPage");
+        }
+      }, [Vue.createVNode(ChevronLeftIcon, null, null)]) : null, props2.showPageNumber && props2.theme === "default" ? Vue.createVNode("ul", {
+        "class": CLASS_MAP.btnWrapClass.value
+      }, [isFolded.value && isMidEllipsis.value && Vue.createVNode("li", {
+        "class": CLASS_MAP.getButtonClass(1),
+        "onClick": function onClick() {
+          return toPage(min);
+        }
+      }, [min]), isFolded.value && isPrevMoreShow.value && isMidEllipsis.value ? Vue.createVNode("li", {
+        "class": CLASS_MAP.btnMoreClass.value,
+        "onClick": function onClick() {
+          return handlePageChange("prevMorePage");
+        },
+        "onMouseover": function onMouseover() {
+          return prevMore.value = true;
+        },
+        "onMouseout": function onMouseout() {
+          return prevMore.value = false;
+        }
+      }, [prevMore.value ? Vue.createVNode(ChevronLeftDoubleIcon, null, null) : Vue.createVNode(EllipsisIcon, null, null)]) : null, pages.value.map(function (i) {
+        return Vue.createVNode("li", {
+          "class": CLASS_MAP.getButtonClass(i),
+          "key": i,
+          "onClick": function onClick() {
+            return toPage(i);
+          }
+        }, [i]);
+      }), isFolded.value && isNextMoreShow.value && isMidEllipsis.value ? Vue.createVNode("li", {
+        "class": CLASS_MAP.btnMoreClass.value,
+        "onClick": function onClick() {
+          return handlePageChange("nextMorePage");
+        },
+        "onMouseover": function onMouseover() {
+          return nextMore.value = true;
+        },
+        "onMouseout": function onMouseout() {
+          return nextMore.value = false;
+        }
+      }, [nextMore.value ? Vue.createVNode(ChevronRightDoubleIcon, null, null) : Vue.createVNode(EllipsisIcon, null, null)]) : null, isFolded.value && isMidEllipsis.value ? Vue.createVNode("li", {
+        "class": CLASS_MAP.getButtonClass(pageCount.value),
+        "onClick": function onClick() {
+          return toPage(pageCount.value);
+        }
+      }, [pageCount.value]) : null]) : null, props2.theme === "simple" && Jumper, props2.showPreviousAndNextBtn ? Vue.createVNode("div", {
+        "class": CLASS_MAP.nextBtnClass.value,
+        "onClick": function onClick() {
+          return handlePageChange("nextPage");
+        }
+      }, [Vue.createVNode(ChevronRightIcon, null, null)]) : null, props2.showFirstAndLastPageBtn ? Vue.createVNode("div", {
+        "class": CLASS_MAP.nextBtnClass.value,
+        "onClick": function onClick() {
+          return toPage(pageCount.value);
+        }
+      }, [Vue.createVNode(PageLastIcon, null, null)]) : null, props2.theme === "default" && props2.showJumper && Jumper]);
+    };
+  }
+});
+
+exports["default"] = _Pagination;
+//# sourceMappingURL=pagination.js.map

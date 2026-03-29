@@ -1,0 +1,196 @@
+/**
+ * tdesign v1.18.5
+ * (c) 2026 tdesign
+ * @license MIT
+ */
+
+'use strict';
+
+Object.defineProperty(exports, '__esModule', { value: true });
+
+var Vue = require('vue');
+var _defineProperty = require('@babel/runtime/helpers/defineProperty');
+require('@babel/runtime/helpers/toConsumableArray');
+require('@babel/runtime/helpers/typeof');
+require('../../_chunks/dep-53119973.js');
+var index = require('../../_chunks/dep-f3e5112c.js');
+require('@babel/runtime/helpers/slicedToArray');
+require('../../_chunks/dep-fc2afb75.js');
+require('tdesign-icons-vue-next');
+var checkbox_index = require('../../checkbox/index.js');
+require('../../loading/index.js');
+require('@babel/runtime/helpers/asyncToGenerator');
+require('@babel/runtime/helpers/classCallCheck');
+require('@babel/runtime/helpers/createClass');
+require('@babel/runtime/regenerator');
+var tree_utils_index = require('../utils/index.js');
+var tree_hooks_useItemEvents = require('./useItemEvents.js');
+var isBoolean = require('../../_chunks/dep-36ae7e4f.js');
+require('../../_chunks/dep-14f9daef.js');
+require('../../config-provider/hooks/useConfig.js');
+require('../../_chunks/dep-165d2e7f.js');
+require('../../_chunks/dep-49cc4657.js');
+require('dayjs');
+require('../../_chunks/dep-5e473554.js');
+require('../../_chunks/dep-489984e1.js');
+require('../../_chunks/dep-4bcc15b5.js');
+require('../../_chunks/dep-6dd9a89c.js');
+require('../../_chunks/dep-0f9ffd23.js');
+require('../../_chunks/dep-444f3270.js');
+require('../../_chunks/dep-9e7e6f13.js');
+require('../../_chunks/dep-0dd0cc87.js');
+require('../../_chunks/dep-777ccded.js');
+require('../../_chunks/dep-3f878e23.js');
+require('../../_chunks/dep-3f900750.js');
+require('../../_chunks/dep-a4a92350.js');
+require('../../_chunks/dep-e3725791.js');
+require('../../_chunks/dep-337c2221.js');
+require('../../_chunks/dep-dadc1e14.js');
+require('../../_chunks/dep-52ed1a7d.js');
+require('../../_chunks/dep-c661b39a.js');
+require('../../_chunks/dep-f460fd6a.js');
+require('../../_chunks/dep-02902f8e.js');
+require('../../_chunks/dep-2b016e68.js');
+require('../../checkbox/checkbox.js');
+require('../../checkbox/props.js');
+require('../../_chunks/dep-de0929e1.js');
+require('../../_chunks/dep-dcc7b0e8.js');
+require('../../_chunks/dep-aa6a0799.js');
+require('../../_chunks/dep-3c0a7227.js');
+require('../../_chunks/dep-c5c3bf68.js');
+require('../../_chunks/dep-5c669d65.js');
+require('../../_chunks/dep-f09dab04.js');
+require('../../_chunks/dep-3f7d6634.js');
+require('../../_chunks/dep-846a1dc8.js');
+require('../../_chunks/dep-59a45986.js');
+require('../../_chunks/dep-322656f4.js');
+require('../../_chunks/dep-197706c1.js');
+require('../../_chunks/dep-78889904.js');
+require('../../_chunks/dep-8c742535.js');
+require('../../_chunks/dep-5ede1e84.js');
+require('../../_chunks/dep-c9a21163.js');
+require('../../checkbox/constants/index.js');
+require('../../checkbox/hooks/useCheckboxLazyLoad.js');
+require('../../_chunks/dep-ebf43fe5.js');
+require('../../checkbox/hooks/useKeyboardEvent.js');
+require('../../_chunks/dep-728d78c4.js');
+require('../../checkbox/group.js');
+require('../../checkbox/checkbox-group-props.js');
+require('../../_chunks/dep-91416192.js');
+require('../../_chunks/dep-4b457a69.js');
+require('../../_chunks/dep-de6dd479.js');
+require('../../_chunks/dep-af07c856.js');
+require('../../_chunks/dep-601eb54d.js');
+require('../../_chunks/dep-44019bf3.js');
+require('../../_chunks/dep-cf51f87b.js');
+require('../../loading/plugin.js');
+require('../../_chunks/dep-7a8df3cd.js');
+require('../../loading/icon/gradient.js');
+require('../../_chunks/dep-b6c3112c.js');
+require('@babel/runtime/helpers/objectWithoutProperties');
+require('../../_chunks/dep-545102c6.js');
+require('../../_chunks/dep-b4c7bacb.js');
+require('../../loading/props.js');
+require('../../_chunks/dep-31cd2bcc.js');
+require('../../_chunks/dep-b049e2e9.js');
+require('../../_chunks/dep-b4d902ac.js');
+require('../../_chunks/dep-d8132460.js');
+require('../../_chunks/dep-9e5869f7.js');
+require('../../_chunks/dep-11056e53.js');
+require('../../_chunks/dep-72f9922c.js');
+require('../../_chunks/dep-e90a36a9.js');
+
+function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
+
+var _defineProperty__default = /*#__PURE__*/_interopDefaultLegacy(_defineProperty);
+
+function _isSlot(s) {
+  return typeof s === 'function' || Object.prototype.toString.call(s) === '[object Object]' && !Vue.isVNode(s);
+}
+function useRenderLabel(state) {
+  var classPrefix = index.usePrefixClass().value;
+  var componentName = index.usePrefixClass("tree").value;
+  var _useItemEvents = tree_hooks_useItemEvents["default"](state),
+    handleChange = _useItemEvents.handleChange;
+  var renderLabel = function renderLabel(h) {
+    var node = state.node,
+      treeScope = state.treeScope;
+    var scopedSlots = treeScope.scopedSlots,
+      _treeScope$treeProps = treeScope.treeProps,
+      treeProps = _treeScope$treeProps === void 0 ? {} : _treeScope$treeProps;
+    var label = treeProps.label,
+      expandOnClickNode = treeProps.expandOnClickNode;
+    var checkProps = (treeProps === null || treeProps === void 0 ? void 0 : treeProps.checkProps) || {};
+    var labelNode = null;
+    if (label === true) {
+      if (scopedSlots !== null && scopedSlots !== void 0 && scopedSlots.label) {
+        labelNode = scopedSlots.label({
+          node: node === null || node === void 0 ? void 0 : node.getModel()
+        });
+      } else {
+        labelNode = node.label || "";
+      }
+    } else {
+      labelNode = tree_utils_index.getTNode(label, {
+        createElement: h,
+        node: node
+      });
+    }
+    var labelClasses = ["".concat(componentName, "__label"), _defineProperty__default["default"]({}, "".concat(classPrefix, "-is-active"), node.isActivable() ? node.actived : false)];
+    var shouldStopLabelTrigger = Vue.computed(function () {
+      var _node$children;
+      var isNormalBranchNode = Array.isArray(node.children) && ((_node$children = node.children) === null || _node$children === void 0 ? void 0 : _node$children.length) > 0;
+      var isLazyLoadChildBranchNode = isBoolean.isBoolean(node.children) && node.children;
+      var isBranchNode = isNormalBranchNode || isLazyLoadChildBranchNode;
+      return expandOnClickNode && isBranchNode;
+    });
+    if (node.vmCheckable) {
+      var checkboxDisabled = false;
+      if (node.vmIsLocked && !node.vmIsRest) {
+        checkboxDisabled = true;
+      }
+      if (node.isDisabled()) {
+        checkboxDisabled = true;
+      }
+      var _labelNode = function () {
+        return labelNode;
+      }();
+      labelNode = Vue.createVNode(checkbox_index.Checkbox, Vue.mergeProps({
+        "class": labelClasses,
+        "checked": node.checked,
+        "indeterminate": node.indeterminate,
+        "name": String(node.value),
+        "onChange": handleChange,
+        "stopLabelTrigger": shouldStopLabelTrigger.value
+      }, checkProps, {
+        "disabled": checkboxDisabled,
+        "title": node.label
+      }), _isSlot(labelNode) ? labelNode : {
+        "default": function _default() {
+          return [_labelNode];
+        }
+      });
+    } else {
+      var inner = Vue.createVNode("span", {
+        "style": "position: relative"
+      }, [labelNode]);
+      labelNode = node.isActivable() ? Vue.createVNode("span", {
+        "key": "1",
+        "ref": "label",
+        "class": labelClasses,
+        "title": node.label
+      }, [inner]) : Vue.createVNode("span", {
+        "key": "2",
+        "class": labelClasses,
+        "title": node.label
+      }, [inner]);
+    }
+    return labelNode;
+  };
+  return {
+    renderLabel: renderLabel
+  };
+}
+
+exports["default"] = useRenderLabel;
+//# sourceMappingURL=useRenderLabel.js.map
