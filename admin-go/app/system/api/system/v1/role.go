@@ -92,3 +92,37 @@ type RoleTreeRes struct {
 	List   []*model.RoleTreeOutput `json:"list" dc:"树形数据"`
 }
 
+// RoleGrantMenuReq 角色授权菜单请求
+type RoleGrantMenuReq struct {
+	g.Meta  `path:"/role/grant-menu" method:"post" tags:"角色表" summary:"角色授权菜单"`
+	ID      snowflake.JsonInt64   `json:"id" v:"required#角色ID不能为空" dc:"角色ID"`
+	MenuIDs []snowflake.JsonInt64 `json:"menuIds" dc:"菜单ID列表"`
+}
+
+type RoleGrantMenuRes struct {
+	g.Meta `mime:"application/json"`
+}
+
+// RoleGetMenuIDsReq 获取角色已授权菜单ID列表
+type RoleGetMenuIDsReq struct {
+	g.Meta `path:"/role/menu-ids" method:"get" tags:"角色表" summary:"获取角色菜单ID列表"`
+	ID     snowflake.JsonInt64 `json:"id" v:"required#角色ID不能为空" dc:"角色ID"`
+}
+
+type RoleGetMenuIDsRes struct {
+	g.Meta  `mime:"application/json"`
+	MenuIDs []snowflake.JsonInt64 `json:"menuIds"`
+}
+
+// RoleGrantDeptReq 角色授权数据权限请求
+type RoleGrantDeptReq struct {
+	g.Meta    `path:"/role/grant-dept" method:"post" tags:"角色表" summary:"角色授权数据权限"`
+	ID        snowflake.JsonInt64   `json:"id" v:"required#角色ID不能为空" dc:"角色ID"`
+	DataScope int                   `json:"dataScope" dc:"数据范围"`
+	DeptIDs   []snowflake.JsonInt64 `json:"deptIds" dc:"部门ID列表（自定义数据权限时使用）"`
+}
+
+type RoleGrantDeptRes struct {
+	g.Meta `mime:"application/json"`
+}
+

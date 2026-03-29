@@ -21,6 +21,8 @@ func (c *cUsers) Create(ctx context.Context, req *v1.UsersCreateReq) (res *v1.Us
 		Email: req.Email,
 		Avatar: req.Avatar,
 		Status: req.Status,
+		DeptID: req.DeptID,
+		RoleIDs: req.RoleIDs,
 	})
 	return
 }
@@ -35,6 +37,8 @@ func (c *cUsers) Update(ctx context.Context, req *v1.UsersUpdateReq) (res *v1.Us
 		Email: req.Email,
 		Avatar: req.Avatar,
 		Status: req.Status,
+		DeptID: req.DeptID,
+		RoleIDs: req.RoleIDs,
 	})
 	return
 }

@@ -128,3 +128,68 @@ func (s *sRole) Tree(ctx context.Context) (tree []*model.RoleTreeOutput, err err
 	return
 }
 
+// GrantMenu 角色授权菜单（先删后插）
+func (s *sRole) GrantMenu(ctx context.Context, in *model.RoleGrantMenuInput) error {
+	// 删除旧的关联
+	_, err := dao.RoleMenu.Ctx(ctx).Where(dao.RoleMenu.Columns().RoleId, in.ID).Delete()
+	if err != nil {
+		return err
+	}
+	// 批量插入新关联
+	if len(in.MenuIDs) > 0 {
+		data := make([]g.Map, 0, len(in.MenuIDs))
+		for _, menuID := range in.MenuIDs {
+			data = append(data, g.Map{
+				dao.RoleMenu.Columns().RoleId: in.ID,
+				dao.RoleMenu.Columns().MenuId: menuID,
+			})
+		}
+		_, err = dao.RoleMenu.Ctx(ctx).Data(data).Insert()
+	}
+	return err
+}
+
+// GetMenuIDs 获取角色已授权的菜单ID列表
+func (s *sRole) GetMenuIDs(ctx context.Context, roleID snowflake.JsonInt64) ([]snowflake.JsonInt64, error) {
+	var list []struct {
+		MenuId int64 `json:"menuId"`
+	}
+	err := dao.RoleMenu.Ctx(ctx).Where(dao.RoleMenu.Columns().RoleId, roleID).Scan(&list)
+	if err != nil {
+		return nil, err
+	}
+	ids := make([]snowflake.JsonInt64, 0, len(list))
+	for _, item := range list {
+		ids = append(ids, snowflake.JsonInt64(item.MenuId))
+	}
+	return ids, nil
+}
+
+// GrantDept 角色授权数据权限
+func (s *sRole) GrantDept(ctx context.Context, in *model.RoleGrantDeptInput) error {
+	// 更新角色的 data_scope
+	_, err := dao.Role.Ctx(ctx).Where(dao.Role.Columns().Id, in.ID).Data(g.Map{
+		dao.Role.Columns().DataScope: in.DataScope,
+	}).Update()
+	if err != nil {
+		return err
+	}
+	// 删除旧的部门关联
+	_, err = dao.RoleDept.Ctx(ctx).Where(dao.RoleDept.Columns().RoleId, in.ID).Delete()
+	if err != nil {
+		return err
+	}
+	// 自定义数据权限时，插入部门关联
+	if in.DataScope == 5 && len(in.DeptIDs) > 0 {
+		data := make([]g.Map, 0, len(in.DeptIDs))
+		for _, deptID := range in.DeptIDs {
+			data = append(data, g.Map{
+				dao.RoleDept.Columns().RoleId: in.ID,
+				dao.RoleDept.Columns().DeptId: deptID,
+			})
+		}
+		_, err = dao.RoleDept.Ctx(ctx).Data(data).Insert()
+	}
+	return err
+}
+

@@ -69,3 +69,17 @@ func (c *cAuth) ChangePassword(ctx context.Context, req *v1.AuthChangePasswordRe
 	})
 	return
 }
+
+// Menus 获取当前用户菜单树
+func (c *cAuth) Menus(ctx context.Context, req *v1.AuthMenusReq) (res *v1.AuthMenusRes, err error) {
+	claims := GetClaims(ctx)
+	if claims == nil {
+		return nil, nil
+	}
+	menus, err := service.Auth().Menus(ctx, snowflake.JsonInt64(claims.UserID))
+	if err != nil {
+		return nil, err
+	}
+	res = &v1.AuthMenusRes{Menus: menus}
+	return
+}

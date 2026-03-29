@@ -16,6 +16,8 @@ type UsersCreateInput struct {
 	Email string `json:"email"`
 	Avatar string `json:"avatar"`
 	Status int `json:"status"`
+	DeptID snowflake.JsonInt64 `json:"deptId"`
+	RoleIDs []snowflake.JsonInt64 `json:"roleIds"`
 }
 
 // UsersUpdateInput 更新用户表输入
@@ -27,6 +29,8 @@ type UsersUpdateInput struct {
 	Email string `json:"email"`
 	Avatar string `json:"avatar"`
 	Status int `json:"status"`
+	DeptID snowflake.JsonInt64 `json:"deptId"`
+	RoleIDs []snowflake.JsonInt64 `json:"roleIds"`
 }
 
 // UsersDetailOutput 用户表详情输出
@@ -37,6 +41,9 @@ type UsersDetailOutput struct {
 	Email string `json:"email"`
 	Avatar string `json:"avatar"`
 	Status int `json:"status"`
+	DeptID snowflake.JsonInt64 `json:"deptId"`
+	DeptTitle string `json:"deptTitle"`
+	RoleIDs []snowflake.JsonInt64 `json:"roleIds"`
 	CreatedAt *gtime.Time `json:"createdAt"`
 	UpdatedAt *gtime.Time `json:"updatedAt"`
 }
@@ -49,6 +56,8 @@ type UsersListOutput struct {
 	Email string `json:"email"`
 	Avatar string `json:"avatar"`
 	Status int `json:"status"`
+	DeptID snowflake.JsonInt64 `json:"deptId"`
+	DeptTitle string `json:"deptTitle"`
 	CreatedAt *gtime.Time `json:"createdAt"`
 	UpdatedAt *gtime.Time `json:"updatedAt"`
 }

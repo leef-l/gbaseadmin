@@ -73,3 +73,16 @@ type RoleTreeOutput struct {
 	Children []*RoleTreeOutput `json:"children"`
 }
 
+// RoleGrantMenuInput 角色授权菜单输入
+type RoleGrantMenuInput struct {
+	ID      snowflake.JsonInt64
+	MenuIDs []snowflake.JsonInt64
+}
+
+// RoleGrantDeptInput 角色授权数据权限输入
+type RoleGrantDeptInput struct {
+	ID        snowflake.JsonInt64
+	DataScope int
+	DeptIDs   []snowflake.JsonInt64
+}
+

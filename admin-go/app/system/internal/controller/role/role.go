@@ -69,3 +69,29 @@ func (c *cRole) Tree(ctx context.Context, req *v1.RoleTreeReq) (res *v1.RoleTree
 	return
 }
 
+// GrantMenu 角色授权菜单
+func (c *cRole) GrantMenu(ctx context.Context, req *v1.RoleGrantMenuReq) (res *v1.RoleGrantMenuRes, err error) {
+	err = service.Role().GrantMenu(ctx, &model.RoleGrantMenuInput{
+		ID:      req.ID,
+		MenuIDs: req.MenuIDs,
+	})
+	return
+}
+
+// GetMenuIDs 获取角色已授权菜单ID列表
+func (c *cRole) GetMenuIDs(ctx context.Context, req *v1.RoleGetMenuIDsReq) (res *v1.RoleGetMenuIDsRes, err error) {
+	res = &v1.RoleGetMenuIDsRes{}
+	res.MenuIDs, err = service.Role().GetMenuIDs(ctx, req.ID)
+	return
+}
+
+// GrantDept 角色授权数据权限
+func (c *cRole) GrantDept(ctx context.Context, req *v1.RoleGrantDeptReq) (res *v1.RoleGrantDeptRes, err error) {
+	err = service.Role().GrantDept(ctx, &model.RoleGrantDeptInput{
+		ID:        req.ID,
+		DataScope: req.DataScope,
+		DeptIDs:   req.DeptIDs,
+	})
+	return
+}
+

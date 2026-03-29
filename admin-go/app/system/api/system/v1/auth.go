@@ -46,3 +46,12 @@ type AuthChangePasswordReq struct {
 }
 
 type AuthChangePasswordRes struct{}
+
+// 获取当前用户菜单（动态路由）
+type AuthMenusReq struct {
+	g.Meta `path:"/auth/menus" method:"get" tags:"认证" summary:"获取当前用户菜单树"`
+}
+
+type AuthMenusRes struct {
+	Menus interface{} `json:"menus"`
+}

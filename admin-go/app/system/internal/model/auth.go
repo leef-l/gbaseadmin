@@ -38,3 +38,21 @@ type AuthChangePasswordInput struct {
 	OldPassword string
 	NewPassword string
 }
+
+// AuthMenuOutput 用户菜单输出（Vben Admin 路由格式）
+type AuthMenuOutput struct {
+	ID        snowflake.JsonInt64  `json:"id"`
+	ParentID  snowflake.JsonInt64  `json:"parentId"`
+	Title     string               `json:"title"`
+	Type      int                  `json:"type"`
+	Path      string               `json:"path"`
+	Component string               `json:"component"`
+	Permission string              `json:"permission"`
+	Icon      string               `json:"icon"`
+	Sort      int                  `json:"sort"`
+	IsShow    int                  `json:"isShow"`
+	IsCache   int                  `json:"isCache"`
+	LinkURL   string               `json:"linkUrl"`
+	Status    int                  `json:"status"`
+	Children  []*AuthMenuOutput    `json:"children"`
+}

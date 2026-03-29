@@ -40,6 +40,7 @@ var (
 						group.Bind(
 							auth.Auth.Info,
 							auth.Auth.ChangePassword,
+							auth.Auth.Menus,
 							dept.Dept,
 							role.Role,
 							menu.Menu,
