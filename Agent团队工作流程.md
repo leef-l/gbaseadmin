@@ -383,3 +383,6 @@ claude
 | 2026-03-29 | Phase 2-D2 | 授权 + 关联 + 动态路由 | ✅ 完成 | Role授权菜单/部门、Users关联DeptID+RoleIDs、Auth查询roles/perms、动态菜单树 |
 | 2026-03-29 | Phase 2-D3 | 特殊 UI 组件 | ✅ 完成 | grant-menu/grant-dept弹窗、Users表单部门树+角色多选 |
 | 2026-03-29 | Phase 2-E | 动态路由 + 权限对接 | ✅ 完成 | accessMode=backend、API对接、菜单转路由、vite代理 |
+| 2026-03-30 | 迭代 | 代码生成器 Vxe Table 升级 | ✅ 完成 | list.tpl→useVbenVxeGrid、form.tpl→useVbenModal+useVbenForm |
+| 2026-03-30 | 迭代 | 重新生成 4 表前端代码 | ✅ 完成 | dept/role/menu/users 16 个前端文件全部重新生成 |
+| 2026-03-30 | 合并 | Phase 2 手写功能合并 | ✅ 完成 | 授权弹窗、部门树+角色多选、grant API 全部合并回 Vxe Table 版本 |
