@@ -24,9 +24,6 @@ ENV GOARCH=amd64
 COPY go.mod go.sum ./
 RUN go mod download
 
-# 复制 app/system 子模块的 go.mod（MonoRepo 结构）
-COPY app/system/go.mod app/system/go.sum ./app/system/
-
 # 复制全部源码
 COPY . .
 
