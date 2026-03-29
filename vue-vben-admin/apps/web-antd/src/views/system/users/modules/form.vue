@@ -8,10 +8,27 @@ import {
   createUsers,
   updateUsers,
 } from '#/api/system/users';
+import { getDeptTree } from '#/api/system/dept';
+import { getRoleTree } from '#/api/system/role';
+import type { DeptItem } from '#/api/system/dept/types';
+import type { RoleItem } from '#/api/system/role/types';
 
 const emit = defineEmits<{ success: [] }>();
 const isEdit = ref(false);
 const editId = ref('');
+const deptTreeData = ref<DeptItem[]>([]);
+const roleOptions = ref<{ label: string; value: string }[]>([]);
+
+/** 递归展平角色树为列表 */
+function flattenRoles(nodes: RoleItem[], result: { label: string; value: string }[] = [], prefix = '') {
+  for (const node of nodes) {
+    result.push({ label: prefix + node.title, value: node.id });
+    if (node.children?.length) {
+      flattenRoles(node.children, result, prefix + '  ');
+    }
+  }
+  return result;
+}
 
 /** 表单配置 */
 const [Form, formApi] = useVbenForm({
@@ -27,27 +44,44 @@ const [Form, formApi] = useVbenForm({
     {
       component: 'InputPassword',
       fieldName: 'password',
-      label: '密码（bcrypt 加密）',
+      label: '密码',
       rules: 'required',
-      componentProps: { placeholder: '请输入密码（bcrypt 加密）' },
+      componentProps: { placeholder: '请输入密码' },
     },
     {
       component: 'Input',
       fieldName: 'nickname',
-      label: '昵称/显示名',
-      componentProps: { placeholder: '请输入昵称/显示名', maxlength: 50 },
+      label: '昵称',
+      componentProps: { placeholder: '请输入昵称', maxlength: 50 },
     },
     {
       component: 'Input',
       fieldName: 'email',
-      label: '邮箱地址',
-      componentProps: { placeholder: '请输入邮箱地址', maxlength: 100 },
+      label: '邮箱',
+      componentProps: { placeholder: '请输入邮箱', maxlength: 100 },
     },
     {
-      component: 'Input',
-      fieldName: 'avatar',
-      label: '头像图片 URL',
-      componentProps: { placeholder: '请输入头像图片 URL', maxlength: 500 },
+      component: 'TreeSelect',
+      fieldName: 'deptId',
+      label: '所属部门',
+      componentProps: {
+        treeData: [],
+        fieldNames: { label: 'title', value: 'id', children: 'children' },
+        placeholder: '请选择所属部门',
+        allowClear: true,
+        treeDefaultExpandAll: true,
+      },
+    },
+    {
+      component: 'Select',
+      fieldName: 'roleIds',
+      label: '角色',
+      componentProps: {
+        options: [],
+        placeholder: '请选择角色',
+        mode: 'multiple',
+        allowClear: true,
+      },
     },
     {
       component: 'Switch',
@@ -86,14 +120,52 @@ const [Modal, modalApi] = useVbenModal({
   async onOpenChange(isOpen: boolean) {
     if (isOpen) {
       const data = modalApi.getData<{ id?: string } | null>();
+
+      // 加载部门树
+      try {
+        const res = await getDeptTree();
+        deptTreeData.value = [
+          { id: '0', title: '顶级部门', children: res ?? [] } as any,
+        ];
+        formApi.updateSchema([
+          {
+            fieldName: 'deptId',
+            componentProps: { treeData: deptTreeData.value },
+          },
+        ]);
+      } catch { /* ignore */ }
+
+      // 加载角色列表
+      try {
+        const res = await getRoleTree();
+        roleOptions.value = flattenRoles(res ?? []);
+        formApi.updateSchema([
+          {
+            fieldName: 'roleIds',
+            componentProps: { options: roleOptions.value },
+          },
+        ]);
+      } catch { /* ignore */ }
+
       if (data?.id) {
         isEdit.value = true;
         editId.value = data.id;
-        modalApi.setState({ title: '编辑用户表' });
+        modalApi.setState({ title: '编辑用户' });
+        // 编辑时密码非必填
+        formApi.updateSchema([
+          {
+            fieldName: 'password',
+            rules: undefined,
+            componentProps: { placeholder: '留空则不修改密码' },
+          },
+        ]);
         try {
           const detail = await getUsersDetail(data.id);
           if (detail) {
-            formApi.setValues(detail);
+            formApi.setValues({
+              ...detail,
+              password: '',
+            });
           }
         } catch {
           message.error('获取详情失败');
@@ -101,7 +173,14 @@ const [Modal, modalApi] = useVbenModal({
       } else {
         isEdit.value = false;
         editId.value = '';
-        modalApi.setState({ title: '新建用户表' });
+        modalApi.setState({ title: '新建用户' });
+        formApi.updateSchema([
+          {
+            fieldName: 'password',
+            rules: 'required',
+            componentProps: { placeholder: '请输入密码' },
+          },
+        ]);
         formApi.resetForm();
       }
     }

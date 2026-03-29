@@ -5,6 +5,8 @@ import type {
   RoleListParams,
   RoleCreateParams,
   RoleUpdateParams,
+  RoleGrantMenuParams,
+  RoleGrantDeptParams,
 } from './types';
 
 /** API 前缀 */
@@ -43,4 +45,21 @@ export function deleteRole(id: string) {
 /** 获取角色表树形结构 */
 export function getRoleTree(params?: Record<string, any>) {
   return requestClient.get<RoleItem[]>(`${PREFIX}/tree`, { params });
+}
+
+/** 授权菜单 */
+export function grantRoleMenu(data: RoleGrantMenuParams) {
+  return requestClient.post(`${PREFIX}/grant-menu`, data);
+}
+
+/** 获取角色已授权菜单ID列表 */
+export function getRoleMenuIds(roleId: string) {
+  return requestClient.get<string[]>(`${PREFIX}/menu-ids`, {
+    params: { roleId },
+  });
+}
+
+/** 授权部门（数据权限） */
+export function grantRoleDept(data: RoleGrantDeptParams) {
+  return requestClient.post(`${PREFIX}/grant-dept`, data);
 }

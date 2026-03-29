@@ -63,9 +63,9 @@ const gridOptions: VxeGridProps<UsersItem> = {
   columns: [
     { title: '序号', type: 'seq', width: 50 },
     { field: 'username', title: '登录用户名' },
-    { field: 'nickname', title: '昵称/显示名' },
-    { field: 'email', title: '邮箱地址' },
-    { field: 'avatar', title: '头像图片 URL' },
+    { field: 'nickname', title: '昵称' },
+    { field: 'deptTitle', title: '所属部门' },
+    { field: 'email', title: '邮箱' },
     { field: 'status', title: '状态', width: 120, slots: { default: 'status_cell' } },
     { field: 'createdAt', title: '创建时间', width: 180, formatter: 'formatDateTime' },
     { title: '操作', width: 200, fixed: 'right', slots: { default: 'action' } },

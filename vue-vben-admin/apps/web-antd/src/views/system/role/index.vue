@@ -9,6 +9,9 @@ import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getRoleTree, deleteRole } from '#/api/system/role';
 import type { RoleItem } from '#/api/system/role/types';
 import FormModal from './modules/form.vue';
+import GrantMenuModal from './modules/grant-menu.vue';
+import GrantDeptModal from './modules/grant-dept.vue';
+import { ref } from 'vue';
 
 /** 标签颜色池 */
 const TAG_COLORS = ['green', 'red', 'blue', 'orange', 'cyan', 'purple', 'geekblue', 'magenta'];
@@ -57,6 +60,9 @@ function getStatusColor(val: number): string {
   return TAG_COLORS[idx >= 0 ? idx % TAG_COLORS.length : 0] ?? 'default';
 }
 
+const grantMenuRef = ref();
+const grantDeptRef = ref();
+
 /** 表单弹窗 */
 const [FormModalComp, formModalApi] = useVbenModal({
   connectedComponent: FormModal,
@@ -102,7 +108,7 @@ const gridOptions: VxeGridProps<RoleItem> = {
     { field: 'sort', title: '排序（升序）' },
     { field: 'status', title: '状态', width: 120, slots: { default: 'status_cell' } },
     { field: 'createdAt', title: '创建时间', width: 180, formatter: 'formatDateTime' },
-    { title: '操作', width: 200, fixed: 'right', slots: { default: 'action' } },
+    { title: '操作', width: 320, fixed: 'right', slots: { default: 'action' } },
   ],
   pagerConfig: { enabled: false },
   treeConfig: {
@@ -144,7 +150,7 @@ function handleEdit(row: RoleItem) {
 function handleDelete(row: RoleItem) {
   Modal.confirm({
     title: '确认删除',
-    content: '确定要删除该角色表吗？',
+    content: '确定要删除该角色吗？',
     okType: 'danger',
     async onOk() {
       await deleteRole(row.id);
@@ -152,6 +158,16 @@ function handleDelete(row: RoleItem) {
       gridApi.reload();
     },
   });
+}
+
+/** 授权菜单 */
+function handleGrantMenu(row: RoleItem) {
+  grantMenuRef.value?.open(row.id);
+}
+
+/** 数据权限 */
+function handleGrantDept(row: RoleItem) {
+  grantDeptRef.value?.open(row.id, row.dataScope);
 }
 </script>
 
@@ -174,8 +190,12 @@ function handleDelete(row: RoleItem) {
       </template>
       <template #action="{ row }">
         <Button type="link" size="small" @click="handleEdit(row)">编辑</Button>
+        <Button type="link" size="small" @click="handleGrantMenu(row)">菜单权限</Button>
+        <Button type="link" size="small" @click="handleGrantDept(row)">数据权限</Button>
         <Button type="link" danger size="small" @click="handleDelete(row)">删除</Button>
       </template>
     </Grid>
+    <GrantMenuModal ref="grantMenuRef" @success="() => gridApi.reload()" />
+    <GrantDeptModal ref="grantDeptRef" @success="() => gridApi.reload()" />
   </Page>
 </template>

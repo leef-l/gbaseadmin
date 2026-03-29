@@ -7,6 +7,9 @@ export interface UsersItem {
   nickname?: string;
   email?: string;
   avatar?: string;
+  deptId?: string;
+  deptTitle?: string;
+  roleIds?: string[];
   status?: number;
   createdAt?: string;
   updatedAt?: string;
@@ -26,6 +29,8 @@ export interface UsersCreateParams {
   nickname?: string;
   email?: string;
   avatar?: string;
+  deptId?: string;
+  roleIds?: string[];
   status?: number;
 }
 
@@ -33,9 +38,11 @@ export interface UsersCreateParams {
 export interface UsersUpdateParams {
   id: string;
   username: string;
-  password: string;
+  password?: string;
   nickname?: string;
   email?: string;
   avatar?: string;
+  deptId?: string;
+  roleIds?: string[];
   status?: number;
 }
