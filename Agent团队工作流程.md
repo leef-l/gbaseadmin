@@ -362,3 +362,18 @@ claude
 3. **每次 Agent 调用都是全新上下文**，关键背景信息要在 prompt 中带入
 4. **Agent 返回结果不会显示给用户**，orchestrator 需主动汇总后告知
 5. **代码生成器 Agent** 每次调用都应传入架构文档路径，确保生成规则一致
+
+---
+
+## 执行进度记录
+
+| 日期 | 阶段 | 任务 | 状态 | 备注 |
+|---|---|---|---|---|
+| 2026-03-29 | Phase 0 | DevOps 环境搭建 | ✅ 完成 | docker-compose、deploy/、.env.example、Makefile |
+| 2026-03-29 | Phase 0 | Agent 定义文件 | ✅ 完成 | 9 个 Agent 全部创建于 .claude/agents/ |
+| 2026-03-29 | Phase 1-A1 | codegen-parser | ✅ 完成 | parser/meta.go、parser.go、comment_parser.go、field_mapper.go |
+| 2026-03-29 | Phase 1-A2 | codegen-backend 模板 | ✅ 完成 | 7 个 .tpl（api/controller/logic/service/model/consts/router） |
+| 2026-03-29 | Phase 1-A3 | codegen-frontend 模板 | ✅ 完成 | 4 个 .tpl（types/api/list/form） |
+| 2026-03-29 | 修复 | app/system 目录结构 | ✅ 完成 | api-template → system，修复 import 路径 |
+| 2026-03-29 | Phase 1-B | codegen-engine 引擎组装 | 🔄 进行中 | generator/backend、generator/frontend、main.go、config |
+| - | Phase 1-C | codegen-tester 验证 | ⏳ 待执行 | 等待阶段 B 完成 |

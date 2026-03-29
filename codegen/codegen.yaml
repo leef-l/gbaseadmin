@@ -1,0 +1,23 @@
+# 数据库连接
+database:
+  host: 127.0.0.1
+  port: 3306
+  user: root
+  password: ""
+  dbname: gbaseadmin
+
+# 后端输出配置
+backend:
+  output: ./app/system/   # 输出根目录
+
+# 前端输出配置
+frontend:
+  output: ./vue-vben-admin/apps/web-antd/src/  # 输出根目录
+
+# 跳过生成的公共字段
+skip_fields:
+  - created_at
+  - updated_at
+  - deleted_at
+  - created_by
+  - dept_id
