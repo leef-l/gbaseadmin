@@ -50,11 +50,11 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 WORKDIR /app
 
 # 从 builder 阶段复制编译产物
-COPY --from=builder /build/system .
+COPY --from=builder /build/system ./system
 
 # 复制 GoFrame 配置文件目录（manifest 包含 config.yaml 等）
 # 注意：实际配置值通过环境变量注入，不硬编码在此处
-COPY app/system/manifest ./manifest
+COPY --from=builder /build/app/system/manifest ./manifest
 
 # 创建非 root 运行用户（安全最佳实践）
 RUN addgroup -S appgroup && adduser -S appuser -G appgroup
