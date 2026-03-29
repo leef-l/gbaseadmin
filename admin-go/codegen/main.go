@@ -26,7 +26,7 @@ func main() {
 	flag.StringVar(&table, "table", "", "要生成的表名，多个用逗号分隔 (required)")
 	flag.StringVar(&only, "only", "", "只生成指定端: backend | frontend")
 	flag.BoolVar(&force, "force", false, "强制覆盖已存在文件")
-	flag.StringVar(&config, "config", "./codegen/codegen.yaml", "配置文件路径")
+	flag.StringVar(&config, "config", "./codegen.yaml", "配置文件路径")
 	flag.BoolVar(&dryRun, "dry-run", false, "只打印将生成的文件列表")
 	flag.Parse()
 

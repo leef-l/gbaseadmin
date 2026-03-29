@@ -12,7 +12,7 @@ backend:
 
 # 前端输出配置
 frontend:
-  output: ../vue-vben-admin/apps/web-antd/src/  # 输出根目录
+  output: ../../vue-vben-admin/apps/web-antd/src/  # 输出根目录
 
 # 跳过生成的公共字段
 skip_fields:
