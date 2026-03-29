@@ -2,8 +2,9 @@ package consts
 {{range .Fields}}{{if .IsEnum}}
 // {{$.ModelName}}{{.NameCamel}} {{.Label}}
 const (
+{{- $fieldCamel := .NameCamel -}}
 {{- range .EnumValues}}
-	{{$.ModelName}}{{$.NameCamel}}{{.Label}} = {{.Value}}
+	{{$.ModelName}}{{$fieldCamel}}{{.Label}} = {{.Value}}
 {{- end}}
 )
 {{end}}{{end}}

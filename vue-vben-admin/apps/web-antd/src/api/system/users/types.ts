@@ -1,0 +1,42 @@
+/** 用户表类型定义 */
+
+/** 用户表项 */
+export interface UsersItem {
+  id: string;
+  username: string;
+  password: string;
+  nickname?: string;
+  email?: string;
+  avatar?: string;
+  status?: number;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+/** 用户表列表查询参数 */
+export interface UsersListParams {
+  pageNum: number;
+  pageSize: number;
+  status?: number;
+}
+
+/** 用户表创建参数 */
+export interface UsersCreateParams {
+  username: string;
+  password: string;
+  nickname?: string;
+  email?: string;
+  avatar?: string;
+  status?: number;
+}
+
+/** 用户表更新参数 */
+export interface UsersUpdateParams {
+  id: string;
+  username: string;
+  password: string;
+  nickname?: string;
+  email?: string;
+  avatar?: string;
+  status?: number;
+}

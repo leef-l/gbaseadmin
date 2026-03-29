@@ -57,7 +57,7 @@ func main() {
 
 	// 获取当前工作目录（用于计算模板路径）
 	cwd, _ := os.Getwd()
-	templateDir := filepath.Join(cwd, "codegen", "templates")
+	templateDir := filepath.Join(cwd, "templates")
 
 	for _, tableName := range tableNames {
 		fmt.Printf("\n[codegen] 开始生成表: %s\n", tableName)

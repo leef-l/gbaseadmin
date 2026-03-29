@@ -376,4 +376,4 @@ claude
 | 2026-03-29 | Phase 1-A3 | codegen-frontend 模板 | ✅ 完成 | 4 个 .tpl（types/api/list/form） |
 | 2026-03-29 | 修复 | app/system 目录结构 | ✅ 完成 | api-template → system，修复 import 路径 |
 | 2026-03-29 | Phase 1-B | codegen-engine 引擎组装 | ✅ 完成 | generator/backend、generator/frontend、main.go、config.go、codegen.yaml |
-| - | Phase 1-C | codegen-tester 验证 | ⏳ 待执行 | 需要 Go 环境 + 数据库连接 |
+| 2026-03-29 | Phase 1-C | codegen-tester 验证 | ✅ 完成 | dept/role/menu/users 4 表 44 文件全部生成成功 |

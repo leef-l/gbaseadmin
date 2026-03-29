@@ -28,7 +28,7 @@ func (s *s{{.ModelName}}) Create(ctx context.Context, in *model.{{.ModelName}}Cr
 		dao.{{.ModelName}}.Columns().Id:        id,
 {{- range .Fields}}
 {{- if and (not .IsID) (not .IsHidden)}}
-		dao.{{.ModelName}}.Columns().{{.NameCamel}}: in.{{.NameCamel}},
+		dao.{{$.ModelName}}.Columns().{{.NameCamel}}: in.{{.NameCamel}},
 {{- end}}
 {{- end}}
 		dao.{{.ModelName}}.Columns().CreatedAt: gtime.Now(),
@@ -42,7 +42,7 @@ func (s *s{{.ModelName}}) Update(ctx context.Context, in *model.{{.ModelName}}Up
 	_, err := dao.{{.ModelName}}.Ctx(ctx).Where(dao.{{.ModelName}}.Columns().Id, in.Id).Data(g.Map{
 {{- range .Fields}}
 {{- if and (not .IsID) (not .IsHidden)}}
-		dao.{{.ModelName}}.Columns().{{.NameCamel}}: in.{{.NameCamel}},
+		dao.{{$.ModelName}}.Columns().{{.NameCamel}}: in.{{.NameCamel}},
 {{- end}}
 {{- end}}
 		dao.{{.ModelName}}.Columns().UpdatedAt: gtime.Now(),
