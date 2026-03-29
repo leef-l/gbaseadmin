@@ -25,3 +25,4 @@ dist/
 *.tmp
 vendor/
 .claude/settings.local.json
+lefthook.yml
