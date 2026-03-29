@@ -3,6 +3,7 @@ package main
 import (
 	_ "gbaseadmin/app/system/internal/packed"
 
+	_ "gbaseadmin/app/system/internal/logic/auth"
 	_ "gbaseadmin/app/system/internal/logic/dept"
 	_ "gbaseadmin/app/system/internal/logic/menu"
 	_ "gbaseadmin/app/system/internal/logic/role"
