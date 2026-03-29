@@ -30,7 +30,8 @@ type EnumValue struct {
 // FieldMeta 字段元数据
 type FieldMeta struct {
 	Name         string      // snake_case
-	NameCamel    string      // CamelCase
+	NameCamel    string      // CamelCase（Go 风格，ID/URL 全大写）
+	NameDao      string      // CamelCase（GoFrame DAO 风格，Id/Url 首字母大写）
 	NameLower    string      // camelCase（首字母小写）
 	DBType       string      // varchar/int/bigint/tinyint/text 等
 	GoType       string      // string/int/int64/JsonInt64 等

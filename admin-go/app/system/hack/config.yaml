@@ -4,8 +4,15 @@
 gfcli:
   gen:
     dao:
-      - link: "mysql:root:12345678@tcp(127.0.0.1:3306)/test"
+      - link: "mysql:root:gbaseadmin123@tcp(127.0.0.1:3306)/gbaseadmin"
+        tables: "dept,role,role_dept,role_menu,menu,users,user_dept,user_role"
         descriptionTag: true
+        noJsonTag: true
+        noModelComment: false
+        overwriteDao: false
+        modelFile: ""
+        tplDaoIndexPath: ""
+        tplDaoInternalPath: ""
 
   docker:
     build: "-a amd64 -s linux -p temp -ew"

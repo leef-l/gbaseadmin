@@ -33,7 +33,7 @@
 **触发指令：**
 ```
 使用 devops Agent：
-读取架构设计文档，在 /www/wwwroot/project/gbaseadmin/ 创建完整的 docker-compose 环境配置，
+读取架构设计文档，在 /www/wwwroot/project/gbaseadmin/admin-go/ 创建完整的 docker-compose 环境配置，
 包括 MySQL 8.0（含自动建表 init.sql）、Redis 7、后端 Go 服务、前端 Vben Admin、adminer 管理界面。
 同时创建 .env.example、Makefile 和 deploy/ 目录下的所有配置文件。
 ```
@@ -197,7 +197,7 @@ docker-compose up -d
 
 ```bash
 # 1. 初始化 GoFrame MonoRepo
-gf init gbaseadmin -m
+cd admin-go && gf init gbaseadmin -m
 
 # 2. 初始化权限服务
 gf init app/system -a

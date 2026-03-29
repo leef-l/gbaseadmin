@@ -3,6 +3,7 @@ package v1
 import (
 	"github.com/gogf/gf/v2/frame/g"
 
+	"gbaseadmin/app/system/internal/model"
 	"gbaseadmin/utility/snowflake"
 )
 
@@ -27,7 +28,7 @@ type UsersCreateRes struct {
 // UsersUpdateReq 更新用户表请求
 type UsersUpdateReq struct {
 	g.Meta `path:"/users/update" method:"put" tags:"用户表" summary:"更新用户表"`
-	Id     snowflake.JsonInt64 `json:"id" v:"required#ID不能为空" dc:"用户表ID"`
+	ID     snowflake.JsonInt64 `json:"id" v:"required#ID不能为空" dc:"用户表ID"`
 	Username string `json:"username" dc:"登录用户名"`
 	Password string `json:"password" dc:"密码（bcrypt 加密）"`
 	Nickname string `json:"nickname" dc:"昵称/显示名"`
@@ -44,7 +45,7 @@ type UsersUpdateRes struct {
 // UsersDeleteReq 删除用户表请求
 type UsersDeleteReq struct {
 	g.Meta `path:"/users/delete" method:"delete" tags:"用户表" summary:"删除用户表"`
-	Id     snowflake.JsonInt64 `json:"id" v:"required#ID不能为空" dc:"用户表ID"`
+	ID     snowflake.JsonInt64 `json:"id" v:"required#ID不能为空" dc:"用户表ID"`
 }
 
 // UsersDeleteRes 删除用户表响应
@@ -55,7 +56,7 @@ type UsersDeleteRes struct {
 // UsersDetailReq 获取用户表详情请求
 type UsersDetailReq struct {
 	g.Meta `path:"/users/detail" method:"get" tags:"用户表" summary:"获取用户表详情"`
-	Id     snowflake.JsonInt64 `json:"id" v:"required#ID不能为空" dc:"用户表ID"`
+	ID     snowflake.JsonInt64 `json:"id" v:"required#ID不能为空" dc:"用户表ID"`
 }
 
 // UsersDetailRes 获取用户表详情响应

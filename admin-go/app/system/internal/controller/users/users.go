@@ -4,6 +4,7 @@ import (
 	"context"
 
 	v1 "gbaseadmin/app/system/api/system/v1"
+	"gbaseadmin/app/system/internal/model"
 	"gbaseadmin/app/system/internal/service"
 )
 
@@ -27,7 +28,7 @@ func (c *cUsers) Create(ctx context.Context, req *v1.UsersCreateReq) (res *v1.Us
 // Update 更新用户表
 func (c *cUsers) Update(ctx context.Context, req *v1.UsersUpdateReq) (res *v1.UsersUpdateRes, err error) {
 	err = service.Users().Update(ctx, &model.UsersUpdateInput{
-		Id: req.Id,
+		ID: req.ID,
 		Username: req.Username,
 		Password: req.Password,
 		Nickname: req.Nickname,
@@ -40,14 +41,14 @@ func (c *cUsers) Update(ctx context.Context, req *v1.UsersUpdateReq) (res *v1.Us
 
 // Delete 删除用户表
 func (c *cUsers) Delete(ctx context.Context, req *v1.UsersDeleteReq) (res *v1.UsersDeleteRes, err error) {
-	err = service.Users().Delete(ctx, req.Id)
+	err = service.Users().Delete(ctx, req.ID)
 	return
 }
 
 // Detail 获取用户表详情
 func (c *cUsers) Detail(ctx context.Context, req *v1.UsersDetailReq) (res *v1.UsersDetailRes, err error) {
 	res = &v1.UsersDetailRes{}
-	res.UsersDetailOutput, err = service.Users().Detail(ctx, req.Id)
+	res.UsersDetailOutput, err = service.Users().Detail(ctx, req.ID)
 	return
 }
 

@@ -3,6 +3,7 @@ package role
 import (
 	"context"
 
+	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/os/gtime"
 
 	"gbaseadmin/app/system/internal/dao"
@@ -26,7 +27,7 @@ func (s *sRole) Create(ctx context.Context, in *model.RoleCreateInput) error {
 	id := snowflake.Generate()
 	_, err := dao.Role.Ctx(ctx).Data(g.Map{
 		dao.Role.Columns().Id:        id,
-		dao.Role.Columns().ParentID: in.ParentID,
+		dao.Role.Columns().ParentId: in.ParentID,
 		dao.Role.Columns().Title: in.Title,
 		dao.Role.Columns().DataScope: in.DataScope,
 		dao.Role.Columns().Sort: in.Sort,
@@ -39,8 +40,8 @@ func (s *sRole) Create(ctx context.Context, in *model.RoleCreateInput) error {
 
 // Update 更新角色表
 func (s *sRole) Update(ctx context.Context, in *model.RoleUpdateInput) error {
-	_, err := dao.Role.Ctx(ctx).Where(dao.Role.Columns().Id, in.Id).Data(g.Map{
-		dao.Role.Columns().ParentID: in.ParentID,
+	_, err := dao.Role.Ctx(ctx).Where(dao.Role.Columns().Id, in.ID).Data(g.Map{
+		dao.Role.Columns().ParentId: in.ParentID,
 		dao.Role.Columns().Title: in.Title,
 		dao.Role.Columns().DataScope: in.DataScope,
 		dao.Role.Columns().Sort: in.Sort,
@@ -88,14 +89,14 @@ func (s *sRole) Tree(ctx context.Context) (tree []*model.RoleTreeOutput, err err
 	// 使用 map 迭代方式组装树
 	nodeMap := make(map[int64]*model.RoleTreeOutput, len(list))
 	for _, item := range list {
-		nodeMap[int64(item.Id)] = item
+		nodeMap[int64(item.ID)] = item
 	}
 
 	tree = make([]*model.RoleTreeOutput, 0)
 	for _, item := range list {
-		if int64(item.ParentId) == 0 {
+		if int64(item.ParentID) == 0 {
 			tree = append(tree, item)
-		} else if parent, ok := nodeMap[int64(item.ParentId)]; ok {
+		} else if parent, ok := nodeMap[int64(item.ParentID)]; ok {
 			parent.Children = append(parent.Children, item)
 		}
 	}

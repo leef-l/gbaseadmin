@@ -23,7 +23,6 @@ var mappings = []templateMapping{
 	{"service.tpl", "internal/service/{module}.go"},
 	{"model.tpl", "internal/model/{module}.go"},
 	{"consts.tpl", "internal/consts/{module}.go"},
-	{"router.tpl", "internal/router/{module}.go"},
 }
 
 // Config 后端生成器配置

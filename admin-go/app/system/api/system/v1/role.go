@@ -3,6 +3,7 @@ package v1
 import (
 	"github.com/gogf/gf/v2/frame/g"
 
+	"gbaseadmin/app/system/internal/model"
 	"gbaseadmin/utility/snowflake"
 )
 
@@ -26,7 +27,7 @@ type RoleCreateRes struct {
 // RoleUpdateReq 更新角色表请求
 type RoleUpdateReq struct {
 	g.Meta `path:"/role/update" method:"put" tags:"角色表" summary:"更新角色表"`
-	Id     snowflake.JsonInt64 `json:"id" v:"required#ID不能为空" dc:"角色表ID"`
+	ID     snowflake.JsonInt64 `json:"id" v:"required#ID不能为空" dc:"角色表ID"`
 	ParentID snowflake.JsonInt64 `json:"parentID" dc:"上级角色ID，0 表示顶级角色"`
 	Title string `json:"title" dc:"角色名称"`
 	DataScope int `json:"dataScope" dc:"数据范围"`
@@ -42,7 +43,7 @@ type RoleUpdateRes struct {
 // RoleDeleteReq 删除角色表请求
 type RoleDeleteReq struct {
 	g.Meta `path:"/role/delete" method:"delete" tags:"角色表" summary:"删除角色表"`
-	Id     snowflake.JsonInt64 `json:"id" v:"required#ID不能为空" dc:"角色表ID"`
+	ID     snowflake.JsonInt64 `json:"id" v:"required#ID不能为空" dc:"角色表ID"`
 }
 
 // RoleDeleteRes 删除角色表响应
@@ -53,7 +54,7 @@ type RoleDeleteRes struct {
 // RoleDetailReq 获取角色表详情请求
 type RoleDetailReq struct {
 	g.Meta `path:"/role/detail" method:"get" tags:"角色表" summary:"获取角色表详情"`
-	Id     snowflake.JsonInt64 `json:"id" v:"required#ID不能为空" dc:"角色表ID"`
+	ID     snowflake.JsonInt64 `json:"id" v:"required#ID不能为空" dc:"角色表ID"`
 }
 
 // RoleDetailRes 获取角色表详情响应

@@ -3,6 +3,7 @@ package dept
 import (
 	"context"
 
+	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/os/gtime"
 
 	"gbaseadmin/app/system/internal/dao"
@@ -26,7 +27,7 @@ func (s *sDept) Create(ctx context.Context, in *model.DeptCreateInput) error {
 	id := snowflake.Generate()
 	_, err := dao.Dept.Ctx(ctx).Data(g.Map{
 		dao.Dept.Columns().Id:        id,
-		dao.Dept.Columns().ParentID: in.ParentID,
+		dao.Dept.Columns().ParentId: in.ParentID,
 		dao.Dept.Columns().Title: in.Title,
 		dao.Dept.Columns().Username: in.Username,
 		dao.Dept.Columns().Email: in.Email,
@@ -40,8 +41,8 @@ func (s *sDept) Create(ctx context.Context, in *model.DeptCreateInput) error {
 
 // Update 更新部门表
 func (s *sDept) Update(ctx context.Context, in *model.DeptUpdateInput) error {
-	_, err := dao.Dept.Ctx(ctx).Where(dao.Dept.Columns().Id, in.Id).Data(g.Map{
-		dao.Dept.Columns().ParentID: in.ParentID,
+	_, err := dao.Dept.Ctx(ctx).Where(dao.Dept.Columns().Id, in.ID).Data(g.Map{
+		dao.Dept.Columns().ParentId: in.ParentID,
 		dao.Dept.Columns().Title: in.Title,
 		dao.Dept.Columns().Username: in.Username,
 		dao.Dept.Columns().Email: in.Email,
@@ -90,14 +91,14 @@ func (s *sDept) Tree(ctx context.Context) (tree []*model.DeptTreeOutput, err err
 	// 使用 map 迭代方式组装树
 	nodeMap := make(map[int64]*model.DeptTreeOutput, len(list))
 	for _, item := range list {
-		nodeMap[int64(item.Id)] = item
+		nodeMap[int64(item.ID)] = item
 	}
 
 	tree = make([]*model.DeptTreeOutput, 0)
 	for _, item := range list {
-		if int64(item.ParentId) == 0 {
+		if int64(item.ParentID) == 0 {
 			tree = append(tree, item)
-		} else if parent, ok := nodeMap[int64(item.ParentId)]; ok {
+		} else if parent, ok := nodeMap[int64(item.ParentID)]; ok {
 			parent.Children = append(parent.Children, item)
 		}
 	}

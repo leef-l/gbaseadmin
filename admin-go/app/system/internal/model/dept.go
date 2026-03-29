@@ -1,6 +1,8 @@
 package model
 
 import (
+	"github.com/gogf/gf/v2/os/gtime"
+
 	"gbaseadmin/utility/snowflake"
 )
 
@@ -18,7 +20,7 @@ type DeptCreateInput struct {
 
 // DeptUpdateInput 更新部门表输入
 type DeptUpdateInput struct {
-	Id snowflake.JsonInt64 `json:"id"`
+	ID snowflake.JsonInt64 `json:"id"`
 	ParentID snowflake.JsonInt64 `json:"parentID"`
 	Title string `json:"title"`
 	Username string `json:"username"`
@@ -29,6 +31,7 @@ type DeptUpdateInput struct {
 
 // DeptDetailOutput 部门表详情输出
 type DeptDetailOutput struct {
+	ID snowflake.JsonInt64 `json:"id"`
 	ParentID snowflake.JsonInt64 `json:"parentID"`
 	Title string `json:"title"`
 	Username string `json:"username"`
@@ -41,6 +44,7 @@ type DeptDetailOutput struct {
 
 // DeptListOutput 部门表列表输出
 type DeptListOutput struct {
+	ID snowflake.JsonInt64 `json:"id"`
 	ParentID snowflake.JsonInt64 `json:"parentID"`
 	Title string `json:"title"`
 	Username string `json:"username"`
@@ -59,6 +63,7 @@ type DeptListInput struct {
 
 // DeptTreeOutput 部门表树形输出
 type DeptTreeOutput struct {
+	ID snowflake.JsonInt64 `json:"id"`
 	ParentID snowflake.JsonInt64 `json:"parentID"`
 	Title string `json:"title"`
 	Username string `json:"username"`

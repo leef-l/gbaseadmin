@@ -1,6 +1,8 @@
 package model
 
 import (
+	"github.com/gogf/gf/v2/os/gtime"
+
 	"gbaseadmin/utility/snowflake"
 )
 
@@ -24,7 +26,7 @@ type MenuCreateInput struct {
 
 // MenuUpdateInput 更新菜单表输入
 type MenuUpdateInput struct {
-	Id snowflake.JsonInt64 `json:"id"`
+	ID snowflake.JsonInt64 `json:"id"`
 	ParentID snowflake.JsonInt64 `json:"parentID"`
 	Title string `json:"title"`
 	Type int `json:"type"`
@@ -41,6 +43,7 @@ type MenuUpdateInput struct {
 
 // MenuDetailOutput 菜单表详情输出
 type MenuDetailOutput struct {
+	ID snowflake.JsonInt64 `json:"id"`
 	ParentID snowflake.JsonInt64 `json:"parentID"`
 	Title string `json:"title"`
 	Type int `json:"type"`
@@ -59,6 +62,7 @@ type MenuDetailOutput struct {
 
 // MenuListOutput 菜单表列表输出
 type MenuListOutput struct {
+	ID snowflake.JsonInt64 `json:"id"`
 	ParentID snowflake.JsonInt64 `json:"parentID"`
 	Title string `json:"title"`
 	Type int `json:"type"`
@@ -83,6 +87,7 @@ type MenuListInput struct {
 
 // MenuTreeOutput 菜单表树形输出
 type MenuTreeOutput struct {
+	ID snowflake.JsonInt64 `json:"id"`
 	ParentID snowflake.JsonInt64 `json:"parentID"`
 	Title string `json:"title"`
 	Type int `json:"type"`

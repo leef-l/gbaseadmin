@@ -4,6 +4,7 @@ import (
 	"context"
 
 	v1 "gbaseadmin/app/system/api/system/v1"
+	"gbaseadmin/app/system/internal/model"
 	"gbaseadmin/app/system/internal/service"
 )
 
@@ -33,7 +34,7 @@ func (c *cMenu) Create(ctx context.Context, req *v1.MenuCreateReq) (res *v1.Menu
 // Update 更新菜单表
 func (c *cMenu) Update(ctx context.Context, req *v1.MenuUpdateReq) (res *v1.MenuUpdateRes, err error) {
 	err = service.Menu().Update(ctx, &model.MenuUpdateInput{
-		Id: req.Id,
+		ID: req.ID,
 		ParentID: req.ParentID,
 		Title: req.Title,
 		Type: req.Type,
@@ -52,14 +53,14 @@ func (c *cMenu) Update(ctx context.Context, req *v1.MenuUpdateReq) (res *v1.Menu
 
 // Delete 删除菜单表
 func (c *cMenu) Delete(ctx context.Context, req *v1.MenuDeleteReq) (res *v1.MenuDeleteRes, err error) {
-	err = service.Menu().Delete(ctx, req.Id)
+	err = service.Menu().Delete(ctx, req.ID)
 	return
 }
 
 // Detail 获取菜单表详情
 func (c *cMenu) Detail(ctx context.Context, req *v1.MenuDetailReq) (res *v1.MenuDetailRes, err error) {
 	res = &v1.MenuDetailRes{}
-	res.MenuDetailOutput, err = service.Menu().Detail(ctx, req.Id)
+	res.MenuDetailOutput, err = service.Menu().Detail(ctx, req.ID)
 	return
 }
 

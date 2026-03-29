@@ -3,6 +3,7 @@ package {{.ModuleName}}
 import (
 	"context"
 
+	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/os/gtime"
 
 	"gbaseadmin/app/system/internal/dao"
@@ -28,7 +29,7 @@ func (s *s{{.ModelName}}) Create(ctx context.Context, in *model.{{.ModelName}}Cr
 		dao.{{.ModelName}}.Columns().Id:        id,
 {{- range .Fields}}
 {{- if and (not .IsID) (not .IsHidden)}}
-		dao.{{$.ModelName}}.Columns().{{.NameCamel}}: in.{{.NameCamel}},
+		dao.{{$.ModelName}}.Columns().{{.NameDao}}: in.{{.NameCamel}},
 {{- end}}
 {{- end}}
 		dao.{{.ModelName}}.Columns().CreatedAt: gtime.Now(),
@@ -39,10 +40,10 @@ func (s *s{{.ModelName}}) Create(ctx context.Context, in *model.{{.ModelName}}Cr
 
 // Update 更新{{.Comment}}
 func (s *s{{.ModelName}}) Update(ctx context.Context, in *model.{{.ModelName}}UpdateInput) error {
-	_, err := dao.{{.ModelName}}.Ctx(ctx).Where(dao.{{.ModelName}}.Columns().Id, in.Id).Data(g.Map{
+	_, err := dao.{{.ModelName}}.Ctx(ctx).Where(dao.{{.ModelName}}.Columns().Id, in.ID).Data(g.Map{
 {{- range .Fields}}
 {{- if and (not .IsID) (not .IsHidden)}}
-		dao.{{$.ModelName}}.Columns().{{.NameCamel}}: in.{{.NameCamel}},
+		dao.{{$.ModelName}}.Columns().{{.NameDao}}: in.{{.NameCamel}},
 {{- end}}
 {{- end}}
 		dao.{{.ModelName}}.Columns().UpdatedAt: gtime.Now(),
@@ -88,14 +89,14 @@ func (s *s{{.ModelName}}) Tree(ctx context.Context) (tree []*model.{{.ModelName}
 	// 使用 map 迭代方式组装树
 	nodeMap := make(map[int64]*model.{{.ModelName}}TreeOutput, len(list))
 	for _, item := range list {
-		nodeMap[int64(item.Id)] = item
+		nodeMap[int64(item.ID)] = item
 	}
 
 	tree = make([]*model.{{.ModelName}}TreeOutput, 0)
 	for _, item := range list {
-		if int64(item.ParentId) == 0 {
+		if int64(item.ParentID) == 0 {
 			tree = append(tree, item)
-		} else if parent, ok := nodeMap[int64(item.ParentId)]; ok {
+		} else if parent, ok := nodeMap[int64(item.ParentID)]; ok {
 			parent.Children = append(parent.Children, item)
 		}
 	}

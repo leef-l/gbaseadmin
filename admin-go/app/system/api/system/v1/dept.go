@@ -3,6 +3,7 @@ package v1
 import (
 	"github.com/gogf/gf/v2/frame/g"
 
+	"gbaseadmin/app/system/internal/model"
 	"gbaseadmin/utility/snowflake"
 )
 
@@ -27,7 +28,7 @@ type DeptCreateRes struct {
 // DeptUpdateReq 更新部门表请求
 type DeptUpdateReq struct {
 	g.Meta `path:"/dept/update" method:"put" tags:"部门表" summary:"更新部门表"`
-	Id     snowflake.JsonInt64 `json:"id" v:"required#ID不能为空" dc:"部门表ID"`
+	ID     snowflake.JsonInt64 `json:"id" v:"required#ID不能为空" dc:"部门表ID"`
 	ParentID snowflake.JsonInt64 `json:"parentID" dc:"上级部门ID，0 表示顶级部门"`
 	Title string `json:"title" dc:"部门名称"`
 	Username string `json:"username" dc:"部门负责人姓名"`
@@ -44,7 +45,7 @@ type DeptUpdateRes struct {
 // DeptDeleteReq 删除部门表请求
 type DeptDeleteReq struct {
 	g.Meta `path:"/dept/delete" method:"delete" tags:"部门表" summary:"删除部门表"`
-	Id     snowflake.JsonInt64 `json:"id" v:"required#ID不能为空" dc:"部门表ID"`
+	ID     snowflake.JsonInt64 `json:"id" v:"required#ID不能为空" dc:"部门表ID"`
 }
 
 // DeptDeleteRes 删除部门表响应
@@ -55,7 +56,7 @@ type DeptDeleteRes struct {
 // DeptDetailReq 获取部门表详情请求
 type DeptDetailReq struct {
 	g.Meta `path:"/dept/detail" method:"get" tags:"部门表" summary:"获取部门表详情"`
-	Id     snowflake.JsonInt64 `json:"id" v:"required#ID不能为空" dc:"部门表ID"`
+	ID     snowflake.JsonInt64 `json:"id" v:"required#ID不能为空" dc:"部门表ID"`
 }
 
 // DeptDetailRes 获取部门表详情响应

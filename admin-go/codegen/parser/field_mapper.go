@@ -3,7 +3,7 @@ package parser
 import "strings"
 
 // snakeToCamel 将 snake_case 转为 CamelCase
-// 例：dept_name → DeptName, id → Id
+// 例：dept_name → DeptName, parent_id → ParentID, link_url → LinkURL
 func snakeToCamel(s string) string {
 	parts := strings.Split(s, "_")
 	var b strings.Builder
@@ -19,6 +19,22 @@ func snakeToCamel(s string) string {
 			b.WriteString(strings.ToUpper(p[:1]))
 			b.WriteString(p[1:])
 		}
+	}
+	return b.String()
+}
+
+// snakeToCamelDao 将 snake_case 转为 GoFrame DAO 风格 CamelCase
+// 不做特殊缩写处理，每段仅首字母大写
+// 例：parent_id → ParentId, link_url → LinkUrl, data_scope → DataScope
+func snakeToCamelDao(s string) string {
+	parts := strings.Split(s, "_")
+	var b strings.Builder
+	for _, p := range parts {
+		if p == "" {
+			continue
+		}
+		b.WriteString(strings.ToUpper(p[:1]))
+		b.WriteString(p[1:])
 	}
 	return b.String()
 }

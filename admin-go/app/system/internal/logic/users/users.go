@@ -3,6 +3,7 @@ package users
 import (
 	"context"
 
+	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/os/gtime"
 
 	"gbaseadmin/app/system/internal/dao"
@@ -40,7 +41,7 @@ func (s *sUsers) Create(ctx context.Context, in *model.UsersCreateInput) error {
 
 // Update 更新用户表
 func (s *sUsers) Update(ctx context.Context, in *model.UsersUpdateInput) error {
-	_, err := dao.Users.Ctx(ctx).Where(dao.Users.Columns().Id, in.Id).Data(g.Map{
+	_, err := dao.Users.Ctx(ctx).Where(dao.Users.Columns().Id, in.ID).Data(g.Map{
 		dao.Users.Columns().Username: in.Username,
 		dao.Users.Columns().Password: in.Password,
 		dao.Users.Columns().Nickname: in.Nickname,

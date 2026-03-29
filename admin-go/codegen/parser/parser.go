@@ -179,6 +179,7 @@ func buildFieldMeta(col columnInfo) FieldMeta {
 	field := FieldMeta{
 		Name:         name,
 		NameCamel:    snakeToCamel(name),
+		NameDao:      snakeToCamelDao(name),
 		NameLower:    snakeToCamelLower(name),
 		DBType:       dbType,
 		GoType:       MapGoType(col.DataType, isID || isForeignKey || isParentID || name == "dept_id" || name == "created_by"),

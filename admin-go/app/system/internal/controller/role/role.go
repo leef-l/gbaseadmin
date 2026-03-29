@@ -4,6 +4,7 @@ import (
 	"context"
 
 	v1 "gbaseadmin/app/system/api/system/v1"
+	"gbaseadmin/app/system/internal/model"
 	"gbaseadmin/app/system/internal/service"
 )
 
@@ -26,7 +27,7 @@ func (c *cRole) Create(ctx context.Context, req *v1.RoleCreateReq) (res *v1.Role
 // Update 更新角色表
 func (c *cRole) Update(ctx context.Context, req *v1.RoleUpdateReq) (res *v1.RoleUpdateRes, err error) {
 	err = service.Role().Update(ctx, &model.RoleUpdateInput{
-		Id: req.Id,
+		ID: req.ID,
 		ParentID: req.ParentID,
 		Title: req.Title,
 		DataScope: req.DataScope,
@@ -38,14 +39,14 @@ func (c *cRole) Update(ctx context.Context, req *v1.RoleUpdateReq) (res *v1.Role
 
 // Delete 删除角色表
 func (c *cRole) Delete(ctx context.Context, req *v1.RoleDeleteReq) (res *v1.RoleDeleteRes, err error) {
-	err = service.Role().Delete(ctx, req.Id)
+	err = service.Role().Delete(ctx, req.ID)
 	return
 }
 
 // Detail 获取角色表详情
 func (c *cRole) Detail(ctx context.Context, req *v1.RoleDetailReq) (res *v1.RoleDetailRes, err error) {
 	res = &v1.RoleDetailRes{}
-	res.RoleDetailOutput, err = service.Role().Detail(ctx, req.Id)
+	res.RoleDetailOutput, err = service.Role().Detail(ctx, req.ID)
 	return
 }
 

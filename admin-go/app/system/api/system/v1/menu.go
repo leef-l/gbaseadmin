@@ -3,6 +3,7 @@ package v1
 import (
 	"github.com/gogf/gf/v2/frame/g"
 
+	"gbaseadmin/app/system/internal/model"
 	"gbaseadmin/utility/snowflake"
 )
 
@@ -33,7 +34,7 @@ type MenuCreateRes struct {
 // MenuUpdateReq 更新菜单表请求
 type MenuUpdateReq struct {
 	g.Meta `path:"/menu/update" method:"put" tags:"菜单表" summary:"更新菜单表"`
-	Id     snowflake.JsonInt64 `json:"id" v:"required#ID不能为空" dc:"菜单表ID"`
+	ID     snowflake.JsonInt64 `json:"id" v:"required#ID不能为空" dc:"菜单表ID"`
 	ParentID snowflake.JsonInt64 `json:"parentID" dc:"上级菜单ID，0 表示顶级菜单"`
 	Title string `json:"title" dc:"菜单名称"`
 	Type int `json:"type" dc:"类型"`
@@ -56,7 +57,7 @@ type MenuUpdateRes struct {
 // MenuDeleteReq 删除菜单表请求
 type MenuDeleteReq struct {
 	g.Meta `path:"/menu/delete" method:"delete" tags:"菜单表" summary:"删除菜单表"`
-	Id     snowflake.JsonInt64 `json:"id" v:"required#ID不能为空" dc:"菜单表ID"`
+	ID     snowflake.JsonInt64 `json:"id" v:"required#ID不能为空" dc:"菜单表ID"`
 }
 
 // MenuDeleteRes 删除菜单表响应
@@ -67,7 +68,7 @@ type MenuDeleteRes struct {
 // MenuDetailReq 获取菜单表详情请求
 type MenuDetailReq struct {
 	g.Meta `path:"/menu/detail" method:"get" tags:"菜单表" summary:"获取菜单表详情"`
-	Id     snowflake.JsonInt64 `json:"id" v:"required#ID不能为空" dc:"菜单表ID"`
+	ID     snowflake.JsonInt64 `json:"id" v:"required#ID不能为空" dc:"菜单表ID"`
 }
 
 // MenuDetailRes 获取菜单表详情响应

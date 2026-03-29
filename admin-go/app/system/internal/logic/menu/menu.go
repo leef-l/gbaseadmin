@@ -3,6 +3,7 @@ package menu
 import (
 	"context"
 
+	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/os/gtime"
 
 	"gbaseadmin/app/system/internal/dao"
@@ -26,7 +27,7 @@ func (s *sMenu) Create(ctx context.Context, in *model.MenuCreateInput) error {
 	id := snowflake.Generate()
 	_, err := dao.Menu.Ctx(ctx).Data(g.Map{
 		dao.Menu.Columns().Id:        id,
-		dao.Menu.Columns().ParentID: in.ParentID,
+		dao.Menu.Columns().ParentId: in.ParentID,
 		dao.Menu.Columns().Title: in.Title,
 		dao.Menu.Columns().Type: in.Type,
 		dao.Menu.Columns().Path: in.Path,
@@ -36,7 +37,7 @@ func (s *sMenu) Create(ctx context.Context, in *model.MenuCreateInput) error {
 		dao.Menu.Columns().Sort: in.Sort,
 		dao.Menu.Columns().IsShow: in.IsShow,
 		dao.Menu.Columns().IsCache: in.IsCache,
-		dao.Menu.Columns().LinkURL: in.LinkURL,
+		dao.Menu.Columns().LinkUrl: in.LinkURL,
 		dao.Menu.Columns().Status: in.Status,
 		dao.Menu.Columns().CreatedAt: gtime.Now(),
 		dao.Menu.Columns().UpdatedAt: gtime.Now(),
@@ -46,8 +47,8 @@ func (s *sMenu) Create(ctx context.Context, in *model.MenuCreateInput) error {
 
 // Update 更新菜单表
 func (s *sMenu) Update(ctx context.Context, in *model.MenuUpdateInput) error {
-	_, err := dao.Menu.Ctx(ctx).Where(dao.Menu.Columns().Id, in.Id).Data(g.Map{
-		dao.Menu.Columns().ParentID: in.ParentID,
+	_, err := dao.Menu.Ctx(ctx).Where(dao.Menu.Columns().Id, in.ID).Data(g.Map{
+		dao.Menu.Columns().ParentId: in.ParentID,
 		dao.Menu.Columns().Title: in.Title,
 		dao.Menu.Columns().Type: in.Type,
 		dao.Menu.Columns().Path: in.Path,
@@ -57,7 +58,7 @@ func (s *sMenu) Update(ctx context.Context, in *model.MenuUpdateInput) error {
 		dao.Menu.Columns().Sort: in.Sort,
 		dao.Menu.Columns().IsShow: in.IsShow,
 		dao.Menu.Columns().IsCache: in.IsCache,
-		dao.Menu.Columns().LinkURL: in.LinkURL,
+		dao.Menu.Columns().LinkUrl: in.LinkURL,
 		dao.Menu.Columns().Status: in.Status,
 		dao.Menu.Columns().UpdatedAt: gtime.Now(),
 	}).Update()
@@ -102,14 +103,14 @@ func (s *sMenu) Tree(ctx context.Context) (tree []*model.MenuTreeOutput, err err
 	// 使用 map 迭代方式组装树
 	nodeMap := make(map[int64]*model.MenuTreeOutput, len(list))
 	for _, item := range list {
-		nodeMap[int64(item.Id)] = item
+		nodeMap[int64(item.ID)] = item
 	}
 
 	tree = make([]*model.MenuTreeOutput, 0)
 	for _, item := range list {
-		if int64(item.ParentId) == 0 {
+		if int64(item.ParentID) == 0 {
 			tree = append(tree, item)
-		} else if parent, ok := nodeMap[int64(item.ParentId)]; ok {
+		} else if parent, ok := nodeMap[int64(item.ParentID)]; ok {
 			parent.Children = append(parent.Children, item)
 		}
 	}

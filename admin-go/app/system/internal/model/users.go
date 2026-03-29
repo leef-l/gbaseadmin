@@ -1,6 +1,8 @@
 package model
 
 import (
+	"github.com/gogf/gf/v2/os/gtime"
+
 	"gbaseadmin/utility/snowflake"
 )
 
@@ -18,7 +20,7 @@ type UsersCreateInput struct {
 
 // UsersUpdateInput 更新用户表输入
 type UsersUpdateInput struct {
-	Id snowflake.JsonInt64 `json:"id"`
+	ID snowflake.JsonInt64 `json:"id"`
 	Username string `json:"username"`
 	Password string `json:"password"`
 	Nickname string `json:"nickname"`
@@ -29,6 +31,7 @@ type UsersUpdateInput struct {
 
 // UsersDetailOutput 用户表详情输出
 type UsersDetailOutput struct {
+	ID snowflake.JsonInt64 `json:"id"`
 	Username string `json:"username"`
 	Password string `json:"password"`
 	Nickname string `json:"nickname"`
@@ -41,6 +44,7 @@ type UsersDetailOutput struct {
 
 // UsersListOutput 用户表列表输出
 type UsersListOutput struct {
+	ID snowflake.JsonInt64 `json:"id"`
 	Username string `json:"username"`
 	Password string `json:"password"`
 	Nickname string `json:"nickname"`

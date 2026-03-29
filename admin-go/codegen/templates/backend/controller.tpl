@@ -4,6 +4,7 @@ import (
 	"context"
 
 	v1 "gbaseadmin/app/system/api/system/v1"
+	"gbaseadmin/app/system/internal/model"
 	"gbaseadmin/app/system/internal/service"
 )
 
@@ -26,7 +27,7 @@ func (c *c{{.ModelName}}) Create(ctx context.Context, req *v1.{{.ModelName}}Crea
 // Update 更新{{.Comment}}
 func (c *c{{.ModelName}}) Update(ctx context.Context, req *v1.{{.ModelName}}UpdateReq) (res *v1.{{.ModelName}}UpdateRes, err error) {
 	err = service.{{.ModelName}}().Update(ctx, &model.{{.ModelName}}UpdateInput{
-		Id: req.Id,
+		ID: req.ID,
 {{- range .Fields}}
 {{- if and (not .IsID) (not .IsHidden)}}
 		{{.NameCamel}}: req.{{.NameCamel}},
@@ -38,14 +39,14 @@ func (c *c{{.ModelName}}) Update(ctx context.Context, req *v1.{{.ModelName}}Upda
 
 // Delete 删除{{.Comment}}
 func (c *c{{.ModelName}}) Delete(ctx context.Context, req *v1.{{.ModelName}}DeleteReq) (res *v1.{{.ModelName}}DeleteRes, err error) {
-	err = service.{{.ModelName}}().Delete(ctx, req.Id)
+	err = service.{{.ModelName}}().Delete(ctx, req.ID)
 	return
 }
 
 // Detail 获取{{.Comment}}详情
 func (c *c{{.ModelName}}) Detail(ctx context.Context, req *v1.{{.ModelName}}DetailReq) (res *v1.{{.ModelName}}DetailRes, err error) {
 	res = &v1.{{.ModelName}}DetailRes{}
-	res.{{.ModelName}}DetailOutput, err = service.{{.ModelName}}().Detail(ctx, req.Id)
+	res.{{.ModelName}}DetailOutput, err = service.{{.ModelName}}().Detail(ctx, req.ID)
 	return
 }
 

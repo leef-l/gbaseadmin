@@ -4,6 +4,7 @@ import (
 	"context"
 
 	v1 "gbaseadmin/app/system/api/system/v1"
+	"gbaseadmin/app/system/internal/model"
 	"gbaseadmin/app/system/internal/service"
 )
 
@@ -27,7 +28,7 @@ func (c *cDept) Create(ctx context.Context, req *v1.DeptCreateReq) (res *v1.Dept
 // Update 更新部门表
 func (c *cDept) Update(ctx context.Context, req *v1.DeptUpdateReq) (res *v1.DeptUpdateRes, err error) {
 	err = service.Dept().Update(ctx, &model.DeptUpdateInput{
-		Id: req.Id,
+		ID: req.ID,
 		ParentID: req.ParentID,
 		Title: req.Title,
 		Username: req.Username,
@@ -40,14 +41,14 @@ func (c *cDept) Update(ctx context.Context, req *v1.DeptUpdateReq) (res *v1.Dept
 
 // Delete 删除部门表
 func (c *cDept) Delete(ctx context.Context, req *v1.DeptDeleteReq) (res *v1.DeptDeleteRes, err error) {
-	err = service.Dept().Delete(ctx, req.Id)
+	err = service.Dept().Delete(ctx, req.ID)
 	return
 }
 
 // Detail 获取部门表详情
 func (c *cDept) Detail(ctx context.Context, req *v1.DeptDetailReq) (res *v1.DeptDetailRes, err error) {
 	res = &v1.DeptDetailRes{}
-	res.DeptDetailOutput, err = service.Dept().Detail(ctx, req.Id)
+	res.DeptDetailOutput, err = service.Dept().Detail(ctx, req.ID)
 	return
 }
 

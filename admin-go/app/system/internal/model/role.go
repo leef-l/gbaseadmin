@@ -1,6 +1,8 @@
 package model
 
 import (
+	"github.com/gogf/gf/v2/os/gtime"
+
 	"gbaseadmin/utility/snowflake"
 )
 
@@ -17,7 +19,7 @@ type RoleCreateInput struct {
 
 // RoleUpdateInput 更新角色表输入
 type RoleUpdateInput struct {
-	Id snowflake.JsonInt64 `json:"id"`
+	ID snowflake.JsonInt64 `json:"id"`
 	ParentID snowflake.JsonInt64 `json:"parentID"`
 	Title string `json:"title"`
 	DataScope int `json:"dataScope"`
@@ -27,6 +29,7 @@ type RoleUpdateInput struct {
 
 // RoleDetailOutput 角色表详情输出
 type RoleDetailOutput struct {
+	ID snowflake.JsonInt64 `json:"id"`
 	ParentID snowflake.JsonInt64 `json:"parentID"`
 	Title string `json:"title"`
 	DataScope int `json:"dataScope"`
@@ -38,6 +41,7 @@ type RoleDetailOutput struct {
 
 // RoleListOutput 角色表列表输出
 type RoleListOutput struct {
+	ID snowflake.JsonInt64 `json:"id"`
 	ParentID snowflake.JsonInt64 `json:"parentID"`
 	Title string `json:"title"`
 	DataScope int `json:"dataScope"`
@@ -55,6 +59,7 @@ type RoleListInput struct {
 
 // RoleTreeOutput 角色表树形输出
 type RoleTreeOutput struct {
+	ID snowflake.JsonInt64 `json:"id"`
 	ParentID snowflake.JsonInt64 `json:"parentID"`
 	Title string `json:"title"`
 	DataScope int `json:"dataScope"`

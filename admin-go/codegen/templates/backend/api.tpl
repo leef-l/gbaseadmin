@@ -3,6 +3,7 @@ package v1
 import (
 	"github.com/gogf/gf/v2/frame/g"
 
+	"gbaseadmin/app/system/internal/model"
 	"gbaseadmin/utility/snowflake"
 )
 
@@ -26,7 +27,7 @@ type {{.ModelName}}CreateRes struct {
 // {{.ModelName}}UpdateReq 更新{{.Comment}}请求
 type {{.ModelName}}UpdateReq struct {
 	g.Meta `path:"/{{.ModuleName}}/update" method:"put" tags:"{{.Comment}}" summary:"更新{{.Comment}}"`
-	Id     snowflake.JsonInt64 `json:"id" v:"required#ID不能为空" dc:"{{.Comment}}ID"`
+	ID     snowflake.JsonInt64 `json:"id" v:"required#ID不能为空" dc:"{{.Comment}}ID"`
 {{- range .Fields}}
 {{- if and (not .IsID) (not .IsHidden)}}
 	{{.NameCamel}} {{if .IsForeignKey}}snowflake.JsonInt64{{else}}{{.GoType}}{{end}} `json:"{{.NameLower}}" dc:"{{.Label}}"`
@@ -42,7 +43,7 @@ type {{.ModelName}}UpdateRes struct {
 // {{.ModelName}}DeleteReq 删除{{.Comment}}请求
 type {{.ModelName}}DeleteReq struct {
 	g.Meta `path:"/{{.ModuleName}}/delete" method:"delete" tags:"{{.Comment}}" summary:"删除{{.Comment}}"`
-	Id     snowflake.JsonInt64 `json:"id" v:"required#ID不能为空" dc:"{{.Comment}}ID"`
+	ID     snowflake.JsonInt64 `json:"id" v:"required#ID不能为空" dc:"{{.Comment}}ID"`
 }
 
 // {{.ModelName}}DeleteRes 删除{{.Comment}}响应
@@ -53,7 +54,7 @@ type {{.ModelName}}DeleteRes struct {
 // {{.ModelName}}DetailReq 获取{{.Comment}}详情请求
 type {{.ModelName}}DetailReq struct {
 	g.Meta `path:"/{{.ModuleName}}/detail" method:"get" tags:"{{.Comment}}" summary:"获取{{.Comment}}详情"`
-	Id     snowflake.JsonInt64 `json:"id" v:"required#ID不能为空" dc:"{{.Comment}}ID"`
+	ID     snowflake.JsonInt64 `json:"id" v:"required#ID不能为空" dc:"{{.Comment}}ID"`
 }
 
 // {{.ModelName}}DetailRes 获取{{.Comment}}详情响应

@@ -1,6 +1,8 @@
 package model
 
 import (
+	"github.com/gogf/gf/v2/os/gtime"
+
 	"gbaseadmin/utility/snowflake"
 )
 
@@ -17,7 +19,7 @@ type {{.ModelName}}CreateInput struct {
 
 // {{.ModelName}}UpdateInput 更新{{.Comment}}输入
 type {{.ModelName}}UpdateInput struct {
-	Id snowflake.JsonInt64 `json:"id"`
+	ID snowflake.JsonInt64 `json:"id"`
 {{- range .Fields}}
 {{- if and (not .IsID) (not .IsHidden)}}
 	{{.NameCamel}} {{if .IsForeignKey}}snowflake.JsonInt64{{else}}{{.GoType}}{{end}} `json:"{{.NameLower}}"`
@@ -27,9 +29,10 @@ type {{.ModelName}}UpdateInput struct {
 
 // {{.ModelName}}DetailOutput {{.Comment}}详情输出
 type {{.ModelName}}DetailOutput struct {
+	ID snowflake.JsonInt64 `json:"id"`
 {{- range .Fields}}
-{{- if not .IsHidden}}
-	{{.NameCamel}} {{if or .IsID .IsForeignKey}}snowflake.JsonInt64{{else}}{{.GoType}}{{end}} `json:"{{.NameLower}}"`
+{{- if and (not .IsHidden) (not .IsID)}}
+	{{.NameCamel}} {{if .IsForeignKey}}snowflake.JsonInt64{{else}}{{.GoType}}{{end}} `json:"{{.NameLower}}"`
 {{- end}}
 {{- end}}
 	CreatedAt *gtime.Time `json:"createdAt"`
@@ -38,9 +41,10 @@ type {{.ModelName}}DetailOutput struct {
 
 // {{.ModelName}}ListOutput {{.Comment}}列表输出
 type {{.ModelName}}ListOutput struct {
+	ID snowflake.JsonInt64 `json:"id"`
 {{- range .Fields}}
-{{- if not .IsHidden}}
-	{{.NameCamel}} {{if or .IsID .IsForeignKey}}snowflake.JsonInt64{{else}}{{.GoType}}{{end}} `json:"{{.NameLower}}"`
+{{- if and (not .IsHidden) (not .IsID)}}
+	{{.NameCamel}} {{if .IsForeignKey}}snowflake.JsonInt64{{else}}{{.GoType}}{{end}} `json:"{{.NameLower}}"`
 {{- end}}
 {{- end}}
 	CreatedAt *gtime.Time `json:"createdAt"`
@@ -55,9 +59,10 @@ type {{.ModelName}}ListInput struct {
 {{if .HasParentID}}
 // {{.ModelName}}TreeOutput {{.Comment}}树形输出
 type {{.ModelName}}TreeOutput struct {
+	ID snowflake.JsonInt64 `json:"id"`
 {{- range .Fields}}
-{{- if not .IsHidden}}
-	{{.NameCamel}} {{if or .IsID .IsForeignKey}}snowflake.JsonInt64{{else}}{{.GoType}}{{end}} `json:"{{.NameLower}}"`
+{{- if and (not .IsHidden) (not .IsID)}}
+	{{.NameCamel}} {{if .IsForeignKey}}snowflake.JsonInt64{{else}}{{.GoType}}{{end}} `json:"{{.NameLower}}"`
 {{- end}}
 {{- end}}
 	Children []*{{.ModelName}}TreeOutput `json:"children"`
