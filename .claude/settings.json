@@ -12,7 +12,10 @@
       "Bash(curl -X POST http://localhost:9000/auth/login -H \"Content-Type: application/json\" -d '{\"\"username\"\":\"\"admin\"\",\"\"password\"\":\"\"admin123\"\"}')",
       "Bash(curl -X POST http://localhost:9000/api/system/auth/login -H \"Content-Type: application/json\" -d '{\"\"username\"\":\"\"admin\"\",\"\"password\"\":\"\"admin123\"\"}')",
       "WebFetch(domain:doc.vben.pro)",
-      "Bash(docker-compose -f docker-compose.cn.yml build system)"
+      "Bash(docker-compose -f docker-compose.cn.yml build system)",
+      "Bash(grep -A 5 \"INSERT INTO \\\\`menu\\\\`\" deploy/mysql/init.sql)",
+      "Bash(docker-compose -f docker-compose.cn.yml exec mysql mysql -uroot -pgbaseadmin123 -e \"DROP DATABASE IF EXISTS gbaseadmin; CREATE DATABASE gbaseadmin CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;\")",
+      "Bash(docker-compose -f docker-compose.cn.yml exec mysql mysql -uroot -pgbaseadmin123 gbaseadmin -e \"SELECT id, parent_id, title, type, path, is_show, status FROM menu WHERE is_show=1 ORDER BY sort LIMIT 5;\")"
     ]
   }
 }
