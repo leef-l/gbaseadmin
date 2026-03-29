@@ -82,7 +82,7 @@ function setupAccessGuard(router: Router) {
       }
       return to;
     }
-
+    console.log('accessStore',accessStore)
     // 是否已经生成过动态路由
     if (accessStore.isAccessChecked) {
       return true;
