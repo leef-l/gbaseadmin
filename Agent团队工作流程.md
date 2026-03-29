@@ -382,3 +382,4 @@ claude
 | 2026-03-29 | Phase 2-D1 | JWT 认证 + 中间件 + 工具包 | ✅ 完成 | jwt/response 工具包、auth 登录/信息/改密、鉴权中间件、路由分组 |
 | 2026-03-29 | Phase 2-D2 | 授权 + 关联 + 动态路由 | ✅ 完成 | Role授权菜单/部门、Users关联DeptID+RoleIDs、Auth查询roles/perms、动态菜单树 |
 | 2026-03-29 | Phase 2-D3 | 特殊 UI 组件 | ✅ 完成 | grant-menu/grant-dept弹窗、Users表单部门树+角色多选 |
+| 2026-03-29 | Phase 2-E | 动态路由 + 权限对接 | ✅ 完成 | accessMode=backend、API对接、菜单转路由、vite代理 |
