@@ -1,8 +1,9 @@
 version: '3.8'
 
 # ═════════════════════════════════════════════════════════════
-# GBaseAdmin Docker Compose - 通用版（国外/直连 Docker Hub）
-# 国内用户请使用 docker-compose.cn.yml
+# GBaseAdmin Docker Compose - 国内版（使用国内镜像加速）
+# 使用方法：docker compose -f docker-compose.cn.yml up -d
+# 需要先配置 /etc/docker/daemon.json 镜像加速器
 # ═════════════════════════════════════════════════════════════
 
 services:
@@ -94,7 +95,7 @@ services:
     container_name: gbaseadmin_frontend
     restart: unless-stopped
     working_dir: /app
-    command: sh -c "npm install -g pnpm --registry=https://registry.npmmirror.com && pnpm install && pnpm dev:antd --host 0.0.0.0"
+    command: sh -c "npm install -g pnpm --registry=https://registry.npmmirror.com && pnpm config set registry https://registry.npmmirror.com && pnpm install && pnpm dev:antd --host 0.0.0.0"
     volumes:
       - ../vue-vben-admin:/app
       - frontend_node_modules:/app/node_modules
