@@ -4,7 +4,6 @@
 export interface UsersItem {
   id: string;
   username: string;
-  password: string;
   nickname?: string;
   email?: string;
   avatar?: string;

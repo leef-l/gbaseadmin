@@ -33,6 +33,7 @@ type DeptUpdateInput struct {
 type DeptDetailOutput struct {
 	ID snowflake.JsonInt64 `json:"id"`
 	ParentID snowflake.JsonInt64 `json:"parentID"`
+	DeptTitle string `json:"deptTitle"`
 	Title string `json:"title"`
 	Username string `json:"username"`
 	Email string `json:"email"`
@@ -46,6 +47,7 @@ type DeptDetailOutput struct {
 type DeptListOutput struct {
 	ID snowflake.JsonInt64 `json:"id"`
 	ParentID snowflake.JsonInt64 `json:"parentID"`
+	DeptTitle string `json:"deptTitle"`
 	Title string `json:"title"`
 	Username string `json:"username"`
 	Email string `json:"email"`
@@ -59,12 +61,14 @@ type DeptListOutput struct {
 type DeptListInput struct {
 	PageNum  int `json:"pageNum"`
 	PageSize int `json:"pageSize"`
+	Status int `json:"status"`
 }
 
 // DeptTreeOutput 部门表树形输出
 type DeptTreeOutput struct {
 	ID snowflake.JsonInt64 `json:"id"`
 	ParentID snowflake.JsonInt64 `json:"parentID"`
+	DeptTitle string `json:"deptTitle"`
 	Title string `json:"title"`
 	Username string `json:"username"`
 	Email string `json:"email"`

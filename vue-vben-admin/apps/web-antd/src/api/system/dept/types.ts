@@ -4,6 +4,7 @@
 export interface DeptItem {
   id: string;
   parentID?: string;
+  deptTitle?: string;
   title: string;
   username?: string;
   email?: string;

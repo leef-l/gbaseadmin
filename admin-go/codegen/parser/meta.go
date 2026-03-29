@@ -48,8 +48,18 @@ type FieldMeta struct {
 	IsTimeField  bool // 是否是 *_at 时间字段
 	IsHidden     bool // 表单中隐藏（id/created_at/updated_at/deleted_at/created_by/dept_id）
 	IsEnum       bool // 是否有枚举值
+	IsPassword   bool // 是否是密码字段
 	MaxLength    int
 	DefaultValue string
+	// 关联字段信息（仅 IsForeignKey 或 IsParentID 时有值）
+	RefTable            string // 关联表名，如 article
+	RefTableCamel       string // 关联表 CamelCase，如 Article
+	RefTableLower       string // 关联表 camelCase，如 article
+	RefDisplayField     string // 关联表显示字段 snake_case，如 title
+	RefDisplayCamel     string // 关联显示字段 CamelCase，如 Title
+	RefDisplayLower     string // 关联显示字段 camelCase，如 title
+	RefFieldName        string // 结构体字段名 = RefTableCamel + RefDisplayCamel，如 ArticleTitle
+	RefFieldJSON        string // json 名 = RefTableLower + RefDisplayCamel，如 articleTitle
 }
 
 // TableMeta 表元数据
@@ -63,4 +73,5 @@ type TableMeta struct {
 	HasParentID bool // 有 parent_id 字段
 	HasStatus   bool // 有 status 字段
 	HasSort     bool // 有 sort 字段
+	HasPassword bool // 有 password 字段
 }

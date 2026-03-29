@@ -70,6 +70,10 @@ func (c *cMenu) List(ctx context.Context, req *v1.MenuListReq) (res *v1.MenuList
 	res.List, res.Total, err = service.Menu().List(ctx, &model.MenuListInput{
 		PageNum:  req.PageNum,
 		PageSize: req.PageSize,
+		Type: req.Type,
+		IsShow: req.IsShow,
+		IsCache: req.IsCache,
+		Status: req.Status,
 	})
 	return
 }

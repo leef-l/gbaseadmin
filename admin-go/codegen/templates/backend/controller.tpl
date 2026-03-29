@@ -56,6 +56,11 @@ func (c *c{{.ModelName}}) List(ctx context.Context, req *v1.{{.ModelName}}ListRe
 	res.List, res.Total, err = service.{{.ModelName}}().List(ctx, &model.{{.ModelName}}ListInput{
 		PageNum:  req.PageNum,
 		PageSize: req.PageSize,
+{{- range .Fields}}
+{{- if and (not .IsHidden) (not .IsID) (.IsEnum)}}
+		{{.NameCamel}}: req.{{.NameCamel}},
+{{- end}}
+{{- end}}
 	})
 	return
 }

@@ -45,6 +45,7 @@ type MenuUpdateInput struct {
 type MenuDetailOutput struct {
 	ID snowflake.JsonInt64 `json:"id"`
 	ParentID snowflake.JsonInt64 `json:"parentID"`
+	MenuTitle string `json:"menuTitle"`
 	Title string `json:"title"`
 	Type int `json:"type"`
 	Path string `json:"path"`
@@ -64,6 +65,7 @@ type MenuDetailOutput struct {
 type MenuListOutput struct {
 	ID snowflake.JsonInt64 `json:"id"`
 	ParentID snowflake.JsonInt64 `json:"parentID"`
+	MenuTitle string `json:"menuTitle"`
 	Title string `json:"title"`
 	Type int `json:"type"`
 	Path string `json:"path"`
@@ -83,12 +85,17 @@ type MenuListOutput struct {
 type MenuListInput struct {
 	PageNum  int `json:"pageNum"`
 	PageSize int `json:"pageSize"`
+	Type int `json:"type"`
+	IsShow int `json:"isShow"`
+	IsCache int `json:"isCache"`
+	Status int `json:"status"`
 }
 
 // MenuTreeOutput 菜单表树形输出
 type MenuTreeOutput struct {
 	ID snowflake.JsonInt64 `json:"id"`
 	ParentID snowflake.JsonInt64 `json:"parentID"`
+	MenuTitle string `json:"menuTitle"`
 	Title string `json:"title"`
 	Type int `json:"type"`
 	Path string `json:"path"`

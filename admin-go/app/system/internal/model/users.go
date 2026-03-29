@@ -33,7 +33,6 @@ type UsersUpdateInput struct {
 type UsersDetailOutput struct {
 	ID snowflake.JsonInt64 `json:"id"`
 	Username string `json:"username"`
-	Password string `json:"password"`
 	Nickname string `json:"nickname"`
 	Email string `json:"email"`
 	Avatar string `json:"avatar"`
@@ -46,7 +45,6 @@ type UsersDetailOutput struct {
 type UsersListOutput struct {
 	ID snowflake.JsonInt64 `json:"id"`
 	Username string `json:"username"`
-	Password string `json:"password"`
 	Nickname string `json:"nickname"`
 	Email string `json:"email"`
 	Avatar string `json:"avatar"`
@@ -59,5 +57,6 @@ type UsersListOutput struct {
 type UsersListInput struct {
 	PageNum  int `json:"pageNum"`
 	PageSize int `json:"pageSize"`
+	Status int `json:"status"`
 }
 

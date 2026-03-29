@@ -4,8 +4,11 @@
 export interface {{.ModelName}}Item {
   id: string;
 {{- range .Fields}}
-{{- if and (not .IsHidden) (not .IsID)}}
+{{- if and (not .IsHidden) (not .IsID) (not .IsPassword)}}
   {{.NameLower}}{{if not .IsRequired}}?{{end}}: {{if or .IsForeignKey .IsParentID}}string{{else if .IsMultiFK}}string[]{{else}}{{.TSType}}{{end}};
+{{- if .RefFieldJSON}}
+  {{.RefFieldJSON}}?: string;
+{{- end}}
 {{- end}}
 {{- end}}
   createdAt?: string;

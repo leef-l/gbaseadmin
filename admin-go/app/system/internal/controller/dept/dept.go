@@ -58,6 +58,7 @@ func (c *cDept) List(ctx context.Context, req *v1.DeptListReq) (res *v1.DeptList
 	res.List, res.Total, err = service.Dept().List(ctx, &model.DeptListInput{
 		PageNum:  req.PageNum,
 		PageSize: req.PageSize,
+		Status: req.Status,
 	})
 	return
 }

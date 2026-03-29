@@ -48,7 +48,6 @@ const queryParams = reactive({
 /** 列定义 */
 const columns = [
   { title: '登录用户名', dataIndex: 'username', key: 'username' },
-  { title: '密码（bcrypt 加密）', dataIndex: 'password', key: 'password' },
   { title: '昵称/显示名', dataIndex: 'nickname', key: 'nickname' },
   { title: '邮箱地址', dataIndex: 'email', key: 'email' },
   { title: '头像图片 URL', dataIndex: 'avatar', key: 'avatar' },

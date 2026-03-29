@@ -64,8 +64,12 @@ const queryParams = reactive({
 /** 列定义 */
 const columns = [
 {{- range .Fields}}
-{{- if and (not .IsHidden) (not .IsID) (not .IsParentID) (not .IsTimeField) (not .IsMultiFK)}}
+{{- if and (not .IsHidden) (not .IsID) (not .IsParentID) (not .IsTimeField) (not .IsMultiFK) (not .IsPassword)}}
+{{- if .RefFieldJSON}}
+  { title: '{{.Label}}', dataIndex: '{{.RefFieldJSON}}', key: '{{.RefFieldJSON}}' },
+{{- else}}
   { title: '{{.Label}}', dataIndex: '{{.NameLower}}', key: '{{.NameLower}}'{{if .IsEnum}}, width: 120{{end}} },
+{{- end}}
 {{- end}}
 {{- end}}
 {{- range .Fields}}

@@ -47,7 +47,7 @@ func (s *sMenu) Create(ctx context.Context, in *model.MenuCreateInput) error {
 
 // Update 更新菜单表
 func (s *sMenu) Update(ctx context.Context, in *model.MenuUpdateInput) error {
-	_, err := dao.Menu.Ctx(ctx).Where(dao.Menu.Columns().Id, in.ID).Data(g.Map{
+	data := g.Map{
 		dao.Menu.Columns().ParentId: in.ParentID,
 		dao.Menu.Columns().Title: in.Title,
 		dao.Menu.Columns().Type: in.Type,
@@ -61,41 +61,71 @@ func (s *sMenu) Update(ctx context.Context, in *model.MenuUpdateInput) error {
 		dao.Menu.Columns().LinkUrl: in.LinkURL,
 		dao.Menu.Columns().Status: in.Status,
 		dao.Menu.Columns().UpdatedAt: gtime.Now(),
-	}).Update()
+	}
+	_, err := dao.Menu.Ctx(ctx).Where(dao.Menu.Columns().Id, in.ID).Data(data).Update()
 	return err
 }
 
-// Delete 删除菜单表
+// Delete 软删除菜单表
 func (s *sMenu) Delete(ctx context.Context, id snowflake.JsonInt64) error {
-	_, err := dao.Menu.Ctx(ctx).Where(dao.Menu.Columns().Id, id).Delete()
+	_, err := dao.Menu.Ctx(ctx).Where(dao.Menu.Columns().Id, id).Data(g.Map{
+		dao.Menu.Columns().DeletedAt: gtime.Now(),
+	}).Update()
 	return err
 }
 
 // Detail 获取菜单表详情
 func (s *sMenu) Detail(ctx context.Context, id snowflake.JsonInt64) (out *model.MenuDetailOutput, err error) {
 	out = &model.MenuDetailOutput{}
-	err = dao.Menu.Ctx(ctx).Where(dao.Menu.Columns().Id, id).Scan(out)
+	err = dao.Menu.Ctx(ctx).Where(dao.Menu.Columns().Id, id).Where(dao.Menu.Columns().DeletedAt, nil).Scan(out)
 	if err != nil {
 		return nil, err
+	}
+	// 查询上级菜单ID，0 表示顶级菜单关联显示
+	if out.ParentID != 0 {
+		val, _ := g.DB().Ctx(ctx).Model("menu").Where("id", out.ParentID).Where("deleted_at", nil).Value("title")
+		out.MenuTitle = val.String()
 	}
 	return
 }
 
 // List 获取菜单表列表
 func (s *sMenu) List(ctx context.Context, in *model.MenuListInput) (list []*model.MenuListOutput, total int, err error) {
-	m := dao.Menu.Ctx(ctx)
+	m := dao.Menu.Ctx(ctx).Where(dao.Menu.Columns().DeletedAt, nil)
+	if in.Type > 0 {
+		m = m.Where(dao.Menu.Columns().Type, in.Type)
+	}
+	if in.IsShow > 0 {
+		m = m.Where(dao.Menu.Columns().IsShow, in.IsShow)
+	}
+	if in.IsCache > 0 {
+		m = m.Where(dao.Menu.Columns().IsCache, in.IsCache)
+	}
+	if in.Status > 0 {
+		m = m.Where(dao.Menu.Columns().Status, in.Status)
+	}
 	total, err = m.Count()
 	if err != nil {
 		return
 	}
 	err = m.Page(in.PageNum, in.PageSize).OrderAsc(dao.Menu.Columns().Id).Scan(&list)
+	if err != nil {
+		return
+	}
+	// 填充关联显示字段
+	for _, item := range list {
+		if item.ParentID != 0 {
+			val, _ := g.DB().Ctx(ctx).Model("menu").Where("id", item.ParentID).Where("deleted_at", nil).Value("title")
+			item.MenuTitle = val.String()
+		}
+	}
 	return
 }
 
 // Tree 获取菜单表树形结构
 func (s *sMenu) Tree(ctx context.Context) (tree []*model.MenuTreeOutput, err error) {
 	var list []*model.MenuTreeOutput
-	err = dao.Menu.Ctx(ctx).OrderAsc(dao.Menu.Columns().Sort).Scan(&list)
+	err = dao.Menu.Ctx(ctx).Where(dao.Menu.Columns().DeletedAt, nil).OrderAsc(dao.Menu.Columns().Sort).Scan(&list)
 	if err != nil {
 		return
 	}
@@ -103,6 +133,7 @@ func (s *sMenu) Tree(ctx context.Context) (tree []*model.MenuTreeOutput, err err
 	// 使用 map 迭代方式组装树
 	nodeMap := make(map[int64]*model.MenuTreeOutput, len(list))
 	for _, item := range list {
+		item.Children = make([]*model.MenuTreeOutput, 0)
 		nodeMap[int64(item.ID)] = item
 	}
 

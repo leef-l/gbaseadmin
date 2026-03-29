@@ -31,8 +31,11 @@ type {{.ModelName}}UpdateInput struct {
 type {{.ModelName}}DetailOutput struct {
 	ID snowflake.JsonInt64 `json:"id"`
 {{- range .Fields}}
-{{- if and (not .IsHidden) (not .IsID)}}
+{{- if and (not .IsHidden) (not .IsID) (not .IsPassword)}}
 	{{.NameCamel}} {{if .IsForeignKey}}snowflake.JsonInt64{{else}}{{.GoType}}{{end}} `json:"{{.NameLower}}"`
+{{- if .RefFieldName}}
+	{{.RefFieldName}} string `json:"{{.RefFieldJSON}}"`
+{{- end}}
 {{- end}}
 {{- end}}
 	CreatedAt *gtime.Time `json:"createdAt"`
@@ -43,8 +46,11 @@ type {{.ModelName}}DetailOutput struct {
 type {{.ModelName}}ListOutput struct {
 	ID snowflake.JsonInt64 `json:"id"`
 {{- range .Fields}}
-{{- if and (not .IsHidden) (not .IsID)}}
+{{- if and (not .IsHidden) (not .IsID) (not .IsPassword)}}
 	{{.NameCamel}} {{if .IsForeignKey}}snowflake.JsonInt64{{else}}{{.GoType}}{{end}} `json:"{{.NameLower}}"`
+{{- if .RefFieldName}}
+	{{.RefFieldName}} string `json:"{{.RefFieldJSON}}"`
+{{- end}}
 {{- end}}
 {{- end}}
 	CreatedAt *gtime.Time `json:"createdAt"`
@@ -55,14 +61,22 @@ type {{.ModelName}}ListOutput struct {
 type {{.ModelName}}ListInput struct {
 	PageNum  int `json:"pageNum"`
 	PageSize int `json:"pageSize"`
+{{- range .Fields}}
+{{- if and (not .IsHidden) (not .IsID) (.IsEnum)}}
+	{{.NameCamel}} int `json:"{{.NameLower}}"`
+{{- end}}
+{{- end}}
 }
 {{if .HasParentID}}
 // {{.ModelName}}TreeOutput {{.Comment}}树形输出
 type {{.ModelName}}TreeOutput struct {
 	ID snowflake.JsonInt64 `json:"id"`
 {{- range .Fields}}
-{{- if and (not .IsHidden) (not .IsID)}}
+{{- if and (not .IsHidden) (not .IsID) (not .IsPassword)}}
 	{{.NameCamel}} {{if .IsForeignKey}}snowflake.JsonInt64{{else}}{{.GoType}}{{end}} `json:"{{.NameLower}}"`
+{{- if .RefFieldName}}
+	{{.RefFieldName}} string `json:"{{.RefFieldJSON}}"`
+{{- end}}
 {{- end}}
 {{- end}}
 	Children []*{{.ModelName}}TreeOutput `json:"children"`

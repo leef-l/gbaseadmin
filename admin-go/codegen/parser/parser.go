@@ -83,9 +83,55 @@ func (p *Parser) ParseTable(tableName string) (*TableMeta, error) {
 		if field.Name == "sort" {
 			meta.HasSort = true
 		}
+		if field.IsPassword {
+			meta.HasPassword = true
+		}
+	}
+
+	// 解析关联字段：对 *_id 外键和 parent_id 查找关联表的显示字段
+	for i := range meta.Fields {
+		f := &meta.Fields[i]
+		if !f.IsForeignKey && !f.IsParentID {
+			continue
+		}
+		// 推断关联表名：parent_id → 自身表，xxx_id → xxx
+		var refTable string
+		if f.IsParentID {
+			refTable = tableName
+		} else {
+			refTable = strings.TrimSuffix(f.Name, "_id")
+		}
+		// 查找关联表的显示字段
+		displayField := findDisplayField(db, dbName, refTable)
+		if displayField != "" {
+			f.RefTable = refTable
+			f.RefTableCamel = snakeToCamel(refTable)
+			f.RefTableLower = snakeToCamelLower(refTable)
+			f.RefDisplayField = displayField
+			f.RefDisplayCamel = snakeToCamel(displayField)
+			f.RefDisplayLower = snakeToCamelLower(displayField)
+			f.RefFieldName = snakeToCamel(refTable) + snakeToCamel(displayField)
+			f.RefFieldJSON = snakeToCamelLower(refTable) + snakeToCamel(displayField)
+		}
 	}
 
 	return meta, nil
+}
+
+// findDisplayField 在关联表中按优先级查找显示字段：title > name > username
+func findDisplayField(db *sql.DB, dbName, tableName string) string {
+	priorities := []string{"title", "name", "username"}
+	for _, col := range priorities {
+		var count int
+		err := db.QueryRow(
+			"SELECT COUNT(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ? AND COLUMN_NAME = ?",
+			dbName, tableName, col,
+		).Scan(&count)
+		if err == nil && count > 0 {
+			return col
+		}
+	}
+	return ""
 }
 
 // ParseTables 解析多张表
@@ -169,6 +215,7 @@ func buildFieldMeta(col columnInfo) FieldMeta {
 	isForeignKey := strings.HasSuffix(name, "_id") && name != "id" && name != "dept_id"
 	isMultiFK := strings.HasSuffix(name, "_ids")
 	isParentID := name == "parent_id"
+	isPassword := name == "password" || strings.HasSuffix(name, "_password") || strings.HasSuffix(name, "_pwd")
 
 	// 解析备注
 	label, enums := ParseComment(col.ColumnComment)
@@ -195,6 +242,7 @@ func buildFieldMeta(col columnInfo) FieldMeta {
 		IsTimeField:  strings.HasSuffix(name, "_at"),
 		IsHidden:     IsHiddenField(name),
 		IsEnum:       len(enums) > 0,
+		IsPassword:   isPassword,
 		DefaultValue: col.ColumnDefault.String,
 	}
 

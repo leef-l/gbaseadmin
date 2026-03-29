@@ -31,6 +31,7 @@ type RoleUpdateInput struct {
 type RoleDetailOutput struct {
 	ID snowflake.JsonInt64 `json:"id"`
 	ParentID snowflake.JsonInt64 `json:"parentID"`
+	RoleTitle string `json:"roleTitle"`
 	Title string `json:"title"`
 	DataScope int `json:"dataScope"`
 	Sort int `json:"sort"`
@@ -43,6 +44,7 @@ type RoleDetailOutput struct {
 type RoleListOutput struct {
 	ID snowflake.JsonInt64 `json:"id"`
 	ParentID snowflake.JsonInt64 `json:"parentID"`
+	RoleTitle string `json:"roleTitle"`
 	Title string `json:"title"`
 	DataScope int `json:"dataScope"`
 	Sort int `json:"sort"`
@@ -55,12 +57,15 @@ type RoleListOutput struct {
 type RoleListInput struct {
 	PageNum  int `json:"pageNum"`
 	PageSize int `json:"pageSize"`
+	DataScope int `json:"dataScope"`
+	Status int `json:"status"`
 }
 
 // RoleTreeOutput 角色表树形输出
 type RoleTreeOutput struct {
 	ID snowflake.JsonInt64 `json:"id"`
 	ParentID snowflake.JsonInt64 `json:"parentID"`
+	RoleTitle string `json:"roleTitle"`
 	Title string `json:"title"`
 	DataScope int `json:"dataScope"`
 	Sort int `json:"sort"`

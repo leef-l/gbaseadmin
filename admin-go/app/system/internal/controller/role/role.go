@@ -56,6 +56,8 @@ func (c *cRole) List(ctx context.Context, req *v1.RoleListReq) (res *v1.RoleList
 	res.List, res.Total, err = service.Role().List(ctx, &model.RoleListInput{
 		PageNum:  req.PageNum,
 		PageSize: req.PageSize,
+		DataScope: req.DataScope,
+		Status: req.Status,
 	})
 	return
 }

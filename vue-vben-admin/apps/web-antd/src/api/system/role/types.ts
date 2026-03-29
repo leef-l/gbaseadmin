@@ -4,6 +4,7 @@
 export interface RoleItem {
   id: string;
   parentID?: string;
+  roleTitle?: string;
   title: string;
   dataScope?: number;
   sort?: number;
