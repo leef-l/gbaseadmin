@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(docker-compose -f docker-compose.cn.yml restart system)",
+      "Bash(docker-compose -f docker-compose.cn.yml logs system --tail=30)"
+    ]
+  }
+}
