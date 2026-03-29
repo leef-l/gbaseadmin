@@ -213,7 +213,7 @@ VALUES
 (1000000000000000013, 1000000000000000010,  '菜单管理', 2, '/system/menu',  'system/menu/index',           'system:menu:list',     'MenuOutlined',    3, 1, 0, NULL, 1, 0, 1000000000000000001, NOW(), NOW(), NULL),
 
 -- 用户管理（菜单）
-(1000000000000000014, 1000000000000000010,  '用户管理', 2, '/system/user',  'system/user/index',           'system:user:list',     'UserOutlined',    4, 1, 0, NULL, 1, 0, 1000000000000000001, NOW(), NOW(), NULL);
+(1000000000000000014, 1000000000000000010,  '用户管理', 2, '/system/users', 'system/users/index',          'system:user:list',     'UserOutlined',    4, 1, 0, NULL, 1, 0, 1000000000000000001, NOW(), NOW(), NULL);
 
 -- ─────────────────────────────────────────────
 -- 按钮级权限菜单（归属于各功能菜单下）

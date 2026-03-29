@@ -31,8 +31,8 @@ function transformMenus(menus: BackendMenu[]): RouteRecordStringComponent[] {
         meta: {
           title: menu.title,
           icon: menu.icon || undefined,
-          orderNo: menu.sort,
-          hideMenu: menu.isShow !== 1,
+          order: menu.sort,
+          hideInMenu: menu.isShow !== 1,
           keepAlive: menu.isCache === 1,
           authority: menu.permission ? [menu.permission] : undefined,
         },
