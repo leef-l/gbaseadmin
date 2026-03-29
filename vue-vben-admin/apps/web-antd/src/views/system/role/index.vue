@@ -1,20 +1,14 @@
 <script setup lang="ts">
-import { ref, reactive, onMounted } from 'vue';
-import { message, Modal } from 'ant-design-vue';
-import {
-  PlusOutlined,
-  EditOutlined,
-  DeleteOutlined,
-  SearchOutlined,
-  ReloadOutlined,
-  KeyOutlined,
-  SafetyCertificateOutlined,
-} from '@ant-design/icons-vue';
+import type { VbenFormProps } from '#/adapter/form';
+import type { VxeGridProps } from '#/adapter/vxe-table';
+
+import { Page, useVbenModal } from '@vben/common-ui';
+import { Button, message, Modal, Tag } from 'ant-design-vue';
+
+import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getRoleTree, deleteRole } from '#/api/system/role';
 import type { RoleItem } from '#/api/system/role/types';
 import FormModal from './modules/form.vue';
-import GrantMenuModal from './modules/grant-menu.vue';
-import GrantDeptModal from './modules/grant-dept.vue';
 
 /** 标签颜色池 */
 const TAG_COLORS = ['green', 'red', 'blue', 'orange', 'cyan', 'purple', 'geekblue', 'magenta'];
@@ -63,179 +57,125 @@ function getStatusColor(val: number): string {
   return TAG_COLORS[idx >= 0 ? idx % TAG_COLORS.length : 0] ?? 'default';
 }
 
-const loading = ref(false);
-const dataList = ref<RoleItem[]>([]);
-const formRef = ref();
-const grantMenuRef = ref();
-const grantDeptRef = ref();
-
-const queryParams = reactive({
-  dataScope: undefined as number | undefined,
-  status: undefined as number | undefined,
+/** 表单弹窗 */
+const [FormModalComp, formModalApi] = useVbenModal({
+  connectedComponent: FormModal,
+  destroyOnClose: true,
 });
 
-/** 列定义 */
-const columns = [
-  { title: '角色名称', dataIndex: 'title', key: 'title' },
-  { title: '数据范围', dataIndex: 'dataScope', key: 'dataScope', width: 120 },
-  { title: '排序（升序）', dataIndex: 'sort', key: 'sort' },
-  { title: '状态', dataIndex: 'status', key: 'status', width: 120 },
-  { title: '创建时间', dataIndex: 'createdAt', key: 'createdAt', width: 180 },
-  { title: '操作', key: 'action', width: 320, fixed: 'right' as const },
-];
+/** 搜索表单配置 */
+const formOptions: VbenFormProps = {
+  collapsed: false,
+  showCollapseButton: true,
+  submitOnChange: false,
+  submitOnEnter: true,
+  schema: [
+    {
+      component: 'Select',
+      componentProps: {
+        allowClear: true,
+        options: dataScopeOptions,
+        placeholder: '请选择数据范围',
+      },
+      fieldName: 'dataScope',
+      label: '数据范围',
+    },
+    {
+      component: 'Select',
+      componentProps: {
+        allowClear: true,
+        options: statusOptions,
+        placeholder: '请选择状态',
+      },
+      fieldName: 'status',
+      label: '状态',
+    },
+  ],
+};
 
-/** 加载数据 */
-async function loadData() {
-  loading.value = true;
-  try {
-    const params: Record<string, any> = {};
-    if (queryParams.dataScope !== undefined) {
-      params.dataScope = queryParams.dataScope;
-    }
-    if (queryParams.status !== undefined) {
-      params.status = queryParams.status;
-    }
-    const res = await getRoleTree(params);
-    dataList.value = res ?? [];
-  } finally {
-    loading.value = false;
-  }
-}
+/** 表格列配置 */
+const gridOptions: VxeGridProps<RoleItem> = {
+  columns: [
+    { title: '序号', type: 'seq', width: 50 },
+    { field: 'title', title: '角色名称' },
+    { field: 'dataScope', title: '数据范围', width: 120, slots: { default: 'dataScope_cell' } },
+    { field: 'sort', title: '排序（升序）' },
+    { field: 'status', title: '状态', width: 120, slots: { default: 'status_cell' } },
+    { field: 'createdAt', title: '创建时间', width: 180, formatter: 'formatDateTime' },
+    { title: '操作', width: 200, fixed: 'right', slots: { default: 'action' } },
+  ],
+  pagerConfig: { enabled: false },
+  treeConfig: {
+    parentField: 'parentId',
+    rowField: 'id',
+    transform: true,
+  },
+  proxyConfig: {
+    ajax: {
+      query: async (_params, formValues) => {
+        const res = await getRoleTree(formValues);
+        return res ?? [];
+      },
+    },
+  },
+  toolbarConfig: {
+    custom: true,
+    refresh: true,
+    search: true,
+  },
+};
 
-/** 搜索 */
-function handleSearch() {
-  loadData();
-}
-
-/** 重置 */
-function handleReset() {
-  queryParams.dataScope = undefined;
-  queryParams.status = undefined;
-  loadData();
-}
+const [Grid, gridApi] = useVbenVxeGrid({
+  formOptions,
+  gridOptions,
+});
 
 /** 新建 */
 function handleCreate() {
-  formRef.value?.open();
+  formModalApi.setData(null).open();
 }
 
 /** 编辑 */
-function handleEdit(record: RoleItem) {
-  formRef.value?.open(record.id);
-}
-
-/** 授权菜单 */
-function handleGrantMenu(record: RoleItem) {
-  grantMenuRef.value?.open(record.id, record.title);
-}
-
-/** 数据权限 */
-function handleGrantDept(record: RoleItem) {
-  grantDeptRef.value?.open(record.id, record.title, record.dataScope);
+function handleEdit(row: RoleItem) {
+  formModalApi.setData({ id: row.id }).open();
 }
 
 /** 删除 */
-function handleDelete(record: RoleItem) {
+function handleDelete(row: RoleItem) {
   Modal.confirm({
     title: '确认删除',
     content: '确定要删除该角色表吗？',
     okType: 'danger',
     async onOk() {
-      await deleteRole(record.id);
+      await deleteRole(row.id);
       message.success('删除成功');
-      loadData();
+      gridApi.reload();
     },
   });
 }
-
-onMounted(() => {
-  loadData();
-});
 </script>
 
 <template>
-  <div class="p-4">
-    <!-- 搜索栏 -->
-    <div class="mb-4 flex items-center gap-3">
-      <a-select
-        v-model:value="queryParams.dataScope"
-        :options="dataScopeOptions"
-        placeholder="数据范围"
-        allow-clear
-        style="width: 160px"
-      />
-      <a-select
-        v-model:value="queryParams.status"
-        :options="statusOptions"
-        placeholder="状态"
-        allow-clear
-        style="width: 160px"
-      />
-      <a-button type="primary" @click="handleSearch">
-        <template #icon><SearchOutlined /></template>
-        搜索
-      </a-button>
-      <a-button @click="handleReset">
-        <template #icon><ReloadOutlined /></template>
-        重置
-      </a-button>
-      <div class="flex-1" />
-      <a-button type="primary" @click="handleCreate">
-        <template #icon><PlusOutlined /></template>
-        新建
-      </a-button>
-    </div>
-
-    <!-- 数据表格 -->
-    <a-table
-      :columns="columns"
-      :data-source="dataList"
-      :loading="loading"
-      row-key="id"
-      :children-column-name="'children'"
-      :pagination="false"
-      default-expand-all-rows
-      :scroll="{ x: 'max-content' }"
-    >
-      <template #bodyCell="{ column, record }">
-        <template v-if="column.key === 'dataScope'">
-          <a-tag :color="getDataScopeColor(record.dataScope)">
-            {{ dataScopeMap[record.dataScope] || record.dataScope }}
-          </a-tag>
-        </template>
-        <template v-if="column.key === 'status'">
-          <a-tag :color="getStatusColor(record.status)">
-            {{ statusMap[record.status] || record.status }}
-          </a-tag>
-        </template>
-        <template v-if="column.key === 'action'">
-          <div class="flex gap-2">
-            <a-button type="link" size="small" @click="handleEdit(record)">
-              <template #icon><EditOutlined /></template>
-              编辑
-            </a-button>
-            <a-button type="link" size="small" @click="handleGrantMenu(record)">
-              <template #icon><KeyOutlined /></template>
-              菜单
-            </a-button>
-            <a-button type="link" size="small" @click="handleGrantDept(record)">
-              <template #icon><SafetyCertificateOutlined /></template>
-              权限
-            </a-button>
-            <a-button type="link" danger size="small" @click="handleDelete(record)">
-              <template #icon><DeleteOutlined /></template>
-              删除
-            </a-button>
-          </div>
-        </template>
+  <Page auto-content-height>
+    <FormModalComp @success="() => gridApi.reload()" />
+    <Grid>
+      <template #toolbar-actions>
+        <Button type="primary" @click="handleCreate">新建</Button>
       </template>
-    </a-table>
-
-    <!-- 表单弹窗 -->
-    <FormModal ref="formRef" @success="loadData" />
-    <!-- 授权菜单弹窗 -->
-    <GrantMenuModal ref="grantMenuRef" @success="loadData" />
-    <!-- 数据权限弹窗 -->
-    <GrantDeptModal ref="grantDeptRef" @success="loadData" />
-  </div>
+      <template #dataScope_cell="{ row }">
+        <Tag :color="getDataScopeColor(row.dataScope)">
+          {{ dataScopeMap[row.dataScope] || row.dataScope }}
+        </Tag>
+      </template>
+      <template #status_cell="{ row }">
+        <Tag :color="getStatusColor(row.status)">
+          {{ statusMap[row.status] || row.status }}
+        </Tag>
+      </template>
+      <template #action="{ row }">
+        <Button type="link" size="small" @click="handleEdit(row)">编辑</Button>
+        <Button type="link" danger size="small" @click="handleDelete(row)">删除</Button>
+      </template>
+    </Grid>
+  </Page>
 </template>

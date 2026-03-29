@@ -1,13 +1,11 @@
 <script setup lang="ts">
-import { ref, reactive, onMounted } from 'vue';
-import { message, Modal } from 'ant-design-vue';
-import {
-  PlusOutlined,
-  EditOutlined,
-  DeleteOutlined,
-  SearchOutlined,
-  ReloadOutlined,
-} from '@ant-design/icons-vue';
+import type { VbenFormProps } from '#/adapter/form';
+import type { VxeGridProps } from '#/adapter/vxe-table';
+
+import { Page, useVbenModal } from '@vben/common-ui';
+import { Button, message, Modal, Tag } from 'ant-design-vue';
+
+import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getMenuTree, deleteMenu } from '#/api/system/menu';
 import type { MenuItem } from '#/api/system/menu/types';
 import FormModal from './modules/form.vue';
@@ -97,196 +95,162 @@ function getStatusColor(val: number): string {
   return TAG_COLORS[idx >= 0 ? idx % TAG_COLORS.length : 0] ?? 'default';
 }
 
-const loading = ref(false);
-const dataList = ref<MenuItem[]>([]);
-const formRef = ref();
-
-const queryParams = reactive({
-  type: undefined as number | undefined,
-  isShow: undefined as number | undefined,
-  isCache: undefined as number | undefined,
-  status: undefined as number | undefined,
+/** 表单弹窗 */
+const [FormModalComp, formModalApi] = useVbenModal({
+  connectedComponent: FormModal,
+  destroyOnClose: true,
 });
 
-/** 列定义 */
-const columns = [
-  { title: '菜单名称', dataIndex: 'title', key: 'title' },
-  { title: '类型', dataIndex: 'type', key: 'type', width: 120 },
-  { title: '前端路由路径', dataIndex: 'path', key: 'path' },
-  { title: '前端组件路径', dataIndex: 'component', key: 'component' },
-  { title: '权限标识（如 system', dataIndex: 'permission', key: 'permission' },
-  { title: '菜单图标（图标名称）', dataIndex: 'icon', key: 'icon' },
-  { title: '排序（升序）', dataIndex: 'sort', key: 'sort' },
-  { title: '是否显示', dataIndex: 'isShow', key: 'isShow', width: 120 },
-  { title: '是否缓存', dataIndex: 'isCache', key: 'isCache', width: 120 },
-  { title: '外链/内链地址（type=4或5时有效）', dataIndex: 'linkURL', key: 'linkURL' },
-  { title: '状态', dataIndex: 'status', key: 'status', width: 120 },
-  { title: '创建时间', dataIndex: 'createdAt', key: 'createdAt', width: 180 },
-  { title: '操作', key: 'action', width: 200, fixed: 'right' as const },
-];
+/** 搜索表单配置 */
+const formOptions: VbenFormProps = {
+  collapsed: false,
+  showCollapseButton: true,
+  submitOnChange: false,
+  submitOnEnter: true,
+  schema: [
+    {
+      component: 'Select',
+      componentProps: {
+        allowClear: true,
+        options: typeOptions,
+        placeholder: '请选择类型',
+      },
+      fieldName: 'type',
+      label: '类型',
+    },
+    {
+      component: 'Select',
+      componentProps: {
+        allowClear: true,
+        options: isShowOptions,
+        placeholder: '请选择是否显示',
+      },
+      fieldName: 'isShow',
+      label: '是否显示',
+    },
+    {
+      component: 'Select',
+      componentProps: {
+        allowClear: true,
+        options: isCacheOptions,
+        placeholder: '请选择是否缓存',
+      },
+      fieldName: 'isCache',
+      label: '是否缓存',
+    },
+    {
+      component: 'Select',
+      componentProps: {
+        allowClear: true,
+        options: statusOptions,
+        placeholder: '请选择状态',
+      },
+      fieldName: 'status',
+      label: '状态',
+    },
+  ],
+};
 
-/** 加载数据 */
-async function loadData() {
-  loading.value = true;
-  try {
-    const params: Record<string, any> = {};
-    if (queryParams.type !== undefined) {
-      params.type = queryParams.type;
-    }
-    if (queryParams.isShow !== undefined) {
-      params.isShow = queryParams.isShow;
-    }
-    if (queryParams.isCache !== undefined) {
-      params.isCache = queryParams.isCache;
-    }
-    if (queryParams.status !== undefined) {
-      params.status = queryParams.status;
-    }
-    const res = await getMenuTree(params);
-    dataList.value = res ?? [];
-  } finally {
-    loading.value = false;
-  }
-}
+/** 表格列配置 */
+const gridOptions: VxeGridProps<MenuItem> = {
+  columns: [
+    { title: '序号', type: 'seq', width: 50 },
+    { field: 'title', title: '菜单名称' },
+    { field: 'type', title: '类型', width: 120, slots: { default: 'type_cell' } },
+    { field: 'path', title: '前端路由路径' },
+    { field: 'component', title: '前端组件路径' },
+    { field: 'permission', title: '权限标识（如 system' },
+    { field: 'icon', title: '菜单图标（图标名称）' },
+    { field: 'sort', title: '排序（升序）' },
+    { field: 'isShow', title: '是否显示', width: 120, slots: { default: 'isShow_cell' } },
+    { field: 'isCache', title: '是否缓存', width: 120, slots: { default: 'isCache_cell' } },
+    { field: 'linkURL', title: '外链/内链地址（type=4或5时有效）' },
+    { field: 'status', title: '状态', width: 120, slots: { default: 'status_cell' } },
+    { field: 'createdAt', title: '创建时间', width: 180, formatter: 'formatDateTime' },
+    { title: '操作', width: 200, fixed: 'right', slots: { default: 'action' } },
+  ],
+  pagerConfig: { enabled: false },
+  treeConfig: {
+    parentField: 'parentID',
+    rowField: 'id',
+    transform: true,
+  },
+  proxyConfig: {
+    ajax: {
+      query: async (_params, formValues) => {
+        const res = await getMenuTree(formValues);
+        return res ?? [];
+      },
+    },
+  },
+  toolbarConfig: {
+    custom: true,
+    refresh: true,
+    search: true,
+  },
+};
 
-/** 搜索 */
-function handleSearch() {
-  loadData();
-}
-
-/** 重置 */
-function handleReset() {
-  queryParams.type = undefined;
-  queryParams.isShow = undefined;
-  queryParams.isCache = undefined;
-  queryParams.status = undefined;
-  loadData();
-}
+const [Grid, gridApi] = useVbenVxeGrid({
+  formOptions,
+  gridOptions,
+});
 
 /** 新建 */
 function handleCreate() {
-  formRef.value?.open();
+  formModalApi.setData(null).open();
 }
 
 /** 编辑 */
-function handleEdit(record: MenuItem) {
-  formRef.value?.open(record.id);
+function handleEdit(row: MenuItem) {
+  formModalApi.setData({ id: row.id }).open();
 }
 
 /** 删除 */
-function handleDelete(record: MenuItem) {
+function handleDelete(row: MenuItem) {
   Modal.confirm({
     title: '确认删除',
     content: '确定要删除该菜单表吗？',
     okType: 'danger',
     async onOk() {
-      await deleteMenu(record.id);
+      await deleteMenu(row.id);
       message.success('删除成功');
-      loadData();
+      gridApi.reload();
     },
   });
 }
-
-onMounted(() => {
-  loadData();
-});
 </script>
 
 <template>
-  <div class="p-4">
-    <!-- 搜索栏 -->
-    <div class="mb-4 flex items-center gap-3">
-      <a-select
-        v-model:value="queryParams.type"
-        :options="typeOptions"
-        placeholder="类型"
-        allow-clear
-        style="width: 160px"
-      />
-      <a-select
-        v-model:value="queryParams.isShow"
-        :options="isShowOptions"
-        placeholder="是否显示"
-        allow-clear
-        style="width: 160px"
-      />
-      <a-select
-        v-model:value="queryParams.isCache"
-        :options="isCacheOptions"
-        placeholder="是否缓存"
-        allow-clear
-        style="width: 160px"
-      />
-      <a-select
-        v-model:value="queryParams.status"
-        :options="statusOptions"
-        placeholder="状态"
-        allow-clear
-        style="width: 160px"
-      />
-      <a-button type="primary" @click="handleSearch">
-        <template #icon><SearchOutlined /></template>
-        搜索
-      </a-button>
-      <a-button @click="handleReset">
-        <template #icon><ReloadOutlined /></template>
-        重置
-      </a-button>
-      <div class="flex-1" />
-      <a-button type="primary" @click="handleCreate">
-        <template #icon><PlusOutlined /></template>
-        新建
-      </a-button>
-    </div>
-
-    <!-- 数据表格 -->
-    <a-table
-      :columns="columns"
-      :data-source="dataList"
-      :loading="loading"
-      row-key="id"
-      :children-column-name="'children'"
-      :pagination="false"
-      default-expand-all-rows
-      :scroll="{ x: 'max-content' }"
-    >
-      <template #bodyCell="{ column, record }">
-        <template v-if="column.key === 'type'">
-          <a-tag :color="getTypeColor(record.type)">
-            {{ typeMap[record.type] || record.type }}
-          </a-tag>
-        </template>
-        <template v-if="column.key === 'isShow'">
-          <a-tag :color="getIsShowColor(record.isShow)">
-            {{ isShowMap[record.isShow] || record.isShow }}
-          </a-tag>
-        </template>
-        <template v-if="column.key === 'isCache'">
-          <a-tag :color="getIsCacheColor(record.isCache)">
-            {{ isCacheMap[record.isCache] || record.isCache }}
-          </a-tag>
-        </template>
-        <template v-if="column.key === 'status'">
-          <a-tag :color="getStatusColor(record.status)">
-            {{ statusMap[record.status] || record.status }}
-          </a-tag>
-        </template>
-        <template v-if="column.key === 'action'">
-          <div class="flex gap-2">
-            <a-button type="link" size="small" @click="handleEdit(record)">
-              <template #icon><EditOutlined /></template>
-              编辑
-            </a-button>
-            <a-button type="link" danger size="small" @click="handleDelete(record)">
-              <template #icon><DeleteOutlined /></template>
-              删除
-            </a-button>
-          </div>
-        </template>
+  <Page auto-content-height>
+    <FormModalComp @success="() => gridApi.reload()" />
+    <Grid>
+      <template #toolbar-actions>
+        <Button type="primary" @click="handleCreate">新建</Button>
       </template>
-    </a-table>
-
-    <!-- 表单弹窗 -->
-    <FormModal ref="formRef" @success="loadData" />
-  </div>
+      <template #type_cell="{ row }">
+        <Tag :color="getTypeColor(row.type)">
+          {{ typeMap[row.type] || row.type }}
+        </Tag>
+      </template>
+      <template #isShow_cell="{ row }">
+        <Tag :color="getIsShowColor(row.isShow)">
+          {{ isShowMap[row.isShow] || row.isShow }}
+        </Tag>
+      </template>
+      <template #isCache_cell="{ row }">
+        <Tag :color="getIsCacheColor(row.isCache)">
+          {{ isCacheMap[row.isCache] || row.isCache }}
+        </Tag>
+      </template>
+      <template #status_cell="{ row }">
+        <Tag :color="getStatusColor(row.status)">
+          {{ statusMap[row.status] || row.status }}
+        </Tag>
+      </template>
+      <template #action="{ row }">
+        <Button type="link" size="small" @click="handleEdit(row)">编辑</Button>
+        <Button type="link" danger size="small" @click="handleDelete(row)">删除</Button>
+      </template>
+    </Grid>
+  </Page>
 </template>

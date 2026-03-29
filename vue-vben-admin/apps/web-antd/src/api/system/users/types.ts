@@ -8,9 +8,6 @@ export interface UsersItem {
   email?: string;
   avatar?: string;
   status?: number;
-  deptId?: string;
-  deptTitle?: string;
-  roleIds?: string[];
   createdAt?: string;
   updatedAt?: string;
 }
@@ -30,19 +27,15 @@ export interface UsersCreateParams {
   email?: string;
   avatar?: string;
   status?: number;
-  deptId?: string;
-  roleIds?: string[];
 }
 
 /** 用户表更新参数 */
 export interface UsersUpdateParams {
   id: string;
   username: string;
-  password?: string;
+  password: string;
   nickname?: string;
   email?: string;
   avatar?: string;
   status?: number;
-  deptId?: string;
-  roleIds?: string[];
 }

@@ -1,13 +1,11 @@
 <script setup lang="ts">
-import { ref, reactive, onMounted } from 'vue';
-import { message, Modal } from 'ant-design-vue';
-import {
-  PlusOutlined,
-  EditOutlined,
-  DeleteOutlined,
-  SearchOutlined,
-  ReloadOutlined,
-} from '@ant-design/icons-vue';
+import type { VbenFormProps } from '#/adapter/form';
+import type { VxeGridProps } from '#/adapter/vxe-table';
+
+import { Page, useVbenModal } from '@vben/common-ui';
+import { Button, message, Modal, Tag } from 'ant-design-vue';
+
+import { useVbenVxeGrid } from '#/adapter/vxe-table';
 {{- if .HasParentID}}
 import { get{{.ModelName}}Tree, delete{{.ModelName}} } from '#/api/system/{{.ModuleName}}';
 {{- else}}
@@ -42,216 +40,147 @@ function get{{.NameCamel}}Color(val: number): string {
 }
 {{end}}
 {{- end}}
-const loading = ref(false);
-const dataList = ref<{{.ModelName}}Item[]>([]);
-{{- if not .HasParentID}}
-const total = ref(0);
-{{- end}}
-const formRef = ref();
-
-const queryParams = reactive({
-{{- if not .HasParentID}}
-  pageNum: 1,
-  pageSize: 10,
-{{- end}}
-{{- range .Fields}}
-{{- if and (not .IsHidden) (not .IsID) (.IsEnum)}}
-  {{.NameLower}}: undefined as number | undefined,
-{{- end}}
-{{- end}}
+/** 表单弹窗 */
+const [FormModalComp, formModalApi] = useVbenModal({
+  connectedComponent: FormModal,
+  destroyOnClose: true,
 });
 
-/** 列定义 */
-const columns = [
+/** 搜索表单配置 */
+const formOptions: VbenFormProps = {
+  collapsed: false,
+  showCollapseButton: true,
+  submitOnChange: false,
+  submitOnEnter: true,
+  schema: [
+{{- range .Fields}}
+{{- if and (not .IsHidden) (not .IsID) (.IsEnum)}}
+    {
+      component: 'Select',
+      componentProps: {
+        allowClear: true,
+        options: {{.NameLower}}Options,
+        placeholder: '请选择{{.Label}}',
+      },
+      fieldName: '{{.NameLower}}',
+      label: '{{.Label}}',
+    },
+{{- end}}
+{{- end}}
+  ],
+};
+
+/** 表格列配置 */
+const gridOptions: VxeGridProps<{{.ModelName}}Item> = {
+  columns: [
+    { title: '序号', type: 'seq', width: 50 },
 {{- range .Fields}}
 {{- if and (not .IsHidden) (not .IsID) (not .IsParentID) (not .IsTimeField) (not .IsMultiFK) (not .IsPassword)}}
 {{- if .RefFieldJSON}}
-  { title: '{{.Label}}', dataIndex: '{{.RefFieldJSON}}', key: '{{.RefFieldJSON}}' },
+    { field: '{{.RefFieldJSON}}', title: '{{.Label}}' },
+{{- else if .IsEnum}}
+    { field: '{{.NameLower}}', title: '{{.Label}}', width: 120, slots: { default: '{{.NameLower}}_cell' } },
 {{- else}}
-  { title: '{{.Label}}', dataIndex: '{{.NameLower}}', key: '{{.NameLower}}'{{if .IsEnum}}, width: 120{{end}} },
+    { field: '{{.NameLower}}', title: '{{.Label}}' },
 {{- end}}
 {{- end}}
 {{- end}}
 {{- range .Fields}}
 {{- if and (not .IsHidden) (.IsTimeField)}}
-  { title: '{{.Label}}', dataIndex: '{{.NameLower}}', key: '{{.NameLower}}', width: 180 },
+    { field: '{{.NameLower}}', title: '{{.Label}}', width: 180, formatter: 'formatDateTime' },
 {{- end}}
 {{- end}}
-  { title: '创建时间', dataIndex: 'createdAt', key: 'createdAt', width: 180 },
-  { title: '操作', key: 'action', width: 200, fixed: 'right' as const },
-];
-
-/** 加载数据 */
-async function loadData() {
-  loading.value = true;
-  try {
+    { field: 'createdAt', title: '创建时间', width: 180, formatter: 'formatDateTime' },
+    { title: '操作', width: 200, fixed: 'right', slots: { default: 'action' } },
+  ],
 {{- if .HasParentID}}
-    const params: Record<string, any> = {};
-{{- range .Fields}}
-{{- if and (not .IsHidden) (not .IsID) (not .IsParentID) (.IsEnum)}}
-    if (queryParams.{{.NameLower}} !== undefined) {
-      params.{{.NameLower}} = queryParams.{{.NameLower}};
-    }
-{{- end}}
-{{- end}}
-    const res = await get{{.ModelName}}Tree(params);
-    dataList.value = res ?? [];
+  pagerConfig: { enabled: false },
+  treeConfig: {
+    parentField: '{{range .Fields}}{{if .IsParentID}}{{.NameLower}}{{end}}{{end}}',
+    rowField: 'id',
+    transform: true,
+  },
+  proxyConfig: {
+    ajax: {
+      query: async (_params, formValues) => {
+        const res = await get{{.ModelName}}Tree(formValues);
+        return res ?? [];
+      },
+    },
+  },
 {{- else}}
-    const res = await get{{.ModelName}}List({
-      pageNum: queryParams.pageNum,
-      pageSize: queryParams.pageSize,
-{{- range .Fields}}
-{{- if and (not .IsHidden) (not .IsID) (.IsEnum)}}
-      {{.NameLower}}: queryParams.{{.NameLower}},
+  height: 'auto',
+  pagerConfig: {},
+  proxyConfig: {
+    ajax: {
+      query: async ({ page }, formValues) => {
+        const res = await get{{.ModelName}}List({
+          pageNum: page.currentPage,
+          pageSize: page.pageSize,
+          ...formValues,
+        });
+        return { items: res?.list ?? [], total: res?.total ?? 0 };
+      },
+    },
+  },
 {{- end}}
-{{- end}}
-    });
-    dataList.value = res?.list ?? [];
-    total.value = res?.total ?? 0;
-{{- end}}
-  } finally {
-    loading.value = false;
-  }
-}
+  toolbarConfig: {
+    custom: true,
+    refresh: true,
+    search: true,
+  },
+};
 
-/** 搜索 */
-function handleSearch() {
-{{- if not .HasParentID}}
-  queryParams.pageNum = 1;
-{{- end}}
-  loadData();
-}
-
-/** 重置 */
-function handleReset() {
-{{- if not .HasParentID}}
-  queryParams.pageNum = 1;
-{{- end}}
-{{- range .Fields}}
-{{- if and (not .IsHidden) (not .IsID) (.IsEnum)}}
-  queryParams.{{.NameLower}} = undefined;
-{{- end}}
-{{- end}}
-  loadData();
-}
+const [Grid, gridApi] = useVbenVxeGrid({
+  formOptions,
+  gridOptions,
+});
 
 /** 新建 */
 function handleCreate() {
-  formRef.value?.open();
+  formModalApi.setData(null).open();
 }
 
 /** 编辑 */
-function handleEdit(record: {{.ModelName}}Item) {
-  formRef.value?.open(record.id);
+function handleEdit(row: {{.ModelName}}Item) {
+  formModalApi.setData({ id: row.id }).open();
 }
 
 /** 删除 */
-function handleDelete(record: {{.ModelName}}Item) {
+function handleDelete(row: {{.ModelName}}Item) {
   Modal.confirm({
     title: '确认删除',
     content: '确定要删除该{{.Comment}}吗？',
     okType: 'danger',
     async onOk() {
-      await delete{{.ModelName}}(record.id);
+      await delete{{.ModelName}}(row.id);
       message.success('删除成功');
-      loadData();
+      gridApi.reload();
     },
   });
 }
-{{- if not .HasParentID}}
-
-/** 分页变化 */
-function handlePageChange(page: number, pageSize: number) {
-  queryParams.pageNum = page;
-  queryParams.pageSize = pageSize;
-  loadData();
-}
-{{- end}}
-
-onMounted(() => {
-  loadData();
-});
 </script>
 
 <template>
-  <div class="p-4">
-    <!-- 搜索栏 -->
-    <div class="mb-4 flex items-center gap-3">
-{{- range .Fields}}
-{{- if and (not .IsHidden) (not .IsID) (.IsEnum)}}
-      <a-select
-        v-model:value="queryParams.{{.NameLower}}"
-        :options="{{.NameLower}}Options"
-        placeholder="{{.Label}}"
-        allow-clear
-        style="width: 160px"
-      />
-{{- end}}
-{{- end}}
-      <a-button type="primary" @click="handleSearch">
-        <template #icon><SearchOutlined /></template>
-        搜索
-      </a-button>
-      <a-button @click="handleReset">
-        <template #icon><ReloadOutlined /></template>
-        重置
-      </a-button>
-      <div class="flex-1" />
-      <a-button type="primary" @click="handleCreate">
-        <template #icon><PlusOutlined /></template>
-        新建
-      </a-button>
-    </div>
-
-    <!-- 数据表格 -->
-    <a-table
-      :columns="columns"
-      :data-source="dataList"
-      :loading="loading"
-      row-key="id"
-{{- if .HasParentID}}
-      :children-column-name="'children'"
-      :pagination="false"
-      default-expand-all-rows
-{{- else}}
-      :pagination="{
-        current: queryParams.pageNum,
-        pageSize: queryParams.pageSize,
-        total: total,
-        showSizeChanger: true,
-        showQuickJumper: true,
-        showTotal: (t: number) => `共 ${t} 条`,
-        onChange: handlePageChange,
-      }"
-{{- end}}
-      :scroll="{ x: 'max-content' }"
-    >
-      <template #bodyCell="{ column, record }">
+  <Page auto-content-height>
+    <FormModalComp @success="() => gridApi.reload()" />
+    <Grid>
+      <template #toolbar-actions>
+        <Button type="primary" @click="handleCreate">新建</Button>
+      </template>
 {{- range .Fields}}
 {{- if and (not .IsHidden) (not .IsID) (not .IsParentID) (not .IsTimeField) (not .IsMultiFK) (.IsEnum)}}
-        <template v-if="column.key === '{{.NameLower}}'">
-          <a-tag :color="get{{.NameCamel}}Color(record.{{.NameLower}})">
-            {{"{{"}} {{.NameLower}}Map[record.{{.NameLower}}] || record.{{.NameLower}} {{"}}"}}
-          </a-tag>
-        </template>
-{{- end}}
-{{- end}}
-        <template v-if="column.key === 'action'">
-          <div class="flex gap-2">
-            <a-button type="link" size="small" @click="handleEdit(record)">
-              <template #icon><EditOutlined /></template>
-              编辑
-            </a-button>
-            <a-button type="link" danger size="small" @click="handleDelete(record)">
-              <template #icon><DeleteOutlined /></template>
-              删除
-            </a-button>
-          </div>
-        </template>
+      <template #{{.NameLower}}_cell="{ row }">
+        <Tag :color="get{{.NameCamel}}Color(row.{{.NameLower}})">
+          {{"{{"}} {{.NameLower}}Map[row.{{.NameLower}}] || row.{{.NameLower}} {{"}}"}}
+        </Tag>
       </template>
-    </a-table>
-
-    <!-- 表单弹窗 -->
-    <FormModal ref="formRef" @success="loadData" />
-  </div>
+{{- end}}
+{{- end}}
+      <template #action="{ row }">
+        <Button type="link" size="small" @click="handleEdit(row)">编辑</Button>
+        <Button type="link" danger size="small" @click="handleDelete(row)">删除</Button>
+      </template>
+    </Grid>
+  </Page>
 </template>

@@ -40,16 +40,3 @@ export interface RoleUpdateParams {
   sort?: number;
   status?: number;
 }
-
-/** 角色授权菜单参数 */
-export interface RoleGrantMenuParams {
-  id: string;
-  menuIds: string[];
-}
-
-/** 角色授权数据权限参数 */
-export interface RoleGrantDeptParams {
-  id: string;
-  dataScope: number;
-  deptIds: string[];
-}
