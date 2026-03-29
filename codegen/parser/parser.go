@@ -1,0 +1,208 @@
+package parser
+
+import (
+	"database/sql"
+	"fmt"
+	"strings"
+
+	_ "github.com/go-sql-driver/mysql"
+)
+
+// columnInfo 从 information_schema.COLUMNS 查询到的字段信息
+type columnInfo struct {
+	ColumnName    string
+	DataType      string
+	ColumnType    string
+	IsNullable    string
+	ColumnKey     string
+	ColumnDefault sql.NullString
+	ColumnComment string
+	CharMaxLength sql.NullInt64
+	Extra         string
+}
+
+// Parser 数据库表结构解析器
+type Parser struct {
+	DSN string // "user:pass@tcp(host:port)/dbname"
+}
+
+// New 创建解析器实例
+func New(dsn string) *Parser {
+	return &Parser{DSN: dsn}
+}
+
+// ParseTable 解析单张表
+func (p *Parser) ParseTable(tableName string) (*TableMeta, error) {
+	db, err := sql.Open("mysql", p.DSN)
+	if err != nil {
+		return nil, fmt.Errorf("连接数据库失败: %w", err)
+	}
+	defer db.Close()
+
+	// 从 DSN 中提取数据库名
+	dbName, err := extractDBName(p.DSN)
+	if err != nil {
+		return nil, err
+	}
+
+	// 查询表注释
+	tableComment, err := queryTableComment(db, dbName, tableName)
+	if err != nil {
+		return nil, err
+	}
+
+	// 查询字段信息
+	columns, err := queryColumns(db, dbName, tableName)
+	if err != nil {
+		return nil, err
+	}
+
+	if len(columns) == 0 {
+		return nil, fmt.Errorf("表 %s 不存在或没有字段", tableName)
+	}
+
+	// 构建 TableMeta
+	meta := &TableMeta{
+		TableName:   tableName,
+		ModelName:   snakeToCamel(tableName),
+		ModuleName:  strings.ToLower(tableName),
+		PackageName: strings.ToLower(tableName),
+		Comment:     tableComment,
+	}
+
+	for _, col := range columns {
+		field := buildFieldMeta(col)
+		meta.Fields = append(meta.Fields, field)
+
+		if field.Name == "parent_id" {
+			meta.HasParentID = true
+		}
+		if field.Name == "status" {
+			meta.HasStatus = true
+		}
+		if field.Name == "sort" {
+			meta.HasSort = true
+		}
+	}
+
+	return meta, nil
+}
+
+// ParseTables 解析多张表
+func (p *Parser) ParseTables(tableNames []string) ([]*TableMeta, error) {
+	var result []*TableMeta
+	for _, name := range tableNames {
+		meta, err := p.ParseTable(name)
+		if err != nil {
+			return nil, fmt.Errorf("解析表 %s 失败: %w", name, err)
+		}
+		result = append(result, meta)
+	}
+	return result, nil
+}
+
+// extractDBName 从 DSN 中提取数据库名
+func extractDBName(dsn string) (string, error) {
+	// DSN 格式: user:pass@tcp(host:port)/dbname?params
+	slashIdx := strings.LastIndex(dsn, "/")
+	if slashIdx < 0 {
+		return "", fmt.Errorf("DSN 格式错误，无法提取数据库名: %s", dsn)
+	}
+	rest := dsn[slashIdx+1:]
+	qIdx := strings.Index(rest, "?")
+	if qIdx >= 0 {
+		rest = rest[:qIdx]
+	}
+	if rest == "" {
+		return "", fmt.Errorf("DSN 中未指定数据库名: %s", dsn)
+	}
+	return rest, nil
+}
+
+// queryTableComment 查询表注释
+func queryTableComment(db *sql.DB, dbName, tableName string) (string, error) {
+	var comment sql.NullString
+	err := db.QueryRow(
+		"SELECT TABLE_COMMENT FROM information_schema.TABLES WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ?",
+		dbName, tableName,
+	).Scan(&comment)
+	if err != nil {
+		return "", fmt.Errorf("查询表 %s 注释失败: %w", tableName, err)
+	}
+	return comment.String, nil
+}
+
+// queryColumns 查询表的所有字段信息
+func queryColumns(db *sql.DB, dbName, tableName string) ([]columnInfo, error) {
+	rows, err := db.Query(
+		`SELECT COLUMN_NAME, DATA_TYPE, COLUMN_TYPE, IS_NULLABLE, COLUMN_KEY,
+		        COLUMN_DEFAULT, COLUMN_COMMENT, CHARACTER_MAXIMUM_LENGTH, EXTRA
+		 FROM information_schema.COLUMNS
+		 WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ?
+		 ORDER BY ORDINAL_POSITION`,
+		dbName, tableName,
+	)
+	if err != nil {
+		return nil, fmt.Errorf("查询表 %s 字段失败: %w", tableName, err)
+	}
+	defer rows.Close()
+
+	var columns []columnInfo
+	for rows.Next() {
+		var col columnInfo
+		if err := rows.Scan(
+			&col.ColumnName, &col.DataType, &col.ColumnType, &col.IsNullable,
+			&col.ColumnKey, &col.ColumnDefault, &col.ColumnComment,
+			&col.CharMaxLength, &col.Extra,
+		); err != nil {
+			return nil, fmt.Errorf("扫描字段信息失败: %w", err)
+		}
+		columns = append(columns, col)
+	}
+	return columns, rows.Err()
+}
+
+// buildFieldMeta 根据列信息构建 FieldMeta
+func buildFieldMeta(col columnInfo) FieldMeta {
+	name := col.ColumnName
+	isID := name == "id"
+	isForeignKey := strings.HasSuffix(name, "_id") && name != "id" && name != "dept_id"
+	isMultiFK := strings.HasSuffix(name, "_ids")
+	isParentID := name == "parent_id"
+
+	// 解析备注
+	label, enums := ParseComment(col.ColumnComment)
+
+	// 构建基础数据库类型（简化，去掉长度信息用于映射）
+	dbType := col.ColumnType
+
+	field := FieldMeta{
+		Name:         name,
+		NameCamel:    snakeToCamel(name),
+		NameLower:    snakeToCamelLower(name),
+		DBType:       dbType,
+		GoType:       MapGoType(col.DataType, isID || isForeignKey || isParentID || name == "dept_id" || name == "created_by"),
+		TSType:       MapTSType(col.DataType, isID || isForeignKey || isParentID || name == "dept_id" || name == "created_by"),
+		Comment:      col.ColumnComment,
+		Label:        label,
+		EnumValues:   enums,
+		IsRequired:   col.IsNullable == "NO" && col.ColumnDefault.Valid == false && name != "id",
+		IsID:         isID,
+		IsParentID:   isParentID,
+		IsForeignKey: isForeignKey,
+		IsMultiFK:    isMultiFK,
+		IsTimeField:  strings.HasSuffix(name, "_at"),
+		IsHidden:     IsHiddenField(name),
+		IsEnum:       len(enums) > 0,
+		DefaultValue: col.ColumnDefault.String,
+	}
+
+	if col.CharMaxLength.Valid {
+		field.MaxLength = int(col.CharMaxLength.Int64)
+	}
+
+	// 映射前端组件
+	field.Component = MapComponent(field)
+
+	return field
+}
