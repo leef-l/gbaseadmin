@@ -3,7 +3,7 @@ version: '3.8'
 # ═════════════════════════════════════════════════════════════
 # GBaseAdmin Docker Compose - 国内版（使用国内镜像加速）
 # 使用方法：docker compose -f docker-compose.cn.yml up -d
-# 需要先配置 /etc/docker/daemon.json 镜像加速器
+# 镜像使用 docker.1ms.run 加速代理，无需配置 daemon.json
 # ═════════════════════════════════════════════════════════════
 
 services:
@@ -11,7 +11,7 @@ services:
   # MySQL 8.0 - 主数据库
   # ─────────────────────────────────────────────
   mysql:
-    image: mysql:8.0
+    image: docker.1ms.run/mysql:8.0
     container_name: gbaseadmin_mysql
     restart: unless-stopped
     environment:
@@ -38,7 +38,7 @@ services:
   # Redis 7 - 缓存 / JWT Token 黑名单
   # ─────────────────────────────────────────────
   redis:
-    image: redis:7-alpine
+    image: docker.1ms.run/redis:7-alpine
     container_name: gbaseadmin_redis
     restart: unless-stopped
     command: redis-server --requirepass ${REDIS_PASSWORD} --appendonly yes
@@ -60,7 +60,7 @@ services:
   system:
     build:
       context: .
-      dockerfile: deploy/Dockerfile.system
+      dockerfile: deploy/Dockerfile.system.cn
     container_name: gbaseadmin_system
     restart: unless-stopped
     depends_on:
@@ -91,7 +91,7 @@ services:
   # frontend - Vben Admin（开发模式）
   # ─────────────────────────────────────────────
   frontend:
-    image: node:22-alpine
+    image: docker.1ms.run/node:22-alpine
     container_name: gbaseadmin_frontend
     restart: unless-stopped
     working_dir: /app
@@ -111,7 +111,7 @@ services:
   # adminer - 数据库管理 Web UI（仅开发环境）
   # ─────────────────────────────────────────────
   adminer:
-    image: adminer:latest
+    image: docker.1ms.run/adminer:latest
     container_name: gbaseadmin_adminer
     restart: unless-stopped
     ports:
@@ -130,7 +130,7 @@ services:
   # 使用 profile: tools，不随 docker-compose up 自动启动
   # ─────────────────────────────────────────────
   gotools:
-    image: golang:1.22-alpine
+    image: docker.1ms.run/golang:1.22-alpine
     container_name: gbaseadmin_gotools
     profiles:
       - tools
