@@ -2,7 +2,17 @@
   "permissions": {
     "allow": [
       "Bash(docker-compose -f docker-compose.cn.yml restart system)",
-      "Bash(docker-compose -f docker-compose.cn.yml logs system --tail=30)"
+      "Bash(docker-compose -f docker-compose.cn.yml logs system --tail=30)",
+      "Bash(docker exec gbaseadmin_system sh -c \"cat /workspace/app/system/hack/config.yaml 2>/dev/null || echo ''配置文件不存在''\")",
+      "Bash(go run temp_hash.go)",
+      "Bash(docker exec:*)",
+      "Bash(curl -X POST http://localhost:9000/api/system/users/create -H \"Content-Type: application/json\" -d '{\"\"username\"\":\"\"test\"\",\"\"password\"\":\"\"test123\"\",\"\"nickname\"\":\"\"测试用户\"\",\"\"email\"\":\"\"test@example.com\"\",\"\"status\"\":1,\"\"deptID\"\":\"\"1000000000000000001\"\",\"\"roleIDs\"\":[]}')",
+      "Read(//c/project/gbaseadmin/**)",
+      "Bash(curl -X POST http://localhost:9000/api/auth/login -H \"Content-Type: application/json\" -d '{\"\"username\"\":\"\"admin\"\",\"\"password\"\":\"\"admin123\"\"}')",
+      "Bash(curl -X POST http://localhost:9000/auth/login -H \"Content-Type: application/json\" -d '{\"\"username\"\":\"\"admin\"\",\"\"password\"\":\"\"admin123\"\"}')",
+      "Bash(curl -X POST http://localhost:9000/api/system/auth/login -H \"Content-Type: application/json\" -d '{\"\"username\"\":\"\"admin\"\",\"\"password\"\":\"\"admin123\"\"}')",
+      "WebFetch(domain:doc.vben.pro)",
+      "Bash(docker-compose -f docker-compose.cn.yml build system)"
     ]
   }
 }

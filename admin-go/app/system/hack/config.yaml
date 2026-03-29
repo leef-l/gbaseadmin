@@ -2,6 +2,13 @@
 # CLI tool, only in development environment.
 # https://goframe.org/docs/cli
 gfcli:
+  run:
+    path: "main.go"
+    extra: ""
+    watchPaths:
+      - "internal"
+      - "api"
+
   gen:
     dao:
       - link: "mysql:root:gbaseadmin123@tcp(127.0.0.1:3306)/gbaseadmin"

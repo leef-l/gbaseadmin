@@ -101,7 +101,7 @@ CREATE TABLE IF NOT EXISTS `menu` (
 CREATE TABLE IF NOT EXISTS `users` (
     `id`         BIGINT UNSIGNED NOT NULL               COMMENT '用户ID（Snowflake）',
     `username`   VARCHAR(50)     NOT NULL               COMMENT '登录用户名',
-    `password`   VARCHAR(255)    NOT NULL               COMMENT '密码（bcrypt 加密）',
+    `password`   VARCHAR(255)    NOT NULL               COMMENT '密码（SHA-256 加密）',
     `nickname`   VARCHAR(50)                            COMMENT '昵称/显示名',
     `email`      VARCHAR(100)                           COMMENT '邮箱地址',
     `avatar`     VARCHAR(500)                           COMMENT '头像图片 URL',
@@ -158,14 +158,14 @@ VALUES (1000000000000000002, 0, '超级管理员', 1, 0, 1, 0, 10000000000000000
 -- ─────────────────────────────────────────────
 -- 超级管理员用户
 -- 用户名：admin
--- 密码：admin123  →  bcrypt 加密后的哈希值
--- bcrypt(admin123, cost=10) = $2a$10$xVpo7FECYLBDq9NlExvX4.dkNa7JJ/3k/p14v/t4ZTQ4XvNWXrNuS
+-- 密码：admin123  →  SHA-256 加密后的哈希值
+-- SHA-256(admin123) = 240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9
 -- ─────────────────────────────────────────────
 INSERT INTO `users` (`id`, `username`, `password`, `nickname`, `email`, `avatar`, `status`, `created_by`, `dept_id`, `created_at`, `updated_at`, `deleted_at`)
 VALUES (
     1000000000000000003,
     'admin',
-    '$2a$10$xVpo7FECYLBDq9NlExvX4.dkNa7JJ/3k/p14v/t4ZTQ4XvNWXrNuS',
+    '240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9',
     '超级管理员',
     'admin@example.com',
     '',

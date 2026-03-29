@@ -3,9 +3,9 @@ package auth
 import (
 	"context"
 
+	"github.com/gogf/gf/v2/crypto/gsha256"
 	"github.com/gogf/gf/v2/errors/gerror"
 	"github.com/gogf/gf/v2/frame/g"
-	"golang.org/x/crypto/bcrypt"
 
 	"gbaseadmin/app/system/internal/dao"
 	"gbaseadmin/app/system/internal/model"
@@ -36,16 +36,22 @@ func (s *sAuth) Login(ctx context.Context, in *model.AuthLoginInput) (out *model
 		DeptId   int64  `json:"deptId"`
 		Status   int    `json:"status"`
 	}
+
 	err = dao.Users.Ctx(ctx).
 		Where(dao.Users.Columns().Username, in.Username).
 		Where(dao.Users.Columns().DeletedAt, nil).
 		Scan(&user)
+
 	if err != nil {
+		g.Log().Errorf(ctx, "查询用户失败: %v", err)
 		return nil, gerror.New("用户名或密码错误")
 	}
 	if user.Id == 0 {
+		g.Log().Infof(ctx, "用户不存在: %s", in.Username)
 		return nil, gerror.New("用户名或密码错误")
 	}
+
+	g.Log().Infof(ctx, "查询用户成功 - 用户名: %s, ID: %d, 密码长度: %d", in.Username, user.Id, len(user.Password))
 
 	// 校验状态
 	if user.Status == 0 {
@@ -53,7 +59,9 @@ func (s *sAuth) Login(ctx context.Context, in *model.AuthLoginInput) (out *model
 	}
 
 	// 校验密码
-	if err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(in.Password)); err != nil {
+	hashedInput := gsha256.Encrypt(in.Password)
+	if user.Password != hashedInput {
+		g.Log().Errorf(ctx, "密码验证失败 - 输入: %s, 数据库: %s", hashedInput, user.Password)
 		return nil, gerror.New("用户名或密码错误")
 	}
 
@@ -173,20 +181,18 @@ func (s *sAuth) ChangePassword(ctx context.Context, in *model.AuthChangePassword
 	}
 
 	// 校验旧密码
-	if err = bcrypt.CompareHashAndPassword([]byte(password.String()), []byte(in.OldPassword)); err != nil {
+	hashedOld := gsha256.Encrypt(in.OldPassword)
+	if password.String() != hashedOld {
 		return gerror.New("旧密码错误")
 	}
 
 	// 加密新密码
-	hashed, err := bcrypt.GenerateFromPassword([]byte(in.NewPassword), bcrypt.DefaultCost)
-	if err != nil {
-		return err
-	}
+	hashedNew := gsha256.Encrypt(in.NewPassword)
 
 	// 更新密码
 	_, err = dao.Users.Ctx(ctx).
 		Where(dao.Users.Columns().Id, in.UserID).
-		Data(dao.Users.Columns().Password, string(hashed)).
+		Data(dao.Users.Columns().Password, hashedNew).
 		Update()
 	return err
 }

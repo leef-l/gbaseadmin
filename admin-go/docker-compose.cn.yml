@@ -69,7 +69,7 @@ services:
       redis:
         condition: service_healthy
     environment:
-      - GF_GCFG_FILE=config.yaml
+      - GF_GCFG_FILE=manifest/config/config.yaml
       - DB_HOST=mysql
       - DB_PORT=3306
       - DB_USER=${MYSQL_USER}
@@ -81,9 +81,7 @@ services:
       - GF_SERVER_ADDRESS=:8000
       - TZ=Asia/Shanghai
     ports:
-      - "${SYSTEM_PORT:-8000}:8000"
-    # volumes:
-    #   - ./app:/app  # 挂载源码目录（开发热重载用，生产环境需注释）
+      - "${SYSTEM_PORT:-9000}:8000"
     networks:
       - gbaseadmin_net
 

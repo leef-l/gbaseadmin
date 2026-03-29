@@ -3,9 +3,9 @@ package users
 import (
 	"context"
 
+	"github.com/gogf/gf/v2/crypto/gsha256"
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/os/gtime"
-	"golang.org/x/crypto/bcrypt"
 
 	"gbaseadmin/app/system/internal/dao"
 	"gbaseadmin/app/system/internal/model"
@@ -26,14 +26,11 @@ type sUsers struct{}
 // Create 创建用户表
 func (s *sUsers) Create(ctx context.Context, in *model.UsersCreateInput) error {
 	id := snowflake.Generate()
-	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(in.Password), bcrypt.DefaultCost)
-	if err != nil {
-		return err
-	}
-	_, err = dao.Users.Ctx(ctx).Data(g.Map{
+	hashedPassword := gsha256.Encrypt(in.Password)
+	_, err := dao.Users.Ctx(ctx).Data(g.Map{
 		dao.Users.Columns().Id:        id,
 		dao.Users.Columns().Username: in.Username,
-		dao.Users.Columns().Password: string(hashedPassword),
+		dao.Users.Columns().Password: hashedPassword,
 		dao.Users.Columns().Nickname: in.Nickname,
 		dao.Users.Columns().Email: in.Email,
 		dao.Users.Columns().Avatar: in.Avatar,
@@ -71,11 +68,7 @@ func (s *sUsers) Update(ctx context.Context, in *model.UsersUpdateInput) error {
 		dao.Users.Columns().UpdatedAt: gtime.Now(),
 	}
 	if in.Password != "" {
-		hashed, err := bcrypt.GenerateFromPassword([]byte(in.Password), bcrypt.DefaultCost)
-		if err != nil {
-			return err
-		}
-		data[dao.Users.Columns().Password] = string(hashed)
+		data[dao.Users.Columns().Password] = gsha256.Encrypt(in.Password)
 	}
 	_, err := dao.Users.Ctx(ctx).Where(dao.Users.Columns().Id, in.ID).Data(data).Update()
 	if err != nil {
