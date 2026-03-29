@@ -130,7 +130,7 @@ services:
   # 使用 profile: tools，不随 docker-compose up 自动启动
   # ─────────────────────────────────────────────
   gotools:
-    image: docker.1ms.run/golang:1.22-alpine
+    image: docker.1ms.run/golang:1.23-alpine
     container_name: gbaseadmin_gotools
     profiles:
       - tools
