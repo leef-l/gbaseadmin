@@ -377,3 +377,6 @@ claude
 | 2026-03-29 | 修复 | app/system 目录结构 | ✅ 完成 | api-template → system，修复 import 路径 |
 | 2026-03-29 | Phase 1-B | codegen-engine 引擎组装 | ✅ 完成 | generator/backend、generator/frontend、main.go、config.go、codegen.yaml |
 | 2026-03-29 | Phase 1-C | codegen-tester 验证 | ✅ 完成 | dept/role/menu/users 4 表 44 文件全部生成成功 |
+| 2026-03-29 | 优化 | 代码生成器迭代 | ✅ 完成 | 软删除、查询条件透传、密码bcrypt、关联字段显示、空children、NameDao双命名 |
+| 2026-03-29 | Phase 2-Init | 项目初始化 | ✅ 完成 | gf gen dao、路由注册、go mod tidy 编译通过 |
+| 2026-03-29 | Phase 2-D1 | JWT 认证 + 中间件 + 工具包 | ✅ 完成 | jwt/response 工具包、auth 登录/信息/改密、鉴权中间件、路由分组 |

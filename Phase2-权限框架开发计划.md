@@ -10,8 +10,8 @@
 | **Phase 1-A** | codegen-frontend 模板 | ✅ 完成 | codegen-frontend | 4 个 .tpl 模板 |
 | **Phase 1-B** | codegen-engine 引擎组装 | ✅ 完成 | codegen-engine | CLI 入口 + 配置系统 |
 | **Phase 1-C** | codegen-tester 验证 | ✅ 完成 | codegen-tester | 4 表 44 文件生成成功 |
-| **Phase 2-Init** | 项目初始化 + DAO 生成 | 🔄 进行中 | orchestrator | gf gen dao、路由注册 |
-| **Phase 2-D1** | JWT 认证 + 中间件 + 工具包 | ⏳ 待开始 | backend-specialist | snowflake、response、auth |
+| **Phase 2-Init** | 项目初始化 + DAO 生成 | ✅ 完成 | orchestrator | gf gen dao、路由注册 |
+| **Phase 2-D1** | JWT 认证 + 中间件 + 工具包 | ✅ 完成 | backend-specialist | jwt、response、auth、middleware |
 | **Phase 2-D2** | 树形业务 + 授权 + 数据权限 | ⏳ 待开始 | backend-specialist | dept/role/menu/users 业务补充 |
 | **Phase 2-D3** | 特殊 UI 组件 | ⏳ 待开始 | frontend-specialist | 授权弹窗、树形选择器 |
 | **Phase 2-E** | 动态路由 + 权限指令 | ⏳ 待开始 | frontend-specialist | accessMode backend、v-access |
