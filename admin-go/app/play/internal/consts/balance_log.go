@@ -1,11 +1,10 @@
 package consts
 
-// BalanceLogBizType ä¸šåŠ¡ç±»åž‹
+// BalanceLogBizType 业务类型
 const (
-	BalanceLogBizTypeå……å€¼ = 1
-	BalanceLogBizTypeæ¶ˆè´¹ = 2
-	BalanceLogBizTypeé€€æ¬¾ = 3
-	BalanceLogBizTypeæ´»åŠ¨èµ é€ = 4
-	BalanceLogBizTypeæçŽ° = 5
+	BalanceLogBizTypeRecharge = 1 // 充值
+	BalanceLogBizTypeConsume  = 2 // 消费
+	BalanceLogBizTypeRefund   = 3 // 退款
+	BalanceLogBizTypeActivity = 4 // 活动赠送
+	BalanceLogBizTypeWithdraw = 5 // 提现
 )
-

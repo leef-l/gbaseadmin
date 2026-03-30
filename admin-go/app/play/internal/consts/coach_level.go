@@ -2,16 +2,15 @@ package consts
 
 // CoachLevelLevel 等级
 const (
-	CoachLevelLevel青铜 = 1
-	CoachLevelLevel白银 = 2
-	CoachLevelLevel黄金 = 3
-	CoachLevelLevel铂金 = 4
-	CoachLevelLevel钻石 = 5
+	CoachLevelLevelBronze   = 1 // 青铜
+	CoachLevelLevelSilver   = 2 // 白银
+	CoachLevelLevelGold     = 3 // 黄金
+	CoachLevelLevelPlatinum = 4 // 铂金
+	CoachLevelLevelDiamond  = 5 // 钻石
 )
 
 // CoachLevelStatus 状态
 const (
-	CoachLevelStatus关闭 = 0
-	CoachLevelStatus开启 = 1
+	CoachLevelStatusOff = 0
+	CoachLevelStatusOn  = 1
 )
-

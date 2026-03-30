@@ -1,8 +1,7 @@
 package consts
 
-// ProfitLogSettleStatus ç»“ç®—çŠ¶æ€
+// ProfitLogSettleStatus 结算状态
 const (
-	ProfitLogSettleStatuså¾…ç»“ç®— = 0
-	ProfitLogSettleStatuså·²ç»“ç®— = 1
+	ProfitLogSettleStatusPending  = 0 // 待结算
+	ProfitLogSettleStatusSettled  = 1 // 已结算
 )
-

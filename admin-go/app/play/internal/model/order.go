@@ -69,7 +69,6 @@ type OrderDetailOutput struct {
 	ShopTitle string `json:"shopTitle"`
 	GoodsID snowflake.JsonInt64 `json:"goodsID"`
 	GoodsTitle string `json:"goodsTitle"`
-	GoodsTitle string `json:"goodsTitle"`
 	GoodsPrice int64 `json:"goodsPrice"`
 	Quantity int `json:"quantity"`
 	TotalAmount int64 `json:"totalAmount"`
@@ -98,7 +97,6 @@ type OrderListOutput struct {
 	ShopID snowflake.JsonInt64 `json:"shopID"`
 	ShopTitle string `json:"shopTitle"`
 	GoodsID snowflake.JsonInt64 `json:"goodsID"`
-	GoodsTitle string `json:"goodsTitle"`
 	GoodsTitle string `json:"goodsTitle"`
 	GoodsPrice int64 `json:"goodsPrice"`
 	Quantity int `json:"quantity"`

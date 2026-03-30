@@ -1,14 +1,13 @@
 package consts
 
-// ReviewIsAnonymous æ˜¯å¦åŒ¿å
+// ReviewIsAnonymous 是否匿名
 const (
-	ReviewIsAnonymouså¦ = 0
-	ReviewIsAnonymousæ˜¯ = 1
+	ReviewIsAnonymousNo  = 0
+	ReviewIsAnonymousYes = 1
 )
 
-// ReviewStatus çŠ¶æ€
+// ReviewStatus 状态
 const (
-	ReviewStatuséšè— = 0
-	ReviewStatusæ˜¾ç¤º = 1
+	ReviewStatusHidden  = 0 // 隐藏
+	ReviewStatusVisible = 1 // 显示
 )
-

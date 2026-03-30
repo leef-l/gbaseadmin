@@ -1,9 +1,8 @@
 package consts
 
-// CouponMemberUseStatus ä½¿ç”¨çŠ¶æ€
+// CouponMemberUseStatus 使用状态
 const (
-	CouponMemberUseStatusæœªä½¿ç”¨ = 0
-	CouponMemberUseStatuså·²ä½¿ç”¨ = 1
-	CouponMemberUseStatuså·²è¿‡æœŸ = 2
+	CouponMemberUseStatusUnused  = 0 // 未使用
+	CouponMemberUseStatusUsed    = 1 // 已使用
+	CouponMemberUseStatusExpired = 2 // 已过期
 )
-

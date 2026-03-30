@@ -1,8 +1,7 @@
 package consts
 
-// RechargePlanStatus çŠ¶æ€
+// RechargePlanStatus 状态
 const (
-	RechargePlanStatuså…³é—­ = 0
-	RechargePlanStatuså¼€å¯ = 1
+	RechargePlanStatusOff = 0
+	RechargePlanStatusOn  = 1
 )
-

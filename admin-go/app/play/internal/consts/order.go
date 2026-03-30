@@ -1,21 +1,20 @@
 package consts
 
-// OrderPayType æ”¯ä»˜æ–¹å¼
+// OrderPayType 支付方式
 const (
-	OrderPayTypeæœªæ”¯ä»˜ = 0
-	OrderPayTypeå¾®ä¿¡æ”¯ä»˜ = 1
-	OrderPayTypeæ”¯ä»˜å®æ”¯ä»˜ = 2
-	OrderPayTypeä½™é¢æ”¯ä»˜ = 3
+	OrderPayTypeUnpaid  = 0 // 未支付
+	OrderPayTypeWechat  = 1 // 微信支付
+	OrderPayTypeAlipay  = 2 // 支付宝支付
+	OrderPayTypeBalance = 3 // 余额支付
 )
 
-// OrderOrderStatus è®¢å•çŠ¶æ€
+// OrderOrderStatus 订单状态
 const (
-	OrderOrderStatuså¾…æ”¯ä»˜ = 0
-	OrderOrderStatuså·²æ”¯ä»˜ = 1
-	OrderOrderStatusè¿›è¡Œä¸­ = 2
-	OrderOrderStatuså·²å®Œæˆ = 3
-	OrderOrderStatuså·²å–æ¶ˆ = 4
-	OrderOrderStatusé€€æ¬¾ä¸­ = 5
-	OrderOrderStatuså·²é€€æ¬¾ = 6
+	OrderOrderStatusPending    = 0 // 待支付
+	OrderOrderStatusPaid       = 1 // 已支付
+	OrderOrderStatusInProgress = 2 // 进行中
+	OrderOrderStatusCompleted  = 3 // 已完成
+	OrderOrderStatusCancelled  = 4 // 已取消
+	OrderOrderStatusRefunding  = 5 // 退款中
+	OrderOrderStatusRefunded   = 6 // 已退款
 )
-

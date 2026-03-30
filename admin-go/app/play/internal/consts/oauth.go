@@ -1,8 +1,7 @@
 package consts
 
-// OauthProvider ç¬¬ä¸‰æ–¹å¹³å°
+// OauthProvider 第三方平台
 const (
-	OauthProviderå¾®ä¿¡ = 1
-	OauthProvideræ”¯ä»˜å® = 2
+	OauthProviderWechat = 1 // 微信
+	OauthProviderAlipay = 2 // 支付宝
 )
-

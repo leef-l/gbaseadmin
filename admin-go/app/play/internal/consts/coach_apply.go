@@ -2,8 +2,7 @@ package consts
 
 // CoachApplyAuditStatus 审核状态
 const (
-	CoachApplyAuditStatus待审核 = 0
-	CoachApplyAuditStatus通过 = 1
-	CoachApplyAuditStatus拒绝 = 2
+	CoachApplyAuditStatusPending  = 0 // 待审核
+	CoachApplyAuditStatusApproved = 1 // 通过
+	CoachApplyAuditStatusRejected = 2 // 拒绝
 )
-

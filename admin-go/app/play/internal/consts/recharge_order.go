@@ -1,15 +1,14 @@
 package consts
 
-// RechargeOrderPayType æ”¯ä»˜æ–¹å¼
+// RechargeOrderPayType 支付方式
 const (
-	RechargeOrderPayTypeå¾®ä¿¡æ”¯ä»˜ = 1
-	RechargeOrderPayTypeæ”¯ä»˜å®æ”¯ä»˜ = 2
+	RechargeOrderPayTypeWechat = 1 // 微信支付
+	RechargeOrderPayTypeAlipay = 2 // 支付宝支付
 )
 
-// RechargeOrderPayStatus æ”¯ä»˜çŠ¶æ€
+// RechargeOrderPayStatus 支付状态
 const (
-	RechargeOrderPayStatuså¾…æ”¯ä»˜ = 0
-	RechargeOrderPayStatusæ”¯ä»˜æˆåŠŸ = 1
-	RechargeOrderPayStatusæ”¯ä»˜å¤±è´¥ = 2
+	RechargeOrderPayStatusPending = 0 // 待支付
+	RechargeOrderPayStatusSuccess = 1 // 支付成功
+	RechargeOrderPayStatusFailed  = 2 // 支付失败
 )
-

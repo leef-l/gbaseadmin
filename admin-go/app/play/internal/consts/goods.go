@@ -1,8 +1,7 @@
 package consts
 
-// GoodsStatus çŠ¶æ€
+// GoodsStatus 状态
 const (
-	GoodsStatusä¸‹æž¶ = 0
-	GoodsStatusä¸Šæž¶ = 1
+	GoodsStatusOff = 0 // 下架
+	GoodsStatusOn  = 1 // 上架
 )
-
