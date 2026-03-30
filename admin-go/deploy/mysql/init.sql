@@ -38,6 +38,7 @@ CREATE TABLE IF NOT EXISTS `system_role` (
     `data_scope` TINYINT         NOT NULL DEFAULT 1     COMMENT '数据范围:1=全部,2=本部门及以下,3=本部门,4=仅本人,5=自定义',
     `sort`       INT             NOT NULL DEFAULT 0     COMMENT '排序（升序）',
     `status`     TINYINT(1)      NOT NULL DEFAULT 1     COMMENT '状态:0=关闭,1=开启',
+    `is_admin`   TINYINT(1)      NOT NULL DEFAULT 0     COMMENT '是否超级管理员:0=否,1=是',
     `created_by` BIGINT UNSIGNED                        COMMENT '创建人ID',
     `dept_id`    BIGINT UNSIGNED                        COMMENT '所属部门ID',
     `created_at` DATETIME                               COMMENT '创建时间',
