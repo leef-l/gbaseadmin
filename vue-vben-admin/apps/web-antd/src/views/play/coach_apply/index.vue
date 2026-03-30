@@ -6,7 +6,8 @@ import { Page, useVbenModal } from '@vben/common-ui';
 import { Button, message, Modal, Tag } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { getCoachApplyList, deleteCoachApply, auditCoachApply } from '#/api/play/coach_apply';
+import { getCoachApplyList, deleteCoachApply } from '#/api/play/coach_apply';
+import { auditCoachApply } from '#/api/play/coach_apply/enhance';
 import type { CoachApplyItem } from '#/api/play/coach_apply/types';
 import FormModal from './modules/form.vue';
 

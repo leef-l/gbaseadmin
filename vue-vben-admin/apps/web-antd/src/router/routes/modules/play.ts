@@ -31,7 +31,7 @@ const routes: RouteRecordRaw[] = [
       {
         path: '/play/coach-apply',
         name: 'PlayCoachApply',
-        component: () => import('#/views/play/coach_apply/index.vue'),
+        component: () => import('#/views/play/coach_apply/enhance.vue'),
         meta: { title: '陪玩师申请' },
       },
       {
@@ -61,7 +61,7 @@ const routes: RouteRecordRaw[] = [
       {
         path: '/play/order',
         name: 'PlayOrder',
-        component: () => import('#/views/play/order/index.vue'),
+        component: () => import('#/views/play/order/enhance.vue'),
         meta: { title: '订单列表' },
       },
       {

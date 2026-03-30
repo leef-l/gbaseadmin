@@ -8,3 +8,7 @@ import (
 type ICoachApplyEnhance interface {
 	Audit(ctx context.Context, in *model.CoachApplyAuditInput) error
 }
+
+func CoachApplyEnhance() ICoachApplyEnhance {
+	return localCoachApply.(ICoachApplyEnhance)
+}
