@@ -1,6 +1,13 @@
 
 # CLI tool, only in development environment.
 # https://goframe.org/docs/cli
+# https://goframe.org/docs/components/nosql-redis-config
+redis:
+  default:
+    address: "127.0.0.1:6379"
+    pass: "gbaseadmin123"
+    db: 1
+
 gfcli:
   run:
     path: "main.go"

@@ -20,10 +20,17 @@ import (
 type sAuth struct{}
 
 func (s *sAuth) Login(ctx context.Context, req *v1.AuthLoginReq) (*v1.AuthLoginRes, error) {
-	// 开发阶段：固定验证码 123456
-	if req.Code != "123456" {
+	// 从 Redis 获取验证码
+	redisKey := fmt.Sprintf("sms:login:%s", req.Phone)
+	cachedCode, err := g.Redis().Get(ctx, redisKey)
+	if err != nil {
+		return nil, fmt.Errorf("验证码校验失败")
+	}
+	if cachedCode.IsNil() || cachedCode.IsEmpty() || cachedCode.String() != req.Code {
 		return nil, fmt.Errorf("验证码错误或已过期")
 	}
+	// 验证成功，删除验证码
+	_, _ = g.Redis().Del(ctx, redisKey)
 
 	// 查询会员是否存在
 	memberColumns := dao.PlayMember.Columns()
@@ -122,8 +129,28 @@ func (s *sAuth) Login(ctx context.Context, req *v1.AuthLoginReq) (*v1.AuthLoginR
 }
 
 func (s *sAuth) SendCode(ctx context.Context, req *v1.AuthSendCodeReq) (*v1.AuthSendCodeRes, error) {
+	// 频率限制：60秒内不可重复发送
+	limitKey := fmt.Sprintf("sms:limit:%s", req.Phone)
+	limitVal, _ := g.Redis().Get(ctx, limitKey)
+	if !limitVal.IsNil() && !limitVal.IsEmpty() {
+		return nil, fmt.Errorf("发送过于频繁，请稍后再试")
+	}
+
 	// 生成6位随机验证码
 	code := fmt.Sprintf("%06d", rand.Intn(1000000))
+
+	// 存入 Redis，5分钟过期
+	redisKey := fmt.Sprintf("sms:%s:%s", req.Scene, req.Phone)
+	_, err := g.Redis().Set(ctx, redisKey, code)
+	if err != nil {
+		return nil, fmt.Errorf("验证码发送失败")
+	}
+	_, _ = g.Redis().Expire(ctx, redisKey, 5*60)
+
+	// 设置频率限制，60秒过期
+	_, _ = g.Redis().Set(ctx, limitKey, 1)
+	_, _ = g.Redis().Expire(ctx, limitKey, 60)
+
 	// 开发阶段：仅打印日志，不实际发送短信
 	glog.Infof(ctx, "发送验证码: phone=%s, scene=%s, code=%s", req.Phone, req.Scene, code)
 	return &v1.AuthSendCodeRes{}, nil
