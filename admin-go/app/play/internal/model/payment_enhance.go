@@ -6,6 +6,4 @@ import "gbaseadmin/utility/snowflake"
 type BalancePayInput struct {
 	OrderID  snowflake.JsonInt64 `json:"orderID"`
 	MemberID snowflake.JsonInt64 `json:"memberID"`
-	PayAmount int64              `json:"payAmount"`
-	OrderNo  string              `json:"orderNo"`
 }
