@@ -31,7 +31,10 @@
       "Bash(curl -s \"http://localhost:9000/api/system/role/menu-ids?id=1000000000000000002\" -H \"Authorization: Bearer $TOKEN\")",
       "Bash(curl -s \"http://localhost:9000/api/system/role/dept-ids?id=1000000000000000002\" -H \"Authorization: Bearer $TOKEN\")",
       "Bash(mysql -h 127.0.0.1 -P 9306 -u root -pgbaseadmin123 gbaseadmin -e \":*)",
-      "Bash(go run . --table sys_test --force)"
+      "Bash(go run . --table sys_test --force)",
+      "Bash(pnpm install)",
+      "Bash(for f in home.png home-active.png category.png category-active.png gift.png gift-active.png message.png message-active.png user.png user-active.png)",
+      "Bash(do echo \"iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAADklEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==\")"
     ]
   }
 }
