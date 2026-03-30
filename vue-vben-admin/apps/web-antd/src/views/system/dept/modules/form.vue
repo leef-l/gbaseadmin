@@ -7,8 +7,8 @@ import {
   getDeptDetail,
   createDept,
   updateDept,
+  getDeptTree,
 } from '#/api/system/dept';
-import { getDeptTree } from '#/api/system/dept';
 import type { DeptItem } from '#/api/system/dept/types';
 
 const treeData = ref<DeptItem[]>([]);
@@ -24,13 +24,14 @@ const [Form, formApi] = useVbenForm({
     {
       component: 'TreeSelect',
       fieldName: 'parentID',
-      label: '上级部门ID，0 表示顶级部门',
+      label: '上级部门',
       componentProps: {
         treeData: treeData.value,
-        fieldNames: { label: 'name', value: 'id', children: 'children' },
-        placeholder: '请选择上级部门ID，0 表示顶级部门',
+        fieldNames: { label: 'title', value: 'id', children: 'children' },
+        placeholder: '请选择上级部门',
         allowClear: true,
         treeDefaultExpandAll: true,
+        class: 'w-full',
       },
     },
     {
@@ -75,8 +76,8 @@ const [Modal, modalApi] = useVbenModal({
     modalApi.close();
   },
   onConfirm: async () => {
-    const { valid, values } = await formApi.validateAndSubmitForm();
-    if (!valid) return;
+    const values = await formApi.validateAndSubmitForm();
+    if (!values) return;
     modalApi.lock();
     try {
       if (isEdit.value) {
@@ -99,7 +100,7 @@ const [Modal, modalApi] = useVbenModal({
       try {
         const res = await getDeptTree();
         treeData.value = [
-          { id: '0', name: '顶级节点', children: res ?? [] } as any,
+          { id: '0', title: '顶级节点', children: res ?? [] } as DeptItem,
         ];
         formApi.updateSchema([
           {

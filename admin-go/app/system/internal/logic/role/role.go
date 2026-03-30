@@ -32,6 +32,7 @@ func (s *sRole) Create(ctx context.Context, in *model.RoleCreateInput) error {
 		dao.Role.Columns().DataScope: in.DataScope,
 		dao.Role.Columns().Sort: in.Sort,
 		dao.Role.Columns().Status: in.Status,
+		"is_admin":                  in.IsAdmin,
 		dao.Role.Columns().CreatedAt: gtime.Now(),
 		dao.Role.Columns().UpdatedAt: gtime.Now(),
 	}).Insert()
@@ -46,6 +47,7 @@ func (s *sRole) Update(ctx context.Context, in *model.RoleUpdateInput) error {
 		dao.Role.Columns().DataScope: in.DataScope,
 		dao.Role.Columns().Sort: in.Sort,
 		dao.Role.Columns().Status: in.Status,
+		"is_admin":                  in.IsAdmin,
 		dao.Role.Columns().UpdatedAt: gtime.Now(),
 	}
 	_, err := dao.Role.Ctx(ctx).Where(dao.Role.Columns().Id, in.ID).Data(data).Update()
@@ -69,7 +71,7 @@ func (s *sRole) Detail(ctx context.Context, id snowflake.JsonInt64) (out *model.
 	}
 	// 查询上级角色ID，0 表示顶级角色关联显示
 	if out.ParentID != 0 {
-		val, _ := g.DB().Ctx(ctx).Model("role").Where("id", out.ParentID).Where("deleted_at", nil).Value("title")
+		val, _ := g.DB().Ctx(ctx).Model("system_role").Where("id", out.ParentID).Where("deleted_at", nil).Value("title")
 		out.RoleTitle = val.String()
 	}
 	return
@@ -95,7 +97,7 @@ func (s *sRole) List(ctx context.Context, in *model.RoleListInput) (list []*mode
 	// 填充关联显示字段
 	for _, item := range list {
 		if item.ParentID != 0 {
-			val, _ := g.DB().Ctx(ctx).Model("role").Where("id", item.ParentID).Where("deleted_at", nil).Value("title")
+			val, _ := g.DB().Ctx(ctx).Model("system_role").Where("id", item.ParentID).Where("deleted_at", nil).Value("title")
 			item.RoleTitle = val.String()
 		}
 	}
@@ -191,5 +193,21 @@ func (s *sRole) GrantDept(ctx context.Context, in *model.RoleGrantDeptInput) err
 		_, err = dao.RoleDept.Ctx(ctx).Data(data).Insert()
 	}
 	return err
+}
+
+// GetDeptIDs 获取角色已授权的部门ID列表
+func (s *sRole) GetDeptIDs(ctx context.Context, roleID snowflake.JsonInt64) ([]snowflake.JsonInt64, error) {
+	var list []struct {
+		DeptId int64 `json:"deptId"`
+	}
+	err := dao.RoleDept.Ctx(ctx).Where(dao.RoleDept.Columns().RoleId, roleID).Scan(&list)
+	if err != nil {
+		return nil, err
+	}
+	ids := make([]snowflake.JsonInt64, 0, len(list))
+	for _, item := range list {
+		ids = append(ids, snowflake.JsonInt64(item.DeptId))
+	}
+	return ids, nil
 }
 

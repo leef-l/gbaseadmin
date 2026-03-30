@@ -51,6 +51,7 @@ const formOptions: VbenFormProps = {
         allowClear: true,
         options: statusOptions,
         placeholder: '请选择状态',
+        class: 'w-full',
       },
       fieldName: 'status',
       label: '状态',
@@ -62,7 +63,7 @@ const formOptions: VbenFormProps = {
 const gridOptions: VxeGridProps<DeptItem> = {
   columns: [
     { title: '序号', type: 'seq', width: 50 },
-    { field: 'title', title: '部门名称' },
+    { field: 'title', title: '部门名称', treeNode: true },
     { field: 'username', title: '部门负责人姓名' },
     { field: 'email', title: '负责人邮箱' },
     { field: 'sort', title: '排序（升序）' },
@@ -72,9 +73,8 @@ const gridOptions: VxeGridProps<DeptItem> = {
   ],
   pagerConfig: { enabled: false },
   treeConfig: {
-    parentField: 'parentID',
-    rowField: 'id',
-    transform: true,
+    childrenField: 'children',
+    expandAll: true,
   },
   proxyConfig: {
     ajax: {

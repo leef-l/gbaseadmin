@@ -60,6 +60,17 @@ function getStatusColor(val: number): string {
   return TAG_COLORS[idx >= 0 ? idx % TAG_COLORS.length : 0] ?? 'default';
 }
 
+/** 超级管理员映射 */
+const isAdminMap: Record<number, string> = {
+  0: '否',
+  1: '是',
+};
+
+/** 超级管理员颜色 */
+function getIsAdminColor(val: number): string {
+  return val === 1 ? 'red' : 'default';
+}
+
 const grantMenuRef = ref();
 const grantDeptRef = ref();
 
@@ -82,6 +93,7 @@ const formOptions: VbenFormProps = {
         allowClear: true,
         options: dataScopeOptions,
         placeholder: '请选择数据范围',
+        class: 'w-full',
       },
       fieldName: 'dataScope',
       label: '数据范围',
@@ -92,6 +104,7 @@ const formOptions: VbenFormProps = {
         allowClear: true,
         options: statusOptions,
         placeholder: '请选择状态',
+        class: 'w-full',
       },
       fieldName: 'status',
       label: '状态',
@@ -102,19 +115,19 @@ const formOptions: VbenFormProps = {
 /** 表格列配置 */
 const gridOptions: VxeGridProps<RoleItem> = {
   columns: [
-    { title: '序号', type: 'seq', width: 50 },
-    { field: 'title', title: '角色名称' },
+    // { title: '序号', type: 'seq', width: 50 },
+    { field: 'title', title: '角色名称', treeNode: true},
     { field: 'dataScope', title: '数据范围', width: 120, slots: { default: 'dataScope_cell' } },
     { field: 'sort', title: '排序（升序）' },
     { field: 'status', title: '状态', width: 120, slots: { default: 'status_cell' } },
+    { field: 'isAdmin', title: '超级管理员', width: 120, slots: { default: 'isAdmin_cell' } },
     { field: 'createdAt', title: '创建时间', width: 180, formatter: 'formatDateTime' },
     { title: '操作', width: 320, fixed: 'right', slots: { default: 'action' } },
   ],
   pagerConfig: { enabled: false },
   treeConfig: {
-    parentField: 'parentId',
-    rowField: 'id',
-    transform: true,
+    childrenField: 'children',
+    expandAll: true,
   },
   proxyConfig: {
     ajax: {
@@ -186,6 +199,11 @@ function handleGrantDept(row: RoleItem) {
       <template #status_cell="{ row }">
         <Tag :color="getStatusColor(row.status)">
           {{ statusMap[row.status] || row.status }}
+        </Tag>
+      </template>
+      <template #isAdmin_cell="{ row }">
+        <Tag :color="getIsAdminColor(row.isAdmin)">
+          {{ isAdminMap[row.isAdmin] || '否' }}
         </Tag>
       </template>
       <template #action="{ row }">

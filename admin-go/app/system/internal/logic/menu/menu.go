@@ -83,7 +83,7 @@ func (s *sMenu) Detail(ctx context.Context, id snowflake.JsonInt64) (out *model.
 	}
 	// 查询上级菜单ID，0 表示顶级菜单关联显示
 	if out.ParentID != 0 {
-		val, _ := g.DB().Ctx(ctx).Model("menu").Where("id", out.ParentID).Where("deleted_at", nil).Value("title")
+		val, _ := g.DB().Ctx(ctx).Model("system_menu").Where("id", out.ParentID).Where("deleted_at", nil).Value("title")
 		out.MenuTitle = val.String()
 	}
 	return
@@ -115,7 +115,7 @@ func (s *sMenu) List(ctx context.Context, in *model.MenuListInput) (list []*mode
 	// 填充关联显示字段
 	for _, item := range list {
 		if item.ParentID != 0 {
-			val, _ := g.DB().Ctx(ctx).Model("menu").Where("id", item.ParentID).Where("deleted_at", nil).Value("title")
+			val, _ := g.DB().Ctx(ctx).Model("system_menu").Where("id", item.ParentID).Where("deleted_at", nil).Value("title")
 			item.MenuTitle = val.String()
 		}
 	}

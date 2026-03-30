@@ -11,7 +11,7 @@ import (
 	"github.com/gogf/gf/v2/frame/g"
 )
 
-// UserRoleDao is the data access object for the table user_role.
+// UserRoleDao is the data access object for the table system_user_role.
 type UserRoleDao struct {
 	table    string             // table is the underlying table name of the DAO.
 	group    string             // group is the database configuration group name of the current DAO.
@@ -19,13 +19,13 @@ type UserRoleDao struct {
 	handlers []gdb.ModelHandler // handlers for customized model modification.
 }
 
-// UserRoleColumns defines and stores column names for the table user_role.
+// UserRoleColumns defines and stores column names for the table system_user_role.
 type UserRoleColumns struct {
 	UserId string // 用户ID
 	RoleId string // 角色ID
 }
 
-// userRoleColumns holds the columns for the table user_role.
+// userRoleColumns holds the columns for the table system_user_role.
 var userRoleColumns = UserRoleColumns{
 	UserId: "user_id",
 	RoleId: "role_id",
@@ -35,7 +35,7 @@ var userRoleColumns = UserRoleColumns{
 func NewUserRoleDao(handlers ...gdb.ModelHandler) *UserRoleDao {
 	return &UserRoleDao{
 		group:    "default",
-		table:    "user_role",
+		table:    "system_user_role",
 		columns:  userRoleColumns,
 		handlers: handlers,
 	}

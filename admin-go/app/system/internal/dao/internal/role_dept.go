@@ -11,7 +11,7 @@ import (
 	"github.com/gogf/gf/v2/frame/g"
 )
 
-// RoleDeptDao is the data access object for the table role_dept.
+// RoleDeptDao is the data access object for the table system_role_dept.
 type RoleDeptDao struct {
 	table    string             // table is the underlying table name of the DAO.
 	group    string             // group is the database configuration group name of the current DAO.
@@ -19,13 +19,13 @@ type RoleDeptDao struct {
 	handlers []gdb.ModelHandler // handlers for customized model modification.
 }
 
-// RoleDeptColumns defines and stores column names for the table role_dept.
+// RoleDeptColumns defines and stores column names for the table system_role_dept.
 type RoleDeptColumns struct {
 	RoleId string // 角色ID
 	DeptId string // 部门ID
 }
 
-// roleDeptColumns holds the columns for the table role_dept.
+// roleDeptColumns holds the columns for the table system_role_dept.
 var roleDeptColumns = RoleDeptColumns{
 	RoleId: "role_id",
 	DeptId: "dept_id",
@@ -35,7 +35,7 @@ var roleDeptColumns = RoleDeptColumns{
 func NewRoleDeptDao(handlers ...gdb.ModelHandler) *RoleDeptDao {
 	return &RoleDeptDao{
 		group:    "default",
-		table:    "role_dept",
+		table:    "system_role_dept",
 		columns:  roleDeptColumns,
 		handlers: handlers,
 	}

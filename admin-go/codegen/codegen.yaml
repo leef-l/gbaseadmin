@@ -1,14 +1,14 @@
 # 数据库连接
 database:
   host: 127.0.0.1
-  port: 3306
+  port: 9306
   user: root
   password: "gbaseadmin123"
   dbname: gbaseadmin
 
 # 后端输出配置
 backend:
-  output: ../app/system/   # 输出根目录
+  output: ../app/   # 输出根目录（应用目录由表名前缀决定）
 
 # 前端输出配置
 frontend:

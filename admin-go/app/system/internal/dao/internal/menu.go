@@ -11,7 +11,7 @@ import (
 	"github.com/gogf/gf/v2/frame/g"
 )
 
-// MenuDao is the data access object for the table menu.
+// MenuDao is the data access object for the table system_menu.
 type MenuDao struct {
 	table    string             // table is the underlying table name of the DAO.
 	group    string             // group is the database configuration group name of the current DAO.
@@ -19,7 +19,7 @@ type MenuDao struct {
 	handlers []gdb.ModelHandler // handlers for customized model modification.
 }
 
-// MenuColumns defines and stores column names for the table menu.
+// MenuColumns defines and stores column names for the table system_menu.
 type MenuColumns struct {
 	Id         string // 菜单ID（Snowflake）
 	ParentId   string // 上级菜单ID，0 表示顶级菜单
@@ -41,7 +41,7 @@ type MenuColumns struct {
 	DeletedAt  string // 软删除时间，非 NULL 表示已删除
 }
 
-// menuColumns holds the columns for the table menu.
+// menuColumns holds the columns for the table system_menu.
 var menuColumns = MenuColumns{
 	Id:         "id",
 	ParentId:   "parent_id",
@@ -67,7 +67,7 @@ var menuColumns = MenuColumns{
 func NewMenuDao(handlers ...gdb.ModelHandler) *MenuDao {
 	return &MenuDao{
 		group:    "default",
-		table:    "menu",
+		table:    "system_menu",
 		columns:  menuColumns,
 		handlers: handlers,
 	}

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 	"text/template"
 
 	"gbaseadmin/codegen/parser"
@@ -17,7 +18,7 @@ type templateMapping struct {
 }
 
 var mappings = []templateMapping{
-	{"api.tpl", "api/system/v1/{module}.go"},
+	{"api.tpl", "api/{app}/v1/{module}.go"},
 	{"controller.tpl", "internal/controller/{module}/{module}.go"},
 	{"logic.tpl", "internal/logic/{module}/{module}.go"},
 	{"service.tpl", "internal/service/{module}.go"},
@@ -55,8 +56,8 @@ func (g *Generator) Generate(meta *parser.TableMeta) ([]string, error) {
 			return generated, fmt.Errorf("解析模板 %s 失败: %v", m.TplFile, err)
 		}
 
-		// 构建输出路径：将 {module} 替换为实际模块名
-		relPath := replaceModule(m.OutputPath, meta.ModuleName)
+		// 构建输出路径：将 {app} 和 {module} 替换为实际名称
+		relPath := replacePlaceholders(m.OutputPath, meta.AppName, meta.ModuleName)
 		outPath := filepath.Join(g.config.OutputDir, relPath)
 
 		// 文件已存在且不强制覆盖，跳过
@@ -91,17 +92,9 @@ func (g *Generator) Generate(meta *parser.TableMeta) ([]string, error) {
 	return generated, nil
 }
 
-// replaceModule 将路径中的 {module} 占位符替换为实际模块名
-func replaceModule(path, module string) string {
-	result := ""
-	for i := 0; i < len(path); {
-		if i+8 <= len(path) && path[i:i+8] == "{module}" {
-			result += module
-			i += 8
-		} else {
-			result += string(path[i])
-			i++
-		}
-	}
+// replacePlaceholders 将路径中的 {app} 和 {module} 占位符替换为实际名称
+func replacePlaceholders(path, app, module string) string {
+	result := strings.ReplaceAll(path, "{app}", app)
+	result = strings.ReplaceAll(result, "{module}", module)
 	return result
 }

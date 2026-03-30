@@ -4,7 +4,6 @@
 export interface MenuItem {
   id: string;
   parentID?: string;
-  menuTitle?: string;
   title: string;
   type?: number;
   path?: string;

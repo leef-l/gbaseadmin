@@ -74,7 +74,11 @@ type UsersListReq struct {
 	g.Meta   `path:"/users/list" method:"get" tags:"用户表" summary:"获取用户表列表"`
 	PageNum  int `json:"pageNum" d:"1" dc:"页码"`
 	PageSize int `json:"pageSize" d:"10" dc:"每页数量"`
-	Status int `json:"status" dc:"状态"`
+	Username string `json:"username" dc:"登录用户名"`
+	Nickname string `json:"nickname" dc:"昵称"`
+	Email    string `json:"email" dc:"邮箱"`
+	DeptId   snowflake.JsonInt64 `json:"deptId" dc:"部门ID"`
+	Status   int `json:"status" dc:"状态"`
 }
 
 // UsersListRes 获取用户表列表响应

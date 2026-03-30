@@ -8,14 +8,14 @@ import (
 	"gbaseadmin/app/system/internal/dao/internal"
 )
 
-// menuDao is the data access object for the table menu.
+// menuDao is the data access object for the table system_menu.
 // You can define custom methods on it to extend its functionality as needed.
 type menuDao struct {
 	*internal.MenuDao
 }
 
 var (
-	// Menu is a globally accessible object for table menu operations.
+	// Menu is a globally accessible object for table system_menu operations.
 	Menu = menuDao{internal.NewMenuDao()}
 )
 

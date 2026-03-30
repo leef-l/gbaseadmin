@@ -11,7 +11,7 @@ import (
 	"github.com/gogf/gf/v2/frame/g"
 )
 
-// UserDeptDao is the data access object for the table user_dept.
+// UserDeptDao is the data access object for the table system_user_dept.
 type UserDeptDao struct {
 	table    string             // table is the underlying table name of the DAO.
 	group    string             // group is the database configuration group name of the current DAO.
@@ -19,13 +19,13 @@ type UserDeptDao struct {
 	handlers []gdb.ModelHandler // handlers for customized model modification.
 }
 
-// UserDeptColumns defines and stores column names for the table user_dept.
+// UserDeptColumns defines and stores column names for the table system_user_dept.
 type UserDeptColumns struct {
 	UserId string // 用户ID
 	DeptId string // 部门ID
 }
 
-// userDeptColumns holds the columns for the table user_dept.
+// userDeptColumns holds the columns for the table system_user_dept.
 var userDeptColumns = UserDeptColumns{
 	UserId: "user_id",
 	DeptId: "dept_id",
@@ -35,7 +35,7 @@ var userDeptColumns = UserDeptColumns{
 func NewUserDeptDao(handlers ...gdb.ModelHandler) *UserDeptDao {
 	return &UserDeptDao{
 		group:    "default",
-		table:    "user_dept",
+		table:    "system_user_dept",
 		columns:  userDeptColumns,
 		handlers: handlers,
 	}

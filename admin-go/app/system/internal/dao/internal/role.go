@@ -11,7 +11,7 @@ import (
 	"github.com/gogf/gf/v2/frame/g"
 )
 
-// RoleDao is the data access object for the table role.
+// RoleDao is the data access object for the table system_role.
 type RoleDao struct {
 	table    string             // table is the underlying table name of the DAO.
 	group    string             // group is the database configuration group name of the current DAO.
@@ -19,7 +19,7 @@ type RoleDao struct {
 	handlers []gdb.ModelHandler // handlers for customized model modification.
 }
 
-// RoleColumns defines and stores column names for the table role.
+// RoleColumns defines and stores column names for the table system_role.
 type RoleColumns struct {
 	Id        string // 角色ID（Snowflake）
 	ParentId  string // 上级角色ID，0 表示顶级角色
@@ -34,7 +34,7 @@ type RoleColumns struct {
 	DeletedAt string // 软删除时间，非 NULL 表示已删除
 }
 
-// roleColumns holds the columns for the table role.
+// roleColumns holds the columns for the table system_role.
 var roleColumns = RoleColumns{
 	Id:        "id",
 	ParentId:  "parent_id",
@@ -53,7 +53,7 @@ var roleColumns = RoleColumns{
 func NewRoleDao(handlers ...gdb.ModelHandler) *RoleDao {
 	return &RoleDao{
 		group:    "default",
-		table:    "role",
+		table:    "system_role",
 		columns:  roleColumns,
 		handlers: handlers,
 	}

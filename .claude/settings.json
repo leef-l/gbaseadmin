@@ -15,7 +15,23 @@
       "Bash(docker-compose -f docker-compose.cn.yml build system)",
       "Bash(grep -A 5 \"INSERT INTO \\\\`menu\\\\`\" deploy/mysql/init.sql)",
       "Bash(docker-compose -f docker-compose.cn.yml exec mysql mysql -uroot -pgbaseadmin123 -e \"DROP DATABASE IF EXISTS gbaseadmin; CREATE DATABASE gbaseadmin CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;\")",
-      "Bash(docker-compose -f docker-compose.cn.yml exec mysql mysql -uroot -pgbaseadmin123 gbaseadmin -e \"SELECT id, parent_id, title, type, path, is_show, status FROM menu WHERE is_show=1 ORDER BY sort LIMIT 5;\")"
+      "Bash(docker-compose -f docker-compose.cn.yml exec mysql mysql -uroot -pgbaseadmin123 gbaseadmin -e \"SELECT id, parent_id, title, type, path, is_show, status FROM menu WHERE is_show=1 ORDER BY sort LIMIT 5;\")",
+      "Bash(docker-compose -f docker-compose.cn.yml exec mysql mysql -uroot -pgbaseadmin123 --default-character-set=utf8mb4 gbaseadmin -e \"SELECT * FROM user_role; SELECT * FROM role_menu; SELECT id, username FROM users LIMIT 5;\")",
+      "Bash(docker-compose -f docker-compose.cn.yml ps)",
+      "Bash(docker-compose -f docker-compose.cn.yml logs --tail 50 system)",
+      "Bash(curl -s http://localhost:9000/api/system/auth/login -X POST -H \"Content-Type: application/json\" -d '{\"\"username\"\":\"\"admin\"\",\"\"password\"\":\"\"admin123\"\"}')",
+      "Bash(TOKEN=\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEwMDAwMDAwMDAwMDAwMDAwMDMsInVzZXJuYW1lIjoiYWRtaW4iLCJkZXB0SWQiOjEwMDAwMDAwMDAwMDAwMDAwMDEsImlzcyI6ImdiYXNlYWRtaW4iLCJleHAiOjE3NzQ5MzMwOTQsImlhdCI6MTc3NDg0NjY5NH0.wSoi5o9SJrhojoaksMScQDfzNx3Hk3fbUBpXNEsq-wY\")",
+      "Bash(curl -s http://localhost:9000/api/system/auth/menus -H \"Authorization: Bearer $TOKEN\")",
+      "Bash(TOKEN=\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEwMDAwMDAwMDAwMDAwMDAwMDMsInVzZXJuYW1lIjoiYWRtaW4iLCJkZXB0SWQiOjEwMDAwMDAwMDAwMDAwMDAwMDEsImlzcyI6ImdiYXNlYWRtaW4iLCJleHAiOjE3NzQ5MzMwOTQsImlhdCI6MTc3NDg0NjY5NH0.wSoi5o9SJrhojoaksMScQDfzNx3Hk3fbUBpXNEsq-wY\" echo \"=== dept/tree ===\" curl -s http://localhost:9000/api/system/dept/tree -H \"Authorization: Bearer $TOKEN\")",
+      "Read(//c/project/gbaseadmin/=== menu/**)",
+      "Read(//c/project/gbaseadmin/=== role/**)",
+      "Bash(curl -s http://localhost:9000/api/system/dept/tree -H \"Authorization: Bearer $TOKEN\")",
+      "Bash(curl -s http://localhost:9000/api/system/menu/tree -H \"Authorization: Bearer $TOKEN\")",
+      "Bash(curl -s http://localhost:9000/api/system/role/tree -H \"Authorization: Bearer $TOKEN\")",
+      "Bash(curl -s \"http://localhost:9000/api/system/role/menu-ids?id=1000000000000000002\" -H \"Authorization: Bearer $TOKEN\")",
+      "Bash(curl -s \"http://localhost:9000/api/system/role/dept-ids?id=1000000000000000002\" -H \"Authorization: Bearer $TOKEN\")",
+      "Bash(mysql -h 127.0.0.1 -P 9306 -u root -pgbaseadmin123 gbaseadmin -e \":*)",
+      "Bash(go run . --table sys_test --force)"
     ]
   }
 }

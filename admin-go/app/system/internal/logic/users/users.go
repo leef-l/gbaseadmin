@@ -109,7 +109,7 @@ func (s *sUsers) Detail(ctx context.Context, id snowflake.JsonInt64) (out *model
 	}
 	// 查询部门名称
 	if out.DeptID != 0 {
-		val, _ := g.DB().Ctx(ctx).Model("dept").Where("id", out.DeptID).Where("deleted_at", nil).Value("title")
+		val, _ := g.DB().Ctx(ctx).Model("system_dept").Where("id", out.DeptID).Where("deleted_at", nil).Value("title")
 		out.DeptTitle = val.String()
 	}
 	// 查询用户角色ID列表
@@ -130,6 +130,18 @@ func (s *sUsers) List(ctx context.Context, in *model.UsersListInput) (list []*mo
 	if in.Status > 0 {
 		m = m.Where(dao.Users.Columns().Status, in.Status)
 	}
+	if in.Username != "" {
+		m = m.WhereLike(dao.Users.Columns().Username, "%"+in.Username+"%")
+	}
+	if in.Nickname != "" {
+		m = m.WhereLike(dao.Users.Columns().Nickname, "%"+in.Nickname+"%")
+	}
+	if in.Email != "" {
+		m = m.WhereLike(dao.Users.Columns().Email, "%"+in.Email+"%")
+	}
+	if in.DeptId > 0 {
+		m = m.Where(dao.Users.Columns().DeptId, in.DeptId)
+	}
 	total, err = m.Count()
 	if err != nil {
 		return
@@ -141,8 +153,29 @@ func (s *sUsers) List(ctx context.Context, in *model.UsersListInput) (list []*mo
 	// 填充部门名称
 	for _, item := range list {
 		if item.DeptID != 0 {
-			val, _ := g.DB().Ctx(ctx).Model("dept").Where("id", item.DeptID).Where("deleted_at", nil).Value("title")
+			val, _ := g.DB().Ctx(ctx).Model("system_dept").Where("id", item.DeptID).Where("deleted_at", nil).Value("title")
 			item.DeptTitle = val.String()
+		}
+	}
+	// 填充角色名称
+	for _, item := range list {
+		var userRoles []struct {
+			RoleId int64 `json:"roleId"`
+		}
+		_ = dao.UserRole.Ctx(ctx).Where(dao.UserRole.Columns().UserId, item.ID).Scan(&userRoles)
+		item.RoleTitles = make([]string, 0)
+		if len(userRoles) > 0 {
+			roleIDs := make([]int64, 0, len(userRoles))
+			for _, ur := range userRoles {
+				roleIDs = append(roleIDs, ur.RoleId)
+			}
+			var roles []struct {
+				Title string `json:"title"`
+			}
+			_ = g.DB().Ctx(ctx).Model("system_role").Where("id", roleIDs).Where("deleted_at", nil).Scan(&roles)
+			for _, r := range roles {
+				item.RoleTitles = append(item.RoleTitles, r.Title)
+			}
 		}
 	}
 	return

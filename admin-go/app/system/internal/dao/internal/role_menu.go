@@ -11,7 +11,7 @@ import (
 	"github.com/gogf/gf/v2/frame/g"
 )
 
-// RoleMenuDao is the data access object for the table role_menu.
+// RoleMenuDao is the data access object for the table system_role_menu.
 type RoleMenuDao struct {
 	table    string             // table is the underlying table name of the DAO.
 	group    string             // group is the database configuration group name of the current DAO.
@@ -19,13 +19,13 @@ type RoleMenuDao struct {
 	handlers []gdb.ModelHandler // handlers for customized model modification.
 }
 
-// RoleMenuColumns defines and stores column names for the table role_menu.
+// RoleMenuColumns defines and stores column names for the table system_role_menu.
 type RoleMenuColumns struct {
 	RoleId string // 角色ID
 	MenuId string // 菜单ID
 }
 
-// roleMenuColumns holds the columns for the table role_menu.
+// roleMenuColumns holds the columns for the table system_role_menu.
 var roleMenuColumns = RoleMenuColumns{
 	RoleId: "role_id",
 	MenuId: "menu_id",
@@ -35,7 +35,7 @@ var roleMenuColumns = RoleMenuColumns{
 func NewRoleMenuDao(handlers ...gdb.ModelHandler) *RoleMenuDao {
 	return &RoleMenuDao{
 		group:    "default",
-		table:    "role_menu",
+		table:    "system_role_menu",
 		columns:  roleMenuColumns,
 		handlers: handlers,
 	}

@@ -7,8 +7,8 @@ import {
   getMenuDetail,
   createMenu,
   updateMenu,
+  getMenuTree,
 } from '#/api/system/menu';
-import { getMenuTree } from '#/api/system/menu';
 import type { MenuItem } from '#/api/system/menu/types';
 
 const treeData = ref<MenuItem[]>([]);
@@ -33,13 +33,14 @@ const [Form, formApi] = useVbenForm({
     {
       component: 'TreeSelect',
       fieldName: 'parentID',
-      label: '上级菜单ID，0 表示顶级菜单',
+      label: '上级菜单',
       componentProps: {
         treeData: treeData.value,
-        fieldNames: { label: 'name', value: 'id', children: 'children' },
-        placeholder: '请选择上级菜单ID，0 表示顶级菜单',
+        fieldNames: { label: 'title', value: 'id', children: 'children' },
+        placeholder: '请选择上级菜单',
         allowClear: true,
         treeDefaultExpandAll: true,
+        class: 'w-full',
       },
     },
     {
@@ -53,7 +54,7 @@ const [Form, formApi] = useVbenForm({
       component: 'Select',
       fieldName: 'type',
       label: '类型',
-      componentProps: { options: typeOptions, placeholder: '请选择类型', allowClear: true },
+      componentProps: { options: typeOptions, placeholder: '请选择类型', allowClear: true, class: 'w-full' },
     },
     {
       component: 'Input',
@@ -70,8 +71,8 @@ const [Form, formApi] = useVbenForm({
     {
       component: 'Input',
       fieldName: 'permission',
-      label: '权限标识（如 system',
-      componentProps: { placeholder: '请输入权限标识（如 system', maxlength: 100 },
+      label: '权限标识',
+      componentProps: { placeholder: '请输入权限标识，如 system:dept:list', maxlength: 100 },
     },
     {
       component: 'Input',
@@ -122,8 +123,8 @@ const [Modal, modalApi] = useVbenModal({
     modalApi.close();
   },
   onConfirm: async () => {
-    const { valid, values } = await formApi.validateAndSubmitForm();
-    if (!valid) return;
+    const values = await formApi.validateAndSubmitForm();
+    if (!values) return;
     modalApi.lock();
     try {
       if (isEdit.value) {
@@ -146,7 +147,7 @@ const [Modal, modalApi] = useVbenModal({
       try {
         const res = await getMenuTree();
         treeData.value = [
-          { id: '0', name: '顶级节点', children: res ?? [] } as any,
+          { id: '0', title: '顶级节点', children: res ?? [] } as MenuItem,
         ];
         formApi.updateSchema([
           {

@@ -3,9 +3,9 @@ package {{.ModuleName}}
 import (
 	"context"
 
-	v1 "gbaseadmin/app/system/api/system/v1"
-	"gbaseadmin/app/system/internal/model"
-	"gbaseadmin/app/system/internal/service"
+	v1 "gbaseadmin/app/{{.AppName}}/api/{{.AppName}}/v1"
+	"gbaseadmin/app/{{.AppName}}/internal/model"
+	"gbaseadmin/app/{{.AppName}}/internal/service"
 )
 
 var {{.ModelName}} = c{{.ModelName}}{}

@@ -6,11 +6,11 @@ import { message } from 'ant-design-vue';
 import {
   get{{.ModelName}}Detail,
   create{{.ModelName}},
-  update{{.ModelName}},
-} from '#/api/system/{{.ModuleName}}';
+  update{{.ModelName}},{{if .HasParentID}}
+  get{{.ModelName}}Tree,{{end}}
+} from '#/api/{{.AppName}}/{{.ModuleName}}';
 {{- if .HasParentID}}
-import { get{{.ModelName}}Tree } from '#/api/system/{{.ModuleName}}';
-import type { {{.ModelName}}Item } from '#/api/system/{{.ModuleName}}/types';
+import type { {{.ModelName}}Item } from '#/api/{{.AppName}}/{{.ModuleName}}/types';
 
 const treeData = ref<{{.ModelName}}Item[]>([]);
 {{- end}}
@@ -90,7 +90,7 @@ const [Form, formApi] = useVbenForm({
 {{- if .IsRequired}}
       rules: 'selectRequired',
 {{- end}}
-      componentProps: { options: {{.NameLower}}Options, placeholder: '请选择{{.Label}}', allowClear: true },
+      componentProps: { options: {{.NameLower}}Options, placeholder: '请选择{{.Label}}', allowClear: true, class: 'w-full' },
     },
 {{- else if eq .Component "SelectMulti"}}
     {
@@ -100,7 +100,7 @@ const [Form, formApi] = useVbenForm({
 {{- if .IsRequired}}
       rules: 'selectRequired',
 {{- end}}
-      componentProps: { options: {{.NameLower}}Options, placeholder: '请选择{{.Label}}', mode: 'multiple', allowClear: true },
+      componentProps: { options: {{.NameLower}}Options, placeholder: '请选择{{.Label}}', mode: 'multiple', allowClear: true, class: 'w-full' },
     },
 {{- else if eq .Component "TreeSelectSingle"}}
     {
@@ -112,10 +112,11 @@ const [Form, formApi] = useVbenForm({
 {{- end}}
       componentProps: {
         treeData: treeData.value,
-        fieldNames: { label: 'name', value: 'id', children: 'children' },
+        fieldNames: { label: 'title', value: 'id', children: 'children' },
         placeholder: '请选择{{.Label}}',
         allowClear: true,
         treeDefaultExpandAll: true,
+        class: 'w-full',
       },
     },
 {{- else if eq .Component "TreeSelectMulti"}}
@@ -128,11 +129,12 @@ const [Form, formApi] = useVbenForm({
 {{- end}}
       componentProps: {
         treeData: treeData.value,
-        fieldNames: { label: 'name', value: 'id', children: 'children' },
+        fieldNames: { label: 'title', value: 'id', children: 'children' },
         placeholder: '请选择{{.Label}}',
         allowClear: true,
         treeCheckable: true,
         treeDefaultExpandAll: true,
+        class: 'w-full',
       },
     },
 {{- else if eq .Component "DateTimePicker"}}
@@ -168,8 +170,8 @@ const [Modal, modalApi] = useVbenModal({
     modalApi.close();
   },
   onConfirm: async () => {
-    const { valid, values } = await formApi.validateAndSubmitForm();
-    if (!valid) return;
+    const values = await formApi.validateAndSubmitForm();
+    if (!values) return;
     modalApi.lock();
     try {
       if (isEdit.value) {
@@ -193,7 +195,7 @@ const [Modal, modalApi] = useVbenModal({
       try {
         const res = await get{{.ModelName}}Tree();
         treeData.value = [
-          { id: '0', name: '顶级节点', children: res ?? [] } as any,
+          { id: '0', title: '顶级节点', children: res ?? [] } as {{.ModelName}}Item,
         ];
         formApi.updateSchema([
           {

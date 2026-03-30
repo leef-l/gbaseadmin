@@ -11,24 +11,11 @@ import {
 import { getDeptTree } from '#/api/system/dept';
 import { getRoleTree } from '#/api/system/role';
 import type { DeptItem } from '#/api/system/dept/types';
-import type { RoleItem } from '#/api/system/role/types';
 
 const emit = defineEmits<{ success: [] }>();
 const isEdit = ref(false);
 const editId = ref('');
 const deptTreeData = ref<DeptItem[]>([]);
-const roleOptions = ref<{ label: string; value: string }[]>([]);
-
-/** 递归展平角色树为列表 */
-function flattenRoles(nodes: RoleItem[], result: { label: string; value: string }[] = [], prefix = '') {
-  for (const node of nodes) {
-    result.push({ label: prefix + node.title, value: node.id });
-    if (node.children?.length) {
-      flattenRoles(node.children, result, prefix + '  ');
-    }
-  }
-  return result;
-}
 
 /** 表单配置 */
 const [Form, formApi] = useVbenForm({
@@ -70,17 +57,20 @@ const [Form, formApi] = useVbenForm({
         placeholder: '请选择所属部门',
         allowClear: true,
         treeDefaultExpandAll: true,
+        class: 'w-full',
       },
     },
     {
-      component: 'Select',
+      component: 'Cascader',
       fieldName: 'roleIds',
       label: '角色',
       componentProps: {
         options: [],
+        fieldNames: { label: 'title', value: 'id', children: 'children' },
         placeholder: '请选择角色',
-        mode: 'multiple',
+        multiple: true,
         allowClear: true,
+        class: 'w-full',
       },
     },
     {
@@ -100,12 +90,17 @@ const [Modal, modalApi] = useVbenModal({
     modalApi.close();
   },
   onConfirm: async () => {
-    const { valid, values } = await formApi.validateAndSubmitForm();
-    if (!valid) return;
+    const values = await formApi.validateAndSubmitForm();
+    if (!values) return;
     modalApi.lock();
     try {
       if (isEdit.value) {
-        await updateUsers({ id: editId.value, ...values });
+        const updateData = { id: editId.value, ...values };
+        // 编辑时密码为空则不传，避免后端将空字符串作为新密码处理
+        if (!updateData.password) {
+          delete updateData.password;
+        }
+        await updateUsers(updateData);
         message.success('更新成功');
       } else {
         await createUsers(values);
@@ -135,14 +130,13 @@ const [Modal, modalApi] = useVbenModal({
         ]);
       } catch { /* ignore */ }
 
-      // 加载角色列表
+      // 加载角色树
       try {
         const res = await getRoleTree();
-        roleOptions.value = flattenRoles(res ?? []);
         formApi.updateSchema([
           {
             fieldName: 'roleIds',
-            componentProps: { options: roleOptions.value },
+            componentProps: { options: res ?? [] },
           },
         ]);
       } catch { /* ignore */ }

@@ -8,7 +8,7 @@ import type {
 } from './types';
 
 /** API 前缀 */
-const PREFIX = '/system/{{.ModuleName}}';
+const PREFIX = '/{{.AppName}}/{{.ModuleName}}';
 
 /** 获取{{.Comment}}列表 */
 export function get{{.ModelName}}List(params: {{.ModelName}}ListParams) {
@@ -37,12 +37,13 @@ export function update{{.ModelName}}(data: {{.ModelName}}UpdateParams) {
 
 /** 删除{{.Comment}} */
 export function delete{{.ModelName}}(id: string) {
-  return requestClient.delete(`${PREFIX}/delete`, { params: { id } });
+  return requestClient.delete(`${PREFIX}/delete`, { data: { id } });
 }
 {{- if .HasParentID}}
 
 /** 获取{{.Comment}}树形结构 */
-export function get{{.ModelName}}Tree(params?: Record<string, any>) {
-  return requestClient.get<{{.ModelName}}Item[]>(`${PREFIX}/tree`, { params });
+export async function get{{.ModelName}}Tree(params?: Record<string, any>) {
+  const res = await requestClient.get<{ list: {{.ModelName}}Item[] }>(`${PREFIX}/tree`, { params });
+  return res?.list ?? [];
 }
 {{- end}}

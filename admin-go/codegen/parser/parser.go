@@ -61,13 +61,24 @@ func (p *Parser) ParseTable(tableName string) (*TableMeta, error) {
 		return nil, fmt.Errorf("表 %s 不存在或没有字段", tableName)
 	}
 
+	// 从表名提取应用名和模块名：{app}_{module}
+	appName := ""
+	moduleName := tableName
+	if idx := strings.Index(tableName, "_"); idx > 0 {
+		appName = tableName[:idx]
+		moduleName = tableName[idx+1:]
+	}
+
 	// 构建 TableMeta
 	meta := &TableMeta{
-		TableName:   tableName,
-		ModelName:   snakeToCamel(tableName),
-		ModuleName:  strings.ToLower(tableName),
-		PackageName: strings.ToLower(tableName),
-		Comment:     tableComment,
+		TableName:    tableName,
+		AppName:      appName,
+		AppNameCamel: snakeToCamel(appName),
+		ModelName:    snakeToCamel(moduleName),
+		DaoName:      snakeToCamel(tableName),
+		ModuleName:   strings.ToLower(moduleName),
+		PackageName:  strings.ToLower(moduleName),
+		Comment:      tableComment,
 	}
 
 	for _, col := range columns {
@@ -94,17 +105,29 @@ func (p *Parser) ParseTable(tableName string) (*TableMeta, error) {
 		if !f.IsForeignKey && !f.IsParentID {
 			continue
 		}
-		// 推断关联表名：parent_id → 自身表，xxx_id → xxx
+		// 推断关联表名：parent_id → 自身模块名，xxx_id → xxx
 		var refTable string
 		if f.IsParentID {
-			refTable = tableName
+			refTable = moduleName
 		} else {
 			refTable = strings.TrimSuffix(f.Name, "_id")
 		}
-		// 查找关联表的显示字段
-		displayField := findDisplayField(db, dbName, refTable)
+		// 查找关联表的显示字段（先尝试带前缀的表名，再尝试不带前缀的）
+		displayField := ""
+		refTableDB := refTable
+		if appName != "" {
+			prefixed := appName + "_" + refTable
+			displayField = findDisplayField(db, dbName, prefixed)
+			if displayField != "" {
+				refTableDB = prefixed
+			}
+		}
+		if displayField == "" {
+			displayField = findDisplayField(db, dbName, refTable)
+		}
 		if displayField != "" {
 			f.RefTable = refTable
+			f.RefTableDB = refTableDB
 			f.RefTableCamel = snakeToCamel(refTable)
 			f.RefTableLower = snakeToCamelLower(refTable)
 			f.RefDisplayField = displayField

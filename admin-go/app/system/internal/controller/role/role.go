@@ -20,6 +20,7 @@ func (c *cRole) Create(ctx context.Context, req *v1.RoleCreateReq) (res *v1.Role
 		DataScope: req.DataScope,
 		Sort: req.Sort,
 		Status: req.Status,
+		IsAdmin: req.IsAdmin,
 	})
 	return
 }
@@ -33,6 +34,7 @@ func (c *cRole) Update(ctx context.Context, req *v1.RoleUpdateReq) (res *v1.Role
 		DataScope: req.DataScope,
 		Sort: req.Sort,
 		Status: req.Status,
+		IsAdmin: req.IsAdmin,
 	})
 	return
 }
@@ -92,6 +94,13 @@ func (c *cRole) GrantDept(ctx context.Context, req *v1.RoleGrantDeptReq) (res *v
 		DataScope: req.DataScope,
 		DeptIDs:   req.DeptIDs,
 	})
+	return
+}
+
+// GetDeptIDs 获取角色已授权部门ID列表
+func (c *cRole) GetDeptIDs(ctx context.Context, req *v1.RoleGetDeptIDsReq) (res *v1.RoleGetDeptIDsRes, err error) {
+	res = &v1.RoleGetDeptIDsRes{}
+	res.DeptIDs, err = service.Role().GetDeptIDs(ctx, req.ID)
 	return
 }
 

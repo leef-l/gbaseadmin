@@ -9,6 +9,7 @@ export interface RoleItem {
   dataScope?: number;
   sort?: number;
   status?: number;
+  isAdmin?: number;
   createdAt?: string;
   updatedAt?: string;
   children?: RoleItem[];
@@ -29,6 +30,7 @@ export interface RoleCreateParams {
   dataScope?: number;
   sort?: number;
   status?: number;
+  isAdmin?: number;
 }
 
 /** 角色表更新参数 */
@@ -39,17 +41,18 @@ export interface RoleUpdateParams {
   dataScope?: number;
   sort?: number;
   status?: number;
+  isAdmin?: number;
 }
 
 /** 角色授权菜单参数 */
 export interface RoleGrantMenuParams {
-  roleId: string;
+  id: string;
   menuIds: string[];
 }
 
 /** 角色授权部门参数 */
 export interface RoleGrantDeptParams {
-  roleId: string;
+  id: string;
   dataScope: number;
   deptIds: string[];
 }

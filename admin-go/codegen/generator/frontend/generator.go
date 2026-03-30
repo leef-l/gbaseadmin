@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 	"text/template"
 
 	"gbaseadmin/codegen/parser"
@@ -17,10 +18,10 @@ type templateMapping struct {
 }
 
 var mappings = []templateMapping{
-	{"types.tpl", "api/system/{module}/types.ts"},
-	{"api.tpl", "api/system/{module}/index.ts"},
-	{"list.tpl", "views/system/{module}/index.vue"},
-	{"form.tpl", "views/system/{module}/modules/form.vue"},
+	{"types.tpl", "api/{app}/{module}/types.ts"},
+	{"api.tpl", "api/{app}/{module}/index.ts"},
+	{"list.tpl", "views/{app}/{module}/index.vue"},
+	{"form.tpl", "views/{app}/{module}/modules/form.vue"},
 }
 
 // Config 前端生成器配置
@@ -53,8 +54,8 @@ func (g *Generator) Generate(meta *parser.TableMeta) ([]string, error) {
 			return generated, fmt.Errorf("解析模板 %s 失败: %w", m.TplFile, err)
 		}
 
-		// 构建输出路径，替换 {module} 占位符
-		relPath := replaceModule(m.OutputPath, meta.ModuleName)
+		// 构建输出路径：将 {app} 和 {module} 替换为实际名称
+		relPath := replacePlaceholders(m.OutputPath, meta.AppName, meta.ModuleName)
 		outPath := filepath.Join(g.config.OutputDir, relPath)
 
 		// 文件已存在且非强制覆盖，跳过
@@ -90,17 +91,9 @@ func (g *Generator) Generate(meta *parser.TableMeta) ([]string, error) {
 	return generated, nil
 }
 
-// replaceModule 将路径中的 {module} 替换为实际模块名
-func replaceModule(path, module string) string {
-	result := ""
-	for i := 0; i < len(path); {
-		if i+8 <= len(path) && path[i:i+8] == "{module}" {
-			result += module
-			i += 8
-		} else {
-			result += string(path[i])
-			i++
-		}
-	}
+// replacePlaceholders 将路径中的 {app} 和 {module} 占位符替换为实际名称
+func replacePlaceholders(path, app, module string) string {
+	result := strings.ReplaceAll(path, "{app}", app)
+	result = strings.ReplaceAll(result, "{module}", module)
 	return result
 }

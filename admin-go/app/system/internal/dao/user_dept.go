@@ -8,14 +8,14 @@ import (
 	"gbaseadmin/app/system/internal/dao/internal"
 )
 
-// userDeptDao is the data access object for the table user_dept.
+// userDeptDao is the data access object for the table system_user_dept.
 // You can define custom methods on it to extend its functionality as needed.
 type userDeptDao struct {
 	*internal.UserDeptDao
 }
 
 var (
-	// UserDept is a globally accessible object for table user_dept operations.
+	// UserDept is a globally accessible object for table system_user_dept operations.
 	UserDept = userDeptDao{internal.NewUserDeptDao()}
 )
 

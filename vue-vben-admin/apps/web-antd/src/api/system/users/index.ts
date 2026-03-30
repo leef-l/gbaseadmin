@@ -37,5 +37,5 @@ export function updateUsers(data: UsersUpdateParams) {
 
 /** 删除用户表 */
 export function deleteUsers(id: string) {
-  return requestClient.delete(`${PREFIX}/delete`, { params: { id } });
+  return requestClient.delete(`${PREFIX}/delete`, { data: { id } });
 }

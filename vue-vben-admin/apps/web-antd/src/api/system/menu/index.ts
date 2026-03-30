@@ -37,10 +37,14 @@ export function updateMenu(data: MenuUpdateParams) {
 
 /** 删除菜单表 */
 export function deleteMenu(id: string) {
-  return requestClient.delete(`${PREFIX}/delete`, { params: { id } });
+  return requestClient.delete(`${PREFIX}/delete`, { data: { id } });
 }
 
 /** 获取菜单表树形结构 */
-export function getMenuTree(params?: Record<string, any>) {
-  return requestClient.get<MenuItem[]>(`${PREFIX}/tree`, { params });
+export async function getMenuTree(params?: Record<string, any>) {
+  const res = await requestClient.get<{ list: MenuItem[] }>(
+    `${PREFIX}/tree`,
+    { params },
+  );
+  return res?.list ?? [];
 }

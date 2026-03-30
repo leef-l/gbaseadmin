@@ -10,7 +10,7 @@ SET FOREIGN_KEY_CHECKS = 0;
 -- ─────────────────────────────────────────────
 -- 2.1 部门表
 -- ─────────────────────────────────────────────
-CREATE TABLE IF NOT EXISTS `dept` (
+CREATE TABLE IF NOT EXISTS `system_dept` (
     `id`         BIGINT UNSIGNED NOT NULL               COMMENT '部门ID（Snowflake）',
     `parent_id`  BIGINT UNSIGNED NOT NULL DEFAULT 0     COMMENT '上级部门ID，0 表示顶级部门',
     `title`      VARCHAR(50)     NOT NULL               COMMENT '部门名称',
@@ -31,7 +31,7 @@ CREATE TABLE IF NOT EXISTS `dept` (
 -- ─────────────────────────────────────────────
 -- 2.2 角色表
 -- ─────────────────────────────────────────────
-CREATE TABLE IF NOT EXISTS `role` (
+CREATE TABLE IF NOT EXISTS `system_role` (
     `id`         BIGINT UNSIGNED NOT NULL               COMMENT '角色ID（Snowflake）',
     `parent_id`  BIGINT UNSIGNED NOT NULL DEFAULT 0     COMMENT '上级角色ID，0 表示顶级角色',
     `title`      VARCHAR(50)     NOT NULL               COMMENT '角色名称',
@@ -51,7 +51,7 @@ CREATE TABLE IF NOT EXISTS `role` (
 -- ─────────────────────────────────────────────
 -- 2.3 角色-部门关联表（自定义数据权限）
 -- ─────────────────────────────────────────────
-CREATE TABLE IF NOT EXISTS `role_dept` (
+CREATE TABLE IF NOT EXISTS `system_role_dept` (
     `role_id` BIGINT UNSIGNED NOT NULL COMMENT '角色ID',
     `dept_id` BIGINT UNSIGNED NOT NULL COMMENT '部门ID',
     PRIMARY KEY (`role_id`, `dept_id`),
@@ -61,7 +61,7 @@ CREATE TABLE IF NOT EXISTS `role_dept` (
 -- ─────────────────────────────────────────────
 -- 2.4 角色-菜单关联表（资源权限）
 -- ─────────────────────────────────────────────
-CREATE TABLE IF NOT EXISTS `role_menu` (
+CREATE TABLE IF NOT EXISTS `system_role_menu` (
     `role_id` BIGINT UNSIGNED NOT NULL COMMENT '角色ID',
     `menu_id` BIGINT UNSIGNED NOT NULL COMMENT '菜单ID',
     PRIMARY KEY (`role_id`, `menu_id`),
@@ -71,7 +71,7 @@ CREATE TABLE IF NOT EXISTS `role_menu` (
 -- ─────────────────────────────────────────────
 -- 2.5 菜单表
 -- ─────────────────────────────────────────────
-CREATE TABLE IF NOT EXISTS `menu` (
+CREATE TABLE IF NOT EXISTS `system_menu` (
     `id`         BIGINT UNSIGNED NOT NULL               COMMENT '菜单ID（Snowflake）',
     `parent_id`  BIGINT UNSIGNED NOT NULL DEFAULT 0     COMMENT '上级菜单ID，0 表示顶级菜单',
     `title`      VARCHAR(50)     NOT NULL               COMMENT '菜单名称',
@@ -98,7 +98,7 @@ CREATE TABLE IF NOT EXISTS `menu` (
 -- ─────────────────────────────────────────────
 -- 2.6 用户表
 -- ─────────────────────────────────────────────
-CREATE TABLE IF NOT EXISTS `users` (
+CREATE TABLE IF NOT EXISTS `system_users` (
     `id`         BIGINT UNSIGNED NOT NULL               COMMENT '用户ID（Snowflake）',
     `username`   VARCHAR(50)     NOT NULL               COMMENT '登录用户名',
     `password`   VARCHAR(255)    NOT NULL               COMMENT '密码（SHA-256 加密）',
@@ -120,7 +120,7 @@ CREATE TABLE IF NOT EXISTS `users` (
 -- ─────────────────────────────────────────────
 -- 2.7 用户-部门关联表
 -- ─────────────────────────────────────────────
-CREATE TABLE IF NOT EXISTS `user_dept` (
+CREATE TABLE IF NOT EXISTS `system_user_dept` (
     `user_id` BIGINT UNSIGNED NOT NULL COMMENT '用户ID',
     `dept_id` BIGINT UNSIGNED NOT NULL COMMENT '部门ID',
     PRIMARY KEY (`user_id`, `dept_id`),
@@ -130,7 +130,7 @@ CREATE TABLE IF NOT EXISTS `user_dept` (
 -- ─────────────────────────────────────────────
 -- 2.8 用户-角色关联表
 -- ─────────────────────────────────────────────
-CREATE TABLE IF NOT EXISTS `user_role` (
+CREATE TABLE IF NOT EXISTS `system_user_role` (
     `user_id` BIGINT UNSIGNED NOT NULL COMMENT '用户ID',
     `role_id` BIGINT UNSIGNED NOT NULL COMMENT '角色ID',
     PRIMARY KEY (`user_id`, `role_id`),
@@ -146,13 +146,13 @@ CREATE TABLE IF NOT EXISTS `user_role` (
 -- 根部门（总公司）
 -- ID 使用固定 Snowflake 值，确保跨环境一致
 -- ─────────────────────────────────────────────
-INSERT INTO `dept` (`id`, `parent_id`, `title`, `username`, `email`, `sort`, `status`, `created_by`, `dept_id`, `created_at`, `updated_at`, `deleted_at`)
+INSERT INTO `system_dept` (`id`, `parent_id`, `title`, `username`, `email`, `sort`, `status`, `created_by`, `dept_id`, `created_at`, `updated_at`, `deleted_at`)
 VALUES (1000000000000000001, 0, '总公司', 'admin', 'admin@example.com', 0, 1, 0, 0, NOW(), NOW(), NULL);
 
 -- ─────────────────────────────────────────────
 -- 超级管理员角色（data_scope=1 全部数据权限）
 -- ─────────────────────────────────────────────
-INSERT INTO `role` (`id`, `parent_id`, `title`, `data_scope`, `sort`, `status`, `created_by`, `dept_id`, `created_at`, `updated_at`, `deleted_at`)
+INSERT INTO `system_role` (`id`, `parent_id`, `title`, `data_scope`, `sort`, `status`, `created_by`, `dept_id`, `created_at`, `updated_at`, `deleted_at`)
 VALUES (1000000000000000002, 0, '超级管理员', 1, 0, 1, 0, 1000000000000000001, NOW(), NOW(), NULL);
 
 -- ─────────────────────────────────────────────
@@ -161,7 +161,7 @@ VALUES (1000000000000000002, 0, '超级管理员', 1, 0, 1, 0, 10000000000000000
 -- 密码：admin123  →  SHA-256 加密后的哈希值
 -- SHA-256(admin123) = 240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9
 -- ─────────────────────────────────────────────
-INSERT INTO `users` (`id`, `username`, `password`, `nickname`, `email`, `avatar`, `status`, `created_by`, `dept_id`, `created_at`, `updated_at`, `deleted_at`)
+INSERT INTO `system_users` (`id`, `username`, `password`, `nickname`, `email`, `avatar`, `status`, `created_by`, `dept_id`, `created_at`, `updated_at`, `deleted_at`)
 VALUES (
     1000000000000000003,
     'admin',
@@ -180,13 +180,13 @@ VALUES (
 -- ─────────────────────────────────────────────
 -- 用户-部门关联（admin 属于总公司）
 -- ─────────────────────────────────────────────
-INSERT INTO `user_dept` (`user_id`, `dept_id`)
+INSERT INTO `system_user_dept` (`user_id`, `dept_id`)
 VALUES (1000000000000000003, 1000000000000000001);
 
 -- ─────────────────────────────────────────────
 -- 用户-角色关联（admin 拥有超级管理员角色）
 -- ─────────────────────────────────────────────
-INSERT INTO `user_role` (`user_id`, `role_id`)
+INSERT INTO `system_user_role` (`user_id`, `role_id`)
 VALUES (1000000000000000003, 1000000000000000002);
 
 -- ─────────────────────────────────────────────
@@ -201,7 +201,7 @@ VALUES (1000000000000000003, 1000000000000000002);
 --     ├── 菜单管理（菜单, id=1000000000000000013）
 --     └── 用户管理（菜单, id=1000000000000000014）
 -- ─────────────────────────────────────────────
-INSERT INTO `menu` (`id`, `parent_id`, `title`, `type`, `path`, `component`, `permission`, `icon`, `sort`, `is_show`, `is_cache`, `link_url`, `status`, `created_by`, `dept_id`, `created_at`, `updated_at`, `deleted_at`)
+INSERT INTO `system_menu` (`id`, `parent_id`, `title`, `type`, `path`, `component`, `permission`, `icon`, `sort`, `is_show`, `is_cache`, `link_url`, `status`, `created_by`, `dept_id`, `created_at`, `updated_at`, `deleted_at`)
 VALUES
 -- 仪表盘（目录）
 (1000000000000000060, 0,                    '仪表盘',   1, '/dashboard',    NULL,                          '',                     'DashboardOutlined', 0, 1, 0, NULL, 1, 0, 1000000000000000001, NOW(), NOW(), NULL),
@@ -230,7 +230,7 @@ VALUES
 -- ─────────────────────────────────────────────
 -- 按钮级权限菜单（归属于各功能菜单下）
 -- ─────────────────────────────────────────────
-INSERT INTO `menu` (`id`, `parent_id`, `title`, `type`, `path`, `component`, `permission`, `icon`, `sort`, `is_show`, `is_cache`, `link_url`, `status`, `created_by`, `dept_id`, `created_at`, `updated_at`, `deleted_at`)
+INSERT INTO `system_menu` (`id`, `parent_id`, `title`, `type`, `path`, `component`, `permission`, `icon`, `sort`, `is_show`, `is_cache`, `link_url`, `status`, `created_by`, `dept_id`, `created_at`, `updated_at`, `deleted_at`)
 VALUES
 -- 部门管理按钮
 (1000000000000000021, 1000000000000000011, '部门新增', 3, NULL, NULL, 'system:dept:create', '', 1, 0, 0, NULL, 1, 0, 1000000000000000001, NOW(), NOW(), NULL),
@@ -257,7 +257,7 @@ VALUES
 -- ─────────────────────────────────────────────
 -- 角色-菜单关联（超级管理员拥有所有菜单权限）
 -- ─────────────────────────────────────────────
-INSERT INTO `role_menu` (`role_id`, `menu_id`)
+INSERT INTO `system_role_menu` (`role_id`, `menu_id`)
 VALUES
 -- 仪表盘
 (1000000000000000002, 1000000000000000060),

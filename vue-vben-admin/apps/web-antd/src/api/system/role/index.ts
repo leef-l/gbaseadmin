@@ -39,12 +39,16 @@ export function updateRole(data: RoleUpdateParams) {
 
 /** 删除角色表 */
 export function deleteRole(id: string) {
-  return requestClient.delete(`${PREFIX}/delete`, { params: { id } });
+  return requestClient.delete(`${PREFIX}/delete`, { data: { id } });
 }
 
 /** 获取角色表树形结构 */
-export function getRoleTree(params?: Record<string, any>) {
-  return requestClient.get<RoleItem[]>(`${PREFIX}/tree`, { params });
+export async function getRoleTree(params?: Record<string, any>) {
+  const res = await requestClient.get<{ list: RoleItem[] }>(
+    `${PREFIX}/tree`,
+    { params },
+  );
+  return res?.list ?? [];
 }
 
 /** 授权菜单 */
@@ -53,13 +57,24 @@ export function grantRoleMenu(data: RoleGrantMenuParams) {
 }
 
 /** 获取角色已授权菜单ID列表 */
-export function getRoleMenuIds(roleId: string) {
-  return requestClient.get<string[]>(`${PREFIX}/menu-ids`, {
-    params: { roleId },
-  });
+export async function getRoleMenuIds(roleId: string) {
+  const res = await requestClient.get<{ menuIds: string[] }>(
+    `${PREFIX}/menu-ids`,
+    { params: { id: roleId } },
+  );
+  return res?.menuIds ?? [];
 }
 
 /** 授权部门（数据权限） */
 export function grantRoleDept(data: RoleGrantDeptParams) {
   return requestClient.post(`${PREFIX}/grant-dept`, data);
+}
+
+/** 获取角色已授权部门ID列表 */
+export async function getRoleDeptIds(roleId: string) {
+  const res = await requestClient.get<{ deptIds: string[] }>(
+    `${PREFIX}/dept-ids`,
+    { params: { id: roleId } },
+  );
+  return res?.deptIds ?? [];
 }

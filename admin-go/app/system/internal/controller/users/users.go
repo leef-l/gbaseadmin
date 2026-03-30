@@ -62,7 +62,11 @@ func (c *cUsers) List(ctx context.Context, req *v1.UsersListReq) (res *v1.UsersL
 	res.List, res.Total, err = service.Users().List(ctx, &model.UsersListInput{
 		PageNum:  req.PageNum,
 		PageSize: req.PageSize,
-		Status: req.Status,
+		Username: req.Username,
+		Nickname: req.Nickname,
+		Email:    req.Email,
+		DeptId:   req.DeptId,
+		Status:   req.Status,
 	})
 	return
 }

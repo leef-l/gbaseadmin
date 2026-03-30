@@ -8,14 +8,14 @@ import (
 	"gbaseadmin/app/system/internal/dao/internal"
 )
 
-// roleMenuDao is the data access object for the table role_menu.
+// roleMenuDao is the data access object for the table system_role_menu.
 // You can define custom methods on it to extend its functionality as needed.
 type roleMenuDao struct {
 	*internal.RoleMenuDao
 }
 
 var (
-	// RoleMenu is a globally accessible object for table role_menu operations.
+	// RoleMenu is a globally accessible object for table system_role_menu operations.
 	RoleMenu = roleMenuDao{internal.NewRoleMenuDao()}
 )
 

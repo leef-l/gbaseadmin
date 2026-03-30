@@ -7,11 +7,11 @@ import { Button, message, Modal, Tag } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 {{- if .HasParentID}}
-import { get{{.ModelName}}Tree, delete{{.ModelName}} } from '#/api/system/{{.ModuleName}}';
+import { get{{.ModelName}}Tree, delete{{.ModelName}} } from '#/api/{{.AppName}}/{{.ModuleName}}';
 {{- else}}
-import { get{{.ModelName}}List, delete{{.ModelName}} } from '#/api/system/{{.ModuleName}}';
+import { get{{.ModelName}}List, delete{{.ModelName}} } from '#/api/{{.AppName}}/{{.ModuleName}}';
 {{- end}}
-import type { {{.ModelName}}Item } from '#/api/system/{{.ModuleName}}/types';
+import type { {{.ModelName}}Item } from '#/api/{{.AppName}}/{{.ModuleName}}/types';
 import FormModal from './modules/form.vue';
 
 /** 标签颜色池 */
@@ -61,6 +61,7 @@ const formOptions: VbenFormProps = {
         allowClear: true,
         options: {{.NameLower}}Options,
         placeholder: '请选择{{.Label}}',
+        class: 'w-full',
       },
       fieldName: '{{.NameLower}}',
       label: '{{.Label}}',
@@ -74,15 +75,18 @@ const formOptions: VbenFormProps = {
 const gridOptions: VxeGridProps<{{.ModelName}}Item> = {
   columns: [
     { title: '序号', type: 'seq', width: 50 },
+{{- $isTree := .HasParentID}}
+{{- $firstDataCol := true}}
 {{- range .Fields}}
 {{- if and (not .IsHidden) (not .IsID) (not .IsParentID) (not .IsTimeField) (not .IsMultiFK) (not .IsPassword)}}
 {{- if .RefFieldJSON}}
-    { field: '{{.RefFieldJSON}}', title: '{{.Label}}' },
+    { field: '{{.RefFieldJSON}}', title: '{{.Label}}'{{if and $isTree $firstDataCol}}, treeNode: true{{end}} },
 {{- else if .IsEnum}}
-    { field: '{{.NameLower}}', title: '{{.Label}}', width: 120, slots: { default: '{{.NameLower}}_cell' } },
+    { field: '{{.NameLower}}', title: '{{.Label}}', width: 120, slots: { default: '{{.NameLower}}_cell' }{{if and $isTree $firstDataCol}}, treeNode: true{{end}} },
 {{- else}}
-    { field: '{{.NameLower}}', title: '{{.Label}}' },
+    { field: '{{.NameLower}}', title: '{{.Label}}'{{if and $isTree $firstDataCol}}, treeNode: true{{end}} },
 {{- end}}
+{{- $firstDataCol = false}}
 {{- end}}
 {{- end}}
 {{- range .Fields}}
@@ -96,15 +100,13 @@ const gridOptions: VxeGridProps<{{.ModelName}}Item> = {
 {{- if .HasParentID}}
   pagerConfig: { enabled: false },
   treeConfig: {
-    parentField: '{{range .Fields}}{{if .IsParentID}}{{.NameLower}}{{end}}{{end}}',
-    rowField: 'id',
-    transform: true,
+    childrenField: 'children',
+    expandAll: false,
   },
   proxyConfig: {
     ajax: {
       query: async (_params, formValues) => {
-        const res = await get{{.ModelName}}Tree(formValues);
-        return res ?? [];
+        return await get{{.ModelName}}Tree(formValues) ?? [];
       },
     },
   },

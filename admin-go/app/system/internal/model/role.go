@@ -15,6 +15,7 @@ type RoleCreateInput struct {
 	DataScope int `json:"dataScope"`
 	Sort int `json:"sort"`
 	Status int `json:"status"`
+	IsAdmin int `json:"isAdmin"`
 }
 
 // RoleUpdateInput 更新角色表输入
@@ -25,6 +26,7 @@ type RoleUpdateInput struct {
 	DataScope int `json:"dataScope"`
 	Sort int `json:"sort"`
 	Status int `json:"status"`
+	IsAdmin int `json:"isAdmin"`
 }
 
 // RoleDetailOutput 角色表详情输出
@@ -36,6 +38,7 @@ type RoleDetailOutput struct {
 	DataScope int `json:"dataScope"`
 	Sort int `json:"sort"`
 	Status int `json:"status"`
+	IsAdmin int `json:"isAdmin"`
 	CreatedAt *gtime.Time `json:"createdAt"`
 	UpdatedAt *gtime.Time `json:"updatedAt"`
 }
@@ -49,6 +52,7 @@ type RoleListOutput struct {
 	DataScope int `json:"dataScope"`
 	Sort int `json:"sort"`
 	Status int `json:"status"`
+	IsAdmin int `json:"isAdmin"`
 	CreatedAt *gtime.Time `json:"createdAt"`
 	UpdatedAt *gtime.Time `json:"updatedAt"`
 }
@@ -70,6 +74,7 @@ type RoleTreeOutput struct {
 	DataScope int `json:"dataScope"`
 	Sort int `json:"sort"`
 	Status int `json:"status"`
+	IsAdmin int `json:"isAdmin"`
 	Children []*RoleTreeOutput `json:"children"`
 }
 

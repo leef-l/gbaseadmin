@@ -2,10 +2,14 @@
 import type { VbenFormProps } from '#/adapter/form';
 import type { VxeGridProps } from '#/adapter/vxe-table';
 
+import { onMounted, ref } from 'vue';
+
 import { Page, useVbenModal } from '@vben/common-ui';
-import { Button, message, Modal, Tag } from 'ant-design-vue';
+import { Button, Card, Input, message, Modal, Tag, Tree } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
+import { getDeptTree } from '#/api/system/dept';
+import type { DeptItem } from '#/api/system/dept/types';
 import { getUsersList, deleteUsers } from '#/api/system/users';
 import type { UsersItem } from '#/api/system/users/types';
 import FormModal from './modules/form.vue';
@@ -32,6 +36,47 @@ function getStatusColor(val: number): string {
   return TAG_COLORS[idx >= 0 ? idx % TAG_COLORS.length : 0] ?? 'default';
 }
 
+/** 部门树状态 */
+const deptTree = ref<DeptItem[]>([]);
+const searchValue = ref('');
+const selectedDeptId = ref<string>('');
+const deptExpandedKeys = ref<string[]>([]);
+
+/** 递归收集所有节点 key */
+function collectDeptKeys(nodes: DeptItem[]): string[] {
+  const keys: string[] = [];
+  for (const node of nodes) {
+    keys.push(node.id);
+    if (node.children?.length) {
+      keys.push(...collectDeptKeys(node.children));
+    }
+  }
+  return keys;
+}
+
+/** 加载部门树 */
+onMounted(async () => {
+  try {
+    const res = await getDeptTree();
+    deptTree.value = res ?? [];
+    deptExpandedKeys.value = collectDeptKeys(deptTree.value);
+  } catch {
+    // ignore
+  }
+});
+
+/** 过滤树节点 */
+function filterTreeNode(node: any): boolean {
+  if (!searchValue.value) return true;
+  return String(node.title ?? '').toLowerCase().includes(searchValue.value.toLowerCase());
+}
+
+/** 选择部门节点 */
+function handleDeptSelect(selectedKeys: string[]) {
+  selectedDeptId.value = selectedKeys[0] ?? '';
+  gridApi.reload();
+}
+
 /** 表单弹窗 */
 const [FormModalComp, formModalApi] = useVbenModal({
   connectedComponent: FormModal,
@@ -46,11 +91,39 @@ const formOptions: VbenFormProps = {
   submitOnEnter: true,
   schema: [
     {
+      component: 'Input',
+      componentProps: {
+        allowClear: true,
+        placeholder: '请输入登录用户名',
+      },
+      fieldName: 'username',
+      label: '用户名',
+    },
+    {
+      component: 'Input',
+      componentProps: {
+        allowClear: true,
+        placeholder: '请输入昵称',
+      },
+      fieldName: 'nickname',
+      label: '昵称',
+    },
+    {
+      component: 'Input',
+      componentProps: {
+        allowClear: true,
+        placeholder: '请输入邮箱',
+      },
+      fieldName: 'email',
+      label: '邮箱',
+    },
+    {
       component: 'Select',
       componentProps: {
         allowClear: true,
         options: statusOptions,
         placeholder: '请选择状态',
+        class: 'w-full',
       },
       fieldName: 'status',
       label: '状态',
@@ -65,6 +138,7 @@ const gridOptions: VxeGridProps<UsersItem> = {
     { field: 'username', title: '登录用户名' },
     { field: 'nickname', title: '昵称' },
     { field: 'deptTitle', title: '所属部门' },
+    { field: 'roleTitles', title: '角色', width: 200, slots: { default: 'roleTitles_cell' } },
     { field: 'email', title: '邮箱' },
     { field: 'status', title: '状态', width: 120, slots: { default: 'status_cell' } },
     { field: 'createdAt', title: '创建时间', width: 180, formatter: 'formatDateTime' },
@@ -79,6 +153,7 @@ const gridOptions: VxeGridProps<UsersItem> = {
           pageNum: page.currentPage,
           pageSize: page.pageSize,
           ...formValues,
+          ...(selectedDeptId.value ? { deptId: selectedDeptId.value } : {}),
         });
         return { items: res?.list ?? [], total: res?.total ?? 0 };
       },
@@ -124,19 +199,56 @@ function handleDelete(row: UsersItem) {
 <template>
   <Page auto-content-height>
     <FormModalComp @success="() => gridApi.reload()" />
-    <Grid>
-      <template #toolbar-actions>
-        <Button type="primary" @click="handleCreate">新建</Button>
-      </template>
-      <template #status_cell="{ row }">
-        <Tag :color="getStatusColor(row.status)">
-          {{ statusMap[row.status] || row.status }}
-        </Tag>
-      </template>
-      <template #action="{ row }">
-        <Button type="link" size="small" @click="handleEdit(row)">编辑</Button>
-        <Button type="link" danger size="small" @click="handleDelete(row)">删除</Button>
-      </template>
-    </Grid>
+    <div class="flex h-full gap-4">
+      <Card class="w-[240px] shrink-0 overflow-auto" title="部门" size="small">
+        <template #extra>
+          <Input.Search
+            v-model:value="searchValue"
+            placeholder="搜索部门"
+            size="small"
+            allow-clear
+            style="width: 140px"
+          />
+        </template>
+        <Tree
+          :tree-data="deptTree"
+          :field-names="{ title: 'title', key: 'id', children: 'children' }"
+          :selected-keys="selectedDeptId ? [selectedDeptId] : []"
+          v-model:expanded-keys="deptExpandedKeys"
+          :filter-tree-node="filterTreeNode"
+          @select="handleDeptSelect"
+        >
+          <template #title="{ title }">
+            <template v-if="searchValue && title.toLowerCase().includes(searchValue.toLowerCase())">
+              <span>{{ title.slice(0, title.toLowerCase().indexOf(searchValue.toLowerCase())) }}</span>
+              <span style="color: #f50; font-weight: 600">{{ title.slice(title.toLowerCase().indexOf(searchValue.toLowerCase()), title.toLowerCase().indexOf(searchValue.toLowerCase()) + searchValue.length) }}</span>
+              <span>{{ title.slice(title.toLowerCase().indexOf(searchValue.toLowerCase()) + searchValue.length) }}</span>
+            </template>
+            <span v-else>{{ title }}</span>
+          </template>
+        </Tree>
+      </Card>
+      <div class="flex-1 overflow-hidden">
+        <Grid>
+          <template #toolbar-actions>
+            <Button type="primary" @click="handleCreate">新建</Button>
+          </template>
+          <template #status_cell="{ row }">
+            <Tag :color="getStatusColor(row.status)">
+              {{ statusMap[row.status] || row.status }}
+            </Tag>
+          </template>
+          <template #roleTitles_cell="{ row }">
+            <Tag v-for="(name, idx) in (row.roleTitles || [])" :key="idx" :color="TAG_COLORS[idx % TAG_COLORS.length]">
+              {{ name }}
+            </Tag>
+          </template>
+          <template #action="{ row }">
+            <Button type="link" size="small" @click="handleEdit(row)">编辑</Button>
+            <Button type="link" danger size="small" @click="handleDelete(row)">删除</Button>
+          </template>
+        </Grid>
+      </div>
+    </div>
   </Page>
 </template>

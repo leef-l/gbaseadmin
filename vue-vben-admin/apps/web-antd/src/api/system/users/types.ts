@@ -10,6 +10,7 @@ export interface UsersItem {
   deptId?: string;
   deptTitle?: string;
   roleIds?: string[];
+  roleTitles?: string[];
   status?: number;
   createdAt?: string;
   updatedAt?: string;
@@ -19,6 +20,10 @@ export interface UsersItem {
 export interface UsersListParams {
   pageNum: number;
   pageSize: number;
+  username?: string;
+  nickname?: string;
+  email?: string;
+  deptId?: string;
   status?: number;
 }
 

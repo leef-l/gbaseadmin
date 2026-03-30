@@ -17,6 +17,7 @@ type RoleCreateReq struct {
 	DataScope int `json:"dataScope"  dc:"数据范围"`
 	Sort int `json:"sort"  dc:"排序（升序）"`
 	Status int `json:"status"  dc:"状态"`
+	IsAdmin int `json:"isAdmin"  dc:"是否超级管理员:0=否,1=是"`
 }
 
 // RoleCreateRes 创建角色表响应
@@ -33,6 +34,7 @@ type RoleUpdateReq struct {
 	DataScope int `json:"dataScope" dc:"数据范围"`
 	Sort int `json:"sort" dc:"排序（升序）"`
 	Status int `json:"status" dc:"状态"`
+	IsAdmin int `json:"isAdmin" dc:"是否超级管理员:0=否,1=是"`
 }
 
 // RoleUpdateRes 更新角色表响应
@@ -124,5 +126,16 @@ type RoleGrantDeptReq struct {
 
 type RoleGrantDeptRes struct {
 	g.Meta `mime:"application/json"`
+}
+
+// RoleGetDeptIDsReq 获取角色已授权部门ID列表
+type RoleGetDeptIDsReq struct {
+	g.Meta `path:"/role/dept-ids" method:"get" tags:"角色表" summary:"获取角色部门ID列表"`
+	ID     snowflake.JsonInt64 `json:"id" v:"required#角色ID不能为空" dc:"角色ID"`
+}
+
+type RoleGetDeptIDsRes struct {
+	g.Meta  `mime:"application/json"`
+	DeptIDs []snowflake.JsonInt64 `json:"deptIds"`
 }
 

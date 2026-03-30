@@ -11,7 +11,7 @@ import (
 	"github.com/gogf/gf/v2/frame/g"
 )
 
-// UsersDao is the data access object for the table users.
+// UsersDao is the data access object for the table system_users.
 type UsersDao struct {
 	table    string             // table is the underlying table name of the DAO.
 	group    string             // group is the database configuration group name of the current DAO.
@@ -19,7 +19,7 @@ type UsersDao struct {
 	handlers []gdb.ModelHandler // handlers for customized model modification.
 }
 
-// UsersColumns defines and stores column names for the table users.
+// UsersColumns defines and stores column names for the table system_users.
 type UsersColumns struct {
 	Id        string // 用户ID（Snowflake）
 	Username  string // 登录用户名
@@ -35,7 +35,7 @@ type UsersColumns struct {
 	DeletedAt string // 软删除时间，非 NULL 表示已删除
 }
 
-// usersColumns holds the columns for the table users.
+// usersColumns holds the columns for the table system_users.
 var usersColumns = UsersColumns{
 	Id:        "id",
 	Username:  "username",
@@ -55,7 +55,7 @@ var usersColumns = UsersColumns{
 func NewUsersDao(handlers ...gdb.ModelHandler) *UsersDao {
 	return &UsersDao{
 		group:    "default",
-		table:    "users",
+		table:    "system_users",
 		columns:  usersColumns,
 		handlers: handlers,
 	}

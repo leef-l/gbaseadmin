@@ -3,7 +3,7 @@ package v1
 import (
 	"github.com/gogf/gf/v2/frame/g"
 
-	"gbaseadmin/app/system/internal/model"
+	"gbaseadmin/app/{{.AppName}}/internal/model"
 	"gbaseadmin/utility/snowflake"
 )
 

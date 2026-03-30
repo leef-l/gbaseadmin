@@ -2,7 +2,7 @@ package service
 
 import (
 	"context"
-	"gbaseadmin/app/system/internal/model"
+	"gbaseadmin/app/{{.AppName}}/internal/model"
 	"gbaseadmin/utility/snowflake"
 )
 

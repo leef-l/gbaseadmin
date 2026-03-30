@@ -58,6 +58,7 @@ type UsersListOutput struct {
 	Status int `json:"status"`
 	DeptID snowflake.JsonInt64 `json:"deptId"`
 	DeptTitle string `json:"deptTitle"`
+	RoleTitles []string `json:"roleTitles"`
 	CreatedAt *gtime.Time `json:"createdAt"`
 	UpdatedAt *gtime.Time `json:"updatedAt"`
 }
@@ -66,6 +67,10 @@ type UsersListOutput struct {
 type UsersListInput struct {
 	PageNum  int `json:"pageNum"`
 	PageSize int `json:"pageSize"`
-	Status int `json:"status"`
+	Username string `json:"username"`
+	Nickname string `json:"nickname"`
+	Email    string `json:"email"`
+	DeptId   snowflake.JsonInt64 `json:"deptId"`
+	Status   int `json:"status"`
 }
 

@@ -8,14 +8,14 @@ import (
 	"gbaseadmin/app/system/internal/dao/internal"
 )
 
-// usersDao is the data access object for the table users.
+// usersDao is the data access object for the table system_users.
 // You can define custom methods on it to extend its functionality as needed.
 type usersDao struct {
 	*internal.UsersDao
 }
 
 var (
-	// Users is a globally accessible object for table users operations.
+	// Users is a globally accessible object for table system_users operations.
 	Users = usersDao{internal.NewUsersDao()}
 )
 

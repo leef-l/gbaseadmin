@@ -128,7 +128,7 @@ func (s *sAuth) Info(ctx context.Context, userID snowflake.JsonInt64) (out *mode
 		var roles []struct {
 			Title string `json:"title"`
 		}
-		_ = g.DB().Ctx(ctx).Model("role").
+		_ = g.DB().Ctx(ctx).Model("system_role").
 			Where("id", roleIDs).
 			Where("deleted_at", nil).
 			Where("status", 1).
@@ -137,22 +137,22 @@ func (s *sAuth) Info(ctx context.Context, userID snowflake.JsonInt64) (out *mode
 			out.Roles = append(out.Roles, r.Title)
 		}
 
-		// 查询角色关联的菜单权限标识
-		var menuIDs []struct {
-			MenuId int64 `json:"menuId"`
-		}
-		_ = dao.RoleMenu.Ctx(ctx).WhereIn(dao.RoleMenu.Columns().RoleId, roleIDs).Scan(&menuIDs)
+		// 检查是否有超级管理员角色
+		isAdmin := false
+		adminCount, _ := g.DB().Ctx(ctx).Model("system_role").
+			Where("id", roleIDs).
+			Where("deleted_at", nil).
+			Where("status", 1).
+			Where("is_admin", 1).
+			Count()
+		isAdmin = adminCount > 0
 
-		if len(menuIDs) > 0 {
-			mIDs := make([]int64, 0, len(menuIDs))
-			for _, m := range menuIDs {
-				mIDs = append(mIDs, m.MenuId)
-			}
+		if isAdmin {
+			// 超级管理员获取所有权限
 			var perms []struct {
 				Permission string `json:"permission"`
 			}
-			_ = g.DB().Ctx(ctx).Model("menu").
-				Where("id", mIDs).
+			_ = g.DB().Ctx(ctx).Model("system_menu").
 				Where("deleted_at", nil).
 				Where("status", 1).
 				WhereNot("permission", "").
@@ -162,6 +162,35 @@ func (s *sAuth) Info(ctx context.Context, userID snowflake.JsonInt64) (out *mode
 				if p.Permission != "" && !seen[p.Permission] {
 					out.Perms = append(out.Perms, p.Permission)
 					seen[p.Permission] = true
+				}
+			}
+		} else {
+			// 查询角色关联的菜单权限标识
+			var menuIDs []struct {
+				MenuId int64 `json:"menuId"`
+			}
+			_ = dao.RoleMenu.Ctx(ctx).WhereIn(dao.RoleMenu.Columns().RoleId, roleIDs).Scan(&menuIDs)
+
+			if len(menuIDs) > 0 {
+				mIDs := make([]int64, 0, len(menuIDs))
+				for _, m := range menuIDs {
+					mIDs = append(mIDs, m.MenuId)
+				}
+				var perms []struct {
+					Permission string `json:"permission"`
+				}
+				_ = g.DB().Ctx(ctx).Model("system_menu").
+					Where("id", mIDs).
+					Where("deleted_at", nil).
+					Where("status", 1).
+					WhereNot("permission", "").
+					Scan(&perms)
+				seen := make(map[string]bool)
+				for _, p := range perms {
+					if p.Permission != "" && !seen[p.Permission] {
+						out.Perms = append(out.Perms, p.Permission)
+						seen[p.Permission] = true
+					}
 				}
 			}
 		}
@@ -217,6 +246,47 @@ func (s *sAuth) Menus(ctx context.Context, userID snowflake.JsonInt64) ([]*model
 		roleIDs = append(roleIDs, ur.RoleId)
 	}
 
+	// 检查是否有超级管理员角色
+	isAdmin := false
+	if len(roleIDs) > 0 {
+		adminCount, _ := g.DB().Ctx(ctx).Model("system_role").
+			Where("id", roleIDs).
+			Where("deleted_at", nil).
+			Where("status", 1).
+			Where("is_admin", 1).
+			Count()
+		isAdmin = adminCount > 0
+	}
+
+	if isAdmin {
+		// 超级管理员获取所有菜单
+		var list []*model.AuthMenuOutput
+		err = g.DB().Ctx(ctx).Model("system_menu").
+			Where("deleted_at", nil).
+			Where("status", 1).
+			OrderAsc("sort").
+			Scan(&list)
+		if err != nil {
+			return nil, err
+		}
+		nodeMap := make(map[int64]*model.AuthMenuOutput, len(list))
+		for _, item := range list {
+			item.Children = make([]*model.AuthMenuOutput, 0)
+			nodeMap[int64(item.ID)] = item
+		}
+		tree := make([]*model.AuthMenuOutput, 0)
+		for _, item := range list {
+			if int64(item.ParentID) == 0 {
+				tree = append(tree, item)
+			} else if parent, ok := nodeMap[int64(item.ParentID)]; ok {
+				parent.Children = append(parent.Children, item)
+			} else {
+				tree = append(tree, item)
+			}
+		}
+		return tree, nil
+	}
+
 	// 查询角色关联的菜单ID（去重）
 	var roleMenus []struct {
 		MenuId int64 `json:"menuId"`
@@ -241,7 +311,7 @@ func (s *sAuth) Menus(ctx context.Context, userID snowflake.JsonInt64) ([]*model
 
 	// 查询菜单详情
 	var list []*model.AuthMenuOutput
-	err = g.DB().Ctx(ctx).Model("menu").
+	err = g.DB().Ctx(ctx).Model("system_menu").
 		Where("id", menuIDs).
 		Where("deleted_at", nil).
 		Where("status", 1).

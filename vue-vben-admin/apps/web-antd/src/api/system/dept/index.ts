@@ -37,10 +37,14 @@ export function updateDept(data: DeptUpdateParams) {
 
 /** 删除部门表 */
 export function deleteDept(id: string) {
-  return requestClient.delete(`${PREFIX}/delete`, { params: { id } });
+  return requestClient.delete(`${PREFIX}/delete`, { data: { id } });
 }
 
 /** 获取部门表树形结构 */
-export function getDeptTree(params?: Record<string, any>) {
-  return requestClient.get<DeptItem[]>(`${PREFIX}/tree`, { params });
+export async function getDeptTree(params?: Record<string, any>) {
+  const res = await requestClient.get<{ list: DeptItem[] }>(
+    `${PREFIX}/tree`,
+    { params },
+  );
+  return res?.list ?? [];
 }

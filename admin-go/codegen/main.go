@@ -4,6 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"strings"
 	"time"
@@ -69,17 +70,49 @@ func main() {
 			continue
 		}
 
+		if meta.AppName == "" {
+			fmt.Printf("[codegen] ✗ 表名 %s 缺少应用前缀（格式: {app}_{module}，如 system_dept）\n", tableName)
+			continue
+		}
+
+		fmt.Printf("[codegen] 应用: %s, 模块: %s, DAO: %s\n", meta.AppName, meta.ModuleName, meta.DaoName)
+
+		// 检查后端应用目录是否存在，不存在则自动创建
+		appDir := filepath.Join(cfg.Backend.Output, meta.AppName)
+		if _, err := os.Stat(appDir); os.IsNotExist(err) {
+			fmt.Printf("[codegen] 应用目录 %s 不存在，正在创建...\n", appDir)
+			// 切换到项目根目录执行 gf init
+			projectRoot := filepath.Dir(cfg.Backend.Output) // ../app/ → ..
+			if projectRoot == "" {
+				projectRoot = "."
+			}
+			cmd := exec.Command("gf", "init", "app/"+meta.AppName, "-a")
+			cmd.Dir = projectRoot
+			cmd.Stdout = os.Stdout
+			cmd.Stderr = os.Stderr
+			if err := cmd.Run(); err != nil {
+				fmt.Printf("[codegen] ⚠ gf init 执行失败: %v，尝试手动创建目录\n", err)
+				if mkErr := os.MkdirAll(appDir, 0755); mkErr != nil {
+					fmt.Printf("[codegen] ✗ 创建目录失败: %v\n", mkErr)
+					continue
+				}
+			}
+			fmt.Printf("[codegen] ✓ 应用 %s 创建完成\n", meta.AppName)
+		}
+
 		var files []string
 
 		// 生成后端代码
 		if only != "frontend" {
+			// 后端输出目录 = 配置根目录 + 应用名
+			backendOutput := filepath.Join(cfg.Backend.Output, meta.AppName)
 			backendGen := backend.New(backend.Config{
 				TemplateDir: filepath.Join(templateDir, "backend"),
-				OutputDir:   cfg.Backend.Output,
+				OutputDir:   backendOutput,
 				Force:       force,
 			})
 			if dryRun {
-				fmt.Println("[codegen] [dry-run] 后端文件将生成到:", cfg.Backend.Output)
+				fmt.Println("[codegen] [dry-run] 后端文件将生成到:", backendOutput)
 			} else {
 				generated, err := backendGen.Generate(meta)
 				if err != nil {

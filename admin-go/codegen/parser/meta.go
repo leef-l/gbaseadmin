@@ -52,7 +52,8 @@ type FieldMeta struct {
 	MaxLength    int
 	DefaultValue string
 	// 关联字段信息（仅 IsForeignKey 或 IsParentID 时有值）
-	RefTable            string // 关联表名，如 article
+	RefTable            string // 关联模块名，如 dept（用于 dao 引用和代码生成）
+	RefTableDB          string // 关联表实际数据库表名，如 system_dept（用于 g.DB().Model()）
 	RefTableCamel       string // 关联表 CamelCase，如 Article
 	RefTableLower       string // 关联表 camelCase，如 article
 	RefDisplayField     string // 关联表显示字段 snake_case，如 title
@@ -64,14 +65,17 @@ type FieldMeta struct {
 
 // TableMeta 表元数据
 type TableMeta struct {
-	TableName   string
-	ModelName   string // CamelCase，如 Dept
-	ModuleName  string // 小写，如 dept
-	PackageName string // 包名，如 dept
-	Comment     string
-	Fields      []FieldMeta
-	HasParentID bool // 有 parent_id 字段
-	HasStatus   bool // 有 status 字段
-	HasSort     bool // 有 sort 字段
-	HasPassword bool // 有 password 字段
+	TableName    string
+	AppName      string // 应用名，如 system、demo
+	AppNameCamel string // 应用名 CamelCase，如 System、Demo
+	ModelName    string // CamelCase（模块名），如 Dept（用于 service/model/controller 命名）
+	DaoName      string // CamelCase（完整表名），如 DemoDemo（用于 dao 引用，gf gen dao 生成的名称）
+	ModuleName   string // 小写，如 dept
+	PackageName  string // 包名，如 dept
+	Comment      string
+	Fields       []FieldMeta
+	HasParentID  bool // 有 parent_id 字段
+	HasStatus    bool // 有 status 字段
+	HasSort      bool // 有 sort 字段
+	HasPassword  bool // 有 password 字段
 }

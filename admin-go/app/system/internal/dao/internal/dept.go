@@ -11,7 +11,7 @@ import (
 	"github.com/gogf/gf/v2/frame/g"
 )
 
-// DeptDao is the data access object for the table dept.
+// DeptDao is the data access object for the table system_dept.
 type DeptDao struct {
 	table    string             // table is the underlying table name of the DAO.
 	group    string             // group is the database configuration group name of the current DAO.
@@ -19,7 +19,7 @@ type DeptDao struct {
 	handlers []gdb.ModelHandler // handlers for customized model modification.
 }
 
-// DeptColumns defines and stores column names for the table dept.
+// DeptColumns defines and stores column names for the table system_dept.
 type DeptColumns struct {
 	Id        string // 部门ID（Snowflake）
 	ParentId  string // 上级部门ID，0 表示顶级部门
@@ -35,7 +35,7 @@ type DeptColumns struct {
 	DeletedAt string // 软删除时间，非 NULL 表示已删除
 }
 
-// deptColumns holds the columns for the table dept.
+// deptColumns holds the columns for the table system_dept.
 var deptColumns = DeptColumns{
 	Id:        "id",
 	ParentId:  "parent_id",
@@ -55,7 +55,7 @@ var deptColumns = DeptColumns{
 func NewDeptDao(handlers ...gdb.ModelHandler) *DeptDao {
 	return &DeptDao{
 		group:    "default",
-		table:    "dept",
+		table:    "system_dept",
 		columns:  deptColumns,
 		handlers: handlers,
 	}

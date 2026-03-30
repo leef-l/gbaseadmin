@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue';
-import { message } from 'ant-design-vue';
+import { ref } from 'vue';
+import { message, Modal, Select, Tree } from 'ant-design-vue';
 import { getDeptTree } from '#/api/system/dept';
-import { grantRoleDept } from '#/api/system/role';
+import { getRoleDeptIds, grantRoleDept } from '#/api/system/role';
 import type { DeptItem } from '#/api/system/dept/types';
 
 const emit = defineEmits<{ success: [] }>();
@@ -10,7 +10,6 @@ const emit = defineEmits<{ success: [] }>();
 const visible = ref(false);
 const confirmLoading = ref(false);
 const roleId = ref('');
-const roleName = ref('');
 const dataScope = ref(1);
 const checkedDeptKeys = ref<string[]>([]);
 const treeData = ref<DeptItem[]>([]);
@@ -37,10 +36,9 @@ function collectKeys(nodes: DeptItem[]): string[] {
 }
 
 /** 打开弹窗 */
-async function open(id: string, name: string, currentScope: number) {
+async function open(id: string, currentScope: number) {
   visible.value = true;
   roleId.value = id;
-  roleName.value = name;
   dataScope.value = currentScope || 1;
   checkedDeptKeys.value = [];
 
@@ -48,6 +46,13 @@ async function open(id: string, name: string, currentScope: number) {
     const res = await getDeptTree();
     treeData.value = (res ?? []) as DeptItem[];
     expandedKeys.value = collectKeys(treeData.value);
+
+    // Load existing dept IDs for this role
+    if (currentScope === 5) {
+      try {
+        checkedDeptKeys.value = await getRoleDeptIds(id);
+      } catch { /* ignore */ }
+    }
   } catch {
     message.error('加载部门树失败');
   }
@@ -74,23 +79,24 @@ defineExpose({ open });
 </script>
 
 <template>
-  <a-modal
+  <Modal
     v-model:open="visible"
-    :title="`数据权限 - ${roleName}`"
+    title="数据权限"
     :confirm-loading="confirmLoading"
     width="500px"
     @ok="handleOk"
   >
     <div class="py-2">
-      <a-form-item label="数据范围" class="mb-4">
-        <a-select
+      <div class="mb-4 flex items-center gap-2">
+        <span class="shrink-0">数据范围</span>
+        <Select
           v-model:value="dataScope"
           :options="dataScopeOptions"
           style="width: 100%"
         />
-      </a-form-item>
+      </div>
       <div v-if="dataScope === 5" class="max-h-[350px] overflow-auto">
-        <a-tree
+        <Tree
           v-model:checkedKeys="checkedDeptKeys"
           v-model:expandedKeys="expandedKeys"
           :tree-data="treeData"
@@ -99,5 +105,5 @@ defineExpose({ open });
         />
       </div>
     </div>
-  </a-modal>
+  </Modal>
 </template>

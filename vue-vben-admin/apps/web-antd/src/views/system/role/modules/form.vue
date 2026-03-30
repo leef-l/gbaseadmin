@@ -7,8 +7,8 @@ import {
   getRoleDetail,
   createRole,
   updateRole,
+  getRoleTree,
 } from '#/api/system/role';
-import { getRoleTree } from '#/api/system/role';
 import type { RoleItem } from '#/api/system/role/types';
 
 const treeData = ref<RoleItem[]>([]);
@@ -33,13 +33,14 @@ const [Form, formApi] = useVbenForm({
     {
       component: 'TreeSelect',
       fieldName: 'parentID',
-      label: '上级角色ID，0 表示顶级角色',
+      label: '上级角色',
       componentProps: {
         treeData: treeData.value,
-        fieldNames: { label: 'name', value: 'id', children: 'children' },
-        placeholder: '请选择上级角色ID，0 表示顶级角色',
+        fieldNames: { label: 'title', value: 'id', children: 'children' },
+        placeholder: '请选择上级角色',
         allowClear: true,
         treeDefaultExpandAll: true,
+        class: 'w-full',
       },
     },
     {
@@ -53,7 +54,7 @@ const [Form, formApi] = useVbenForm({
       component: 'Select',
       fieldName: 'dataScope',
       label: '数据范围',
-      componentProps: { options: dataScopeOptions, placeholder: '请选择数据范围', allowClear: true },
+      componentProps: { options: dataScopeOptions, placeholder: '请选择数据范围', allowClear: true, class: 'w-full' },
     },
     {
       component: 'InputNumber',
@@ -68,6 +69,13 @@ const [Form, formApi] = useVbenForm({
       componentProps: { checkedValue: 1, unCheckedValue: 0 },
       defaultValue: 1,
     },
+    {
+      component: 'Switch',
+      fieldName: 'isAdmin',
+      label: '超级管理员',
+      componentProps: { checkedValue: 1, unCheckedValue: 0 },
+      defaultValue: 0,
+    },
   ],
 });
 
@@ -78,8 +86,8 @@ const [Modal, modalApi] = useVbenModal({
     modalApi.close();
   },
   onConfirm: async () => {
-    const { valid, values } = await formApi.validateAndSubmitForm();
-    if (!valid) return;
+    const values = await formApi.validateAndSubmitForm();
+    if (!values) return;
     modalApi.lock();
     try {
       if (isEdit.value) {
@@ -102,11 +110,11 @@ const [Modal, modalApi] = useVbenModal({
       try {
         const res = await getRoleTree();
         treeData.value = [
-          { id: '0', name: '顶级节点', children: res ?? [] } as any,
+          { id: '0', title: '顶级节点', children: res ?? [] } as RoleItem,
         ];
         formApi.updateSchema([
           {
-            fieldName: 'parentId',
+            fieldName: 'parentID',
             componentProps: { treeData: treeData.value },
           },
         ]);
