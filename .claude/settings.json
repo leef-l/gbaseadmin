@@ -34,7 +34,9 @@
       "Bash(go run . --table sys_test --force)",
       "Bash(pnpm install)",
       "Bash(for f in home.png home-active.png category.png category-active.png gift.png gift-active.png message.png message-active.png user.png user-active.png)",
-      "Bash(do echo \"iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAADklEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==\")"
+      "Bash(do echo \"iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAADklEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==\")",
+      "WebFetch(domain:pw.easytestdev.online)",
+      "Bash(pnpm run build)"
     ]
   }
 }

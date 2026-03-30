@@ -63,7 +63,7 @@
 ```
 wap-ui/
 ├── src/
-│   ├── app.ts                          # 应用入口
+│   ├── app.tsx                         # 应用入口
 │   ├── app.config.ts                   # Taro 配置（pages/tabBar）
 │   ├── app.scss                        # 全局样式 + 主题变量
 │   ├── api/                            # API 请求层

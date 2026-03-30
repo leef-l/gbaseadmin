@@ -10,7 +10,12 @@ const config = {
   },
   sourceRoot: 'src',
   outputRoot: 'dist',
-  plugins: ['@tarojs/plugin-framework-react'],
+  plugins: [
+    '@tarojs/plugin-framework-react',
+    '@tarojs/plugin-platform-h5',
+    '@tarojs/plugin-platform-weapp',
+    '@tarojs/plugin-platform-tt',
+  ],
   defineConstants: {},
   copy: { patterns: [], options: {} },
   framework: 'react',
@@ -22,7 +27,7 @@ const config = {
     },
   },
   h5: {
-    publicPath: '/',
+    publicPath: '/wap/',
     staticDirectory: 'static',
     postcss: {
       autoprefixer: { enable: true, config: {} },
