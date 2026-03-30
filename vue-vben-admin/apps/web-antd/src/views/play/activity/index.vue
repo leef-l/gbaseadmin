@@ -9,7 +9,6 @@ import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getActivityList, deleteActivity } from '#/api/play/activity';
 import type { ActivityItem } from '#/api/play/activity/types';
 import FormModal from './modules/form.vue';
-import DetailDrawer from './modules/detail-drawer.vue';
 
 /** 标签颜色池 */
 const TAG_COLORS = ['green', 'red', 'blue', 'orange', 'cyan', 'purple', 'geekblue', 'magenta'];
@@ -108,12 +107,6 @@ const [FormModalComp, formModalApi] = useVbenModal({
   destroyOnClose: true,
 });
 
-/** 详情抽屉（奖励+步骤管理） */
-const [DetailDrawerComp, detailDrawerApi] = useVbenModal({
-  connectedComponent: DetailDrawer,
-  destroyOnClose: true,
-});
-
 /** 搜索表单配置 */
 const formOptions: VbenFormProps = {
   collapsed: false,
@@ -186,7 +179,7 @@ const gridOptions: VxeGridProps<ActivityItem> = {
     { field: 'startAt', title: '活动开始时间', width: 180, formatter: 'formatDateTime' },
     { field: 'endAt', title: '活动结束时间', width: 180, formatter: 'formatDateTime' },
     { field: 'createdAt', title: '创建时间', width: 180, formatter: 'formatDateTime' },
-    { title: '操作', width: 280, fixed: 'right', slots: { default: 'action' } },
+    { title: '操作', width: 200, fixed: 'right', slots: { default: 'action' } },
   ],
   height: 'auto',
   pagerConfig: {},
@@ -237,22 +230,11 @@ function handleDelete(row: ActivityItem) {
     },
   });
 }
-
-/** 管理奖励 */
-function handleRewards(row: ActivityItem) {
-  detailDrawerApi.setData({ id: row.id, title: row.title, type: row.type, tab: 'rewards' }).open();
-}
-
-/** 管理步骤 */
-function handleSteps(row: ActivityItem) {
-  detailDrawerApi.setData({ id: row.id, title: row.title, type: row.type, tab: 'steps' }).open();
-}
 </script>
 
 <template>
   <Page auto-content-height>
     <FormModalComp @success="() => gridApi.reload()" />
-    <DetailDrawerComp />
     <Grid>
       <template #toolbar-actions>
         <Button type="primary" @click="handleCreate">新建</Button>
@@ -278,8 +260,6 @@ function handleSteps(row: ActivityItem) {
         </Tag>
       </template>
       <template #action="{ row }">
-        <Button type="link" size="small" @click="handleRewards(row)">管理奖励</Button>
-        <Button v-if="row.type === 4" type="link" size="small" @click="handleSteps(row)">管理步骤</Button>
         <Button type="link" size="small" @click="handleEdit(row)">编辑</Button>
         <Button type="link" danger size="small" @click="handleDelete(row)">删除</Button>
       </template>

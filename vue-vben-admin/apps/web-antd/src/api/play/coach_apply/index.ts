@@ -39,8 +39,3 @@ export function updateCoachApply(data: CoachApplyUpdateParams) {
 export function deleteCoachApply(id: string) {
   return requestClient.delete(`${PREFIX}/delete`, { data: { id } });
 }
-
-/** 审核陪玩师申请 */
-export function auditCoachApply(data: { id: string; auditStatus: number; auditRemark?: string }) {
-  return requestClient.put(`${PREFIX}/audit`, data);
-}

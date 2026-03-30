@@ -1,13 +1,12 @@
 <script setup lang="ts">
-import { h } from 'vue';
 import type { VbenFormProps } from '#/adapter/form';
 import type { VxeGridProps } from '#/adapter/vxe-table';
 
 import { Page, useVbenModal } from '@vben/common-ui';
-import { Button, Input, message, Modal, Tag } from 'ant-design-vue';
+import { Button, message, Modal, Tag } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { getCoachApplyList, deleteCoachApply, auditCoachApply } from '#/api/play/coach_apply';
+import { getCoachApplyList, deleteCoachApply } from '#/api/play/coach_apply';
 import type { CoachApplyItem } from '#/api/play/coach_apply/types';
 import FormModal from './modules/form.vue';
 
@@ -127,45 +126,6 @@ function handleDelete(row: CoachApplyItem) {
     },
   });
 }
-
-/** 审核通过 */
-function handleApprove(row: CoachApplyItem) {
-  Modal.confirm({
-    title: '审核通过',
-    content: `确定要通过 ${row.realName} 的陪玩师申请吗？`,
-    async onOk() {
-      await auditCoachApply({ id: row.id, auditStatus: 1 });
-      message.success('审核通过');
-      gridApi.reload();
-    },
-  });
-}
-
-/** 审核拒绝（需填写原因） */
-function handleReject(row: CoachApplyItem) {
-  let auditRemark = '';
-  Modal.confirm({
-    title: '审核拒绝',
-    content: () => h('div', [
-      h('p', `确定要拒绝 ${row.realName} 的陪玩师申请吗？`),
-      h(Input.TextArea, {
-        placeholder: '请输入拒绝原因',
-        rows: 3,
-        onChange: (e: any) => { auditRemark = e.target.value; },
-      }),
-    ]),
-    okType: 'danger',
-    async onOk() {
-      if (!auditRemark.trim()) {
-        message.warning('请输入拒绝原因');
-        throw new Error('请输入拒绝原因');
-      }
-      await auditCoachApply({ id: row.id, auditStatus: 2, auditRemark });
-      message.success('已拒绝');
-      gridApi.reload();
-    },
-  });
-}
 </script>
 
 <template>
@@ -181,10 +141,6 @@ function handleReject(row: CoachApplyItem) {
         </Tag>
       </template>
       <template #action="{ row }">
-        <template v-if="row.auditStatus === 0">
-          <Button type="link" size="small" @click="handleApprove(row)">通过</Button>
-          <Button type="link" danger size="small" @click="handleReject(row)">拒绝</Button>
-        </template>
         <Button type="link" size="small" @click="handleEdit(row)">编辑</Button>
         <Button type="link" danger size="small" @click="handleDelete(row)">删除</Button>
       </template>

@@ -133,7 +133,7 @@ const routes: RouteRecordRaw[] = [
       {
         path: '/play/profit-log',
         name: 'PlayProfitLog',
-        component: () => import('#/views/play/profit_log/index.vue'),
+        component: () => import('#/views/play/profit_log/enhance.vue'),
         meta: { title: '利润流水' },
       },
       {
