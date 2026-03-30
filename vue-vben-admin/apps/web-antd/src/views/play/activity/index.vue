@@ -186,7 +186,7 @@ const gridOptions: VxeGridProps<ActivityItem> = {
     { field: 'startAt', title: '活动开始时间', width: 180, formatter: 'formatDateTime' },
     { field: 'endAt', title: '活动结束时间', width: 180, formatter: 'formatDateTime' },
     { field: 'createdAt', title: '创建时间', width: 180, formatter: 'formatDateTime' },
-    { title: '操作', width: 200, fixed: 'right', slots: { default: 'action' } },
+    { title: '操作', width: 280, fixed: 'right', slots: { default: 'action' } },
   ],
   height: 'auto',
   pagerConfig: {},
@@ -240,7 +240,17 @@ function handleDelete(row: ActivityItem) {
 
 /** 查看详情（奖励+步骤） */
 function handleDetail(row: ActivityItem) {
-  detailDrawerApi.setData({ id: row.id, title: row.title }).open();
+  detailDrawerApi.setData({ id: row.id, title: row.title, type: row.type, tab: 'rewards' }).open();
+}
+
+/** 管理奖励 */
+function handleRewards(row: ActivityItem) {
+  detailDrawerApi.setData({ id: row.id, title: row.title, type: row.type, tab: 'rewards' }).open();
+}
+
+/** 管理步骤 */
+function handleSteps(row: ActivityItem) {
+  detailDrawerApi.setData({ id: row.id, title: row.title, type: row.type, tab: 'steps' }).open();
 }
 </script>
 
