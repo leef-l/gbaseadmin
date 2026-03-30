@@ -1,12 +1,13 @@
 <script setup lang="ts">
+import { h } from 'vue';
 import type { VbenFormProps } from '#/adapter/form';
 import type { VxeGridProps } from '#/adapter/vxe-table';
 
 import { Page, useVbenModal } from '@vben/common-ui';
-import { Button, message, Modal, Tag } from 'ant-design-vue';
+import { Button, Input, message, Modal, Tag } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { getOrderList, deleteOrder } from '#/api/play/order';
+import { getOrderList, deleteOrder, changeOrderStatus } from '#/api/play/order';
 import type { OrderItem } from '#/api/play/order/types';
 import FormModal from './modules/form.vue';
 
@@ -129,7 +130,7 @@ const gridOptions: VxeGridProps<OrderItem> = {
     { field: 'finishAt', title: '服务完成时间', width: 180, formatter: 'formatDateTime' },
     { field: 'cancelAt', title: '取消时间', width: 180, formatter: 'formatDateTime' },
     { field: 'createdAt', title: '创建时间', width: 180, formatter: 'formatDateTime' },
-    { title: '操作', width: 200, fixed: 'right', slots: { default: 'action' } },
+    { title: '操作', width: 300, fixed: 'right', slots: { default: 'action' } },
   ],
   height: 'auto',
   pagerConfig: {},
@@ -180,6 +181,53 @@ function handleDelete(row: OrderItem) {
     },
   });
 }
+
+/** 状态流转映射：当前状态 -> 可执行的下一步操作 */
+const statusActions: Record<number, { label: string; status: number; danger?: boolean; needReason?: boolean }[]> = {
+  0: [{ label: '取消订单', status: 4, danger: true, needReason: true }],
+  1: [{ label: '开始服务', status: 2 }],
+  2: [{ label: '完成服务', status: 3 }],
+  5: [{ label: '同意退款', status: 6, danger: true }, { label: '拒绝退款', status: 1 }],
+};
+
+/** 变更订单状态（取消订单需填写原因） */
+function handleChangeStatus(row: OrderItem, targetStatus: number, label: string, needReason?: boolean) {
+  if (needReason) {
+    let cancelReason = '';
+    Modal.confirm({
+      title: `${label}`,
+      content: h('div', [
+        h('p', `确定要将订单 ${row.orderNo} 取消吗？`),
+        h(Input.TextArea, {
+          placeholder: '请输入取消原因',
+          rows: 3,
+          onChange: (e: any) => { cancelReason = e.target.value; },
+        }),
+      ]),
+      okType: 'danger',
+      async onOk() {
+        if (!cancelReason.trim()) {
+          message.warning('请输入取消原因');
+          throw new Error('请输入取消原因');
+        }
+        await changeOrderStatus({ id: row.id, orderStatus: targetStatus, cancelReason });
+        message.success(`${label}成功`);
+        gridApi.reload();
+      },
+    });
+  } else {
+    Modal.confirm({
+      title: `${label}确认`,
+      content: `确定要将订单 ${row.orderNo} ${label}吗？`,
+      okType: targetStatus === 6 ? 'danger' : 'primary',
+      async onOk() {
+        await changeOrderStatus({ id: row.id, orderStatus: targetStatus });
+        message.success(`${label}成功`);
+        gridApi.reload();
+      },
+    });
+  }
+}
 </script>
 
 <template>
@@ -200,6 +248,9 @@ function handleDelete(row: OrderItem) {
         </Tag>
       </template>
       <template #action="{ row }">
+        <template v-for="act in (statusActions[row.orderStatus] || [])" :key="act.status">
+          <Button type="link" :danger="act.danger" size="small" @click="handleChangeStatus(row, act.status, act.label, act.needReason)">{{ act.label }}</Button>
+        </template>
         <Button type="link" size="small" @click="handleEdit(row)">编辑</Button>
         <Button type="link" danger size="small" @click="handleDelete(row)">删除</Button>
       </template>
