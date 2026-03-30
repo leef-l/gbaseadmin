@@ -8,5 +8,5 @@ export function changeOrderStatus(data: {
   orderStatus: number;
   cancelReason?: string;
 }) {
-  return requestClient.post(`${PREFIX}/change-status`, data);
+  return requestClient.put(`${PREFIX}/change_status`, data);
 }
