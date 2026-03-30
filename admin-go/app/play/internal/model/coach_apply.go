@@ -74,3 +74,4 @@ type CoachApplyListInput struct {
 	AuditStatus int `json:"auditStatus"`
 }
 
+

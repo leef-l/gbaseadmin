@@ -1,0 +1,36 @@
+.settings {
+  padding: 16px;
+
+  &__menu {
+    padding: 0;
+    margin-bottom: 32px;
+  }
+
+  &__item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px;
+    font-size: 14px;
+    color: var(--text);
+    border-bottom: 1px solid var(--border);
+
+    &:last-child { border-bottom: none; }
+  }
+
+  &__arrow {
+    color: var(--text-light);
+    font-size: 12px;
+  }
+
+  &__logout {
+    background: #fff;
+    border-radius: var(--radius);
+    text-align: center;
+    padding: 16px;
+    color: #ef4444;
+    font-size: 15px;
+    font-weight: 600;
+    box-shadow: var(--shadow);
+  }
+}

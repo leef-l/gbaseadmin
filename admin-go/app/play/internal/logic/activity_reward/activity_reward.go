@@ -80,6 +80,9 @@ func (s *sActivityReward) Detail(ctx context.Context, id snowflake.JsonInt64) (o
 // List 获取活动奖励表列表
 func (s *sActivityReward) List(ctx context.Context, in *model.ActivityRewardListInput) (list []*model.ActivityRewardListOutput, total int, err error) {
 	m := dao.PlayActivityReward.Ctx(ctx).Where(dao.PlayActivityReward.Columns().DeletedAt, nil)
+	if in.ActivityID != 0 {
+		m = m.Where(dao.PlayActivityReward.Columns().ActivityId, in.ActivityID)
+	}
 	if in.RewardType > 0 {
 		m = m.Where(dao.PlayActivityReward.Columns().RewardType, in.RewardType)
 	}

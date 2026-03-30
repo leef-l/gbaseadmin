@@ -18,6 +18,7 @@ export interface ActivityStepItem {
 export interface ActivityStepListParams {
   pageNum: number;
   pageSize: number;
+  activityID?: string;
 }
 
 /** 活动步骤表创建参数 */

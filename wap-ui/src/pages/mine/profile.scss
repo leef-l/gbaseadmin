@@ -1,0 +1,77 @@
+.profile {
+  padding: 24px 16px;
+
+  &__avatar-wrap {
+    text-align: center;
+    margin-bottom: 24px;
+  }
+
+  &__avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #7c3aed, #6d28d9);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 36px;
+    margin-bottom: 8px;
+  }
+
+  &__avatar-tip {
+    font-size: 12px;
+    color: var(--text-light);
+    display: block;
+  }
+
+  &__form {
+    padding: 0 16px;
+    margin-bottom: 32px;
+  }
+
+  &__item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--border);
+
+    &:last-child { border-bottom: none; }
+  }
+
+  &__label {
+    font-size: 14px;
+    color: var(--text);
+    width: 60px;
+    flex-shrink: 0;
+  }
+
+  &__input {
+    flex: 1;
+    text-align: right;
+    font-size: 14px;
+  }
+
+  &__value {
+    font-size: 14px;
+    color: var(--text-secondary);
+  }
+
+  &__btn-wrap {
+    padding: 0 16px;
+  }
+
+  &__btn {
+    background: linear-gradient(135deg, #7c3aed, #6d28d9);
+    color: #fff;
+    text-align: center;
+    padding: 14px;
+    border-radius: 24px;
+    font-size: 16px;
+    font-weight: 600;
+
+    &--disabled {
+      opacity: 0.6;
+    }
+  }
+}

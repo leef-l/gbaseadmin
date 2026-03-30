@@ -56,8 +56,9 @@ func (c *cActivityStep) Detail(ctx context.Context, req *v1.ActivityStepDetailRe
 func (c *cActivityStep) List(ctx context.Context, req *v1.ActivityStepListReq) (res *v1.ActivityStepListRes, err error) {
 	res = &v1.ActivityStepListRes{}
 	res.List, res.Total, err = service.ActivityStep().List(ctx, &model.ActivityStepListInput{
-		PageNum:  req.PageNum,
-		PageSize: req.PageSize,
+		PageNum:    req.PageNum,
+		PageSize:   req.PageSize,
+		ActivityID: req.ActivityID,
 	})
 	return
 }

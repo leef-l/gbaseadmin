@@ -90,3 +90,4 @@ type CoachApplyListRes struct {
 	Total  int                               `json:"total" dc:"总数"`
 }
 
+

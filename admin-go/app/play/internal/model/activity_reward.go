@@ -57,6 +57,7 @@ type ActivityRewardListOutput struct {
 type ActivityRewardListInput struct {
 	PageNum  int `json:"pageNum"`
 	PageSize int `json:"pageSize"`
+	ActivityID snowflake.JsonInt64 `json:"activityID"`
 	RewardType int `json:"rewardType"`
 }
 

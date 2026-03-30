@@ -1,0 +1,104 @@
+.login {
+  min-height: 100vh;
+  background: var(--bg);
+
+  &__header {
+    padding: 80px 0 40px;
+    text-align: center;
+  }
+
+  &__logo {
+    font-size: 56px;
+    display: block;
+    margin-bottom: 12px;
+  }
+
+  &__app-name {
+    font-size: 22px;
+    font-weight: 700;
+    color: #7c3aed;
+    display: block;
+  }
+
+  &__form {
+    padding: 0 32px;
+  }
+
+  &__field {
+    background: #fff;
+    border-radius: var(--radius-sm);
+    padding: 0 16px;
+    margin-bottom: 16px;
+    box-shadow: var(--shadow);
+
+    &--code {
+      display: flex;
+      align-items: center;
+    }
+  }
+
+  &__input {
+    height: 50px;
+    font-size: 15px;
+    flex: 1;
+  }
+
+  &__code-btn {
+    color: #7c3aed;
+    font-size: 13px;
+    white-space: nowrap;
+    padding: 8px 0 8px 12px;
+    border-left: 1px solid var(--border);
+    flex-shrink: 0;
+
+    &--disabled {
+      color: var(--text-light);
+    }
+  }
+
+  &__btn {
+    background: linear-gradient(135deg, #7c3aed, #6d28d9);
+    color: #fff;
+    text-align: center;
+    padding: 14px;
+    border-radius: 24px;
+    font-size: 16px;
+    font-weight: 600;
+    margin-top: 24px;
+
+    &--disabled {
+      opacity: 0.6;
+    }
+  }
+
+  &__agreement {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 20px;
+    gap: 6px;
+  }
+
+  &__checkbox {
+    width: 18px;
+    height: 18px;
+    border-radius: 4px;
+    border: 2px solid #d1d5db;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    color: #fff;
+    flex-shrink: 0;
+
+    &--checked {
+      background: #7c3aed;
+      border-color: #7c3aed;
+    }
+  }
+
+  &__agreement-text {
+    font-size: 12px;
+    color: var(--text-secondary);
+  }
+}

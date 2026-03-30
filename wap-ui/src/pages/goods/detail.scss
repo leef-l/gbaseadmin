@@ -1,0 +1,31 @@
+.goods-detail {
+  padding-bottom: 80px;
+
+  &__cover { height: 240px; background: linear-gradient(135deg, #dfe6e9, #b2bec3); }
+  &__cover-img { width: 100%; height: 100%; }
+
+  &__info { padding: 16px; }
+  &__price { font-size: 24px; font-weight: 700; color: var(--accent); }
+  &__unit { font-size: 13px; color: var(--text-light); font-weight: 400; }
+  &__name { font-size: 17px; font-weight: 700; display: block; margin: 8px 0 4px; }
+  &__sales { font-size: 12px; color: var(--text-light); }
+
+  &__coach { display: flex; align-items: center; gap: 12px; margin: 16px; padding: 12px; }
+  &__coach-avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--border); flex-shrink: 0; }
+  &__coach-info { flex: 1; }
+  &__coach-name { font-size: 14px; font-weight: 600; display: block; }
+  &__coach-meta { font-size: 12px; color: var(--text-light); }
+  &__coach-link { font-size: 12px; color: var(--primary); }
+
+  &__desc { padding: 16px; }
+  &__desc-title { font-size: 15px; font-weight: 700; display: block; margin-bottom: 8px; }
+  &__desc-content { font-size: 13px; color: var(--text-secondary); line-height: 1.8; }
+
+  &__reviews { padding: 16px; }
+  &__review-item { padding: 12px 0; border-bottom: 1px solid var(--border); }
+  &__review-header { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+  &__review-avatar { width: 28px; height: 28px; border-radius: 50%; background: var(--border); }
+  &__review-name { font-size: 12px; font-weight: 600; }
+  &__review-score { font-size: 11px; color: #FECA57; margin-left: auto; }
+  &__review-content { font-size: 13px; color: var(--text-secondary); }
+}

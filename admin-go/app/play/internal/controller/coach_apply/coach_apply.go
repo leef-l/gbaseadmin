@@ -69,3 +69,4 @@ func (c *cCoachApply) List(ctx context.Context, req *v1.CoachApplyListReq) (res 
 	return
 }
 
+

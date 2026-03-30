@@ -72,6 +72,7 @@ type ActivityRewardListReq struct {
 	g.Meta   `path:"/activity_reward/list" method:"get" tags:"活动奖励表" summary:"获取活动奖励表列表"`
 	PageNum  int `json:"pageNum" d:"1" dc:"页码"`
 	PageSize int `json:"pageSize" d:"10" dc:"每页数量"`
+	ActivityID snowflake.JsonInt64 `json:"activityID" dc:"活动ID"`
 	RewardType int `json:"rewardType" dc:"奖励类型"`
 }
 

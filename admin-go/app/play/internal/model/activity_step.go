@@ -61,5 +61,6 @@ type ActivityStepListOutput struct {
 type ActivityStepListInput struct {
 	PageNum  int `json:"pageNum"`
 	PageSize int `json:"pageSize"`
+	ActivityID snowflake.JsonInt64 `json:"activityID"`
 }
 

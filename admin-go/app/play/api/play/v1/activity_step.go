@@ -74,6 +74,7 @@ type ActivityStepListReq struct {
 	g.Meta   `path:"/activity_step/list" method:"get" tags:"活动步骤表" summary:"获取活动步骤表列表"`
 	PageNum  int `json:"pageNum" d:"1" dc:"页码"`
 	PageSize int `json:"pageSize" d:"10" dc:"每页数量"`
+	ActivityID snowflake.JsonInt64 `json:"activityID" dc:"活动ID"`
 }
 
 // ActivityStepListRes 获取活动步骤表列表响应

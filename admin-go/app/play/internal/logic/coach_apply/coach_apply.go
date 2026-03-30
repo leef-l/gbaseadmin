@@ -95,3 +95,5 @@ func (s *sCoachApply) List(ctx context.Context, in *model.CoachApplyListInput) (
 	return
 }
 
+
+

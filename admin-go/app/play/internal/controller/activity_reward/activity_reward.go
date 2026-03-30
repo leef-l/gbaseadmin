@@ -54,8 +54,9 @@ func (c *cActivityReward) Detail(ctx context.Context, req *v1.ActivityRewardDeta
 func (c *cActivityReward) List(ctx context.Context, req *v1.ActivityRewardListReq) (res *v1.ActivityRewardListRes, err error) {
 	res = &v1.ActivityRewardListRes{}
 	res.List, res.Total, err = service.ActivityReward().List(ctx, &model.ActivityRewardListInput{
-		PageNum:  req.PageNum,
-		PageSize: req.PageSize,
+		PageNum:    req.PageNum,
+		PageSize:   req.PageSize,
+		ActivityID: req.ActivityID,
 		RewardType: req.RewardType,
 	})
 	return

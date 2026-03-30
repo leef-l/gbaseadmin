@@ -17,6 +17,7 @@ export interface ActivityRewardItem {
 export interface ActivityRewardListParams {
   pageNum: number;
   pageSize: number;
+  activityID?: string;
   rewardType?: number;
 }
 

@@ -1,0 +1,260 @@
+.coach-detail {
+  padding-bottom: 80px;
+
+  &__cover {
+    position: relative;
+    height: 280px;
+    background: linear-gradient(135deg, #dfe6e9, #b2bec3);
+  }
+
+  &__cover-img {
+    width: 100%;
+    height: 100%;
+  }
+
+  &__cover-mask {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 120px;
+    background: linear-gradient(transparent, rgba(0, 0, 0, 0.6));
+  }
+
+  &__back {
+    position: absolute;
+    top: 48px;
+    left: 16px;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 18px;
+  }
+
+  &__cover-info {
+    position: absolute;
+    bottom: 20px;
+    left: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  &__online-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #00b894;
+    box-shadow: 0 0 0 2px #fff;
+  }
+
+  &__cover-name {
+    font-size: 20px;
+    font-weight: 700;
+    color: #fff;
+  }
+
+  &__cover-level {
+    font-size: 11px;
+    color: #fff;
+    background: rgba(255, 255, 255, 0.2);
+    padding: 2px 8px;
+    border-radius: 8px;
+  }
+
+  &__info-card {
+    margin: -20px 16px 0;
+    padding: 20px;
+    position: relative;
+    z-index: 1;
+  }
+
+  &__score-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+
+  &__score-num {
+    font-size: 24px;
+    font-weight: 700;
+    color: #FECA57;
+  }
+
+  &__score-stars {
+    color: #FECA57;
+    font-size: 14px;
+  }
+
+  &__score-count {
+    font-size: 12px;
+    color: var(--text-light);
+  }
+
+  &__stats {
+    display: flex;
+    gap: 24px;
+    margin-bottom: 12px;
+  }
+
+  &__stat {
+    font-size: 12px;
+    color: var(--text-secondary);
+  }
+
+  &__stat-val {
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  &__intro {
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin-bottom: 12px;
+  }
+
+  &__skill-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  &__tabs {
+    display: flex;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: #fff;
+    border-bottom: 1px solid var(--border);
+  }
+
+  &__tab {
+    flex: 1;
+    text-align: center;
+    padding: 12px 0;
+    font-size: 14px;
+    color: var(--text-secondary);
+    position: relative;
+
+    &--active {
+      color: var(--primary);
+      font-weight: 600;
+
+      &::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 24px;
+        height: 2px;
+        background: var(--primary);
+        border-radius: 1px;
+      }
+    }
+  }
+
+  &__goods-list {
+    padding: 12px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  &__goods-item {
+    display: flex;
+    gap: 12px;
+    padding: 12px;
+  }
+
+  &__goods-cover {
+    width: 80px;
+    height: 80px;
+    border-radius: 8px;
+    background: var(--border);
+    flex-shrink: 0;
+  }
+
+  &__goods-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  &__goods-name {
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  &__goods-desc {
+    font-size: 12px;
+    color: var(--text-light);
+  }
+
+  &__goods-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  &__goods-btn {
+    font-size: 12px;
+    padding: 6px 16px;
+    border-radius: 16px;
+    background: linear-gradient(135deg, #6C5CE7, #A29BFE);
+    color: #fff;
+  }
+
+  &__reviews {
+    padding: 12px 16px;
+  }
+
+  &__review-item {
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  &__review-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+
+  &__review-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--border);
+  }
+
+  &__review-name {
+    font-size: 13px;
+    font-weight: 600;
+  }
+
+  &__review-score {
+    font-size: 12px;
+    color: #FECA57;
+    margin-left: auto;
+  }
+
+  &__review-time {
+    font-size: 11px;
+    color: var(--text-light);
+  }
+
+  &__review-content {
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+}

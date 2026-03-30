@@ -9,6 +9,7 @@ import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getActivityList, deleteActivity } from '#/api/play/activity';
 import type { ActivityItem } from '#/api/play/activity/types';
 import FormModal from './modules/form.vue';
+import DetailDrawer from './modules/detail-drawer.vue';
 
 /** 标签颜色池 */
 const TAG_COLORS = ['green', 'red', 'blue', 'orange', 'cyan', 'purple', 'geekblue', 'magenta'];
@@ -104,6 +105,12 @@ function getStatusColor(val: number): string {
 /** 表单弹窗 */
 const [FormModalComp, formModalApi] = useVbenModal({
   connectedComponent: FormModal,
+  destroyOnClose: true,
+});
+
+/** 详情弹窗 */
+const [DetailDrawerComp, detailDrawerApi] = useVbenModal({
+  connectedComponent: DetailDrawer,
   destroyOnClose: true,
 });
 
@@ -230,11 +237,17 @@ function handleDelete(row: ActivityItem) {
     },
   });
 }
+
+/** 查看详情（奖励+步骤） */
+function handleDetail(row: ActivityItem) {
+  detailDrawerApi.setData({ id: row.id, title: row.title }).open();
+}
 </script>
 
 <template>
   <Page auto-content-height>
     <FormModalComp @success="() => gridApi.reload()" />
+    <DetailDrawerComp />
     <Grid>
       <template #toolbar-actions>
         <Button type="primary" @click="handleCreate">新建</Button>
@@ -260,6 +273,7 @@ function handleDelete(row: ActivityItem) {
         </Tag>
       </template>
       <template #action="{ row }">
+        <Button type="link" size="small" @click="handleDetail(row)">详情</Button>
         <Button type="link" size="small" @click="handleEdit(row)">编辑</Button>
         <Button type="link" danger size="small" @click="handleDelete(row)">删除</Button>
       </template>

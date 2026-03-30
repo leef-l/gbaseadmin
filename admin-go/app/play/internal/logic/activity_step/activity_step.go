@@ -82,6 +82,9 @@ func (s *sActivityStep) Detail(ctx context.Context, id snowflake.JsonInt64) (out
 // List 获取活动步骤表列表
 func (s *sActivityStep) List(ctx context.Context, in *model.ActivityStepListInput) (list []*model.ActivityStepListOutput, total int, err error) {
 	m := dao.PlayActivityStep.Ctx(ctx).Where(dao.PlayActivityStep.Columns().DeletedAt, nil)
+	if in.ActivityID != 0 {
+		m = m.Where(dao.PlayActivityStep.Columns().ActivityId, in.ActivityID)
+	}
 	total, err = m.Count()
 	if err != nil {
 		return
