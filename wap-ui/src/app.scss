@@ -89,6 +89,21 @@ page {
 }
 
 .bottom-bar {
+
+// Taro Input H5 适配：内部 input 继承外层高度
+.taro-input_h5 {
+  height: 100%;
+
+  input {
+    height: 100%;
+    border: none;
+    outline: none;
+    background: transparent;
+    font-size: inherit;
+    width: 100%;
+    box-sizing: border-box;
+  }
+}
   position: fixed;
   bottom: 0;
   left: 0;

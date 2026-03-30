@@ -41,6 +41,17 @@
     height: 50px;
     font-size: 15px;
     flex: 1;
+
+    input,
+    .weui-input {
+      height: 100%;
+      line-height: 50px;
+      border: none;
+      outline: none;
+      background: transparent;
+      font-size: 15px;
+      width: 100%;
+    }
   }
 
   &__code-btn {
