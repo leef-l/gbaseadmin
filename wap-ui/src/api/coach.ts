@@ -1,11 +1,11 @@
-import { get, post } from './request';
+import { get, post, put } from './request';
 
 export function getCoachList(params: any) {
   return get('/api/playapi/coach/list', params);
 }
 
-export function getCoachDetail(id: string) {
-  return get(`/api/playapi/coach/detail`, { id });
+export function getCoachDetail(coachId: string) {
+  return get('/api/playapi/coach/detail', { coachId });
 }
 
 export function applyCoach(data: any) {
@@ -16,22 +16,30 @@ export function getApplyStatus() {
   return get('/api/playapi/coach/apply_status');
 }
 
-export function getCoachOrders(params: any) {
+export function setOnline(isOnline: number) {
+  return put('/api/playapi/coach/online', { isOnline });
+}
+
+export function getMyGoodsList(params?: { status?: number; page?: number; pageSize?: number }) {
+  return get('/api/playapi/coach/my_goods', params);
+}
+
+export function createGoods(data: any) {
+  return post('/api/playapi/coach/goods/create', data);
+}
+
+export function updateGoods(data: any) {
+  return put('/api/playapi/coach/goods/update', data);
+}
+
+export function updateGoodsStatus(data: { goodsId: string; status: number }) {
+  return put('/api/playapi/coach/goods/status', data);
+}
+
+export function getIncome() {
+  return get('/api/playapi/coach/income');
+}
+
+export function getCoachOrders(params?: { status?: number; page?: number; pageSize?: number }) {
   return get('/api/playapi/coach/orders', params);
-}
-
-export function getCoachInfo() {
-  return get('/api/playapi/coach/info');
-}
-
-export function getProfitLogList(params: any) {
-  return get('/api/playapi/coach/profit_log', params);
-}
-
-export function getMyGoodsList(params: any) {
-  return get('/api/playapi/coach/goods', params);
-}
-
-export function updateGoodsStatus(data: { id: string; status: number }) {
-  return post('/api/playapi/coach/goods_status', data);
 }

@@ -1,7 +1,8 @@
 import { useState, useCallback } from 'react';
 import { View, Text } from '@tarojs/components';
 import Taro, { useLoad, usePullDownRefresh, useReachBottom } from '@tarojs/taro';
-import { getCoachInfo, getProfitLogList } from '../../api/coach';
+import { getIncome } from '../../api/coach';
+import { getBalanceLog } from '../../api/member';
 import EmptyState from '../../components/EmptyState';
 import LoadMore from '../../components/LoadMore';
 import './income.scss';
@@ -15,7 +16,7 @@ export default function IncomePage() {
 
   const fetchSummary = useCallback(async () => {
     try {
-      const info = await getCoachInfo();
+      const info = await getIncome();
       setSummary({
         totalIncome: info.totalIncome ?? 0,
         balance: info.balance ?? 0,
@@ -27,7 +28,7 @@ export default function IncomePage() {
   const fetchList = useCallback(async (p = 1) => {
     setLoading(true);
     try {
-      const res = await getProfitLogList({ page: p, pageSize: 15 });
+      const res = await getBalanceLog({ type: 'income', page: p, pageSize: 15 });
       const items = res.list || [];
       setList(p === 1 ? items : (prev) => [...prev, ...items]);
       setHasMore(items.length >= 15);

@@ -2,7 +2,7 @@ import { useState, useCallback } from 'react';
 import { View, Text } from '@tarojs/components';
 import Taro, { useLoad, usePullDownRefresh } from '@tarojs/taro';
 import { useAuthStore } from '../../store/auth';
-import { getCoachInfo, getCoachOrders } from '../../api/coach';
+import { getIncome, getCoachOrders } from '../../api/coach';
 import './index.scss';
 
 const shortcuts = [
@@ -18,7 +18,7 @@ export default function WorkspacePage() {
 
   const fetchData = useCallback(async () => {
     try {
-      const info = await getCoachInfo();
+      const info = await getIncome();
       setStats({
         todayOrders: info.todayOrders ?? 0,
         todayIncome: info.todayIncome ?? 0,

@@ -1,7 +1,7 @@
 import { useState, useCallback } from 'react';
 import { View, Text } from '@tarojs/components';
 import Taro, { useLoad } from '@tarojs/taro';
-import { getCouponCenter, receiveCoupon } from '../../api/coupon';
+import { getAvailableCoupons, receiveCoupon } from '../../api/coupon';
 import './center.scss';
 
 export default function CouponCenterPage() {
@@ -9,8 +9,8 @@ export default function CouponCenterPage() {
 
   const fetchList = useCallback(async () => {
     try {
-      const res = await getCouponCenter();
-      setCoupons(res?.data || []);
+      const res = await getAvailableCoupons();
+      setCoupons(res?.list || []);
     } catch (e) {
       console.error(e);
     }
@@ -18,12 +18,12 @@ export default function CouponCenterPage() {
 
   useLoad(() => { fetchList(); });
 
-  const handleReceive = async (id: string) => {
+  const handleReceive = async (couponId: string) => {
     try {
-      await receiveCoupon(id);
+      await receiveCoupon(couponId);
       Taro.showToast({ title: '领取成功', icon: 'success' });
       setCoupons((prev) =>
-        prev.map((c) => (c.id === id ? { ...c, received: true } : c))
+        prev.map((c) => (c.couponId === couponId ? { ...c, received: true } : c))
       );
     } catch (e) {
       Taro.showToast({ title: '领取失败', icon: 'none' });
@@ -38,21 +38,21 @@ export default function CouponCenterPage() {
         </View>
       )}
       {coupons.map((c) => (
-        <View key={c.id} className="coupon-center__card">
+        <View key={c.couponId} className="coupon-center__card">
           <View className="coupon-center__left">
             <Text className="coupon-center__symbol">¥</Text>
-            <Text className="coupon-center__value">{(c.amount / 100).toFixed(0)}</Text>
+            <Text className="coupon-center__value">{(c.faceValue / 100).toFixed(0)}</Text>
           </View>
           <View className="coupon-center__right">
-            <Text className="coupon-center__name">{c.name}</Text>
+            <Text className="coupon-center__name">{c.title}</Text>
             <Text className="coupon-center__condition">
               {c.minAmount > 0 ? `满${(c.minAmount / 100).toFixed(0)}元可用` : '无门槛'}
             </Text>
-            <Text className="coupon-center__time">{c.expireTime}</Text>
+            <Text className="coupon-center__time">{c.endTime}</Text>
           </View>
           <View
             className={`coupon-center__btn ${c.received ? 'coupon-center__btn--disabled' : ''}`}
-            onClick={() => !c.received && handleReceive(c.id)}
+            onClick={() => !c.received && handleReceive(c.couponId)}
           >
             <Text>{c.received ? '已领取' : '领取'}</Text>
           </View>

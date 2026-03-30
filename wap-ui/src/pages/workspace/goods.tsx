@@ -31,7 +31,7 @@ export default function WorkspaceGoodsPage() {
   const toggleStatus = async (id: string, currentStatus: number) => {
     const newStatus = currentStatus === 1 ? 0 : 1;
     try {
-      await updateGoodsStatus({ id, status: newStatus });
+      await updateGoodsStatus({ goodsId: id, status: newStatus });
       Taro.showToast({ title: newStatus === 1 ? '已上架' : '已下架', icon: 'success' });
       setList((prev) => prev.map((g) => g.id === id ? { ...g, status: newStatus } : g));
     } catch { /* ignore */ }

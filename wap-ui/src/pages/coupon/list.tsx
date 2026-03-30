@@ -1,7 +1,7 @@
 import { useState, useCallback } from 'react';
 import { View, Text } from '@tarojs/components';
 import Taro, { useLoad } from '@tarojs/taro';
-import { getCouponList } from '../../api/coupon';
+import { getMyCoupons } from '../../api/coupon';
 import './list.scss';
 
 const tabs = [
@@ -16,8 +16,8 @@ export default function CouponListPage() {
 
   const fetchList = useCallback(async (status: number) => {
     try {
-      const res = await getCouponList({ status });
-      setCoupons(res?.data || []);
+      const res = await getMyCoupons({ status });
+      setCoupons(res?.list || []);
     } catch (e) {
       console.error(e);
     }
@@ -51,17 +51,17 @@ export default function CouponListPage() {
           </View>
         )}
         {coupons.map((c) => (
-          <View key={c.id} className={`coupon-card ${activeTab !== 0 ? 'coupon-card--disabled' : ''}`}>
+          <View key={c.couponMemberId} className={`coupon-card ${activeTab !== 0 ? 'coupon-card--disabled' : ''}`}>
             <View className="coupon-card__left">
               <Text className="coupon-card__symbol">¥</Text>
-              <Text className="coupon-card__value">{(c.amount / 100).toFixed(0)}</Text>
+              <Text className="coupon-card__value">{(c.faceValue / 100).toFixed(0)}</Text>
             </View>
             <View className="coupon-card__right">
-              <Text className="coupon-card__name">{c.name}</Text>
+              <Text className="coupon-card__name">{c.title}</Text>
               <Text className="coupon-card__condition">
                 {c.minAmount > 0 ? `满${(c.minAmount / 100).toFixed(0)}元可用` : '无门槛'}
               </Text>
-              <Text className="coupon-card__time">{c.expireTime}</Text>
+              <Text className="coupon-card__time">{c.endTime}</Text>
               {activeTab === 0 && (
                 <View
                   className="coupon-card__btn"

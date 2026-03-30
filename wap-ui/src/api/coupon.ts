@@ -1,17 +1,17 @@
-import { get } from './request';
+import { get, post } from './request';
 
-export function getCouponList(params: any) {
-  return get('/api/playapi/coupon/list', params);
+export function getAvailableCoupons(params?: { page?: number; pageSize?: number }) {
+  return get('/api/playapi/coupon/available', params);
 }
 
-export function getUsableCoupons(amount: number) {
-  return get('/api/playapi/coupon/usable', { amount });
+export function receiveCoupon(couponId: string) {
+  return post('/api/playapi/coupon/receive', { couponId });
 }
 
-export function receiveCoupon(id: string) {
-  return get('/api/playapi/coupon/receive', { id });
+export function getMyCoupons(params?: { status?: number; page?: number; pageSize?: number }) {
+  return get('/api/playapi/coupon/mine', params);
 }
 
-export function getCouponCenter() {
-  return get('/api/playapi/coupon/center');
+export function getUsableCoupons(orderAmount: number) {
+  return get('/api/playapi/coupon/usable', { orderAmount });
 }
