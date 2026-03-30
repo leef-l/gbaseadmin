@@ -20,4 +20,3 @@ database:
 jwt:
   secret: "gbaseadmin-secret-key-2026"
   expire: 24  # Token 过期时间（小时）
-
