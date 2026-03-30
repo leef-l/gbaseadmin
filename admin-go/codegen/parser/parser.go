@@ -131,6 +131,19 @@ func (p *Parser) ParseTable(tableName string) (*TableMeta, error) {
 			displayField = findDisplayField(db, dbName, refTable)
 		}
 		if displayField != "" {
+			refFieldName := snakeToCamel(refTable) + snakeToCamel(displayField)
+			// 检查 RefFieldName 是否与已有字段的 CamelCase 名冲突
+			collision := false
+			for _, other := range meta.Fields {
+				if other.NameCamel == refFieldName {
+					collision = true
+					break
+				}
+			}
+			if collision {
+				// 表本身已有同名字段，跳过关联字段生成
+				continue
+			}
 			f.RefTable = refTable
 			f.RefTableDB = refTableDB
 			f.RefTableCamel = snakeToCamel(refTable)
@@ -138,7 +151,7 @@ func (p *Parser) ParseTable(tableName string) (*TableMeta, error) {
 			f.RefDisplayField = displayField
 			f.RefDisplayCamel = snakeToCamel(displayField)
 			f.RefDisplayLower = snakeToCamelLower(displayField)
-			f.RefFieldName = snakeToCamel(refTable) + snakeToCamel(displayField)
+			f.RefFieldName = refFieldName
 			f.RefFieldJSON = snakeToCamelLower(refTable) + snakeToCamel(displayField)
 		}
 	}

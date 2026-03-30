@@ -8,7 +8,7 @@ import (
 
 // Order DTO 模型
 
-// OrderCreateInput 创建è®¢å•è¡¨输入
+// OrderCreateInput 创建订单表输入
 type OrderCreateInput struct {
 	OrderNo string `json:"orderNo"`
 	MemberID snowflake.JsonInt64 `json:"memberID"`
@@ -33,7 +33,7 @@ type OrderCreateInput struct {
 	Remark string `json:"remark"`
 }
 
-// OrderUpdateInput 更新è®¢å•è¡¨输入
+// OrderUpdateInput 更新订单表输入
 type OrderUpdateInput struct {
 	ID snowflake.JsonInt64 `json:"id"`
 	OrderNo string `json:"orderNo"`
@@ -59,7 +59,7 @@ type OrderUpdateInput struct {
 	Remark string `json:"remark"`
 }
 
-// OrderDetailOutput è®¢å•è¡¨详情输出
+// OrderDetailOutput 订单表详情输出
 type OrderDetailOutput struct {
 	ID snowflake.JsonInt64 `json:"id"`
 	OrderNo string `json:"orderNo"`
@@ -88,7 +88,7 @@ type OrderDetailOutput struct {
 	UpdatedAt *gtime.Time `json:"updatedAt"`
 }
 
-// OrderListOutput è®¢å•è¡¨列表输出
+// OrderListOutput 订单表列表输出
 type OrderListOutput struct {
 	ID snowflake.JsonInt64 `json:"id"`
 	OrderNo string `json:"orderNo"`
@@ -117,7 +117,7 @@ type OrderListOutput struct {
 	UpdatedAt *gtime.Time `json:"updatedAt"`
 }
 
-// OrderListInput è®¢å•è¡¨列表查询输入
+// OrderListInput 订单表列表查询输入
 type OrderListInput struct {
 	PageNum  int `json:"pageNum"`
 	PageSize int `json:"pageSize"`
