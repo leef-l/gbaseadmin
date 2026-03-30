@@ -1,36 +1,32 @@
 import { useState } from 'react';
 import { View, Text, Image } from '@tarojs/components';
 import Taro, { useLoad } from '@tarojs/taro';
+import { getCategoryList, getGoodsList } from '../../api/goods';
 import './index.scss';
-
-const mockCategories = [
-  { id: '1', name: '游戏陪玩' },
-  { id: '2', name: '语音聊天' },
-  { id: '3', name: '看电影' },
-  { id: '4', name: '唱歌' },
-  { id: '5', name: '叫醒哄睡' },
-];
 
 export default function CategoryPage() {
   const [categories, setCategories] = useState<any[]>([]);
   const [activeId, setActiveId] = useState('');
   const [goods, setGoods] = useState<any[]>([]);
 
-  useLoad(() => {
-    // TODO: 接入真实API
-    setCategories(mockCategories);
-    setActiveId(mockCategories[0]?.id || '');
-    setGoods([
-      { id: '1', title: '王者荣耀上分', price: 3000 },
-      { id: '2', title: '英雄联盟双排', price: 2500 },
-      { id: '3', title: '和平精英吃鸡', price: 2000 },
-      { id: '4', title: '原神深渊代打', price: 5000 },
-    ]);
+  const loadGoods = async (categoryId: string) => {
+    const res = await getGoodsList({ categoryId });
+    setGoods(res?.data?.list || []);
+  };
+
+  useLoad(async () => {
+    const res = await getCategoryList();
+    const list = res?.data?.list || [];
+    setCategories(list);
+    if (list.length > 0) {
+      setActiveId(list[0].id);
+      loadGoods(list[0].id);
+    }
   });
 
   const handleCategoryClick = (id: string) => {
     setActiveId(id);
-    // TODO: 根据分类加载商品
+    loadGoods(id);
   };
 
   return (

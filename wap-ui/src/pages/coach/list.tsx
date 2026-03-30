@@ -1,12 +1,14 @@
-import { useState } from 'react';
+import { useState, useCallback, useRef } from 'react';
 import { View, Text } from '@tarojs/components';
 import Taro, { useLoad, usePullDownRefresh, useReachBottom } from '@tarojs/taro';
+import { getCoachList } from '../../api/coach';
 import CoachCard from '../../components/CoachCard';
 import LoadMore from '../../components/LoadMore';
 import EmptyState from '../../components/EmptyState';
 import './list.scss';
 
 const categories = ['全部', '游戏陪玩', '语音聊天', '看电影', '唱歌', '叫醒哄睡'];
+const sortKeys = ['', 'score', 'orders', 'price'];
 const sorts = ['综合', '评分最高', '接单最多', '价格最低'];
 
 export default function CoachListPage() {
@@ -15,32 +17,68 @@ export default function CoachListPage() {
   const [list, setList] = useState<any[]>([]);
   const [hasMore, setHasMore] = useState(true);
   const [loading, setLoading] = useState(false);
+  const pageRef = useRef(1);
 
-  useLoad(() => {
-    setList([
-      { id: '1', nickname: '小甜', tags: ['王者荣耀', '英雄联盟'], price: 3000, score: 4.9, online: true, level: 'Lv.5' },
-      { id: '2', nickname: '阿杰', tags: ['和平精英', '语音聊天'], price: 2500, score: 4.8, online: true, level: 'Lv.4' },
-      { id: '3', nickname: '小鱼', tags: ['原神', '看电影'], price: 2000, score: 4.7, online: false, level: 'Lv.3' },
-      { id: '4', nickname: '大白', tags: ['LOL', '唱歌'], price: 3500, score: 4.9, online: true, level: 'Lv.5' },
-      { id: '5', nickname: '小美', tags: ['王者荣耀', '语音'], price: 2800, score: 4.6, online: true, level: 'Lv.4' },
-      { id: '6', nickname: '阿飞', tags: ['和平精英', '吃鸡'], price: 2200, score: 4.5, online: false, level: 'Lv.3' },
-    ]);
+  const fetchList = useCallback(async (reset = false) => {
+    if (loading) return;
+    const p = reset ? 1 : pageRef.current;
+    setLoading(true);
+    try {
+      const res = await getCoachList({
+        page: p,
+        pageSize: 10,
+        categoryId: activeCat > 0 ? String(activeCat) : undefined,
+        sort: sortKeys[activeSort] || undefined,
+      });
+      const items = res?.list || [];
+      if (reset) {
+        setList(items);
+      } else {
+        setList((prev) => [...prev, ...items]);
+      }
+      pageRef.current = p + 1;
+      setHasMore(items.length >= 10);
+    } catch {
+      // request.ts 已统一 toast
+    } finally {
+      setLoading(false);
+    }
+  }, [activeCat, activeSort, loading]);
+
+  useLoad(() => { fetchList(true); });
+
+  usePullDownRefresh(() => {
+    fetchList(true).then(() => Taro.stopPullDownRefresh());
   });
 
-  usePullDownRefresh(() => Taro.stopPullDownRefresh());
-  useReachBottom(() => {});
+  useReachBottom(() => {
+    if (!hasMore || loading) return;
+    fetchList(false);
+  });
+
+  const handleCatChange = (i: number) => {
+    setActiveCat(i);
+    pageRef.current = 1;
+    setTimeout(() => fetchList(true), 0);
+  };
+
+  const handleSortChange = (i: number) => {
+    setActiveSort(i);
+    pageRef.current = 1;
+    setTimeout(() => fetchList(true), 0);
+  };
 
   return (
     <View className="coach-list">
       <View className="coach-list__filter">
         <View className="coach-list__categories">
           {categories.map((c, i) => (
-            <Text key={i} className={`coach-list__cat ${activeCat === i ? 'coach-list__cat--active' : ''}`} onClick={() => setActiveCat(i)}>{c}</Text>
+            <Text key={i} className={`coach-list__cat ${activeCat === i ? 'coach-list__cat--active' : ''}`} onClick={() => handleCatChange(i)}>{c}</Text>
           ))}
         </View>
         <View className="coach-list__sorts">
           {sorts.map((s, i) => (
-            <Text key={i} className={`coach-list__sort ${activeSort === i ? 'coach-list__sort--active' : ''}`} onClick={() => setActiveSort(i)}>{s}</Text>
+            <Text key={i} className={`coach-list__sort ${activeSort === i ? 'coach-list__sort--active' : ''}`} onClick={() => handleSortChange(i)}>{s}</Text>
           ))}
         </View>
       </View>

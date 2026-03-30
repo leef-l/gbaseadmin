@@ -1,6 +1,9 @@
 import { useState, useCallback } from 'react';
 import { View, Text, Swiper, SwiperItem } from '@tarojs/components';
 import Taro, { useLoad, usePullDownRefresh, useReachBottom } from '@tarojs/taro';
+import { getActivityList } from '../../api/activity';
+import { getCoachList } from '../../api/coach';
+import { getGoodsList } from '../../api/goods';
 import CoachCard from '../../components/CoachCard';
 import GoodsCard from '../../components/GoodsCard';
 import ActivityCard from '../../components/ActivityCard';
@@ -24,22 +27,31 @@ export default function IndexPage() {
   const [loading, setLoading] = useState(false);
 
   const fetchData = useCallback(async (reset = false) => {
-    // TODO: 接入真实API
-    setActivities([
-      { id: '1', title: '新人专享活动', type: '限时', time: '3月30日', participants: 128, reward: '赠送50元券' },
-      { id: '2', title: '邀请好友赢奖励', type: '长期', time: '长期有效', participants: 356, reward: '双倍积分' },
-    ]);
-    setCoaches([
-      { id: '1', nickname: '小甜', tags: ['王者荣耀', '英雄联盟'], price: 3000, score: 4.9, online: true, level: 'Lv.5' },
-      { id: '2', nickname: '阿杰', tags: ['和平精英', '语音聊天'], price: 2500, score: 4.8, online: true, level: 'Lv.4' },
-      { id: '3', nickname: '小鱼', tags: ['原神', '看电影'], price: 2000, score: 4.7, online: false, level: 'Lv.3' },
-      { id: '4', nickname: '大白', tags: ['LOL', '唱歌'], price: 3500, score: 4.9, online: true, level: 'Lv.5' },
-    ]);
-    setGoods([
-      { id: '1', title: '王者荣耀陪玩', coachName: '小甜', price: 3000, desc: '国服百星，带飞上分' },
-      { id: '2', title: '和平精英吃鸡', coachName: '阿杰', price: 2500, desc: '职业选手，稳定吃鸡' },
-    ]);
-  }, []);
+    const p = reset ? 1 : page;
+    if (!reset && loading) return;
+    setLoading(true);
+    try {
+      const [actRes, coachRes, goodsRes] = await Promise.all([
+        getActivityList({ page: 1, pageSize: 4 }),
+        getCoachList({ page: 1, pageSize: 4 }),
+        getGoodsList({ page: p, pageSize: 10 }),
+      ]);
+      setActivities(actRes?.list || []);
+      setCoaches(coachRes?.list || []);
+      if (reset) {
+        setGoods(goodsRes?.list || []);
+        setPage(2);
+      } else {
+        setGoods((prev) => [...prev, ...(goodsRes?.list || [])]);
+        setPage(p + 1);
+      }
+      setHasMore((goodsRes?.list || []).length >= 10);
+    } catch {
+      // request.ts 已统一 toast
+    } finally {
+      setLoading(false);
+    }
+  }, [page, loading]);
 
   useLoad(() => { fetchData(true); });
 
@@ -49,7 +61,7 @@ export default function IndexPage() {
 
   useReachBottom(() => {
     if (!hasMore || loading) return;
-    // TODO: 加载更多商品
+    fetchData(false);
   });
 
   return (

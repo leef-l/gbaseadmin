@@ -1,36 +1,63 @@
-import { useState } from 'react';
+import { useState, useRef, useCallback, useEffect } from 'react';
 import { View, Text } from '@tarojs/components';
-import Taro, { useLoad, usePullDownRefresh } from '@tarojs/taro';
+import Taro, { useLoad, usePullDownRefresh, useReachBottom } from '@tarojs/taro';
+import { getActivityList } from '../../api/activity';
 import ActivityCard from '../../components/ActivityCard';
 import EmptyState from '../../components/EmptyState';
 import LoadMore from '../../components/LoadMore';
 import './list.scss';
 
+const PAGE_SIZE = 10;
 const tabs = ['全部', '进行中', '即将开始', '已结束'];
 
 export default function ActivityListPage() {
   const [activeTab, setActiveTab] = useState(0);
   const [list, setList] = useState<any[]>([]);
   const [hasMore, setHasMore] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const pageRef = useRef(1);
+
+  const fetchList = useCallback(async (reset = false) => {
+    if (loading) return;
+    if (reset) pageRef.current = 1;
+    setLoading(true);
+    try {
+      const res = await getActivityList({ page: pageRef.current, pageSize: PAGE_SIZE, status: activeTab });
+      const rows = res?.data?.list ?? res?.data ?? [];
+      if (reset) {
+        setList(rows);
+      } else {
+        setList((prev) => [...prev, ...rows]);
+      }
+      setHasMore(rows.length >= PAGE_SIZE);
+      pageRef.current += 1;
+    } finally {
+      setLoading(false);
+    }
+  }, [activeTab, loading]);
 
   useLoad(() => {
-    // TODO: 接入真实API
-    setList([
-      { id: '1', title: '新人专享活动', type: '限时', time: '2026-03-30', participants: 128, reward: '赠送50元券' },
-      { id: '2', title: '邀请好友赢奖励', type: '长期', time: '长期有效', participants: 356, reward: '双倍积分' },
-      { id: '3', title: '春季特惠', type: '限时', time: '2026-04-15', participants: 89, reward: '满100减30' },
-    ]);
+    fetchList(true);
   });
 
-  usePullDownRefresh(() => {
+  usePullDownRefresh(async () => {
+    await fetchList(true);
     Taro.stopPullDownRefresh();
   });
+
+  useReachBottom(() => {
+    if (hasMore && !loading) fetchList();
+  });
+
+  useEffect(() => {
+    fetchList(true);
+  }, [activeTab]);
 
   return (
     <View className="activity-list">
       <View className="activity-list__tabs">
         {tabs.map((t, i) => (
-          <Text key={i} className={`activity-list__tab ${activeTab === i ? 'activity-list__tab--active' : ''}`} onClick={() => setActiveTab(i)}>{t}</Text>
+          <Text key={i} className={`activity-list__tab ${activeTab === i ? 'activity-list__tab--active' : ''}`} onClick={() => { if (activeTab !== i) { setActiveTab(i); } }}>{t}</Text>
         ))}
       </View>
       <View className="activity-list__list">

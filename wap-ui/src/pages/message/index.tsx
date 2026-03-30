@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { View, Text } from '@tarojs/components';
-import { useLoad } from '@tarojs/taro';
+import Taro, { useLoad } from '@tarojs/taro';
+import { getMessageList, markAllRead } from '../../api/message';
 import EmptyState from '../../components/EmptyState';
 import './index.scss';
 
@@ -13,20 +14,25 @@ const iconMap: Record<string, { bg: string; icon: string }> = {
 export default function MessagePage() {
   const [messages, setMessages] = useState<any[]>([]);
 
+  const fetchMessages = async () => {
+    const res = await getMessageList();
+    setMessages(res?.list || []);
+  };
+
   useLoad(() => {
-    // TODO: 接入真实API
-    setMessages([
-      { id: '1', type: 'order', title: '订单通知', desc: '您的订单已被陪玩师接单', time: '10:30', unread: true },
-      { id: '2', type: 'system', title: '系统通知', desc: '欢迎加入陪玩平台！', time: '昨天', unread: false },
-      { id: '3', type: 'activity', title: '活动通知', desc: '新人专享活动即将结束', time: '03-28', unread: true },
-    ]);
+    fetchMessages();
   });
+
+  const handleMarkAllRead = async () => {
+    await markAllRead();
+    fetchMessages();
+  };
 
   return (
     <View className="message">
       <View className="message__header">
         <Text className="message__title">消息</Text>
-        <Text className="message__read-all">全部已读</Text>
+        <Text className="message__read-all" onClick={handleMarkAllRead}>全部已读</Text>
       </View>
       {messages.length === 0 ? <EmptyState text="暂无消息" /> : (
         <View className="message__list">
