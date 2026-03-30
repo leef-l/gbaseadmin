@@ -18,6 +18,7 @@ type Role struct {
 	DataScope any         // 数据范围:1=全部,2=本部门及以下,3=本部门,4=仅本人,5=自定义
 	Sort      any         // 排序（升序）
 	Status    any         // 状态:0=关闭,1=开启
+	IsAdmin   any         // 是否超级管理员:0=否,1=是
 	CreatedBy any         // 创建人ID
 	DeptId    any         // 所属部门ID
 	CreatedAt *gtime.Time // 创建时间

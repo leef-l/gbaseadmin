@@ -153,8 +153,8 @@ VALUES (1000000000000000001, 0, '总公司', 'admin', 'admin@example.com', 0, 1,
 -- ─────────────────────────────────────────────
 -- 超级管理员角色（data_scope=1 全部数据权限）
 -- ─────────────────────────────────────────────
-INSERT INTO `system_role` (`id`, `parent_id`, `title`, `data_scope`, `sort`, `status`, `created_by`, `dept_id`, `created_at`, `updated_at`, `deleted_at`)
-VALUES (1000000000000000002, 0, '超级管理员', 1, 0, 1, 0, 1000000000000000001, NOW(), NOW(), NULL);
+INSERT INTO `system_role` (`id`, `parent_id`, `title`, `data_scope`, `sort`, `status`, `is_admin`, `created_by`, `dept_id`, `created_at`, `updated_at`, `deleted_at`)
+VALUES (1000000000000000002, 0, '超级管理员', 1, 0, 1, 1, 0, 1000000000000000001, NOW(), NOW(), NULL);
 
 -- ─────────────────────────────────────────────
 -- 超级管理员用户

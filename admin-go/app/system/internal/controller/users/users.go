@@ -71,3 +71,12 @@ func (c *cUsers) List(ctx context.Context, req *v1.UsersListReq) (res *v1.UsersL
 	return
 }
 
+// ResetPassword 重置用户密码
+func (c *cUsers) ResetPassword(ctx context.Context, req *v1.UsersResetPasswordReq) (res *v1.UsersResetPasswordRes, err error) {
+	err = service.Users().ResetPassword(ctx, &model.UsersResetPasswordInput{
+		ID:       req.ID,
+		Password: req.Password,
+	})
+	return
+}
+

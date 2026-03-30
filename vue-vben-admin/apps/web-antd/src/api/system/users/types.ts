@@ -51,3 +51,9 @@ export interface UsersUpdateParams {
   roleIds?: string[];
   status?: number;
 }
+
+/** 用户表重置密码参数 */
+export interface UsersResetPasswordParams {
+  id: string;
+  password: string;
+}

@@ -88,3 +88,15 @@ type UsersListRes struct {
 	Total  int                               `json:"total" dc:"总数"`
 }
 
+// UsersResetPasswordReq 重置用户密码请求
+type UsersResetPasswordReq struct {
+	g.Meta   `path:"/users/reset-password" method:"put" tags:"用户表" summary:"重置用户密码"`
+	ID       snowflake.JsonInt64 `json:"id" v:"required#ID不能为空" dc:"用户ID"`
+	Password string              `json:"password" v:"required#新密码不能为空" dc:"新密码"`
+}
+
+// UsersResetPasswordRes 重置用户密码响应
+type UsersResetPasswordRes struct {
+	g.Meta `mime:"application/json"`
+}
+

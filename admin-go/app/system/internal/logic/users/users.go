@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/gogf/gf/v2/crypto/gsha256"
+	"github.com/gogf/gf/v2/errors/gerror"
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/os/gtime"
 
@@ -58,6 +59,16 @@ func (s *sUsers) Create(ctx context.Context, in *model.UsersCreateInput) error {
 
 // Update 更新用户表
 func (s *sUsers) Update(ctx context.Context, in *model.UsersUpdateInput) error {
+	// 内置管理员不可禁用
+	if in.Status == 0 {
+		isAdmin, err := s.isBuiltinAdmin(ctx, in.ID)
+		if err != nil {
+			return err
+		}
+		if isAdmin {
+			return gerror.New("内置管理员账号不能禁用")
+		}
+	}
 	data := g.Map{
 		dao.Users.Columns().Username: in.Username,
 		dao.Users.Columns().Nickname: in.Nickname,
@@ -92,9 +103,26 @@ func (s *sUsers) Update(ctx context.Context, in *model.UsersUpdateInput) error {
 	return err
 }
 
+// isBuiltinAdmin 检查用户是否为内置管理员
+func (s *sUsers) isBuiltinAdmin(ctx context.Context, id snowflake.JsonInt64) (bool, error) {
+	val, err := dao.Users.Ctx(ctx).Where(dao.Users.Columns().Id, id).Where(dao.Users.Columns().DeletedAt, nil).Value(dao.Users.Columns().Username)
+	if err != nil {
+		return false, err
+	}
+	return val.String() == "admin", nil
+}
+
 // Delete 软删除用户表
 func (s *sUsers) Delete(ctx context.Context, id snowflake.JsonInt64) error {
-	_, err := dao.Users.Ctx(ctx).Where(dao.Users.Columns().Id, id).Data(g.Map{
+	// 内置管理员不可删除
+	isAdmin, err := s.isBuiltinAdmin(ctx, id)
+	if err != nil {
+		return err
+	}
+	if isAdmin {
+		return gerror.New("内置管理员账号不能删除")
+	}
+	_, err = dao.Users.Ctx(ctx).Where(dao.Users.Columns().Id, id).Data(g.Map{
 		dao.Users.Columns().DeletedAt: gtime.Now(),
 	}).Update()
 	return err
@@ -179,5 +207,15 @@ func (s *sUsers) List(ctx context.Context, in *model.UsersListInput) (list []*mo
 		}
 	}
 	return
+}
+
+// ResetPassword 重置用户密码
+func (s *sUsers) ResetPassword(ctx context.Context, in *model.UsersResetPasswordInput) error {
+	hashedPassword := gsha256.Encrypt(in.Password)
+	_, err := dao.Users.Ctx(ctx).Where(dao.Users.Columns().Id, in.ID).Data(g.Map{
+		dao.Users.Columns().Password:  hashedPassword,
+		dao.Users.Columns().UpdatedAt: gtime.Now(),
+	}).Update()
+	return err
 }
 

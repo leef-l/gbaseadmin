@@ -74,3 +74,9 @@ type UsersListInput struct {
 	Status   int `json:"status"`
 }
 
+// UsersResetPasswordInput 重置用户密码输入
+type UsersResetPasswordInput struct {
+	ID       snowflake.JsonInt64 `json:"id"`
+	Password string              `json:"password"`
+}
+

@@ -27,6 +27,7 @@ type RoleColumns struct {
 	DataScope string // 数据范围:1=全部,2=本部门及以下,3=本部门,4=仅本人,5=自定义
 	Sort      string // 排序（升序）
 	Status    string // 状态:0=关闭,1=开启
+	IsAdmin   string // 是否超级管理员:0=否,1=是
 	CreatedBy string // 创建人ID
 	DeptId    string // 所属部门ID
 	CreatedAt string // 创建时间
@@ -42,6 +43,7 @@ var roleColumns = RoleColumns{
 	DataScope: "data_scope",
 	Sort:      "sort",
 	Status:    "status",
+	IsAdmin:   "is_admin",
 	CreatedBy: "created_by",
 	DeptId:    "dept_id",
 	CreatedAt: "created_at",
