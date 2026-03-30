@@ -30,6 +30,12 @@ const config = {
     },
     devServer: {
       port: 10086,
+      proxy: {
+        '/api/playapi': {
+          target: 'http://localhost:8001',
+          changeOrigin: true,
+        },
+      },
     },
   },
 };
