@@ -14,4 +14,5 @@ func init() {
 	service.RegisterPlayapiCoupon(&sCoupon{})
 	service.RegisterPlayapiActivity(&sActivity{})
 	service.RegisterPlayapiSearch(&sSearch{})
+	service.RegisterPlayapiMessage(&sMessage{})
 }

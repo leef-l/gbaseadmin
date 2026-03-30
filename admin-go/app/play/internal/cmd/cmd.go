@@ -96,6 +96,7 @@ var (
 							playapi.Recharge,
 							playapi.Review,
 							playapi.CoachApply,
+							playapi.Message,
 						)
 						// 需要陪玩师身份
 						group.Group("/", func(group *ghttp.RouterGroup) {

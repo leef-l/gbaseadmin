@@ -68,7 +68,7 @@ services:
       redis:
         condition: service_healthy
     environment:
-      - GF_GCFG_FILE=manifest/config/config.yaml
+      - GF_GCFG_FILE=config.yaml
       - DB_HOST=mysql
       - DB_PORT=3306
       - DB_USER=${MYSQL_USER}
@@ -80,7 +80,7 @@ services:
       - GF_SERVER_ADDRESS=:8000
       - TZ=Asia/Shanghai
     ports:
-      - "${SYSTEM_PORT:-9000}:8000"
+      - "${SYSTEM_PORT:-8000}:8000"
     networks:
       - gbaseadmin_net
 
@@ -143,7 +143,7 @@ services:
     container_name: gbaseadmin_wap
     restart: unless-stopped
     working_dir: /app
-    command: sh -c "npm install --registry=https://registry.npmmirror.com && npm run dev:h5"
+    command: sh -c "pnpm install --registry=https://registry.npmmirror.com && pnpm run dev:h5"
     volumes:
       - ../wap-ui:/app
       - wap_node_modules:/app/node_modules

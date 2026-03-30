@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { View, Text, Image } from '@tarojs/components';
+import { View, Text } from '@tarojs/components';
 import Taro, { useLoad } from '@tarojs/taro';
 import { getCategoryList, getGoodsList } from '../../api/goods';
 import './index.scss';
@@ -11,12 +11,12 @@ export default function CategoryPage() {
 
   const loadGoods = async (categoryId: string) => {
     const res = await getGoodsList({ categoryId });
-    setGoods(res?.data?.list || []);
+    setGoods(res?.list || []);
   };
 
   useLoad(async () => {
     const res = await getCategoryList();
-    const list = res?.data?.list || [];
+    const list = res?.list || [];
     setCategories(list);
     if (list.length > 0) {
       setActiveId(list[0].id);

@@ -23,7 +23,7 @@ export default function ActivityListPage() {
     setLoading(true);
     try {
       const res = await getActivityList({ page: pageRef.current, pageSize: PAGE_SIZE, status: activeTab });
-      const rows = res?.data?.list ?? res?.data ?? [];
+      const rows = res?.list || [];
       if (reset) {
         setList(rows);
       } else {
