@@ -1,7 +1,7 @@
 # 数据库连接
 database:
   host: 127.0.0.1
-  port: 9306
+  port: 3306
   user: root
   password: "gbaseadmin123"
   dbname: gbaseadmin

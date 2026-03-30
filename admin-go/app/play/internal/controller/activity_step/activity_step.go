@@ -1,0 +1,64 @@
+package activity_step
+
+import (
+	"context"
+
+	v1 "gbaseadmin/app/play/api/play/v1"
+	"gbaseadmin/app/play/internal/model"
+	"gbaseadmin/app/play/internal/service"
+)
+
+var ActivityStep = cActivityStep{}
+
+type cActivityStep struct{}
+
+// Create 创建æ´»åŠ¨æ­¥éª¤è¡¨
+func (c *cActivityStep) Create(ctx context.Context, req *v1.ActivityStepCreateReq) (res *v1.ActivityStepCreateRes, err error) {
+	err = service.ActivityStep().Create(ctx, &model.ActivityStepCreateInput{
+		ActivityID: req.ActivityID,
+		StepNum: req.StepNum,
+		Title: req.Title,
+		DescContent: req.DescContent,
+		StepImage: req.StepImage,
+		Sort: req.Sort,
+	})
+	return
+}
+
+// Update 更新æ´»åŠ¨æ­¥éª¤è¡¨
+func (c *cActivityStep) Update(ctx context.Context, req *v1.ActivityStepUpdateReq) (res *v1.ActivityStepUpdateRes, err error) {
+	err = service.ActivityStep().Update(ctx, &model.ActivityStepUpdateInput{
+		ID: req.ID,
+		ActivityID: req.ActivityID,
+		StepNum: req.StepNum,
+		Title: req.Title,
+		DescContent: req.DescContent,
+		StepImage: req.StepImage,
+		Sort: req.Sort,
+	})
+	return
+}
+
+// Delete 删除æ´»åŠ¨æ­¥éª¤è¡¨
+func (c *cActivityStep) Delete(ctx context.Context, req *v1.ActivityStepDeleteReq) (res *v1.ActivityStepDeleteRes, err error) {
+	err = service.ActivityStep().Delete(ctx, req.ID)
+	return
+}
+
+// Detail 获取æ´»åŠ¨æ­¥éª¤è¡¨详情
+func (c *cActivityStep) Detail(ctx context.Context, req *v1.ActivityStepDetailReq) (res *v1.ActivityStepDetailRes, err error) {
+	res = &v1.ActivityStepDetailRes{}
+	res.ActivityStepDetailOutput, err = service.ActivityStep().Detail(ctx, req.ID)
+	return
+}
+
+// List 获取æ´»åŠ¨æ­¥éª¤è¡¨列表
+func (c *cActivityStep) List(ctx context.Context, req *v1.ActivityStepListReq) (res *v1.ActivityStepListRes, err error) {
+	res = &v1.ActivityStepListRes{}
+	res.List, res.Total, err = service.ActivityStep().List(ctx, &model.ActivityStepListInput{
+		PageNum:  req.PageNum,
+		PageSize: req.PageSize,
+	})
+	return
+}
+
