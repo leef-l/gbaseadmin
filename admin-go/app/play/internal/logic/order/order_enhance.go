@@ -9,6 +9,7 @@ import (
 
 	"gbaseadmin/app/play/internal/dao"
 	"gbaseadmin/app/play/internal/model"
+	"gbaseadmin/app/play/internal/service"
 )
 
 // 合法状态流转映射
@@ -60,5 +61,18 @@ func (s *sOrder) ChangeStatus(ctx context.Context, in *model.OrderChangeStatusIn
 		data[dao.PlayOrder.Columns().CancelReason] = in.CancelReason
 	}
 	_, err = dao.PlayOrder.Ctx(ctx).Where(dao.PlayOrder.Columns().Id, in.ID).Data(data).Update()
-	return err
+	if err != nil {
+		return err
+	}
+
+	// 订单完成时自动触发利润结算
+	if in.OrderStatus == 3 {
+		err = service.ProfitLogEnhance().SettleOrder(ctx, &model.SettleOrderInput{
+			OrderID: in.ID,
+		})
+		if err != nil {
+			return err
+		}
+	}
+	return nil
 }
