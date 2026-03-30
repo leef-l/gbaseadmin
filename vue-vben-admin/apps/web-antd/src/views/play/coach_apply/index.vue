@@ -1,13 +1,13 @@
 <script setup lang="ts">
+import { h } from 'vue';
 import type { VbenFormProps } from '#/adapter/form';
 import type { VxeGridProps } from '#/adapter/vxe-table';
 
 import { Page, useVbenModal } from '@vben/common-ui';
-import { Button, message, Modal, Tag } from 'ant-design-vue';
+import { Button, Input, message, Modal, Tag } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { getCoachApplyList, deleteCoachApply } from '#/api/play/coach_apply';
-import { auditCoachApply } from '#/api/play/coach_apply/enhance';
+import { getCoachApplyList, deleteCoachApply, auditCoachApply } from '#/api/play/coach_apply';
 import type { CoachApplyItem } from '#/api/play/coach_apply/types';
 import FormModal from './modules/form.vue';
 
@@ -141,14 +141,26 @@ function handleApprove(row: CoachApplyItem) {
   });
 }
 
-/** 审核拒绝 */
+/** 审核拒绝（需填写原因） */
 function handleReject(row: CoachApplyItem) {
+  let auditRemark = '';
   Modal.confirm({
     title: '审核拒绝',
-    content: `确定要拒绝 ${row.realName} 的陪玩师申请吗？`,
+    content: () => h('div', [
+      h('p', `确定要拒绝 ${row.realName} 的陪玩师申请吗？`),
+      h(Input.TextArea, {
+        placeholder: '请输入拒绝原因',
+        rows: 3,
+        onChange: (e: any) => { auditRemark = e.target.value; },
+      }),
+    ]),
     okType: 'danger',
     async onOk() {
-      await auditCoachApply({ id: row.id, auditStatus: 2 });
+      if (!auditRemark.trim()) {
+        message.warning('请输入拒绝原因');
+        throw new Error('请输入拒绝原因');
+      }
+      await auditCoachApply({ id: row.id, auditStatus: 2, auditRemark });
       message.success('已拒绝');
       gridApi.reload();
     },
