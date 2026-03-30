@@ -29,6 +29,9 @@ import (
 	"gbaseadmin/app/play/internal/controller/recharge_plan"
 	"gbaseadmin/app/play/internal/controller/review"
 	"gbaseadmin/app/play/internal/controller/shop"
+
+	"gbaseadmin/app/play/internal/controller/playapi"
+	"gbaseadmin/app/play/internal/middleware"
 )
 
 var (
@@ -66,6 +69,44 @@ var (
 						review.Review,
 						profit_log.ProfitLog,
 					)
+				})
+				// C端API路由组
+				group.Group("/api/playapi", func(group *ghttp.RouterGroup) {
+					// 公开接口（无需登录）
+					group.Bind(
+						playapi.Auth,
+						playapi.GoodsPublic,
+						playapi.CoachPublic,
+						playapi.ReviewPublic,
+						playapi.ActivityPublic,
+						playapi.CouponPublic,
+						playapi.SearchPublic,
+						playapi.PaymentNotify,
+						playapi.RechargeNotify,
+					)
+					// 需要会员登录
+					group.Group("/", func(group *ghttp.RouterGroup) {
+						group.Middleware(middleware.MemberAuth)
+						group.Bind(
+							playapi.Member,
+							playapi.Order,
+							playapi.Payment,
+							playapi.Coupon,
+							playapi.Activity,
+							playapi.Recharge,
+							playapi.Review,
+							playapi.CoachApply,
+						)
+						// 需要陪玩师身份
+						group.Group("/", func(group *ghttp.RouterGroup) {
+							group.Middleware(middleware.CoachOnly)
+							group.Bind(
+								playapi.CoachWork,
+								playapi.OrderCoach,
+								playapi.ReviewCoach,
+							)
+						})
+					})
 				})
 			})
 			s.Run()
