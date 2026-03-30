@@ -14,9 +14,9 @@ export default function RechargePage() {
   const fetchPlans = useCallback(async () => {
     try {
       const res = await getRechargePlans();
-      const list = res?.data || [];
+      const list = res?.list || [];
       setPlans(list);
-      if (list.length > 0) setSelectedId(list[0].id);
+      if (list.length > 0) setSelectedId(list[0].planId);
     } catch (e) {
       console.error(e);
     }
@@ -52,16 +52,16 @@ export default function RechargePage() {
         <View className="recharge__grid">
           {plans.map((p) => (
             <View
-              key={p.id}
-              className={`recharge__card ${selectedId === p.id ? 'recharge__card--active' : ''}`}
-              onClick={() => setSelectedId(p.id)}
+              key={p.planId}
+              className={`recharge__card ${selectedId === p.planId ? 'recharge__card--active' : ''}`}
+              onClick={() => setSelectedId(p.planId)}
             >
               <Text className="recharge__amount">
                 ¥{(p.amount / 100).toFixed(2)}
               </Text>
-              {p.giftAmount > 0 && (
+              {p.giveAmount > 0 && (
                 <Text className="recharge__gift">
-                  赠送¥{(p.giftAmount / 100).toFixed(2)}
+                  赠送¥{(p.giveAmount / 100).toFixed(2)}
                 </Text>
               )}
             </View>

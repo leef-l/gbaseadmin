@@ -85,7 +85,7 @@ export default function OrderListPage() {
       </View>
       <View className="order-list__content">
         {list.length === 0 ? <EmptyState text="暂无订单" /> : list.map((o) => (
-          <OrderCard key={o.id} {...o} actions={getActions(o.status, o.id)} />
+          <OrderCard key={o.orderId} {...o} actions={getActions(o.orderStatus, o.orderId)} />
         ))}
         {list.length > 0 && <LoadMore hasMore={hasMore} />}
       </View>

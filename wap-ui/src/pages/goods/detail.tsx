@@ -28,7 +28,7 @@ export default function GoodsDetailPage() {
   const handleOrder = () => {
     if (!detail) return;
     setOrder({
-      goodsId: detail.id,
+      goodsId: detail.goodsId,
       goodsName: detail.title,
       coachId: detail.coachId,
       coachName: detail.coachName,
@@ -46,7 +46,7 @@ export default function GoodsDetailPage() {
       <View className="goods-detail__info">
         <Text className="goods-detail__price">¥{(detail.price / 100).toFixed(2)}<Text className="goods-detail__unit"> /{detail.unit}</Text></Text>
         <Text className="goods-detail__name">{detail.title}</Text>
-        <Text className="goods-detail__sales">已售 {detail.sales} 单</Text>
+        <Text className="goods-detail__sales">已售 {detail.salesNum} 单</Text>
       </View>
 
       <View className="goods-detail__coach card" onClick={() => Taro.navigateTo({ url: `/pages/coach/detail?id=${detail.coachId}` })}>
@@ -60,7 +60,7 @@ export default function GoodsDetailPage() {
 
       <View className="goods-detail__desc">
         <Text className="goods-detail__desc-title">商品详情</Text>
-        <Text className="goods-detail__desc-content">{detail.desc}</Text>
+        <Text className="goods-detail__desc-content">{detail.description}</Text>
       </View>
 
       <View className="goods-detail__reviews">
@@ -69,10 +69,10 @@ export default function GoodsDetailPage() {
           <Text className="more">查看全部 &gt;</Text>
         </View>
         {reviews.map((r) => (
-          <View key={r.id} className="goods-detail__review-item">
+          <View key={r.reviewId} className="goods-detail__review-item">
             <View className="goods-detail__review-header">
               <View className="goods-detail__review-avatar" />
-              <Text className="goods-detail__review-name">{r.name}</Text>
+              <Text className="goods-detail__review-name">{r.nickname}</Text>
               <Text className="goods-detail__review-score">{'★'.repeat(r.score)}</Text>
             </View>
             <Text className="goods-detail__review-content">{r.content}</Text>

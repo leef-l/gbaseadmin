@@ -69,23 +69,23 @@ export default function WorkspaceOrdersPage() {
       <View className="ws-orders__content">
         {list.length === 0 && !loading ? <EmptyState text="暂无订单" /> : (
           list.map((o) => (
-            <View key={o.id} className="ws-orders__card card">
+            <View key={o.orderId} className="ws-orders__card card">
               <View className="ws-orders__card-top">
-                <Text className="ws-orders__card-user">{o.memberName || '用户'}</Text>
+                <Text className="ws-orders__card-user">{o.coachName || '用户'}</Text>
                 <Text className="ws-orders__card-time">{o.createdAt || ''}</Text>
               </View>
               <View className="ws-orders__card-body">
-                <Text className="ws-orders__card-goods">{o.goodsName || '服务订单'}</Text>
+                <Text className="ws-orders__card-goods">{o.goodsTitle || '服务订单'}</Text>
                 <Text className="ws-orders__card-amount">¥{(o.payAmount / 100).toFixed(2)}</Text>
               </View>
               {activeTab === 0 && (
                 <View className="ws-orders__card-actions">
-                  <View className="ws-orders__btn ws-orders__btn--primary" onClick={() => handleAccept(o.id)}>接单</View>
+                  <View className="ws-orders__btn ws-orders__btn--primary" onClick={() => handleAccept(o.orderId)}>接单</View>
                 </View>
               )}
               {activeTab === 1 && (
                 <View className="ws-orders__card-actions">
-                  <View className="ws-orders__btn ws-orders__btn--primary" onClick={() => handleFinish(o.id)}>完成服务</View>
+                  <View className="ws-orders__btn ws-orders__btn--primary" onClick={() => handleFinish(o.orderId)}>完成服务</View>
                 </View>
               )}
             </View>

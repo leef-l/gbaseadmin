@@ -12,7 +12,7 @@ export default function ActivityDetailPage() {
   const fetchDetail = useCallback(async (id: string) => {
     try {
       const res = await getActivityDetail(id);
-      setDetail(res?.data || null);
+      setDetail(res || null);
     } catch (e) {
       console.error(e);
     }
@@ -27,9 +27,9 @@ export default function ActivityDetailPage() {
     if (!detail || joining) return;
     setJoining(true);
     try {
-      await joinActivity(detail.id);
+      await joinActivity(detail.activityId);
       Taro.showToast({ title: '参与成功', icon: 'success' });
-      fetchDetail(detail.id);
+      fetchDetail(detail.activityId);
     } catch (e) {
       Taro.showToast({ title: '参与失败', icon: 'none' });
     } finally {
@@ -39,9 +39,9 @@ export default function ActivityDetailPage() {
 
   const handleCompleteStep = async (stepId: string) => {
     try {
-      await completeStep({ activityId: detail.id, stepId });
+      await completeStep({ activityId: detail.activityId, stepId });
       Taro.showToast({ title: '步骤完成', icon: 'success' });
-      fetchDetail(detail.id);
+      fetchDetail(detail.activityId);
     } catch (e) {
       Taro.showToast({ title: '操作失败', icon: 'none' });
     }
@@ -51,35 +51,33 @@ export default function ActivityDetailPage() {
 
   return (
     <View className="activity-detail">
-      {detail.coverUrl && (
-        <Image className="activity-detail__cover" src={detail.coverUrl} mode="aspectFill" />
+      {detail.cover && (
+        <Image className="activity-detail__cover" src={detail.cover} mode="aspectFill" />
       )}
 
       <View className="activity-detail__info">
         <Text className="activity-detail__title">{detail.title}</Text>
-        <Text className="activity-detail__desc">{detail.description}</Text>
+        <Text className="activity-detail__desc">{detail.content}</Text>
 
         <View className="activity-detail__meta">
           <View className="activity-detail__meta-item">
             <Text className="activity-detail__meta-label">活动时间</Text>
             <Text className="activity-detail__meta-value">{detail.startTime} ~ {detail.endTime}</Text>
           </View>
-          {detail.condition && (
-            <View className="activity-detail__meta-item">
-              <Text className="activity-detail__meta-label">参与条件</Text>
-              <Text className="activity-detail__meta-value">{detail.condition}</Text>
-            </View>
-          )}
+          <View className="activity-detail__meta-item">
+            <Text className="activity-detail__meta-label">参与人数</Text>
+            <Text className="activity-detail__meta-value">{detail.joinCount || 0}人</Text>
+          </View>
         </View>
       </View>
 
       {detail.rewards && detail.rewards.length > 0 && (
         <View className="activity-detail__section">
           <Text className="activity-detail__section-title">活动奖励</Text>
-          {detail.rewards.map((r: any, i: number) => (
-            <View key={i} className="activity-detail__reward">
-              <Text className="activity-detail__reward-name">{r.name}</Text>
-              <Text className="activity-detail__reward-value">{r.value}</Text>
+          {detail.rewards.map((r: any) => (
+            <View key={r.rewardId} className="activity-detail__reward">
+              <Text className="activity-detail__reward-name">{r.rewardName}</Text>
+              <Text className="activity-detail__reward-value">{r.rewardValue}</Text>
             </View>
           ))}
         </View>
@@ -89,16 +87,16 @@ export default function ActivityDetailPage() {
         <View className="activity-detail__section">
           <Text className="activity-detail__section-title">活动步骤</Text>
           {detail.steps.map((s: any, i: number) => (
-            <View key={s.id} className={`activity-detail__step ${s.completed ? 'activity-detail__step--done' : ''}`}>
+            <View key={s.stepId} className="activity-detail__step">
               <View className="activity-detail__step-num">
-                {s.completed ? '✓' : i + 1}
+                {s.stepNo || i + 1}
               </View>
               <View className="activity-detail__step-content">
                 <Text className="activity-detail__step-title">{s.title}</Text>
                 {s.description && <Text className="activity-detail__step-desc">{s.description}</Text>}
               </View>
-              {!s.completed && detail.joined && (
-                <View className="activity-detail__step-btn" onClick={() => handleCompleteStep(s.id)}>
+              {detail.joined && (
+                <View className="activity-detail__step-btn" onClick={() => handleCompleteStep(s.stepId)}>
                   <Text>完成</Text>
                 </View>
               )}

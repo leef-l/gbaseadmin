@@ -17,7 +17,7 @@ export default function BalancePage() {
     setLoading(true);
     try {
       const res = await getBalanceLog({ page: pageNum, pageSize: 20 });
-      const list = res?.data?.list || [];
+      const list = res?.list || [];
       setLogs((prev) => reset ? list : [...prev, ...list]);
       setHasMore(list.length >= 20);
       setPage(pageNum);
@@ -57,7 +57,7 @@ export default function BalancePage() {
         {logs.map((item, i) => (
           <View key={i} className="balance__item">
             <View className="balance__item-left">
-              <Text className="balance__item-type">{item.typeName || item.type}</Text>
+              <Text className="balance__item-type">{item.title || item.type}</Text>
               <Text className="balance__item-time">{item.createdAt}</Text>
             </View>
             <View className="balance__item-right">

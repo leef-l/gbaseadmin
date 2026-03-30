@@ -21,7 +21,7 @@ export default function OrderConfirmPage() {
   });
 
   const selectCoupon = (c: any) => {
-    setOrder({ couponId: c.id, couponAmount: c.amount });
+    setOrder({ couponId: c.couponMemberId, couponAmount: c.faceValue });
     setShowCoupon(false);
   };
 
@@ -37,7 +37,7 @@ export default function OrderConfirmPage() {
       });
       Taro.hideLoading();
       Taro.showToast({ title: '下单成功', icon: 'success' });
-      setTimeout(() => Taro.redirectTo({ url: `/pages/order/pay?orderId=${data?.id || data?.orderId}` }), 1500);
+      setTimeout(() => Taro.redirectTo({ url: `/pages/order/pay?orderId=${data?.orderId}` }), 1500);
     } catch {
       Taro.hideLoading();
     }
@@ -69,9 +69,9 @@ export default function OrderConfirmPage() {
       {showCoupon && coupons.length > 0 && (
         <View className="order-confirm__coupon-list card">
           {coupons.map((c: any) => (
-            <View key={c.id} className={`order-confirm__coupon-item ${couponId === c.id ? 'order-confirm__coupon-item--active' : ''}`} onClick={() => selectCoupon(c)}>
-              <Text className="order-confirm__coupon-amount">¥{(c.amount / 100).toFixed(2)}</Text>
-              <Text className="order-confirm__coupon-name">{c.name || '优惠券'}</Text>
+            <View key={c.couponMemberId} className={`order-confirm__coupon-item ${couponId === c.couponMemberId ? 'order-confirm__coupon-item--active' : ''}`} onClick={() => selectCoupon(c)}>
+              <Text className="order-confirm__coupon-amount">¥{(c.faceValue / 100).toFixed(2)}</Text>
+              <Text className="order-confirm__coupon-name">{c.title || '优惠券'}</Text>
             </View>
           ))}
         </View>

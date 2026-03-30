@@ -1,11 +1,11 @@
 import { get, post } from './request';
 
-export function getMessageList(params?: { page?: number; pageSize?: number }) {
+export function getMessageList(params?: { type?: number; page?: number; pageSize?: number }) {
   return get('/api/playapi/member/messages', params);
 }
 
-export function markRead(messageId: string) {
-  return post('/api/playapi/member/message/read', { messageId });
+export function markRead(id: string) {
+  return post('/api/playapi/member/message/read', { id });
 }
 
 export function markAllRead() {

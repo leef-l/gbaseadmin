@@ -33,7 +33,7 @@ export default function WorkspaceGoodsPage() {
     try {
       await updateGoodsStatus({ goodsId: id, status: newStatus });
       Taro.showToast({ title: newStatus === 1 ? '已上架' : '已下架', icon: 'success' });
-      setList((prev) => prev.map((g) => g.id === id ? { ...g, status: newStatus } : g));
+      setList((prev) => prev.map((g) => g.goodsId === id ? { ...g, status: newStatus } : g));
     } catch { /* ignore */ }
   };
 
@@ -46,9 +46,9 @@ export default function WorkspaceGoodsPage() {
       <View className="ws-goods__content">
         {list.length === 0 && !loading ? <EmptyState text="暂无商品" /> : (
           list.map((g) => (
-            <View key={g.id} className="ws-goods__card card">
+            <View key={g.goodsId} className="ws-goods__card card">
               <View className="ws-goods__card-cover">
-                {g.cover ? <View className="ws-goods__card-img" style={{ backgroundImage: `url(${g.cover})` }} /> : <View className="ws-goods__card-img ws-goods__card-img--empty">🛍️</View>}
+                <View className="ws-goods__card-img ws-goods__card-img--empty">🛍️</View>
               </View>
               <View className="ws-goods__card-info">
                 <Text className="ws-goods__card-name">{g.title || '商品'}</Text>
@@ -57,7 +57,7 @@ export default function WorkspaceGoodsPage() {
                   <Text className={`ws-goods__card-status ${g.status === 1 ? 'ws-goods__card-status--on' : ''}`}>
                     {g.status === 1 ? '已上架' : '已下架'}
                   </Text>
-                  <View className="ws-goods__card-toggle" onClick={() => toggleStatus(g.id, g.status)}>
+                  <View className="ws-goods__card-toggle" onClick={() => toggleStatus(g.goodsId, g.status)}>
                     {g.status === 1 ? '下架' : '上架'}
                   </View>
                 </View>

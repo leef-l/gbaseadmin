@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { View, Text, Input, Textarea, Picker } from '@tarojs/components';
+import { useState } from 'react';
+import { View, Text, Input, Textarea } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import { applyCoach } from '../../api/coach';
 import './apply.scss';
@@ -7,39 +7,24 @@ import './apply.scss';
 export default function CoachApplyPage() {
   const [form, setForm] = useState({
     realName: '',
-    phone: '',
-    introduction: '',
-    skills: '',
-    storeId: '',
+    idCard: '',
+    idCardFrontImage: '',
+    idCardBackImage: '',
+    skillDesc: '',
   });
-  const [stores, setStores] = useState<{ id: string; name: string }[]>([]);
-  const [storeIndex, setStoreIndex] = useState(-1);
   const [submitting, setSubmitting] = useState(false);
-
-  useEffect(() => {
-    // TODO: 接入真实店铺列表API
-    setStores([
-      { id: '1', name: '旗舰店' },
-      { id: '2', name: '大学城店' },
-      { id: '3', name: '万达店' },
-    ]);
-  }, []);
 
   const handleSubmit = async () => {
     if (!form.realName.trim()) {
       Taro.showToast({ title: '请输入真实姓名', icon: 'none' });
       return;
     }
-    if (!form.phone.trim() || !/^1\d{10}$/.test(form.phone)) {
-      Taro.showToast({ title: '请输入正确的手机号', icon: 'none' });
+    if (!form.idCard.trim()) {
+      Taro.showToast({ title: '请输入身份证号', icon: 'none' });
       return;
     }
-    if (!form.introduction.trim()) {
-      Taro.showToast({ title: '请填写自我介绍', icon: 'none' });
-      return;
-    }
-    if (!form.skills.trim()) {
-      Taro.showToast({ title: '请填写擅长游戏/技能', icon: 'none' });
+    if (!form.skillDesc.trim()) {
+      Taro.showToast({ title: '请填写技能描述', icon: 'none' });
       return;
     }
     setSubmitting(true);
@@ -62,28 +47,20 @@ export default function CoachApplyPage() {
           <Input className="coach-apply__input" placeholder="请输入真实姓名" value={form.realName} onInput={(e) => setForm({ ...form, realName: e.detail.value })} />
         </View>
         <View className="coach-apply__field">
-          <Text className="coach-apply__label"><Text className="required">*</Text> 手机号</Text>
-          <Input className="coach-apply__input" type="number" placeholder="请输入手机号" value={form.phone} onInput={(e) => setForm({ ...form, phone: e.detail.value })} maxlength={11} />
+          <Text className="coach-apply__label"><Text className="required">*</Text> 身份证号</Text>
+          <Input className="coach-apply__input" placeholder="请输入身份证号" value={form.idCard} onInput={(e) => setForm({ ...form, idCard: e.detail.value })} maxlength={18} />
         </View>
         <View className="coach-apply__field">
-          <Text className="coach-apply__label"><Text className="required">*</Text> 自我介绍</Text>
-          <Textarea className="coach-apply__textarea" placeholder="介绍一下自己，让用户更了解你..." value={form.introduction} onInput={(e) => setForm({ ...form, introduction: e.detail.value })} maxlength={500} />
+          <Text className="coach-apply__label">身份证正面照</Text>
+          <Input className="coach-apply__input" placeholder="请输入图片URL" value={form.idCardFrontImage} onInput={(e) => setForm({ ...form, idCardFrontImage: e.detail.value })} />
         </View>
         <View className="coach-apply__field">
-          <Text className="coach-apply__label"><Text className="required">*</Text> 擅长游戏/技能</Text>
-          <Textarea className="coach-apply__textarea" placeholder="如：王者荣耀、英雄联盟、和平精英..." value={form.skills} onInput={(e) => setForm({ ...form, skills: e.detail.value })} maxlength={200} />
+          <Text className="coach-apply__label">身份证反面照</Text>
+          <Input className="coach-apply__input" placeholder="请输入图片URL" value={form.idCardBackImage} onInput={(e) => setForm({ ...form, idCardBackImage: e.detail.value })} />
         </View>
         <View className="coach-apply__field">
-          <Text className="coach-apply__label">所属店铺</Text>
-          <Picker mode="selector" range={stores.map(s => s.name)} value={storeIndex} onChange={(e) => {
-            const idx = Number(e.detail.value);
-            setStoreIndex(idx);
-            setForm({ ...form, storeId: stores[idx].id });
-          }}>
-            <View className="coach-apply__input coach-apply__picker">
-              {storeIndex >= 0 ? stores[storeIndex].name : '请选择所属店铺（可选）'}
-            </View>
-          </Picker>
+          <Text className="coach-apply__label"><Text className="required">*</Text> 技能描述</Text>
+          <Textarea className="coach-apply__textarea" placeholder="如：王者荣耀、英雄联盟、和平精英..." value={form.skillDesc} onInput={(e) => setForm({ ...form, skillDesc: e.detail.value })} maxlength={500} />
         </View>
       </View>
 

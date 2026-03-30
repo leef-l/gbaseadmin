@@ -8,7 +8,7 @@ import EmptyState from '../../components/EmptyState';
 import './list.scss';
 
 const categories = ['全部', '游戏陪玩', '语音聊天', '看电影', '唱歌', '叫醒哄睡'];
-const sortKeys = ['', 'score', 'orders', 'price'];
+const sortKeys = ['', 'score', 'orderCount', 'price_asc'];
 const sorts = ['综合', '评分最高', '接单最多', '价格最低'];
 
 export default function CoachListPage() {
@@ -28,7 +28,7 @@ export default function CoachListPage() {
         page: p,
         pageSize: 10,
         categoryId: activeCat > 0 ? String(activeCat) : undefined,
-        sort: sortKeys[activeSort] || undefined,
+        sortBy: sortKeys[activeSort] || undefined,
       });
       const items = res?.list || [];
       if (reset) {
@@ -85,7 +85,7 @@ export default function CoachListPage() {
       {list.length === 0 ? <EmptyState text="暂无陪玩师" /> : (
         <View className="coach-list__grid">
           {list.map((c) => (
-            <CoachCard key={c.id} {...c} onClick={() => Taro.navigateTo({ url: `/pages/coach/detail?id=${c.id}` })} />
+            <CoachCard key={c.coachId} {...c} onClick={() => Taro.navigateTo({ url: `/pages/coach/detail?id=${c.coachId}` })} />
           ))}
         </View>
       )}

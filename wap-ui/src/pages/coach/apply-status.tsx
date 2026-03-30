@@ -11,8 +11,8 @@ export default function ApplyStatusPage() {
   useLoad(async () => {
     try {
       const res = await getApplyStatus();
-      setStatus(res.status ?? 0);
-      setRemark(res.remark || '');
+      setStatus(res.auditStatus ?? 0);
+      setRemark(res.auditRemark || '');
     } catch {
       setStatus(0);
     }

@@ -6,7 +6,7 @@ import { useAuthStore } from '../../store/auth';
 import './index.scss';
 
 export default function LoginPage() {
-  const { setToken, setUserInfo } = useAuthStore();
+  const { setToken } = useAuthStore();
   const [phone, setPhone] = useState('');
   const [code, setCode] = useState('');
   const [agreed, setAgreed] = useState(false);
@@ -59,10 +59,8 @@ export default function LoginPage() {
     setLoading(true);
     try {
       const res = await login(phone, code);
-      const data = res?.data;
-      if (data?.token) {
-        setToken(data.token);
-        if (data.userInfo) setUserInfo(data.userInfo);
+      if (res?.token) {
+        setToken(res.token);
         Taro.showToast({ title: '登录成功', icon: 'success' });
         setTimeout(() => Taro.navigateBack(), 1000);
       }

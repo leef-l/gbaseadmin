@@ -13,7 +13,7 @@ const shortcuts = [
 
 export default function WorkspacePage() {
   const { userInfo } = useAuthStore();
-  const [stats, setStats] = useState({ todayOrders: 0, todayIncome: 0, totalIncome: 0, balance: 0 });
+  const [stats, setStats] = useState({ todayOrders: 0, todayIncome: 0, totalIncome: 0, totalOrders: 0 });
   const [recentOrders, setRecentOrders] = useState<any[]>([]);
 
   const fetchData = useCallback(async () => {
@@ -23,7 +23,7 @@ export default function WorkspacePage() {
         todayOrders: info.todayOrders ?? 0,
         todayIncome: info.todayIncome ?? 0,
         totalIncome: info.totalIncome ?? 0,
-        balance: info.balance ?? 0,
+        totalOrders: info.totalOrders ?? 0,
       });
     } catch { /* ignore */ }
     try {
@@ -42,7 +42,7 @@ export default function WorkspacePage() {
           <View className="workspace__avatar">👤</View>
           <View className="workspace__info">
             <Text className="workspace__name">{userInfo?.nickname || '陪玩师'}</Text>
-            <Text className="workspace__level">{userInfo?.levelName || 'Lv.1'}</Text>
+            <Text className="workspace__level">{userInfo?.levelTitle || 'Lv.1'}</Text>
           </View>
         </View>
       </View>
@@ -62,8 +62,8 @@ export default function WorkspacePage() {
           <Text className="workspace__stat-label">总收入</Text>
         </View>
         <View className="workspace__stat">
-          <Text className="workspace__stat-value">¥{(stats.balance / 100).toFixed(2)}</Text>
-          <Text className="workspace__stat-label">总余额</Text>
+          <Text className="workspace__stat-value">{stats.totalOrders}</Text>
+          <Text className="workspace__stat-label">总订单</Text>
         </View>
       </View>
 
@@ -89,13 +89,13 @@ export default function WorkspacePage() {
           </View>
         ) : (
           recentOrders.map((o) => (
-            <View key={o.id} className="workspace__order-item card" onClick={() => Taro.navigateTo({ url: `/pages/order/detail?id=${o.id}` })}>
+            <View key={o.orderId} className="workspace__order-item card" onClick={() => Taro.navigateTo({ url: `/pages/order/detail?id=${o.orderId}` })}>
               <View className="workspace__order-top">
-                <Text className="workspace__order-name">{o.goodsName || '服务订单'}</Text>
+                <Text className="workspace__order-name">{o.goodsTitle || '服务订单'}</Text>
                 <Text className="workspace__order-amount">¥{(o.payAmount / 100).toFixed(2)}</Text>
               </View>
               <View className="workspace__order-bottom">
-                <Text className="workspace__order-user">{o.memberName || '用户'}</Text>
+                <Text className="workspace__order-user">{o.coachName || '用户'}</Text>
                 <Text className="workspace__order-time">{o.createdAt || ''}</Text>
               </View>
             </View>

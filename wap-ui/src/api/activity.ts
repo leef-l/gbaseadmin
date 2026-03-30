@@ -12,8 +12,8 @@ export function joinActivity(activityId: string) {
   return post('/api/playapi/activity/join', { activityId });
 }
 
-export function completeStep(activityId: string, stepId: string) {
-  return post('/api/playapi/activity/complete_step', { activityId, stepId });
+export function completeStep(data: { activityId: string; stepId: string }) {
+  return post('/api/playapi/activity/complete_step', data);
 }
 
 export function claimReward(activityId: string, rewardId: string) {

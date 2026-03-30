@@ -8,7 +8,7 @@ import LoadMore from '../../components/LoadMore';
 import './income.scss';
 
 export default function IncomePage() {
-  const [summary, setSummary] = useState({ totalIncome: 0, balance: 0, monthIncome: 0 });
+  const [summary, setSummary] = useState({ totalIncome: 0, monthIncome: 0 });
   const [list, setList] = useState<any[]>([]);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(false);
@@ -19,7 +19,6 @@ export default function IncomePage() {
       const info = await getIncome();
       setSummary({
         totalIncome: info.totalIncome ?? 0,
-        balance: info.balance ?? 0,
         monthIncome: info.monthIncome ?? 0,
       });
     } catch { /* ignore */ }
@@ -50,10 +49,6 @@ export default function IncomePage() {
           <View className="ws-income__summary-item">
             <Text className="ws-income__summary-value">¥{(summary.totalIncome / 100).toFixed(2)}</Text>
             <Text className="ws-income__summary-label">总收入</Text>
-          </View>
-          <View className="ws-income__summary-item">
-            <Text className="ws-income__summary-value">¥{(summary.balance / 100).toFixed(2)}</Text>
-            <Text className="ws-income__summary-label">可提现余额</Text>
           </View>
         </View>
         <View className="ws-income__withdraw" onClick={() => Taro.showToast({ title: '提现功能即将开放', icon: 'none' })}>提现</View>

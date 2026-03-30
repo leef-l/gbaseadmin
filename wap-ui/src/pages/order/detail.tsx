@@ -29,14 +29,14 @@ export default function OrderDetailPage() {
 
   const handleCancel = async () => {
     try {
-      await cancelOrder(order.id);
+      await cancelOrder(order.orderId);
       Taro.showToast({ title: '已取消', icon: 'success' });
-      setOrder({ ...order, status: 4 });
+      setOrder({ ...order, orderStatus: 4 });
     } catch {}
   };
 
   if (!order) return <View />;
-  const sc = statusConfig[order.status] || statusConfig[4];
+  const sc = statusConfig[order.orderStatus] || statusConfig[4];
 
   return (
     <View className="order-detail">
@@ -48,14 +48,14 @@ export default function OrderDetailPage() {
       <View className="order-detail__goods card">
         <View className="order-detail__cover" />
         <View className="order-detail__info">
-          <Text className="order-detail__name">{order.goodsName}</Text>
+          <Text className="order-detail__name">{order.goodsTitle}</Text>
           <Text className="order-detail__coach">{order.coachName}</Text>
-          <Text className="order-detail__spec">{order.quantity} x ¥{(order.unitPrice / 100).toFixed(2)}</Text>
+          <Text className="order-detail__spec">{order.quantity} x ¥{(order.goodsPrice / 100).toFixed(2)}</Text>
         </View>
       </View>
 
       <View className="order-detail__amount card">
-        <View className="order-detail__amount-row"><Text>商品金额</Text><Text>¥{(order.unitPrice * order.quantity / 100).toFixed(2)}</Text></View>
+        <View className="order-detail__amount-row"><Text>商品金额</Text><Text>¥{(order.goodsPrice * order.quantity / 100).toFixed(2)}</Text></View>
         {order.couponAmount > 0 && (
           <View className="order-detail__amount-row"><Text>优惠券</Text><Text style={{ color: 'var(--success)' }}>-¥{(order.couponAmount / 100).toFixed(2)}</Text></View>
         )}
@@ -68,14 +68,14 @@ export default function OrderDetailPage() {
       </View>
 
       <View className="bottom-bar">
-        {order.status === 0 && <>
+        {order.orderStatus === 0 && <>
           <View style={{ flex: 1 }} />
           <View style={{ border: '1px solid var(--border)', borderRadius: '20px', padding: '8px 20px', fontSize: '13px', marginRight: '8px' }} onClick={handleCancel}>取消订单</View>
-          <View className="btn-primary" onClick={() => Taro.navigateTo({ url: `/pages/order/pay?orderId=${order.id}` })}>去支付</View>
+          <View className="btn-primary" onClick={() => Taro.navigateTo({ url: `/pages/order/pay?orderId=${order.orderId}` })}>去支付</View>
         </>}
-        {order.status === 3 && <>
+        {order.orderStatus === 3 && <>
           <View style={{ flex: 1 }} />
-          <View className="btn-primary" onClick={() => Taro.navigateTo({ url: `/pages/order/review?orderId=${order.id}` })}>去评价</View>
+          <View className="btn-primary" onClick={() => Taro.navigateTo({ url: `/pages/order/review?orderId=${order.orderId}` })}>去评价</View>
         </>}
       </View>
     </View>

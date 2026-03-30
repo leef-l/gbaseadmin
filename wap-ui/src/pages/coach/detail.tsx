@@ -38,9 +38,8 @@ export default function CoachDetailPage() {
         <View className="coach-detail__cover-mask" />
         <View className="coach-detail__back" onClick={() => Taro.navigateBack()}>←</View>
         <View className="coach-detail__cover-info">
-          {detail.online && <View className="coach-detail__online-dot" />}
+          {detail.isOnline && <View className="coach-detail__online-dot" />}
           <Text className="coach-detail__cover-name">{detail.nickname}</Text>
-          <Text className="coach-detail__cover-level">{detail.level}</Text>
         </View>
       </View>
 
@@ -49,17 +48,11 @@ export default function CoachDetailPage() {
         <View className="coach-detail__score-row">
           <Text className="coach-detail__score-num">{detail.score}</Text>
           <Text className="coach-detail__score-stars">★★★★★</Text>
-          <Text className="coach-detail__score-count">{detail.scoreCount}人评分</Text>
         </View>
         <View className="coach-detail__stats">
           <Text className="coach-detail__stat">接单 <Text className="coach-detail__stat-val">{detail.orderCount}</Text></Text>
-          <Text className="coach-detail__stat">好评率 <Text className="coach-detail__stat-val">{detail.goodRate}</Text></Text>
-          <Text className="coach-detail__stat">响应 <Text className="coach-detail__stat-val">{detail.responseTime}</Text></Text>
         </View>
         <Text className="coach-detail__intro">{detail.intro}</Text>
-        <View className="coach-detail__skill-tags">
-          {detail.tags.map((t: string, i: number) => <Text key={i} className="tag">{t}</Text>)}
-        </View>
       </View>
 
       {/* Tab 切换 */}
@@ -71,14 +64,14 @@ export default function CoachDetailPage() {
       {activeTab === 0 ? (
         <View className="coach-detail__goods-list">
           {goodsList.map((g) => (
-            <View key={g.id} className="coach-detail__goods-item card">
+            <View key={g.goodsId} className="coach-detail__goods-item card">
               <View className="coach-detail__goods-cover" />
               <View className="coach-detail__goods-info">
-                <Text className="coach-detail__goods-name">{g.name}</Text>
-                <Text className="coach-detail__goods-desc">{g.desc}</Text>
+                <Text className="coach-detail__goods-name">{g.title}</Text>
+                <Text className="coach-detail__goods-desc">{g.description}</Text>
                 <View className="coach-detail__goods-bottom">
                   <Text className="price">¥{(g.price / 100).toFixed(2)}</Text>
-                  <View className="coach-detail__goods-btn" onClick={() => Taro.navigateTo({ url: `/pages/goods/detail?id=${g.id}` })}>立即预约</View>
+                  <View className="coach-detail__goods-btn" onClick={() => Taro.navigateTo({ url: `/pages/goods/detail?id=${g.goodsId}` })}>立即预约</View>
                 </View>
               </View>
             </View>
@@ -87,12 +80,12 @@ export default function CoachDetailPage() {
       ) : (
         <View className="coach-detail__reviews">
           {reviews.map((r) => (
-            <View key={r.id} className="coach-detail__review-item">
+            <View key={r.reviewId} className="coach-detail__review-item">
               <View className="coach-detail__review-header">
                 <View className="coach-detail__review-avatar" />
-                <Text className="coach-detail__review-name">{r.name}</Text>
+                <Text className="coach-detail__review-name">{r.nickname}</Text>
                 <Text className="coach-detail__review-score">{'★'.repeat(r.score)}</Text>
-                <Text className="coach-detail__review-time">{r.time}</Text>
+                <Text className="coach-detail__review-time">{r.createdAt}</Text>
               </View>
               <Text className="coach-detail__review-content">{r.content}</Text>
             </View>
@@ -106,7 +99,13 @@ export default function CoachDetailPage() {
           <Text style={{ fontSize: '20px' }}>❤️</Text>
           <Text style={{ fontSize: '20px' }}>💬</Text>
         </View>
-        <View className="btn-primary" onClick={() => Taro.navigateTo({ url: `/pages/goods/detail?coachId=${detail.id}` })}>立即预约</View>
+        <View className="btn-primary" onClick={() => {
+          if (goodsList.length > 0) {
+            Taro.navigateTo({ url: `/pages/goods/detail?id=${goodsList[0].goodsId}` });
+          } else {
+            Taro.showToast({ title: '暂无可预约的服务', icon: 'none' });
+          }
+        }}>立即预约</View>
       </View>
     </View>
   );

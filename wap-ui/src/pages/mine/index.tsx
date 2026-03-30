@@ -36,7 +36,7 @@ export default function MinePage() {
           <View className="mine__info">
             <Text className="mine__name">
               {isLoggedIn ? userInfo?.nickname || '用户' : '点击登录'}
-              {isLoggedIn && userInfo?.levelName && <Text className="mine__level">{userInfo.levelName}</Text>}
+              {isLoggedIn && userInfo?.levelTitle && <Text className="mine__level">{userInfo.levelTitle}</Text>}
             </Text>
             {isLoggedIn && userInfo?.phone && <Text className="mine__phone">{userInfo.phone}</Text>}
           </View>
