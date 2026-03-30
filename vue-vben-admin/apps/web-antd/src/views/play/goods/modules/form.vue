@@ -20,64 +20,64 @@ const [Form, formApi] = useVbenForm({
     {
       component: 'Select',
       fieldName: 'categoryID',
-      label: 'åˆ†ç±»ID',
+      label: '分类ID',
       rules: 'selectRequired',
-      componentProps: { options: categoryIDOptions, placeholder: '请选择åˆ†ç±»ID', allowClear: true, class: 'w-full' },
+      componentProps: { options: categoryIDOptions, placeholder: '请选择分类ID', allowClear: true, class: 'w-full' },
     },
     {
       component: 'Select',
       fieldName: 'coachID',
-      label: 'é™ªçŽ©å¸ˆID',
+      label: '陪玩师ID',
       rules: 'selectRequired',
-      componentProps: { options: coachIDOptions, placeholder: '请选择é™ªçŽ©å¸ˆID', allowClear: true, class: 'w-full' },
+      componentProps: { options: coachIDOptions, placeholder: '请选择陪玩师ID', allowClear: true, class: 'w-full' },
     },
     {
       component: 'Input',
       fieldName: 'title',
-      label: 'å•†å“åç§°',
+      label: '商品名称',
       rules: 'required',
-      componentProps: { placeholder: '请输入å•†å“åç§°', maxlength: 100 },
+      componentProps: { placeholder: '请输入商品名称', maxlength: 100 },
     },
     {
       component: 'Input',
       fieldName: 'coverImage',
-      label: 'å•†å“å°é¢å›¾',
-      componentProps: { placeholder: '请输入å•†å“å°é¢å›¾', maxlength: 500 },
+      label: '商品封面图',
+      componentProps: { placeholder: '请输入商品封面图', maxlength: 500 },
     },
     {
       component: 'Input',
       fieldName: 'descContent',
-      label: 'å•†å“è¯¦æƒ…æè¿°',
-      componentProps: { placeholder: '请输入å•†å“è¯¦æƒ…æè¿°', maxlength: 65535 },
+      label: '商品详情描述',
+      componentProps: { placeholder: '请输入商品详情描述', maxlength: 65535 },
     },
     {
-      component: 'Input',
+      component: 'InputNumber',
       fieldName: 'price',
-      label: 'å•ä»·ï¼ˆåˆ†ï¼‰',
-      componentProps: { placeholder: '请输入å•ä»·ï¼ˆåˆ†ï¼‰' },
+      label: '单价（分）',
+      componentProps: { placeholder: '请输入单价（分）', class: 'w-full' },
     },
     {
       component: 'Input',
       fieldName: 'unit',
-      label: 'è®¡é‡å•ä½',
-      componentProps: { placeholder: '请输入è®¡é‡å•ä½', maxlength: 20 },
+      label: '计量单位（如',
+      componentProps: { placeholder: '请输入计量单位（如', maxlength: 20 },
     },
     {
       component: 'InputNumber',
       fieldName: 'salesNum',
-      label: 'é”€é‡',
-      componentProps: { placeholder: '请输入é”€é‡', class: 'w-full' },
+      label: '销量',
+      componentProps: { placeholder: '请输入销量', class: 'w-full' },
     },
     {
       component: 'InputNumber',
       fieldName: 'sort',
-      label: 'æŽ’åºï¼ˆå‡åºï¼‰',
-      componentProps: { placeholder: '请输入æŽ’åºï¼ˆå‡åºï¼‰', class: 'w-full' },
+      label: '排序（升序）',
+      componentProps: { placeholder: '请输入排序（升序）', class: 'w-full' },
     },
     {
       component: 'Switch',
       fieldName: 'status',
-      label: 'çŠ¶æ€',
+      label: '状态',
       componentProps: { checkedValue: 1, unCheckedValue: 0 },
       defaultValue: 1,
     },
@@ -114,7 +114,7 @@ const [Modal, modalApi] = useVbenModal({
       if (data?.id) {
         isEdit.value = true;
         editId.value = data.id;
-        modalApi.setState({ title: '编辑å•†å“è¡¨' });
+        modalApi.setState({ title: '编辑商品表' });
         try {
           const detail = await getGoodsDetail(data.id);
           if (detail) {
@@ -126,7 +126,7 @@ const [Modal, modalApi] = useVbenModal({
       } else {
         isEdit.value = false;
         editId.value = '';
-        modalApi.setState({ title: '新建å•†å“è¡¨' });
+        modalApi.setState({ title: '新建商品表' });
         formApi.resetForm();
       }
     }

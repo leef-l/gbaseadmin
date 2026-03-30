@@ -87,13 +87,17 @@ func (s *sCoach) Detail(ctx context.Context, id snowflake.JsonInt64) (out *model
 	}
 	// 查询陪玩师等级ID关联显示
 	if out.CoachLevelID != 0 {
-		val, _ := g.DB().Ctx(ctx).Model("play_coach_level").Where("id", out.CoachLevelID).Where("deleted_at", nil).Value("title")
-		out.CoachLevelTitle = val.String()
+		val, err := g.DB().Ctx(ctx).Model("play_coach_level").Where("id", out.CoachLevelID).Where("deleted_at", nil).Value("title")
+		if err == nil {
+			out.CoachLevelTitle = val.String()
+		}
 	}
 	// 查询所属店铺ID（0表示无店铺）关联显示
 	if out.ShopID != 0 {
-		val, _ := g.DB().Ctx(ctx).Model("play_shop").Where("id", out.ShopID).Where("deleted_at", nil).Value("title")
-		out.ShopTitle = val.String()
+		val, err := g.DB().Ctx(ctx).Model("play_shop").Where("id", out.ShopID).Where("deleted_at", nil).Value("title")
+		if err == nil {
+			out.ShopTitle = val.String()
+		}
 	}
 	return
 }
@@ -118,12 +122,16 @@ func (s *sCoach) List(ctx context.Context, in *model.CoachListInput) (list []*mo
 	// 填充关联显示字段
 	for _, item := range list {
 		if item.CoachLevelID != 0 {
-			val, _ := g.DB().Ctx(ctx).Model("play_coach_level").Where("id", item.CoachLevelID).Where("deleted_at", nil).Value("title")
-			item.CoachLevelTitle = val.String()
+			val, err := g.DB().Ctx(ctx).Model("play_coach_level").Where("id", item.CoachLevelID).Where("deleted_at", nil).Value("title")
+			if err == nil {
+				item.CoachLevelTitle = val.String()
+			}
 		}
 		if item.ShopID != 0 {
-			val, _ := g.DB().Ctx(ctx).Model("play_shop").Where("id", item.ShopID).Where("deleted_at", nil).Value("title")
-			item.ShopTitle = val.String()
+			val, err := g.DB().Ctx(ctx).Model("play_shop").Where("id", item.ShopID).Where("deleted_at", nil).Value("title")
+			if err == nil {
+				item.ShopTitle = val.String()
+			}
 		}
 	}
 	return

@@ -13,21 +13,21 @@ import FormModal from './modules/form.vue';
 /** 标签颜色池 */
 const TAG_COLORS = ['green', 'red', 'blue', 'orange', 'cyan', 'purple', 'geekblue', 'magenta'];
 
-/** ä½¿ç”¨çŠ¶æ€选项 */
+/** 使用状态选项 */
 const useStatusOptions = [
-  { label: 'æœªä½¿ç”¨', value: 0 },
-  { label: 'å·²ä½¿ç”¨', value: 1 },
-  { label: 'å·²è¿‡æœŸ', value: 2 },
+  { label: '未使用', value: 0 },
+  { label: '已使用', value: 1 },
+  { label: '已过期', value: 2 },
 ];
 
-/** ä½¿ç”¨çŠ¶æ€映射 */
+/** 使用状态映射 */
 const useStatusMap: Record<number, string> = {
-  0: 'æœªä½¿ç”¨',
-  1: 'å·²ä½¿ç”¨',
-  2: 'å·²è¿‡æœŸ',
+  0: '未使用',
+  1: '已使用',
+  2: '已过期',
 };
 
-/** ä½¿ç”¨çŠ¶æ€颜色 */
+/** 使用状态颜色 */
 function getUseStatusColor(val: number): string {
   const keys = [0, 1, 2];
   const idx = keys.indexOf(val);
@@ -52,11 +52,11 @@ const formOptions: VbenFormProps = {
       componentProps: {
         allowClear: true,
         options: useStatusOptions,
-        placeholder: '请选择ä½¿ç”¨çŠ¶æ€',
+        placeholder: '请选择使用状态',
         class: 'w-full',
       },
       fieldName: 'useStatus',
-      label: 'ä½¿ç”¨çŠ¶æ€',
+      label: '使用状态',
     },
   ],
 };
@@ -65,13 +65,13 @@ const formOptions: VbenFormProps = {
 const gridOptions: VxeGridProps<CouponMemberItem> = {
   columns: [
     { title: '序号', type: 'seq', width: 50 },
-    { field: 'couponTitle', title: 'ä¼˜æƒ åˆ¸æ¨¡æ¿ID' },
-    { field: 'memberID', title: 'ä¼šå‘˜ID' },
-    { field: 'orderID', title: 'ä½¿ç”¨çš„è®¢å•ID' },
-    { field: 'useStatus', title: 'ä½¿ç”¨çŠ¶æ€', width: 120, slots: { default: 'useStatus_cell' } },
-    { field: 'claimAt', title: 'é¢†å–æ—¶é—´', width: 180, formatter: 'formatDateTime' },
-    { field: 'useAt', title: 'ä½¿ç”¨æ—¶é—´', width: 180, formatter: 'formatDateTime' },
-    { field: 'expireAt', title: 'è¿‡æœŸæ—¶é—´', width: 180, formatter: 'formatDateTime' },
+    { field: 'couponTitle', title: '优惠券模板ID' },
+    { field: 'memberID', title: '会员ID' },
+    { field: 'orderID', title: '使用的订单ID（0表示未使用）' },
+    { field: 'useStatus', title: '使用状态', width: 120, slots: { default: 'useStatus_cell' } },
+    { field: 'claimAt', title: '领取时间', width: 180, formatter: 'formatDateTime' },
+    { field: 'useAt', title: '使用时间', width: 180, formatter: 'formatDateTime' },
+    { field: 'expireAt', title: '过期时间', width: 180, formatter: 'formatDateTime' },
     { field: 'createdAt', title: '创建时间', width: 180, formatter: 'formatDateTime' },
     { title: '操作', width: 200, fixed: 'right', slots: { default: 'action' } },
   ],
@@ -115,7 +115,7 @@ function handleEdit(row: CouponMemberItem) {
 function handleDelete(row: CouponMemberItem) {
   Modal.confirm({
     title: '确认删除',
-    content: '确定要删除该ä¼šå‘˜ä¼˜æƒ åˆ¸è¡¨吗？',
+    content: '确定要删除该会员优惠券表吗？',
     okType: 'danger',
     async onOk() {
       await deleteCouponMember(row.id);

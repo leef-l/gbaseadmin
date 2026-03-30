@@ -9,19 +9,19 @@ import {
   updatePayment,
 } from '#/api/play/payment';
 
-/** æ”¯ä»˜æ–¹å¼选项 */
+/** 支付方式选项 */
 const payTypeOptions = [
-  { label: 'å¾®ä¿¡æ”¯ä»˜', value: 1 },
-  { label: 'æ”¯ä»˜å®æ”¯ä»˜', value: 2 },
-  { label: 'ä½™é¢æ”¯ä»˜', value: 3 },
+  { label: '微信支付', value: 1 },
+  { label: '支付宝支付', value: 2 },
+  { label: '余额支付', value: 3 },
 ];
 
-/** æ”¯ä»˜çŠ¶æ€选项 */
+/** 支付状态选项 */
 const payStatusOptions = [
-  { label: 'å¾…æ”¯ä»˜', value: 0 },
-  { label: 'æ”¯ä»˜æˆåŠŸ', value: 1 },
-  { label: 'æ”¯ä»˜å¤±è´¥', value: 2 },
-  { label: 'å·²é€€æ¬¾', value: 3 },
+  { label: '待支付', value: 0 },
+  { label: '支付成功', value: 1 },
+  { label: '支付失败', value: 2 },
+  { label: '已退款', value: 3 },
 ];
 
 const emit = defineEmits<{ success: [] }>();
@@ -35,71 +35,71 @@ const [Form, formApi] = useVbenForm({
     {
       component: 'Select',
       fieldName: 'orderID',
-      label: 'è®¢å•ID',
+      label: '订单ID',
       rules: 'selectRequired',
-      componentProps: { options: orderIDOptions, placeholder: '请选择è®¢å•ID', allowClear: true, class: 'w-full' },
+      componentProps: { options: orderIDOptions, placeholder: '请选择订单ID', allowClear: true, class: 'w-full' },
     },
     {
       component: 'Select',
       fieldName: 'memberID',
-      label: 'ä¼šå‘˜ID',
+      label: '会员ID',
       rules: 'selectRequired',
-      componentProps: { options: memberIDOptions, placeholder: '请选择ä¼šå‘˜ID', allowClear: true, class: 'w-full' },
+      componentProps: { options: memberIDOptions, placeholder: '请选择会员ID', allowClear: true, class: 'w-full' },
     },
     {
       component: 'Input',
       fieldName: 'paymentNo',
-      label: 'æ”¯ä»˜æµæ°´å·',
+      label: '支付流水号（平台内部）',
       rules: 'required',
-      componentProps: { placeholder: '请输入æ”¯ä»˜æµæ°´å·', maxlength: 64 },
+      componentProps: { placeholder: '请输入支付流水号（平台内部）', maxlength: 64 },
     },
     {
       component: 'Input',
       fieldName: 'tradeNo',
-      label: 'ç¬¬ä¸‰æ–¹äº¤æ˜“å·',
-      componentProps: { placeholder: '请输入ç¬¬ä¸‰æ–¹äº¤æ˜“å·', maxlength: 64 },
+      label: '第三方交易号',
+      componentProps: { placeholder: '请输入第三方交易号', maxlength: 64 },
     },
     {
       component: 'Select',
       fieldName: 'payType',
-      label: 'æ”¯ä»˜æ–¹å¼',
-      componentProps: { options: payTypeOptions, placeholder: '请选择æ”¯ä»˜æ–¹å¼', allowClear: true, class: 'w-full' },
+      label: '支付方式',
+      componentProps: { options: payTypeOptions, placeholder: '请选择支付方式', allowClear: true, class: 'w-full' },
     },
     {
-      component: 'Input',
+      component: 'InputNumber',
       fieldName: 'payAmount',
-      label: 'æ”¯ä»˜é‡‘é¢ï¼ˆåˆ†ï¼‰',
-      componentProps: { placeholder: '请输入æ”¯ä»˜é‡‘é¢ï¼ˆåˆ†ï¼‰' },
+      label: '支付金额（分）',
+      componentProps: { placeholder: '请输入支付金额（分）', class: 'w-full' },
     },
     {
       component: 'Select',
       fieldName: 'payStatus',
-      label: 'æ”¯ä»˜çŠ¶æ€',
-      componentProps: { options: payStatusOptions, placeholder: '请选择æ”¯ä»˜çŠ¶æ€', allowClear: true, class: 'w-full' },
+      label: '支付状态',
+      componentProps: { options: payStatusOptions, placeholder: '请选择支付状态', allowClear: true, class: 'w-full' },
     },
     {
       component: 'DatePicker',
       fieldName: 'payAt',
-      label: 'æ”¯ä»˜æˆåŠŸæ—¶é—´',
-      componentProps: { showTime: true, placeholder: '请选择æ”¯ä»˜æˆåŠŸæ—¶é—´', class: 'w-full', valueFormat: 'YYYY-MM-DD HH:mm:ss' },
+      label: '支付成功时间',
+      componentProps: { showTime: true, placeholder: '请选择支付成功时间', class: 'w-full', valueFormat: 'YYYY-MM-DD HH:mm:ss' },
     },
     {
       component: 'DatePicker',
       fieldName: 'refundAt',
-      label: 'é€€æ¬¾æ—¶é—´',
-      componentProps: { showTime: true, placeholder: '请选择é€€æ¬¾æ—¶é—´', class: 'w-full', valueFormat: 'YYYY-MM-DD HH:mm:ss' },
+      label: '退款时间',
+      componentProps: { showTime: true, placeholder: '请选择退款时间', class: 'w-full', valueFormat: 'YYYY-MM-DD HH:mm:ss' },
     },
     {
-      component: 'Input',
+      component: 'InputNumber',
       fieldName: 'refundAmount',
-      label: 'é€€æ¬¾é‡‘é¢ï¼ˆåˆ†ï¼‰',
-      componentProps: { placeholder: '请输入é€€æ¬¾é‡‘é¢ï¼ˆåˆ†ï¼‰' },
+      label: '退款金额（分）',
+      componentProps: { placeholder: '请输入退款金额（分）', class: 'w-full' },
     },
     {
       component: 'Input',
       fieldName: 'callbackContent',
-      label: 'å›žè°ƒæŠ¥æ–‡',
-      componentProps: { placeholder: '请输入å›žè°ƒæŠ¥æ–‡', maxlength: 65535 },
+      label: '回调报文',
+      componentProps: { placeholder: '请输入回调报文', maxlength: 65535 },
     },
   ],
 });
@@ -134,7 +134,7 @@ const [Modal, modalApi] = useVbenModal({
       if (data?.id) {
         isEdit.value = true;
         editId.value = data.id;
-        modalApi.setState({ title: '编辑æ”¯ä»˜è®°å½•è¡¨' });
+        modalApi.setState({ title: '编辑支付记录表' });
         try {
           const detail = await getPaymentDetail(data.id);
           if (detail) {
@@ -146,7 +146,7 @@ const [Modal, modalApi] = useVbenModal({
       } else {
         isEdit.value = false;
         editId.value = '';
-        modalApi.setState({ title: '新建æ”¯ä»˜è®°å½•è¡¨' });
+        modalApi.setState({ title: '新建支付记录表' });
         formApi.resetForm();
       }
     }

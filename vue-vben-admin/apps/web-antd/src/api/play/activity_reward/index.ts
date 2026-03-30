@@ -10,7 +10,7 @@ import type {
 /** API 前缀 */
 const PREFIX = '/play/activity_reward';
 
-/** 获取æ´»åŠ¨å¥–åŠ±è¡¨列表 */
+/** 获取活动奖励表列表 */
 export function getActivityRewardList(params: ActivityRewardListParams) {
   return requestClient.get<{ list: ActivityRewardItem[]; total: number }>(
     `${PREFIX}/list`,
@@ -18,24 +18,24 @@ export function getActivityRewardList(params: ActivityRewardListParams) {
   );
 }
 
-/** 获取æ´»åŠ¨å¥–åŠ±è¡¨详情 */
+/** 获取活动奖励表详情 */
 export function getActivityRewardDetail(id: string) {
   return requestClient.get<ActivityRewardItem>(`${PREFIX}/detail`, {
     params: { id },
   });
 }
 
-/** 创建æ´»åŠ¨å¥–åŠ±è¡¨ */
+/** 创建活动奖励表 */
 export function createActivityReward(data: ActivityRewardCreateParams) {
   return requestClient.post(`${PREFIX}/create`, data);
 }
 
-/** 更新æ´»åŠ¨å¥–åŠ±è¡¨ */
+/** 更新活动奖励表 */
 export function updateActivityReward(data: ActivityRewardUpdateParams) {
   return requestClient.put(`${PREFIX}/update`, data);
 }
 
-/** 删除æ´»åŠ¨å¥–åŠ±è¡¨ */
+/** 删除活动奖励表 */
 export function deleteActivityReward(id: string) {
   return requestClient.delete(`${PREFIX}/delete`, { data: { id } });
 }

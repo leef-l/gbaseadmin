@@ -9,12 +9,12 @@ import {
   updateActivityJoin,
 } from '#/api/play/activity_join';
 
-/** å‚ä¸ŽçŠ¶æ€选项 */
+/** 参与状态选项 */
 const joinStatusOptions = [
-  { label: 'å·²æŠ¥å', value: 0 },
-  { label: 'è¿›è¡Œä¸­', value: 1 },
-  { label: 'å·²å®Œæˆ', value: 2 },
-  { label: 'å·²é¢†å¥–', value: 3 },
+  { label: '已报名', value: 0 },
+  { label: '进行中', value: 1 },
+  { label: '已完成', value: 2 },
+  { label: '已领奖', value: 3 },
 ];
 
 const emit = defineEmits<{ success: [] }>();
@@ -28,46 +28,46 @@ const [Form, formApi] = useVbenForm({
     {
       component: 'Select',
       fieldName: 'activityID',
-      label: 'æ´»åŠ¨ID',
+      label: '活动ID',
       rules: 'selectRequired',
-      componentProps: { options: activityIDOptions, placeholder: '请选择æ´»åŠ¨ID', allowClear: true, class: 'w-full' },
+      componentProps: { options: activityIDOptions, placeholder: '请选择活动ID', allowClear: true, class: 'w-full' },
     },
     {
       component: 'Select',
       fieldName: 'memberID',
-      label: 'ä¼šå‘˜ID',
+      label: '会员ID',
       rules: 'selectRequired',
-      componentProps: { options: memberIDOptions, placeholder: '请选择ä¼šå‘˜ID', allowClear: true, class: 'w-full' },
+      componentProps: { options: memberIDOptions, placeholder: '请选择会员ID', allowClear: true, class: 'w-full' },
     },
     {
       component: 'Select',
       fieldName: 'joinStatus',
-      label: 'å‚ä¸ŽçŠ¶æ€',
-      componentProps: { options: joinStatusOptions, placeholder: '请选择å‚ä¸ŽçŠ¶æ€', allowClear: true, class: 'w-full' },
+      label: '参与状态',
+      componentProps: { options: joinStatusOptions, placeholder: '请选择参与状态', allowClear: true, class: 'w-full' },
     },
     {
       component: 'Input',
       fieldName: 'currentStep',
-      label: 'å½“å‰å®Œæˆåˆ°ç¬¬å‡ æ­¥',
-      componentProps: { placeholder: '请输入å½“å‰å®Œæˆåˆ°ç¬¬å‡ æ­¥' },
+      label: '当前完成到第几步（步骤活动用）',
+      componentProps: { placeholder: '请输入当前完成到第几步（步骤活动用）' },
     },
     {
       component: 'DatePicker',
       fieldName: 'finishAt',
-      label: 'å®Œæˆæ—¶é—´',
-      componentProps: { showTime: true, placeholder: '请选择å®Œæˆæ—¶é—´', class: 'w-full', valueFormat: 'YYYY-MM-DD HH:mm:ss' },
+      label: '完成时间',
+      componentProps: { showTime: true, placeholder: '请选择完成时间', class: 'w-full', valueFormat: 'YYYY-MM-DD HH:mm:ss' },
     },
     {
       component: 'DatePicker',
       fieldName: 'rewardAt',
-      label: 'é¢†å¥–æ—¶é—´',
-      componentProps: { showTime: true, placeholder: '请选择é¢†å¥–æ—¶é—´', class: 'w-full', valueFormat: 'YYYY-MM-DD HH:mm:ss' },
+      label: '领奖时间',
+      componentProps: { showTime: true, placeholder: '请选择领奖时间', class: 'w-full', valueFormat: 'YYYY-MM-DD HH:mm:ss' },
     },
     {
       component: 'Input',
       fieldName: 'remark',
-      label: 'å¤‡æ³¨',
-      componentProps: { placeholder: '请输入å¤‡æ³¨', maxlength: 500 },
+      label: '备注',
+      componentProps: { placeholder: '请输入备注', maxlength: 500 },
     },
   ],
 });
@@ -102,7 +102,7 @@ const [Modal, modalApi] = useVbenModal({
       if (data?.id) {
         isEdit.value = true;
         editId.value = data.id;
-        modalApi.setState({ title: '编辑æ´»åŠ¨å‚ä¸Žè®°å½•è¡¨' });
+        modalApi.setState({ title: '编辑活动参与记录表' });
         try {
           const detail = await getActivityJoinDetail(data.id);
           if (detail) {
@@ -114,7 +114,7 @@ const [Modal, modalApi] = useVbenModal({
       } else {
         isEdit.value = false;
         editId.value = '';
-        modalApi.setState({ title: '新建æ´»åŠ¨å‚ä¸Žè®°å½•è¡¨' });
+        modalApi.setState({ title: '新建活动参与记录表' });
         formApi.resetForm();
       }
     }

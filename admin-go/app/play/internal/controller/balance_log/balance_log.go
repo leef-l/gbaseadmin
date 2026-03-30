@@ -12,7 +12,7 @@ var BalanceLog = cBalanceLog{}
 
 type cBalanceLog struct{}
 
-// Create 创建ä½™é¢æµæ°´è¡¨
+// Create 创建余额流水表
 func (c *cBalanceLog) Create(ctx context.Context, req *v1.BalanceLogCreateReq) (res *v1.BalanceLogCreateRes, err error) {
 	err = service.BalanceLog().Create(ctx, &model.BalanceLogCreateInput{
 		MemberID: req.MemberID,
@@ -26,7 +26,7 @@ func (c *cBalanceLog) Create(ctx context.Context, req *v1.BalanceLogCreateReq) (
 	return
 }
 
-// Update 更新ä½™é¢æµæ°´è¡¨
+// Update 更新余额流水表
 func (c *cBalanceLog) Update(ctx context.Context, req *v1.BalanceLogUpdateReq) (res *v1.BalanceLogUpdateRes, err error) {
 	err = service.BalanceLog().Update(ctx, &model.BalanceLogUpdateInput{
 		ID: req.ID,
@@ -41,20 +41,20 @@ func (c *cBalanceLog) Update(ctx context.Context, req *v1.BalanceLogUpdateReq) (
 	return
 }
 
-// Delete 删除ä½™é¢æµæ°´è¡¨
+// Delete 删除余额流水表
 func (c *cBalanceLog) Delete(ctx context.Context, req *v1.BalanceLogDeleteReq) (res *v1.BalanceLogDeleteRes, err error) {
 	err = service.BalanceLog().Delete(ctx, req.ID)
 	return
 }
 
-// Detail 获取ä½™é¢æµæ°´è¡¨详情
+// Detail 获取余额流水表详情
 func (c *cBalanceLog) Detail(ctx context.Context, req *v1.BalanceLogDetailReq) (res *v1.BalanceLogDetailRes, err error) {
 	res = &v1.BalanceLogDetailRes{}
 	res.BalanceLogDetailOutput, err = service.BalanceLog().Detail(ctx, req.ID)
 	return
 }
 
-// List 获取ä½™é¢æµæ°´è¡¨列表
+// List 获取余额流水表列表
 func (c *cBalanceLog) List(ctx context.Context, req *v1.BalanceLogListReq) (res *v1.BalanceLogListRes, err error) {
 	res = &v1.BalanceLogListRes{}
 	res.List, res.Total, err = service.BalanceLog().List(ctx, &model.BalanceLogListInput{

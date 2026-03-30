@@ -22,7 +22,7 @@ func New() *sRechargePlan {
 
 type sRechargePlan struct{}
 
-// Create 创建å……å€¼æ–¹æ¡ˆè¡¨
+// Create 创建充值方案表
 func (s *sRechargePlan) Create(ctx context.Context, in *model.RechargePlanCreateInput) error {
 	id := snowflake.Generate()
 	_, err := dao.PlayRechargePlan.Ctx(ctx).Data(g.Map{
@@ -39,7 +39,7 @@ func (s *sRechargePlan) Create(ctx context.Context, in *model.RechargePlanCreate
 	return err
 }
 
-// Update 更新å……å€¼æ–¹æ¡ˆè¡¨
+// Update 更新充值方案表
 func (s *sRechargePlan) Update(ctx context.Context, in *model.RechargePlanUpdateInput) error {
 	data := g.Map{
 		dao.PlayRechargePlan.Columns().Title: in.Title,
@@ -54,7 +54,7 @@ func (s *sRechargePlan) Update(ctx context.Context, in *model.RechargePlanUpdate
 	return err
 }
 
-// Delete 软删除å……å€¼æ–¹æ¡ˆè¡¨
+// Delete 软删除充值方案表
 func (s *sRechargePlan) Delete(ctx context.Context, id snowflake.JsonInt64) error {
 	_, err := dao.PlayRechargePlan.Ctx(ctx).Where(dao.PlayRechargePlan.Columns().Id, id).Data(g.Map{
 		dao.PlayRechargePlan.Columns().DeletedAt: gtime.Now(),
@@ -62,7 +62,7 @@ func (s *sRechargePlan) Delete(ctx context.Context, id snowflake.JsonInt64) erro
 	return err
 }
 
-// Detail 获取å……å€¼æ–¹æ¡ˆè¡¨详情
+// Detail 获取充值方案表详情
 func (s *sRechargePlan) Detail(ctx context.Context, id snowflake.JsonInt64) (out *model.RechargePlanDetailOutput, err error) {
 	out = &model.RechargePlanDetailOutput{}
 	err = dao.PlayRechargePlan.Ctx(ctx).Where(dao.PlayRechargePlan.Columns().Id, id).Where(dao.PlayRechargePlan.Columns().DeletedAt, nil).Scan(out)
@@ -72,7 +72,7 @@ func (s *sRechargePlan) Detail(ctx context.Context, id snowflake.JsonInt64) (out
 	return
 }
 
-// List 获取å……å€¼æ–¹æ¡ˆè¡¨列表
+// List 获取充值方案表列表
 func (s *sRechargePlan) List(ctx context.Context, in *model.RechargePlanListInput) (list []*model.RechargePlanListOutput, total int, err error) {
 	m := dao.PlayRechargePlan.Ctx(ctx).Where(dao.PlayRechargePlan.Columns().DeletedAt, nil)
 	if in.Status > 0 {

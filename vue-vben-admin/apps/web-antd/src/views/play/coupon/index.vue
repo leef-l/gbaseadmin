@@ -13,59 +13,59 @@ import FormModal from './modules/form.vue';
 /** 标签颜色池 */
 const TAG_COLORS = ['green', 'red', 'blue', 'orange', 'cyan', 'purple', 'geekblue', 'magenta'];
 
-/** ä¼˜æƒ åˆ¸ç±»åž‹选项 */
+/** 优惠券类型选项 */
 const typeOptions = [
-  { label: 'æ»¡å‡åˆ¸', value: 1 },
-  { label: 'æŠ˜æ‰£åˆ¸', value: 2 },
-  { label: 'æ— é—¨æ§›åˆ¸', value: 3 },
+  { label: '满减券', value: 1 },
+  { label: '折扣券', value: 2 },
+  { label: '无门槛券', value: 3 },
 ];
 
-/** ä¼˜æƒ åˆ¸ç±»åž‹映射 */
+/** 优惠券类型映射 */
 const typeMap: Record<number, string> = {
-  1: 'æ»¡å‡åˆ¸',
-  2: 'æŠ˜æ‰£åˆ¸',
-  3: 'æ— é—¨æ§›åˆ¸',
+  1: '满减券',
+  2: '折扣券',
+  3: '无门槛券',
 };
 
-/** ä¼˜æƒ åˆ¸ç±»åž‹颜色 */
+/** 优惠券类型颜色 */
 function getTypeColor(val: number): string {
   const keys = [1, 2, 3];
   const idx = keys.indexOf(val);
   return TAG_COLORS[idx >= 0 ? idx % TAG_COLORS.length : 0] ?? 'default';
 }
 
-/** æ˜¯å¦æ–°äººä¸“äº«选项 */
+/** 是否新人专享选项 */
 const isNewMemberOptions = [
-  { label: 'å¦', value: 0 },
-  { label: 'æ˜¯', value: 1 },
+  { label: '否', value: 0 },
+  { label: '是', value: 1 },
 ];
 
-/** æ˜¯å¦æ–°äººä¸“äº«映射 */
+/** 是否新人专享映射 */
 const isNewMemberMap: Record<number, string> = {
-  0: 'å¦',
-  1: 'æ˜¯',
+  0: '否',
+  1: '是',
 };
 
-/** æ˜¯å¦æ–°äººä¸“äº«颜色 */
+/** 是否新人专享颜色 */
 function getIsNewMemberColor(val: number): string {
   const keys = [0, 1];
   const idx = keys.indexOf(val);
   return TAG_COLORS[idx >= 0 ? idx % TAG_COLORS.length : 0] ?? 'default';
 }
 
-/** çŠ¶æ€选项 */
+/** 状态选项 */
 const statusOptions = [
-  { label: 'å…³é—­', value: 0 },
-  { label: 'å¼€å¯', value: 1 },
+  { label: '关闭', value: 0 },
+  { label: '开启', value: 1 },
 ];
 
-/** çŠ¶æ€映射 */
+/** 状态映射 */
 const statusMap: Record<number, string> = {
-  0: 'å…³é—­',
-  1: 'å¼€å¯',
+  0: '关闭',
+  1: '开启',
 };
 
-/** çŠ¶æ€颜色 */
+/** 状态颜色 */
 function getStatusColor(val: number): string {
   const keys = [0, 1];
   const idx = keys.indexOf(val);
@@ -90,33 +90,33 @@ const formOptions: VbenFormProps = {
       componentProps: {
         allowClear: true,
         options: typeOptions,
-        placeholder: '请选择ä¼˜æƒ åˆ¸ç±»åž‹',
+        placeholder: '请选择优惠券类型',
         class: 'w-full',
       },
       fieldName: 'type',
-      label: 'ä¼˜æƒ åˆ¸ç±»åž‹',
+      label: '优惠券类型',
     },
     {
       component: 'Select',
       componentProps: {
         allowClear: true,
         options: isNewMemberOptions,
-        placeholder: '请选择æ˜¯å¦æ–°äººä¸“äº«',
+        placeholder: '请选择是否新人专享',
         class: 'w-full',
       },
       fieldName: 'isNewMember',
-      label: 'æ˜¯å¦æ–°äººä¸“äº«',
+      label: '是否新人专享',
     },
     {
       component: 'Select',
       componentProps: {
         allowClear: true,
         options: statusOptions,
-        placeholder: '请选择çŠ¶æ€',
+        placeholder: '请选择状态',
         class: 'w-full',
       },
       fieldName: 'status',
-      label: 'çŠ¶æ€',
+      label: '状态',
     },
   ],
 };
@@ -125,19 +125,19 @@ const formOptions: VbenFormProps = {
 const gridOptions: VxeGridProps<CouponItem> = {
   columns: [
     { title: '序号', type: 'seq', width: 50 },
-    { field: 'title', title: 'ä¼˜æƒ åˆ¸åç§°' },
-    { field: 'type', title: 'ä¼˜æƒ åˆ¸ç±»åž‹', width: 120, slots: { default: 'type_cell' } },
-    { field: 'isNewMember', title: 'æ˜¯å¦æ–°äººä¸“äº«', width: 120, slots: { default: 'isNewMember_cell' } },
-    { field: 'faceValue', title: 'é¢å€¼ï¼ˆåˆ†ï¼‰' },
-    { field: 'minAmount', title: 'æœ€ä½Žæ¶ˆè´¹é‡‘é¢ï¼ˆåˆ†ï¼‰' },
-    { field: 'totalNum', title: 'å‘æ”¾æ€»é‡ï¼ˆ0ä¸é™ï¼‰' },
-    { field: 'usedNum', title: 'å·²ä½¿ç”¨æ•°é‡' },
-    { field: 'claimNum', title: 'å·²é¢†å–æ•°é‡' },
-    { field: 'perLimit', title: 'æ¯äººé™é¢†å¼ æ•°' },
-    { field: 'sort', title: 'æŽ’åº' },
-    { field: 'status', title: 'çŠ¶æ€', width: 120, slots: { default: 'status_cell' } },
-    { field: 'validStartAt', title: 'æœ‰æ•ˆæœŸå¼€å§‹æ—¶é—´', width: 180, formatter: 'formatDateTime' },
-    { field: 'validEndAt', title: 'æœ‰æ•ˆæœŸç»“æŸæ—¶é—´', width: 180, formatter: 'formatDateTime' },
+    { field: 'title', title: '优惠券名称' },
+    { field: 'type', title: '优惠券类型', width: 120, slots: { default: 'type_cell' } },
+    { field: 'isNewMember', title: '是否新人专享', width: 120, slots: { default: 'isNewMember_cell' } },
+    { field: 'faceValue', title: '面值（分，满减/无门槛时为抵扣额，折扣时为折扣值如 85=8.5折）' },
+    { field: 'minAmount', title: '最低消费金额（分，0表示无门槛）' },
+    { field: 'totalNum', title: '发放总量（0表示不限）' },
+    { field: 'usedNum', title: '已使用数量' },
+    { field: 'claimNum', title: '已领取数量' },
+    { field: 'perLimit', title: '每人限领张数' },
+    { field: 'sort', title: '排序（升序）' },
+    { field: 'status', title: '状态', width: 120, slots: { default: 'status_cell' } },
+    { field: 'validStartAt', title: '有效期开始时间', width: 180, formatter: 'formatDateTime' },
+    { field: 'validEndAt', title: '有效期结束时间', width: 180, formatter: 'formatDateTime' },
     { field: 'createdAt', title: '创建时间', width: 180, formatter: 'formatDateTime' },
     { title: '操作', width: 200, fixed: 'right', slots: { default: 'action' } },
   ],
@@ -181,7 +181,7 @@ function handleEdit(row: CouponItem) {
 function handleDelete(row: CouponItem) {
   Modal.confirm({
     title: '确认删除',
-    content: '确定要删除该ä¼˜æƒ åˆ¸æ¨¡æ¿è¡¨吗？',
+    content: '确定要删除该优惠券模板表吗？',
     okType: 'danger',
     async onOk() {
       await deleteCoupon(row.id);

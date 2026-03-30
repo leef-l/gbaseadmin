@@ -71,8 +71,10 @@ func (s *sCategory) Detail(ctx context.Context, id snowflake.JsonInt64) (out *mo
 	}
 	// 查询上级分类ID，0 表示顶级分类关联显示
 	if out.ParentID != 0 {
-		val, _ := g.DB().Ctx(ctx).Model("play_category").Where("id", out.ParentID).Where("deleted_at", nil).Value("title")
-		out.CategoryTitle = val.String()
+		val, err := g.DB().Ctx(ctx).Model("play_category").Where("id", out.ParentID).Where("deleted_at", nil).Value("title")
+		if err == nil {
+			out.CategoryTitle = val.String()
+		}
 	}
 	return
 }
@@ -94,8 +96,10 @@ func (s *sCategory) List(ctx context.Context, in *model.CategoryListInput) (list
 	// 填充关联显示字段
 	for _, item := range list {
 		if item.ParentID != 0 {
-			val, _ := g.DB().Ctx(ctx).Model("play_category").Where("id", item.ParentID).Where("deleted_at", nil).Value("title")
-			item.CategoryTitle = val.String()
+			val, err := g.DB().Ctx(ctx).Model("play_category").Where("id", item.ParentID).Where("deleted_at", nil).Value("title")
+			if err == nil {
+				item.CategoryTitle = val.String()
+			}
 		}
 	}
 	return

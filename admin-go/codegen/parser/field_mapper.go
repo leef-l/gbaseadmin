@@ -215,8 +215,12 @@ func MapComponent(field FieldMeta) string {
 		return ComponentDateTimePicker
 	}
 
-	// 数字输入
-	if name == "sort" || name == "order" || strings.HasSuffix(name, "_num") {
+	// 数字输入（含金额字段）
+	if name == "sort" || name == "order" || strings.HasSuffix(name, "_num") ||
+		strings.HasSuffix(name, "_price") || strings.HasSuffix(name, "_amount") ||
+		strings.HasSuffix(name, "_income") || strings.HasSuffix(name, "_balance") ||
+		name == "price" || name == "amount" || name == "balance" || name == "quantity" ||
+		name == "income_total" || name == "income_balance" {
 		return ComponentInputNumber
 	}
 

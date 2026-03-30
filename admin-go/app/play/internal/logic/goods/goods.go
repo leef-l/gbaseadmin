@@ -22,7 +22,7 @@ func New() *sGoods {
 
 type sGoods struct{}
 
-// Create 创建å•†å“è¡¨
+// Create 创建商品表
 func (s *sGoods) Create(ctx context.Context, in *model.GoodsCreateInput) error {
 	id := snowflake.Generate()
 	_, err := dao.PlayGoods.Ctx(ctx).Data(g.Map{
@@ -43,7 +43,7 @@ func (s *sGoods) Create(ctx context.Context, in *model.GoodsCreateInput) error {
 	return err
 }
 
-// Update 更新å•†å“è¡¨
+// Update 更新商品表
 func (s *sGoods) Update(ctx context.Context, in *model.GoodsUpdateInput) error {
 	data := g.Map{
 		dao.PlayGoods.Columns().CategoryId: in.CategoryID,
@@ -62,7 +62,7 @@ func (s *sGoods) Update(ctx context.Context, in *model.GoodsUpdateInput) error {
 	return err
 }
 
-// Delete 软删除å•†å“è¡¨
+// Delete 软删除商品表
 func (s *sGoods) Delete(ctx context.Context, id snowflake.JsonInt64) error {
 	_, err := dao.PlayGoods.Ctx(ctx).Where(dao.PlayGoods.Columns().Id, id).Data(g.Map{
 		dao.PlayGoods.Columns().DeletedAt: gtime.Now(),
@@ -70,22 +70,24 @@ func (s *sGoods) Delete(ctx context.Context, id snowflake.JsonInt64) error {
 	return err
 }
 
-// Detail 获取å•†å“è¡¨详情
+// Detail 获取商品表详情
 func (s *sGoods) Detail(ctx context.Context, id snowflake.JsonInt64) (out *model.GoodsDetailOutput, err error) {
 	out = &model.GoodsDetailOutput{}
 	err = dao.PlayGoods.Ctx(ctx).Where(dao.PlayGoods.Columns().Id, id).Where(dao.PlayGoods.Columns().DeletedAt, nil).Scan(out)
 	if err != nil {
 		return nil, err
 	}
-	// 查询åˆ†ç±»ID关联显示
+	// 查询分类ID关联显示
 	if out.CategoryID != 0 {
-		val, _ := g.DB().Ctx(ctx).Model("play_category").Where("id", out.CategoryID).Where("deleted_at", nil).Value("title")
-		out.CategoryTitle = val.String()
+		val, err := g.DB().Ctx(ctx).Model("play_category").Where("id", out.CategoryID).Where("deleted_at", nil).Value("title")
+		if err == nil {
+			out.CategoryTitle = val.String()
+		}
 	}
 	return
 }
 
-// List 获取å•†å“è¡¨列表
+// List 获取商品表列表
 func (s *sGoods) List(ctx context.Context, in *model.GoodsListInput) (list []*model.GoodsListOutput, total int, err error) {
 	m := dao.PlayGoods.Ctx(ctx).Where(dao.PlayGoods.Columns().DeletedAt, nil)
 	if in.Status > 0 {
@@ -102,8 +104,10 @@ func (s *sGoods) List(ctx context.Context, in *model.GoodsListInput) (list []*mo
 	// 填充关联显示字段
 	for _, item := range list {
 		if item.CategoryID != 0 {
-			val, _ := g.DB().Ctx(ctx).Model("play_category").Where("id", item.CategoryID).Where("deleted_at", nil).Value("title")
-			item.CategoryTitle = val.String()
+			val, err := g.DB().Ctx(ctx).Model("play_category").Where("id", item.CategoryID).Where("deleted_at", nil).Value("title")
+			if err == nil {
+				item.CategoryTitle = val.String()
+			}
 		}
 	}
 	return

@@ -13,19 +13,19 @@ import FormModal from './modules/form.vue';
 /** 标签颜色池 */
 const TAG_COLORS = ['green', 'red', 'blue', 'orange', 'cyan', 'purple', 'geekblue', 'magenta'];
 
-/** ç»“ç®—çŠ¶æ€选项 */
+/** 结算状态选项 */
 const settleStatusOptions = [
-  { label: 'å¾…ç»“ç®—', value: 0 },
-  { label: 'å·²ç»“ç®—', value: 1 },
+  { label: '待结算', value: 0 },
+  { label: '已结算', value: 1 },
 ];
 
-/** ç»“ç®—çŠ¶æ€映射 */
+/** 结算状态映射 */
 const settleStatusMap: Record<number, string> = {
-  0: 'å¾…ç»“ç®—',
-  1: 'å·²ç»“ç®—',
+  0: '待结算',
+  1: '已结算',
 };
 
-/** ç»“ç®—çŠ¶æ€颜色 */
+/** 结算状态颜色 */
 function getSettleStatusColor(val: number): string {
   const keys = [0, 1];
   const idx = keys.indexOf(val);
@@ -50,11 +50,11 @@ const formOptions: VbenFormProps = {
       componentProps: {
         allowClear: true,
         options: settleStatusOptions,
-        placeholder: '请选择ç»“ç®—çŠ¶æ€',
+        placeholder: '请选择结算状态',
         class: 'w-full',
       },
       fieldName: 'settleStatus',
-      label: 'ç»“ç®—çŠ¶æ€',
+      label: '结算状态',
     },
   ],
 };
@@ -63,18 +63,18 @@ const formOptions: VbenFormProps = {
 const gridOptions: VxeGridProps<ProfitLogItem> = {
   columns: [
     { title: '序号', type: 'seq', width: 50 },
-    { field: 'orderID', title: 'è®¢å•ID' },
-    { field: 'orderNo', title: 'è®¢å•ç¼–å·' },
-    { field: 'payAmount', title: 'å®žä»˜é‡‘é¢ï¼ˆåˆ†ï¼‰' },
-    { field: 'coachID', title: 'é™ªçŽ©å¸ˆID' },
-    { field: 'shopTitle', title: 'åº—é“ºID' },
-    { field: 'platformRate', title: 'å¹³å°æŠ½æˆæ¯”ä¾‹' },
-    { field: 'platformAmount', title: 'å¹³å°æŠ½æˆé‡‘é¢ï¼ˆåˆ†ï¼‰' },
-    { field: 'shopRate', title: 'åº—é“ºæŠ½æˆæ¯”ä¾‹' },
-    { field: 'shopAmount', title: 'åº—é“ºæŠ½æˆé‡‘é¢ï¼ˆåˆ†ï¼‰' },
-    { field: 'coachAmount', title: 'é™ªçŽ©å¸ˆæ”¶å…¥ï¼ˆåˆ†ï¼‰' },
-    { field: 'settleStatus', title: 'ç»“ç®—çŠ¶æ€', width: 120, slots: { default: 'settleStatus_cell' } },
-    { field: 'settleAt', title: 'ç»“ç®—æ—¶é—´', width: 180, formatter: 'formatDateTime' },
+    { field: 'orderID', title: '订单ID' },
+    { field: 'orderNo', title: '订单编号' },
+    { field: 'payAmount', title: '实付金额（分）' },
+    { field: 'coachID', title: '陪玩师ID' },
+    { field: 'shopTitle', title: '店铺ID（0表示无店铺）' },
+    { field: 'platformRate', title: '平台抽成比例（百分比）' },
+    { field: 'platformAmount', title: '平台抽成金额（分）' },
+    { field: 'shopRate', title: '店铺抽成比例（百分比）' },
+    { field: 'shopAmount', title: '店铺抽成金额（分）' },
+    { field: 'coachAmount', title: '陪玩师收入（分）' },
+    { field: 'settleStatus', title: '结算状态', width: 120, slots: { default: 'settleStatus_cell' } },
+    { field: 'settleAt', title: '结算时间', width: 180, formatter: 'formatDateTime' },
     { field: 'createdAt', title: '创建时间', width: 180, formatter: 'formatDateTime' },
     { title: '操作', width: 200, fixed: 'right', slots: { default: 'action' } },
   ],
@@ -118,7 +118,7 @@ function handleEdit(row: ProfitLogItem) {
 function handleDelete(row: ProfitLogItem) {
   Modal.confirm({
     title: '确认删除',
-    content: '确定要删除该åˆ©æ¶¦åˆ†æˆæµæ°´è¡¨吗？',
+    content: '确定要删除该利润分成流水表吗？',
     okType: 'danger',
     async onOk() {
       await deleteProfitLog(row.id);

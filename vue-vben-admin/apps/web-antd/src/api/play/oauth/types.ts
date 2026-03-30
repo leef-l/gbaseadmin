@@ -1,6 +1,6 @@
-/** ç¬¬ä¸‰æ–¹ç™»å½•ç»‘å®šè¡¨类型定义 */
+/** 第三方登录绑定表类型定义 */
 
-/** ç¬¬ä¸‰æ–¹ç™»å½•ç»‘å®šè¡¨项 */
+/** 第三方登录绑定表项 */
 export interface OauthItem {
   id: string;
   memberID: string;
@@ -16,14 +16,14 @@ export interface OauthItem {
   updatedAt?: string;
 }
 
-/** ç¬¬ä¸‰æ–¹ç™»å½•ç»‘å®šè¡¨列表查询参数 */
+/** 第三方登录绑定表列表查询参数 */
 export interface OauthListParams {
   pageNum: number;
   pageSize: number;
   provider?: number;
 }
 
-/** ç¬¬ä¸‰æ–¹ç™»å½•ç»‘å®šè¡¨创建参数 */
+/** 第三方登录绑定表创建参数 */
 export interface OauthCreateParams {
   memberID: string;
   provider: number;
@@ -36,7 +36,7 @@ export interface OauthCreateParams {
   expireAt?: string;
 }
 
-/** ç¬¬ä¸‰æ–¹ç™»å½•ç»‘å®šè¡¨更新参数 */
+/** 第三方登录绑定表更新参数 */
 export interface OauthUpdateParams {
   id: string;
   memberID: string;

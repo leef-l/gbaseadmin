@@ -8,7 +8,7 @@ import (
 
 // Activity DTO 模型
 
-// ActivityCreateInput 创建æ´»åŠ¨è¡¨输入
+// ActivityCreateInput 创建活动表输入
 type ActivityCreateInput struct {
 	Title string `json:"title"`
 	CoverImage string `json:"coverImage"`
@@ -25,7 +25,7 @@ type ActivityCreateInput struct {
 	Status int `json:"status"`
 }
 
-// ActivityUpdateInput 更新æ´»åŠ¨è¡¨输入
+// ActivityUpdateInput 更新活动表输入
 type ActivityUpdateInput struct {
 	ID snowflake.JsonInt64 `json:"id"`
 	Title string `json:"title"`
@@ -43,7 +43,7 @@ type ActivityUpdateInput struct {
 	Status int `json:"status"`
 }
 
-// ActivityDetailOutput æ´»åŠ¨è¡¨详情输出
+// ActivityDetailOutput 活动表详情输出
 type ActivityDetailOutput struct {
 	ID snowflake.JsonInt64 `json:"id"`
 	Title string `json:"title"`
@@ -63,7 +63,7 @@ type ActivityDetailOutput struct {
 	UpdatedAt *gtime.Time `json:"updatedAt"`
 }
 
-// ActivityListOutput æ´»åŠ¨è¡¨列表输出
+// ActivityListOutput 活动表列表输出
 type ActivityListOutput struct {
 	ID snowflake.JsonInt64 `json:"id"`
 	Title string `json:"title"`
@@ -83,7 +83,7 @@ type ActivityListOutput struct {
 	UpdatedAt *gtime.Time `json:"updatedAt"`
 }
 
-// ActivityListInput æ´»åŠ¨è¡¨列表查询输入
+// ActivityListInput 活动表列表查询输入
 type ActivityListInput struct {
 	PageNum  int `json:"pageNum"`
 	PageSize int `json:"pageSize"`

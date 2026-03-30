@@ -13,87 +13,87 @@ var _ = gtime.New
 
 // Coupon API
 
-// CouponCreateReq 创建ä¼˜æƒ åˆ¸æ¨¡æ¿è¡¨请求
+// CouponCreateReq 创建优惠券模板表请求
 type CouponCreateReq struct {
-	g.Meta `path:"/coupon/create" method:"post" tags:"ä¼˜æƒ åˆ¸æ¨¡æ¿è¡¨" summary:"创建ä¼˜æƒ åˆ¸æ¨¡æ¿è¡¨"`
-	Title string `json:"title" v:"required#ä¼˜æƒ åˆ¸åç§°不能为空" dc:"ä¼˜æƒ åˆ¸åç§°"`
-	Type int `json:"type"  dc:"ä¼˜æƒ åˆ¸ç±»åž‹"`
-	IsNewMember int `json:"isNewMember"  dc:"æ˜¯å¦æ–°äººä¸“äº«"`
-	FaceValue int64 `json:"faceValue"  dc:"é¢å€¼ï¼ˆåˆ†ï¼‰"`
-	MinAmount int64 `json:"minAmount"  dc:"æœ€ä½Žæ¶ˆè´¹é‡‘é¢ï¼ˆåˆ†ï¼‰"`
-	TotalNum int `json:"totalNum"  dc:"å‘æ”¾æ€»é‡ï¼ˆ0ä¸é™ï¼‰"`
-	UsedNum int `json:"usedNum"  dc:"å·²ä½¿ç”¨æ•°é‡"`
-	ClaimNum int `json:"claimNum"  dc:"å·²é¢†å–æ•°é‡"`
-	PerLimit int `json:"perLimit"  dc:"æ¯äººé™é¢†å¼ æ•°"`
-	ValidStartAt *gtime.Time `json:"validStartAt" v:"required#æœ‰æ•ˆæœŸå¼€å§‹æ—¶é—´不能为空" dc:"æœ‰æ•ˆæœŸå¼€å§‹æ—¶é—´"`
-	ValidEndAt *gtime.Time `json:"validEndAt" v:"required#æœ‰æ•ˆæœŸç»“æŸæ—¶é—´不能为空" dc:"æœ‰æ•ˆæœŸç»“æŸæ—¶é—´"`
-	Sort int `json:"sort"  dc:"æŽ’åº"`
-	Status int `json:"status"  dc:"çŠ¶æ€"`
+	g.Meta `path:"/coupon/create" method:"post" tags:"优惠券模板表" summary:"创建优惠券模板表"`
+	Title string `json:"title" v:"required#优惠券名称不能为空" dc:"优惠券名称"`
+	Type int `json:"type"  dc:"优惠券类型"`
+	IsNewMember int `json:"isNewMember"  dc:"是否新人专享"`
+	FaceValue int64 `json:"faceValue"  dc:"面值（分，满减/无门槛时为抵扣额，折扣时为折扣值如 85=8.5折）"`
+	MinAmount int64 `json:"minAmount"  dc:"最低消费金额（分，0表示无门槛）"`
+	TotalNum int `json:"totalNum"  dc:"发放总量（0表示不限）"`
+	UsedNum int `json:"usedNum"  dc:"已使用数量"`
+	ClaimNum int `json:"claimNum"  dc:"已领取数量"`
+	PerLimit int `json:"perLimit"  dc:"每人限领张数"`
+	ValidStartAt *gtime.Time `json:"validStartAt" v:"required#有效期开始时间不能为空" dc:"有效期开始时间"`
+	ValidEndAt *gtime.Time `json:"validEndAt" v:"required#有效期结束时间不能为空" dc:"有效期结束时间"`
+	Sort int `json:"sort"  dc:"排序（升序）"`
+	Status int `json:"status"  dc:"状态"`
 }
 
-// CouponCreateRes 创建ä¼˜æƒ åˆ¸æ¨¡æ¿è¡¨响应
+// CouponCreateRes 创建优惠券模板表响应
 type CouponCreateRes struct {
 	g.Meta `mime:"application/json"`
 }
 
-// CouponUpdateReq 更新ä¼˜æƒ åˆ¸æ¨¡æ¿è¡¨请求
+// CouponUpdateReq 更新优惠券模板表请求
 type CouponUpdateReq struct {
-	g.Meta `path:"/coupon/update" method:"put" tags:"ä¼˜æƒ åˆ¸æ¨¡æ¿è¡¨" summary:"更新ä¼˜æƒ åˆ¸æ¨¡æ¿è¡¨"`
-	ID     snowflake.JsonInt64 `json:"id" v:"required#ID不能为空" dc:"ä¼˜æƒ åˆ¸æ¨¡æ¿è¡¨ID"`
-	Title string `json:"title" dc:"ä¼˜æƒ åˆ¸åç§°"`
-	Type int `json:"type" dc:"ä¼˜æƒ åˆ¸ç±»åž‹"`
-	IsNewMember int `json:"isNewMember" dc:"æ˜¯å¦æ–°äººä¸“äº«"`
-	FaceValue int64 `json:"faceValue" dc:"é¢å€¼ï¼ˆåˆ†ï¼‰"`
-	MinAmount int64 `json:"minAmount" dc:"æœ€ä½Žæ¶ˆè´¹é‡‘é¢ï¼ˆåˆ†ï¼‰"`
-	TotalNum int `json:"totalNum" dc:"å‘æ”¾æ€»é‡ï¼ˆ0ä¸é™ï¼‰"`
-	UsedNum int `json:"usedNum" dc:"å·²ä½¿ç”¨æ•°é‡"`
-	ClaimNum int `json:"claimNum" dc:"å·²é¢†å–æ•°é‡"`
-	PerLimit int `json:"perLimit" dc:"æ¯äººé™é¢†å¼ æ•°"`
-	ValidStartAt *gtime.Time `json:"validStartAt" dc:"æœ‰æ•ˆæœŸå¼€å§‹æ—¶é—´"`
-	ValidEndAt *gtime.Time `json:"validEndAt" dc:"æœ‰æ•ˆæœŸç»“æŸæ—¶é—´"`
-	Sort int `json:"sort" dc:"æŽ’åº"`
-	Status int `json:"status" dc:"çŠ¶æ€"`
+	g.Meta `path:"/coupon/update" method:"put" tags:"优惠券模板表" summary:"更新优惠券模板表"`
+	ID     snowflake.JsonInt64 `json:"id" v:"required#ID不能为空" dc:"优惠券模板表ID"`
+	Title string `json:"title" dc:"优惠券名称"`
+	Type int `json:"type" dc:"优惠券类型"`
+	IsNewMember int `json:"isNewMember" dc:"是否新人专享"`
+	FaceValue int64 `json:"faceValue" dc:"面值（分，满减/无门槛时为抵扣额，折扣时为折扣值如 85=8.5折）"`
+	MinAmount int64 `json:"minAmount" dc:"最低消费金额（分，0表示无门槛）"`
+	TotalNum int `json:"totalNum" dc:"发放总量（0表示不限）"`
+	UsedNum int `json:"usedNum" dc:"已使用数量"`
+	ClaimNum int `json:"claimNum" dc:"已领取数量"`
+	PerLimit int `json:"perLimit" dc:"每人限领张数"`
+	ValidStartAt *gtime.Time `json:"validStartAt" dc:"有效期开始时间"`
+	ValidEndAt *gtime.Time `json:"validEndAt" dc:"有效期结束时间"`
+	Sort int `json:"sort" dc:"排序（升序）"`
+	Status int `json:"status" dc:"状态"`
 }
 
-// CouponUpdateRes 更新ä¼˜æƒ åˆ¸æ¨¡æ¿è¡¨响应
+// CouponUpdateRes 更新优惠券模板表响应
 type CouponUpdateRes struct {
 	g.Meta `mime:"application/json"`
 }
 
-// CouponDeleteReq 删除ä¼˜æƒ åˆ¸æ¨¡æ¿è¡¨请求
+// CouponDeleteReq 删除优惠券模板表请求
 type CouponDeleteReq struct {
-	g.Meta `path:"/coupon/delete" method:"delete" tags:"ä¼˜æƒ åˆ¸æ¨¡æ¿è¡¨" summary:"删除ä¼˜æƒ åˆ¸æ¨¡æ¿è¡¨"`
-	ID     snowflake.JsonInt64 `json:"id" v:"required#ID不能为空" dc:"ä¼˜æƒ åˆ¸æ¨¡æ¿è¡¨ID"`
+	g.Meta `path:"/coupon/delete" method:"delete" tags:"优惠券模板表" summary:"删除优惠券模板表"`
+	ID     snowflake.JsonInt64 `json:"id" v:"required#ID不能为空" dc:"优惠券模板表ID"`
 }
 
-// CouponDeleteRes 删除ä¼˜æƒ åˆ¸æ¨¡æ¿è¡¨响应
+// CouponDeleteRes 删除优惠券模板表响应
 type CouponDeleteRes struct {
 	g.Meta `mime:"application/json"`
 }
 
-// CouponDetailReq 获取ä¼˜æƒ åˆ¸æ¨¡æ¿è¡¨详情请求
+// CouponDetailReq 获取优惠券模板表详情请求
 type CouponDetailReq struct {
-	g.Meta `path:"/coupon/detail" method:"get" tags:"ä¼˜æƒ åˆ¸æ¨¡æ¿è¡¨" summary:"获取ä¼˜æƒ åˆ¸æ¨¡æ¿è¡¨详情"`
-	ID     snowflake.JsonInt64 `json:"id" v:"required#ID不能为空" dc:"ä¼˜æƒ åˆ¸æ¨¡æ¿è¡¨ID"`
+	g.Meta `path:"/coupon/detail" method:"get" tags:"优惠券模板表" summary:"获取优惠券模板表详情"`
+	ID     snowflake.JsonInt64 `json:"id" v:"required#ID不能为空" dc:"优惠券模板表ID"`
 }
 
-// CouponDetailRes 获取ä¼˜æƒ åˆ¸æ¨¡æ¿è¡¨详情响应
+// CouponDetailRes 获取优惠券模板表详情响应
 type CouponDetailRes struct {
 	g.Meta `mime:"application/json"`
 	*model.CouponDetailOutput
 }
 
-// CouponListReq 获取ä¼˜æƒ åˆ¸æ¨¡æ¿è¡¨列表请求
+// CouponListReq 获取优惠券模板表列表请求
 type CouponListReq struct {
-	g.Meta   `path:"/coupon/list" method:"get" tags:"ä¼˜æƒ åˆ¸æ¨¡æ¿è¡¨" summary:"获取ä¼˜æƒ åˆ¸æ¨¡æ¿è¡¨列表"`
+	g.Meta   `path:"/coupon/list" method:"get" tags:"优惠券模板表" summary:"获取优惠券模板表列表"`
 	PageNum  int `json:"pageNum" d:"1" dc:"页码"`
 	PageSize int `json:"pageSize" d:"10" dc:"每页数量"`
-	Type int `json:"type" dc:"ä¼˜æƒ åˆ¸ç±»åž‹"`
-	IsNewMember int `json:"isNewMember" dc:"æ˜¯å¦æ–°äººä¸“äº«"`
-	Status int `json:"status" dc:"çŠ¶æ€"`
+	Type int `json:"type" dc:"优惠券类型"`
+	IsNewMember int `json:"isNewMember" dc:"是否新人专享"`
+	Status int `json:"status" dc:"状态"`
 }
 
-// CouponListRes 获取ä¼˜æƒ åˆ¸æ¨¡æ¿è¡¨列表响应
+// CouponListRes 获取优惠券模板表列表响应
 type CouponListRes struct {
 	g.Meta `mime:"application/json"`
 	List   []*model.CouponListOutput `json:"list" dc:"列表数据"`

@@ -1,6 +1,6 @@
-/** æ´»åŠ¨å‚ä¸Žè®°å½•è¡¨类型定义 */
+/** 活动参与记录表类型定义 */
 
-/** æ´»åŠ¨å‚ä¸Žè®°å½•è¡¨项 */
+/** 活动参与记录表项 */
 export interface ActivityJoinItem {
   id: string;
   activityID: string;
@@ -15,14 +15,14 @@ export interface ActivityJoinItem {
   updatedAt?: string;
 }
 
-/** æ´»åŠ¨å‚ä¸Žè®°å½•è¡¨列表查询参数 */
+/** 活动参与记录表列表查询参数 */
 export interface ActivityJoinListParams {
   pageNum: number;
   pageSize: number;
   joinStatus?: number;
 }
 
-/** æ´»åŠ¨å‚ä¸Žè®°å½•è¡¨创建参数 */
+/** 活动参与记录表创建参数 */
 export interface ActivityJoinCreateParams {
   activityID: string;
   memberID: string;
@@ -33,7 +33,7 @@ export interface ActivityJoinCreateParams {
   remark?: string;
 }
 
-/** æ´»åŠ¨å‚ä¸Žè®°å½•è¡¨更新参数 */
+/** 活动参与记录表更新参数 */
 export interface ActivityJoinUpdateParams {
   id: string;
   activityID: string;

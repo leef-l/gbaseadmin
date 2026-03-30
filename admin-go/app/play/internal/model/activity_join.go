@@ -8,7 +8,7 @@ import (
 
 // ActivityJoin DTO 模型
 
-// ActivityJoinCreateInput 创建æ´»åŠ¨å‚ä¸Žè®°å½•è¡¨输入
+// ActivityJoinCreateInput 创建活动参与记录表输入
 type ActivityJoinCreateInput struct {
 	ActivityID snowflake.JsonInt64 `json:"activityID"`
 	MemberID snowflake.JsonInt64 `json:"memberID"`
@@ -19,7 +19,7 @@ type ActivityJoinCreateInput struct {
 	Remark string `json:"remark"`
 }
 
-// ActivityJoinUpdateInput 更新æ´»åŠ¨å‚ä¸Žè®°å½•è¡¨输入
+// ActivityJoinUpdateInput 更新活动参与记录表输入
 type ActivityJoinUpdateInput struct {
 	ID snowflake.JsonInt64 `json:"id"`
 	ActivityID snowflake.JsonInt64 `json:"activityID"`
@@ -31,7 +31,7 @@ type ActivityJoinUpdateInput struct {
 	Remark string `json:"remark"`
 }
 
-// ActivityJoinDetailOutput æ´»åŠ¨å‚ä¸Žè®°å½•è¡¨详情输出
+// ActivityJoinDetailOutput 活动参与记录表详情输出
 type ActivityJoinDetailOutput struct {
 	ID snowflake.JsonInt64 `json:"id"`
 	ActivityID snowflake.JsonInt64 `json:"activityID"`
@@ -46,7 +46,7 @@ type ActivityJoinDetailOutput struct {
 	UpdatedAt *gtime.Time `json:"updatedAt"`
 }
 
-// ActivityJoinListOutput æ´»åŠ¨å‚ä¸Žè®°å½•è¡¨列表输出
+// ActivityJoinListOutput 活动参与记录表列表输出
 type ActivityJoinListOutput struct {
 	ID snowflake.JsonInt64 `json:"id"`
 	ActivityID snowflake.JsonInt64 `json:"activityID"`
@@ -61,7 +61,7 @@ type ActivityJoinListOutput struct {
 	UpdatedAt *gtime.Time `json:"updatedAt"`
 }
 
-// ActivityJoinListInput æ´»åŠ¨å‚ä¸Žè®°å½•è¡¨列表查询输入
+// ActivityJoinListInput 活动参与记录表列表查询输入
 type ActivityJoinListInput struct {
 	PageNum  int `json:"pageNum"`
 	PageSize int `json:"pageSize"`

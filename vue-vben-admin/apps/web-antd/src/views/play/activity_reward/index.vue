@@ -13,23 +13,23 @@ import FormModal from './modules/form.vue';
 /** 标签颜色池 */
 const TAG_COLORS = ['green', 'red', 'blue', 'orange', 'cyan', 'purple', 'geekblue', 'magenta'];
 
-/** å¥–åŠ±ç±»åž‹选项 */
+/** 奖励类型选项 */
 const rewardTypeOptions = [
-  { label: 'ä½™é¢', value: 1 },
-  { label: 'ä¼˜æƒ åˆ¸', value: 2 },
-  { label: 'ç»éªŒå€¼', value: 3 },
-  { label: 'ä¼šå‘˜ç­‰çº§å¤©æ•°', value: 4 },
+  { label: '余额', value: 1 },
+  { label: '优惠券', value: 2 },
+  { label: '经验值', value: 3 },
+  { label: '会员等级天数', value: 4 },
 ];
 
-/** å¥–åŠ±ç±»åž‹映射 */
+/** 奖励类型映射 */
 const rewardTypeMap: Record<number, string> = {
-  1: 'ä½™é¢',
-  2: 'ä¼˜æƒ åˆ¸',
-  3: 'ç»éªŒå€¼',
-  4: 'ä¼šå‘˜ç­‰çº§å¤©æ•°',
+  1: '余额',
+  2: '优惠券',
+  3: '经验值',
+  4: '会员等级天数',
 };
 
-/** å¥–åŠ±ç±»åž‹颜色 */
+/** 奖励类型颜色 */
 function getRewardTypeColor(val: number): string {
   const keys = [1, 2, 3, 4];
   const idx = keys.indexOf(val);
@@ -54,11 +54,11 @@ const formOptions: VbenFormProps = {
       componentProps: {
         allowClear: true,
         options: rewardTypeOptions,
-        placeholder: '请选择å¥–åŠ±ç±»åž‹',
+        placeholder: '请选择奖励类型',
         class: 'w-full',
       },
       fieldName: 'rewardType',
-      label: 'å¥–åŠ±ç±»åž‹',
+      label: '奖励类型',
     },
   ],
 };
@@ -67,11 +67,11 @@ const formOptions: VbenFormProps = {
 const gridOptions: VxeGridProps<ActivityRewardItem> = {
   columns: [
     { title: '序号', type: 'seq', width: 50 },
-    { field: 'activityTitle', title: 'æ´»åŠ¨ID' },
-    { field: 'rewardType', title: 'å¥–åŠ±ç±»åž‹', width: 120, slots: { default: 'rewardType_cell' } },
-    { field: 'rewardValue', title: 'å¥–åŠ±æ•°å€¼' },
-    { field: 'rewardName', title: 'å¥–åŠ±åç§°' },
-    { field: 'sort', title: 'æŽ’åº' },
+    { field: 'activityTitle', title: '活动ID' },
+    { field: 'rewardType', title: '奖励类型', width: 120, slots: { default: 'rewardType_cell' } },
+    { field: 'rewardValue', title: '奖励数值（余额=分，优惠券=coupon_id，经验=值，等级天数=天）' },
+    { field: 'rewardName', title: '奖励名称（展示用，如"送50元余额"）' },
+    { field: 'sort', title: '排序（升序）' },
     { field: 'createdAt', title: '创建时间', width: 180, formatter: 'formatDateTime' },
     { title: '操作', width: 200, fixed: 'right', slots: { default: 'action' } },
   ],
@@ -115,7 +115,7 @@ function handleEdit(row: ActivityRewardItem) {
 function handleDelete(row: ActivityRewardItem) {
   Modal.confirm({
     title: '确认删除',
-    content: '确定要删除该æ´»åŠ¨å¥–åŠ±è¡¨吗？',
+    content: '确定要删除该活动奖励表吗？',
     okType: 'danger',
     async onOk() {
       await deleteActivityReward(row.id);

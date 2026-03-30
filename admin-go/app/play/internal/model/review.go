@@ -8,7 +8,7 @@ import (
 
 // Review DTO 模型
 
-// ReviewCreateInput 创建è¯„ä»·è¡¨输入
+// ReviewCreateInput 创建评价表输入
 type ReviewCreateInput struct {
 	OrderID snowflake.JsonInt64 `json:"orderID"`
 	MemberID snowflake.JsonInt64 `json:"memberID"`
@@ -22,7 +22,7 @@ type ReviewCreateInput struct {
 	Status int `json:"status"`
 }
 
-// ReviewUpdateInput 更新è¯„ä»·è¡¨输入
+// ReviewUpdateInput 更新评价表输入
 type ReviewUpdateInput struct {
 	ID snowflake.JsonInt64 `json:"id"`
 	OrderID snowflake.JsonInt64 `json:"orderID"`
@@ -37,7 +37,7 @@ type ReviewUpdateInput struct {
 	Status int `json:"status"`
 }
 
-// ReviewDetailOutput è¯„ä»·è¡¨详情输出
+// ReviewDetailOutput 评价表详情输出
 type ReviewDetailOutput struct {
 	ID snowflake.JsonInt64 `json:"id"`
 	OrderID snowflake.JsonInt64 `json:"orderID"`
@@ -54,7 +54,7 @@ type ReviewDetailOutput struct {
 	UpdatedAt *gtime.Time `json:"updatedAt"`
 }
 
-// ReviewListOutput è¯„ä»·è¡¨列表输出
+// ReviewListOutput 评价表列表输出
 type ReviewListOutput struct {
 	ID snowflake.JsonInt64 `json:"id"`
 	OrderID snowflake.JsonInt64 `json:"orderID"`
@@ -71,7 +71,7 @@ type ReviewListOutput struct {
 	UpdatedAt *gtime.Time `json:"updatedAt"`
 }
 
-// ReviewListInput è¯„ä»·è¡¨列表查询输入
+// ReviewListInput 评价表列表查询输入
 type ReviewListInput struct {
 	PageNum  int `json:"pageNum"`
 	PageSize int `json:"pageSize"`

@@ -13,19 +13,19 @@ import FormModal from './modules/form.vue';
 /** 标签颜色池 */
 const TAG_COLORS = ['green', 'red', 'blue', 'orange', 'cyan', 'purple', 'geekblue', 'magenta'];
 
-/** çŠ¶æ€选项 */
+/** 状态选项 */
 const statusOptions = [
-  { label: 'ä¸‹æž¶', value: 0 },
-  { label: 'ä¸Šæž¶', value: 1 },
+  { label: '下架', value: 0 },
+  { label: '上架', value: 1 },
 ];
 
-/** çŠ¶æ€映射 */
+/** 状态映射 */
 const statusMap: Record<number, string> = {
-  0: 'ä¸‹æž¶',
-  1: 'ä¸Šæž¶',
+  0: '下架',
+  1: '上架',
 };
 
-/** çŠ¶æ€颜色 */
+/** 状态颜色 */
 function getStatusColor(val: number): string {
   const keys = [0, 1];
   const idx = keys.indexOf(val);
@@ -50,11 +50,11 @@ const formOptions: VbenFormProps = {
       componentProps: {
         allowClear: true,
         options: statusOptions,
-        placeholder: '请选择çŠ¶æ€',
+        placeholder: '请选择状态',
         class: 'w-full',
       },
       fieldName: 'status',
-      label: 'çŠ¶æ€',
+      label: '状态',
     },
   ],
 };
@@ -63,16 +63,16 @@ const formOptions: VbenFormProps = {
 const gridOptions: VxeGridProps<GoodsItem> = {
   columns: [
     { title: '序号', type: 'seq', width: 50 },
-    { field: 'categoryTitle', title: 'åˆ†ç±»ID' },
-    { field: 'coachID', title: 'é™ªçŽ©å¸ˆID' },
-    { field: 'title', title: 'å•†å“åç§°' },
-    { field: 'coverImage', title: 'å•†å“å°é¢å›¾' },
-    { field: 'descContent', title: 'å•†å“è¯¦æƒ…æè¿°' },
-    { field: 'price', title: 'å•ä»·ï¼ˆåˆ†ï¼‰' },
-    { field: 'unit', title: 'è®¡é‡å•ä½' },
-    { field: 'salesNum', title: 'é”€é‡' },
-    { field: 'sort', title: 'æŽ’åºï¼ˆå‡åºï¼‰' },
-    { field: 'status', title: 'çŠ¶æ€', width: 120, slots: { default: 'status_cell' } },
+    { field: 'categoryTitle', title: '分类ID' },
+    { field: 'coachID', title: '陪玩师ID' },
+    { field: 'title', title: '商品名称' },
+    { field: 'coverImage', title: '商品封面图' },
+    { field: 'descContent', title: '商品详情描述' },
+    { field: 'price', title: '单价（分）' },
+    { field: 'unit', title: '计量单位（如' },
+    { field: 'salesNum', title: '销量' },
+    { field: 'sort', title: '排序（升序）' },
+    { field: 'status', title: '状态', width: 120, slots: { default: 'status_cell' } },
     { field: 'createdAt', title: '创建时间', width: 180, formatter: 'formatDateTime' },
     { title: '操作', width: 200, fixed: 'right', slots: { default: 'action' } },
   ],
@@ -116,7 +116,7 @@ function handleEdit(row: GoodsItem) {
 function handleDelete(row: GoodsItem) {
   Modal.confirm({
     title: '确认删除',
-    content: '确定要删除该å•†å“è¡¨吗？',
+    content: '确定要删除该商品表吗？',
     okType: 'danger',
     async onOk() {
       await deleteGoods(row.id);

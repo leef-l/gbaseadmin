@@ -12,7 +12,7 @@ var Oauth = cOauth{}
 
 type cOauth struct{}
 
-// Create 创建ç¬¬ä¸‰æ–¹ç™»å½•ç»‘å®šè¡¨
+// Create 创建第三方登录绑定表
 func (c *cOauth) Create(ctx context.Context, req *v1.OauthCreateReq) (res *v1.OauthCreateRes, err error) {
 	err = service.Oauth().Create(ctx, &model.OauthCreateInput{
 		MemberID: req.MemberID,
@@ -28,7 +28,7 @@ func (c *cOauth) Create(ctx context.Context, req *v1.OauthCreateReq) (res *v1.Oa
 	return
 }
 
-// Update 更新ç¬¬ä¸‰æ–¹ç™»å½•ç»‘å®šè¡¨
+// Update 更新第三方登录绑定表
 func (c *cOauth) Update(ctx context.Context, req *v1.OauthUpdateReq) (res *v1.OauthUpdateRes, err error) {
 	err = service.Oauth().Update(ctx, &model.OauthUpdateInput{
 		ID: req.ID,
@@ -45,20 +45,20 @@ func (c *cOauth) Update(ctx context.Context, req *v1.OauthUpdateReq) (res *v1.Oa
 	return
 }
 
-// Delete 删除ç¬¬ä¸‰æ–¹ç™»å½•ç»‘å®šè¡¨
+// Delete 删除第三方登录绑定表
 func (c *cOauth) Delete(ctx context.Context, req *v1.OauthDeleteReq) (res *v1.OauthDeleteRes, err error) {
 	err = service.Oauth().Delete(ctx, req.ID)
 	return
 }
 
-// Detail 获取ç¬¬ä¸‰æ–¹ç™»å½•ç»‘å®šè¡¨详情
+// Detail 获取第三方登录绑定表详情
 func (c *cOauth) Detail(ctx context.Context, req *v1.OauthDetailReq) (res *v1.OauthDetailRes, err error) {
 	res = &v1.OauthDetailRes{}
 	res.OauthDetailOutput, err = service.Oauth().Detail(ctx, req.ID)
 	return
 }
 
-// List 获取ç¬¬ä¸‰æ–¹ç™»å½•ç»‘å®šè¡¨列表
+// List 获取第三方登录绑定表列表
 func (c *cOauth) List(ctx context.Context, req *v1.OauthListReq) (res *v1.OauthListRes, err error) {
 	res = &v1.OauthListRes{}
 	res.List, res.Total, err = service.Oauth().List(ctx, &model.OauthListInput{

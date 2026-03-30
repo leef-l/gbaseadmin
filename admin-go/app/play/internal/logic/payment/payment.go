@@ -22,7 +22,7 @@ func New() *sPayment {
 
 type sPayment struct{}
 
-// Create 创建æ”¯ä»˜è®°å½•è¡¨
+// Create 创建支付记录表
 func (s *sPayment) Create(ctx context.Context, in *model.PaymentCreateInput) error {
 	id := snowflake.Generate()
 	_, err := dao.PlayPayment.Ctx(ctx).Data(g.Map{
@@ -44,7 +44,7 @@ func (s *sPayment) Create(ctx context.Context, in *model.PaymentCreateInput) err
 	return err
 }
 
-// Update 更新æ”¯ä»˜è®°å½•è¡¨
+// Update 更新支付记录表
 func (s *sPayment) Update(ctx context.Context, in *model.PaymentUpdateInput) error {
 	data := g.Map{
 		dao.PlayPayment.Columns().OrderId: in.OrderID,
@@ -64,7 +64,7 @@ func (s *sPayment) Update(ctx context.Context, in *model.PaymentUpdateInput) err
 	return err
 }
 
-// Delete 软删除æ”¯ä»˜è®°å½•è¡¨
+// Delete 软删除支付记录表
 func (s *sPayment) Delete(ctx context.Context, id snowflake.JsonInt64) error {
 	_, err := dao.PlayPayment.Ctx(ctx).Where(dao.PlayPayment.Columns().Id, id).Data(g.Map{
 		dao.PlayPayment.Columns().DeletedAt: gtime.Now(),
@@ -72,7 +72,7 @@ func (s *sPayment) Delete(ctx context.Context, id snowflake.JsonInt64) error {
 	return err
 }
 
-// Detail 获取æ”¯ä»˜è®°å½•è¡¨详情
+// Detail 获取支付记录表详情
 func (s *sPayment) Detail(ctx context.Context, id snowflake.JsonInt64) (out *model.PaymentDetailOutput, err error) {
 	out = &model.PaymentDetailOutput{}
 	err = dao.PlayPayment.Ctx(ctx).Where(dao.PlayPayment.Columns().Id, id).Where(dao.PlayPayment.Columns().DeletedAt, nil).Scan(out)
@@ -82,7 +82,7 @@ func (s *sPayment) Detail(ctx context.Context, id snowflake.JsonInt64) (out *mod
 	return
 }
 
-// List 获取æ”¯ä»˜è®°å½•è¡¨列表
+// List 获取支付记录表列表
 func (s *sPayment) List(ctx context.Context, in *model.PaymentListInput) (list []*model.PaymentListOutput, total int, err error) {
 	m := dao.PlayPayment.Ctx(ctx).Where(dao.PlayPayment.Columns().DeletedAt, nil)
 	if in.PayType > 0 {

@@ -97,8 +97,10 @@ func (s *s{{.ModelName}}) Detail(ctx context.Context, id snowflake.JsonInt64) (o
 {{- if and .RefFieldName (not .IsHidden)}}
 	// 查询{{.Label}}关联显示
 	if out.{{.NameCamel}} != 0 {
-		val, _ := g.DB().Ctx(ctx).Model("{{.RefTableDB}}").Where("id", out.{{.NameCamel}}).Where("deleted_at", nil).Value("{{.RefDisplayField}}")
-		out.{{.RefFieldName}} = val.String()
+		val, err := g.DB().Ctx(ctx).Model("{{.RefTableDB}}").Where("id", out.{{.NameCamel}}).Where("deleted_at", nil).Value("{{.RefDisplayField}}")
+		if err == nil {
+			out.{{.RefFieldName}} = val.String()
+		}
 	}
 {{- end}}
 {{- end}}
@@ -135,8 +137,10 @@ func (s *s{{.ModelName}}) List(ctx context.Context, in *model.{{.ModelName}}List
 {{- range .Fields}}
 {{- if and .RefFieldName (not .IsHidden)}}
 		if item.{{.NameCamel}} != 0 {
-			val, _ := g.DB().Ctx(ctx).Model("{{.RefTableDB}}").Where("id", item.{{.NameCamel}}).Where("deleted_at", nil).Value("{{.RefDisplayField}}")
-			item.{{.RefFieldName}} = val.String()
+			val, err := g.DB().Ctx(ctx).Model("{{.RefTableDB}}").Where("id", item.{{.NameCamel}}).Where("deleted_at", nil).Value("{{.RefDisplayField}}")
+			if err == nil {
+				item.{{.RefFieldName}} = val.String()
+			}
 		}
 {{- end}}
 {{- end}}

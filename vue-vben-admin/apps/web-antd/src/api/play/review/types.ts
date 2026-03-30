@@ -1,6 +1,6 @@
-/** è¯„ä»·è¡¨类型定义 */
+/** 评价表类型定义 */
 
-/** è¯„ä»·è¡¨项 */
+/** 评价表项 */
 export interface ReviewItem {
   id: string;
   orderID: string;
@@ -17,7 +17,7 @@ export interface ReviewItem {
   updatedAt?: string;
 }
 
-/** è¯„ä»·è¡¨列表查询参数 */
+/** 评价表列表查询参数 */
 export interface ReviewListParams {
   pageNum: number;
   pageSize: number;
@@ -25,7 +25,7 @@ export interface ReviewListParams {
   status?: number;
 }
 
-/** è¯„ä»·è¡¨创建参数 */
+/** 评价表创建参数 */
 export interface ReviewCreateParams {
   orderID: string;
   memberID: string;
@@ -39,7 +39,7 @@ export interface ReviewCreateParams {
   status?: number;
 }
 
-/** è¯„ä»·è¡¨更新参数 */
+/** 评价表更新参数 */
 export interface ReviewUpdateParams {
   id: string;
   orderID: string;

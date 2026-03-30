@@ -112,7 +112,7 @@ const [Form, formApi] = useVbenForm({
 {{- end}}
       componentProps: {
         treeData: treeData.value,
-        fieldNames: { label: 'title', value: 'id', children: 'children' },
+        fieldNames: { label: '{{if .RefDisplayField}}{{.RefDisplayField}}{{else}}title{{end}}', value: 'id', children: 'children' },
         placeholder: '请选择{{.Label}}',
         allowClear: true,
         treeDefaultExpandAll: true,
@@ -129,7 +129,7 @@ const [Form, formApi] = useVbenForm({
 {{- end}}
       componentProps: {
         treeData: treeData.value,
-        fieldNames: { label: 'title', value: 'id', children: 'children' },
+        fieldNames: { label: '{{if .RefDisplayField}}{{.RefDisplayField}}{{else}}title{{end}}', value: 'id', children: 'children' },
         placeholder: '请选择{{.Label}}',
         allowClear: true,
         treeCheckable: true,

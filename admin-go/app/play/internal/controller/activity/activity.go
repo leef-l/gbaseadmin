@@ -12,7 +12,7 @@ var Activity = cActivity{}
 
 type cActivity struct{}
 
-// Create 创建æ´»åŠ¨è¡¨
+// Create 创建活动表
 func (c *cActivity) Create(ctx context.Context, req *v1.ActivityCreateReq) (res *v1.ActivityCreateRes, err error) {
 	err = service.Activity().Create(ctx, &model.ActivityCreateInput{
 		Title: req.Title,
@@ -32,7 +32,7 @@ func (c *cActivity) Create(ctx context.Context, req *v1.ActivityCreateReq) (res 
 	return
 }
 
-// Update 更新æ´»åŠ¨è¡¨
+// Update 更新活动表
 func (c *cActivity) Update(ctx context.Context, req *v1.ActivityUpdateReq) (res *v1.ActivityUpdateRes, err error) {
 	err = service.Activity().Update(ctx, &model.ActivityUpdateInput{
 		ID: req.ID,
@@ -53,20 +53,20 @@ func (c *cActivity) Update(ctx context.Context, req *v1.ActivityUpdateReq) (res 
 	return
 }
 
-// Delete 删除æ´»åŠ¨è¡¨
+// Delete 删除活动表
 func (c *cActivity) Delete(ctx context.Context, req *v1.ActivityDeleteReq) (res *v1.ActivityDeleteRes, err error) {
 	err = service.Activity().Delete(ctx, req.ID)
 	return
 }
 
-// Detail 获取æ´»åŠ¨è¡¨详情
+// Detail 获取活动表详情
 func (c *cActivity) Detail(ctx context.Context, req *v1.ActivityDetailReq) (res *v1.ActivityDetailRes, err error) {
 	res = &v1.ActivityDetailRes{}
 	res.ActivityDetailOutput, err = service.Activity().Detail(ctx, req.ID)
 	return
 }
 
-// List 获取æ´»åŠ¨è¡¨列表
+// List 获取活动表列表
 func (c *cActivity) List(ctx context.Context, req *v1.ActivityListReq) (res *v1.ActivityListRes, err error) {
 	res = &v1.ActivityListRes{}
 	res.List, res.Total, err = service.Activity().List(ctx, &model.ActivityListInput{

@@ -9,12 +9,12 @@ import {
   updateActivityReward,
 } from '#/api/play/activity_reward';
 
-/** å¥–åŠ±ç±»åž‹选项 */
+/** 奖励类型选项 */
 const rewardTypeOptions = [
-  { label: 'ä½™é¢', value: 1 },
-  { label: 'ä¼˜æƒ åˆ¸', value: 2 },
-  { label: 'ç»éªŒå€¼', value: 3 },
-  { label: 'ä¼šå‘˜ç­‰çº§å¤©æ•°', value: 4 },
+  { label: '余额', value: 1 },
+  { label: '优惠券', value: 2 },
+  { label: '经验值', value: 3 },
+  { label: '会员等级天数', value: 4 },
 ];
 
 const emit = defineEmits<{ success: [] }>();
@@ -28,34 +28,34 @@ const [Form, formApi] = useVbenForm({
     {
       component: 'Select',
       fieldName: 'activityID',
-      label: 'æ´»åŠ¨ID',
+      label: '活动ID',
       rules: 'selectRequired',
-      componentProps: { options: activityIDOptions, placeholder: '请选择æ´»åŠ¨ID', allowClear: true, class: 'w-full' },
+      componentProps: { options: activityIDOptions, placeholder: '请选择活动ID', allowClear: true, class: 'w-full' },
     },
     {
       component: 'Select',
       fieldName: 'rewardType',
-      label: 'å¥–åŠ±ç±»åž‹',
-      componentProps: { options: rewardTypeOptions, placeholder: '请选择å¥–åŠ±ç±»åž‹', allowClear: true, class: 'w-full' },
+      label: '奖励类型',
+      componentProps: { options: rewardTypeOptions, placeholder: '请选择奖励类型', allowClear: true, class: 'w-full' },
     },
     {
       component: 'Input',
       fieldName: 'rewardValue',
-      label: 'å¥–åŠ±æ•°å€¼',
-      componentProps: { placeholder: '请输入å¥–åŠ±æ•°å€¼' },
+      label: '奖励数值（余额=分，优惠券=coupon_id，经验=值，等级天数=天）',
+      componentProps: { placeholder: '请输入奖励数值（余额=分，优惠券=coupon_id，经验=值，等级天数=天）' },
     },
     {
       component: 'Input',
       fieldName: 'rewardName',
-      label: 'å¥–åŠ±åç§°',
+      label: '奖励名称（展示用，如"送50元余额"）',
       rules: 'required',
-      componentProps: { placeholder: '请输入å¥–åŠ±åç§°', maxlength: 100 },
+      componentProps: { placeholder: '请输入奖励名称（展示用，如"送50元余额"）', maxlength: 100 },
     },
     {
       component: 'InputNumber',
       fieldName: 'sort',
-      label: 'æŽ’åº',
-      componentProps: { placeholder: '请输入æŽ’åº', class: 'w-full' },
+      label: '排序（升序）',
+      componentProps: { placeholder: '请输入排序（升序）', class: 'w-full' },
     },
   ],
 });
@@ -90,7 +90,7 @@ const [Modal, modalApi] = useVbenModal({
       if (data?.id) {
         isEdit.value = true;
         editId.value = data.id;
-        modalApi.setState({ title: '编辑æ´»åŠ¨å¥–åŠ±è¡¨' });
+        modalApi.setState({ title: '编辑活动奖励表' });
         try {
           const detail = await getActivityRewardDetail(data.id);
           if (detail) {
@@ -102,7 +102,7 @@ const [Modal, modalApi] = useVbenModal({
       } else {
         isEdit.value = false;
         editId.value = '';
-        modalApi.setState({ title: '新建æ´»åŠ¨å¥–åŠ±è¡¨' });
+        modalApi.setState({ title: '新建活动奖励表' });
         formApi.resetForm();
       }
     }

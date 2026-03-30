@@ -8,7 +8,7 @@ import (
 
 // ActivityReward DTO 模型
 
-// ActivityRewardCreateInput 创建æ´»åŠ¨å¥–åŠ±è¡¨输入
+// ActivityRewardCreateInput 创建活动奖励表输入
 type ActivityRewardCreateInput struct {
 	ActivityID snowflake.JsonInt64 `json:"activityID"`
 	RewardType int `json:"rewardType"`
@@ -17,7 +17,7 @@ type ActivityRewardCreateInput struct {
 	Sort int `json:"sort"`
 }
 
-// ActivityRewardUpdateInput 更新æ´»åŠ¨å¥–åŠ±è¡¨输入
+// ActivityRewardUpdateInput 更新活动奖励表输入
 type ActivityRewardUpdateInput struct {
 	ID snowflake.JsonInt64 `json:"id"`
 	ActivityID snowflake.JsonInt64 `json:"activityID"`
@@ -27,7 +27,7 @@ type ActivityRewardUpdateInput struct {
 	Sort int `json:"sort"`
 }
 
-// ActivityRewardDetailOutput æ´»åŠ¨å¥–åŠ±è¡¨详情输出
+// ActivityRewardDetailOutput 活动奖励表详情输出
 type ActivityRewardDetailOutput struct {
 	ID snowflake.JsonInt64 `json:"id"`
 	ActivityID snowflake.JsonInt64 `json:"activityID"`
@@ -40,7 +40,7 @@ type ActivityRewardDetailOutput struct {
 	UpdatedAt *gtime.Time `json:"updatedAt"`
 }
 
-// ActivityRewardListOutput æ´»åŠ¨å¥–åŠ±è¡¨列表输出
+// ActivityRewardListOutput 活动奖励表列表输出
 type ActivityRewardListOutput struct {
 	ID snowflake.JsonInt64 `json:"id"`
 	ActivityID snowflake.JsonInt64 `json:"activityID"`
@@ -53,7 +53,7 @@ type ActivityRewardListOutput struct {
 	UpdatedAt *gtime.Time `json:"updatedAt"`
 }
 
-// ActivityRewardListInput æ´»åŠ¨å¥–åŠ±è¡¨列表查询输入
+// ActivityRewardListInput 活动奖励表列表查询输入
 type ActivityRewardListInput struct {
 	PageNum  int `json:"pageNum"`
 	PageSize int `json:"pageSize"`

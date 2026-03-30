@@ -8,7 +8,7 @@ import (
 
 // RechargePlan DTO 模型
 
-// RechargePlanCreateInput 创建å……å€¼æ–¹æ¡ˆè¡¨输入
+// RechargePlanCreateInput 创建充值方案表输入
 type RechargePlanCreateInput struct {
 	Title string `json:"title"`
 	Amount int64 `json:"amount"`
@@ -18,7 +18,7 @@ type RechargePlanCreateInput struct {
 	Status int `json:"status"`
 }
 
-// RechargePlanUpdateInput 更新å……å€¼æ–¹æ¡ˆè¡¨输入
+// RechargePlanUpdateInput 更新充值方案表输入
 type RechargePlanUpdateInput struct {
 	ID snowflake.JsonInt64 `json:"id"`
 	Title string `json:"title"`
@@ -29,7 +29,7 @@ type RechargePlanUpdateInput struct {
 	Status int `json:"status"`
 }
 
-// RechargePlanDetailOutput å……å€¼æ–¹æ¡ˆè¡¨详情输出
+// RechargePlanDetailOutput 充值方案表详情输出
 type RechargePlanDetailOutput struct {
 	ID snowflake.JsonInt64 `json:"id"`
 	Title string `json:"title"`
@@ -42,7 +42,7 @@ type RechargePlanDetailOutput struct {
 	UpdatedAt *gtime.Time `json:"updatedAt"`
 }
 
-// RechargePlanListOutput å……å€¼æ–¹æ¡ˆè¡¨列表输出
+// RechargePlanListOutput 充值方案表列表输出
 type RechargePlanListOutput struct {
 	ID snowflake.JsonInt64 `json:"id"`
 	Title string `json:"title"`
@@ -55,7 +55,7 @@ type RechargePlanListOutput struct {
 	UpdatedAt *gtime.Time `json:"updatedAt"`
 }
 
-// RechargePlanListInput å……å€¼æ–¹æ¡ˆè¡¨列表查询输入
+// RechargePlanListInput 充值方案表列表查询输入
 type RechargePlanListInput struct {
 	PageNum  int `json:"pageNum"`
 	PageSize int `json:"pageSize"`

@@ -20,39 +20,39 @@ const [Form, formApi] = useVbenForm({
     {
       component: 'Input',
       fieldName: 'title',
-      label: 'æ–¹æ¡ˆåç§°',
+      label: '方案名称',
       rules: 'required',
-      componentProps: { placeholder: '请输入æ–¹æ¡ˆåç§°', maxlength: 50 },
+      componentProps: { placeholder: '请输入方案名称', maxlength: 50 },
     },
     {
-      component: 'Input',
+      component: 'InputNumber',
       fieldName: 'amount',
-      label: 'å……å€¼é‡‘é¢ï¼ˆåˆ†ï¼‰',
+      label: '充值金额（分）',
       rules: 'required',
-      componentProps: { placeholder: '请输入å……å€¼é‡‘é¢ï¼ˆåˆ†ï¼‰' },
+      componentProps: { placeholder: '请输入充值金额（分）', class: 'w-full' },
     },
     {
-      component: 'Input',
+      component: 'InputNumber',
       fieldName: 'giftAmount',
-      label: 'èµ é€é‡‘é¢ï¼ˆåˆ†ï¼‰',
-      componentProps: { placeholder: '请输入èµ é€é‡‘é¢ï¼ˆåˆ†ï¼‰' },
+      label: '赠送金额（分）',
+      componentProps: { placeholder: '请输入赠送金额（分）', class: 'w-full' },
     },
     {
       component: 'Input',
       fieldName: 'coverImage',
-      label: 'æ–¹æ¡ˆå°é¢å›¾',
-      componentProps: { placeholder: '请输入æ–¹æ¡ˆå°é¢å›¾', maxlength: 500 },
+      label: '方案封面图',
+      componentProps: { placeholder: '请输入方案封面图', maxlength: 500 },
     },
     {
       component: 'InputNumber',
       fieldName: 'sort',
-      label: 'æŽ’åºï¼ˆå‡åºï¼‰',
-      componentProps: { placeholder: '请输入æŽ’åºï¼ˆå‡åºï¼‰', class: 'w-full' },
+      label: '排序（升序）',
+      componentProps: { placeholder: '请输入排序（升序）', class: 'w-full' },
     },
     {
       component: 'Switch',
       fieldName: 'status',
-      label: 'çŠ¶æ€',
+      label: '状态',
       componentProps: { checkedValue: 1, unCheckedValue: 0 },
       defaultValue: 1,
     },
@@ -89,7 +89,7 @@ const [Modal, modalApi] = useVbenModal({
       if (data?.id) {
         isEdit.value = true;
         editId.value = data.id;
-        modalApi.setState({ title: '编辑å……å€¼æ–¹æ¡ˆè¡¨' });
+        modalApi.setState({ title: '编辑充值方案表' });
         try {
           const detail = await getRechargePlanDetail(data.id);
           if (detail) {
@@ -101,7 +101,7 @@ const [Modal, modalApi] = useVbenModal({
       } else {
         isEdit.value = false;
         editId.value = '';
-        modalApi.setState({ title: '新建å……å€¼æ–¹æ¡ˆè¡¨' });
+        modalApi.setState({ title: '新建充值方案表' });
         formApi.resetForm();
       }
     }

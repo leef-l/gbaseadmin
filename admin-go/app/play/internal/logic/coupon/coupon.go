@@ -22,7 +22,7 @@ func New() *sCoupon {
 
 type sCoupon struct{}
 
-// Create 创建ä¼˜æƒ åˆ¸æ¨¡æ¿è¡¨
+// Create 创建优惠券模板表
 func (s *sCoupon) Create(ctx context.Context, in *model.CouponCreateInput) error {
 	id := snowflake.Generate()
 	_, err := dao.PlayCoupon.Ctx(ctx).Data(g.Map{
@@ -46,7 +46,7 @@ func (s *sCoupon) Create(ctx context.Context, in *model.CouponCreateInput) error
 	return err
 }
 
-// Update 更新ä¼˜æƒ åˆ¸æ¨¡æ¿è¡¨
+// Update 更新优惠券模板表
 func (s *sCoupon) Update(ctx context.Context, in *model.CouponUpdateInput) error {
 	data := g.Map{
 		dao.PlayCoupon.Columns().Title: in.Title,
@@ -68,7 +68,7 @@ func (s *sCoupon) Update(ctx context.Context, in *model.CouponUpdateInput) error
 	return err
 }
 
-// Delete 软删除ä¼˜æƒ åˆ¸æ¨¡æ¿è¡¨
+// Delete 软删除优惠券模板表
 func (s *sCoupon) Delete(ctx context.Context, id snowflake.JsonInt64) error {
 	_, err := dao.PlayCoupon.Ctx(ctx).Where(dao.PlayCoupon.Columns().Id, id).Data(g.Map{
 		dao.PlayCoupon.Columns().DeletedAt: gtime.Now(),
@@ -76,7 +76,7 @@ func (s *sCoupon) Delete(ctx context.Context, id snowflake.JsonInt64) error {
 	return err
 }
 
-// Detail 获取ä¼˜æƒ åˆ¸æ¨¡æ¿è¡¨详情
+// Detail 获取优惠券模板表详情
 func (s *sCoupon) Detail(ctx context.Context, id snowflake.JsonInt64) (out *model.CouponDetailOutput, err error) {
 	out = &model.CouponDetailOutput{}
 	err = dao.PlayCoupon.Ctx(ctx).Where(dao.PlayCoupon.Columns().Id, id).Where(dao.PlayCoupon.Columns().DeletedAt, nil).Scan(out)
@@ -86,7 +86,7 @@ func (s *sCoupon) Detail(ctx context.Context, id snowflake.JsonInt64) (out *mode
 	return
 }
 
-// List 获取ä¼˜æƒ åˆ¸æ¨¡æ¿è¡¨列表
+// List 获取优惠券模板表列表
 func (s *sCoupon) List(ctx context.Context, in *model.CouponListInput) (list []*model.CouponListOutput, total int, err error) {
 	m := dao.PlayCoupon.Ctx(ctx).Where(dao.PlayCoupon.Columns().DeletedAt, nil)
 	if in.Type > 0 {

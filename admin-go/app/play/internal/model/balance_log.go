@@ -8,7 +8,7 @@ import (
 
 // BalanceLog DTO 模型
 
-// BalanceLogCreateInput 创建ä½™é¢æµæ°´è¡¨输入
+// BalanceLogCreateInput 创建余额流水表输入
 type BalanceLogCreateInput struct {
 	MemberID snowflake.JsonInt64 `json:"memberID"`
 	BizType int `json:"bizType"`
@@ -19,7 +19,7 @@ type BalanceLogCreateInput struct {
 	Remark string `json:"remark"`
 }
 
-// BalanceLogUpdateInput 更新ä½™é¢æµæ°´è¡¨输入
+// BalanceLogUpdateInput 更新余额流水表输入
 type BalanceLogUpdateInput struct {
 	ID snowflake.JsonInt64 `json:"id"`
 	MemberID snowflake.JsonInt64 `json:"memberID"`
@@ -31,7 +31,7 @@ type BalanceLogUpdateInput struct {
 	Remark string `json:"remark"`
 }
 
-// BalanceLogDetailOutput ä½™é¢æµæ°´è¡¨详情输出
+// BalanceLogDetailOutput 余额流水表详情输出
 type BalanceLogDetailOutput struct {
 	ID snowflake.JsonInt64 `json:"id"`
 	MemberID snowflake.JsonInt64 `json:"memberID"`
@@ -45,7 +45,7 @@ type BalanceLogDetailOutput struct {
 	UpdatedAt *gtime.Time `json:"updatedAt"`
 }
 
-// BalanceLogListOutput ä½™é¢æµæ°´è¡¨列表输出
+// BalanceLogListOutput 余额流水表列表输出
 type BalanceLogListOutput struct {
 	ID snowflake.JsonInt64 `json:"id"`
 	MemberID snowflake.JsonInt64 `json:"memberID"`
@@ -59,7 +59,7 @@ type BalanceLogListOutput struct {
 	UpdatedAt *gtime.Time `json:"updatedAt"`
 }
 
-// BalanceLogListInput ä½™é¢æµæ°´è¡¨列表查询输入
+// BalanceLogListInput 余额流水表列表查询输入
 type BalanceLogListInput struct {
 	PageNum  int `json:"pageNum"`
 	PageSize int `json:"pageSize"`

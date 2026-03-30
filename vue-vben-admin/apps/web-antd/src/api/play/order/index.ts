@@ -10,7 +10,7 @@ import type {
 /** API 前缀 */
 const PREFIX = '/play/order';
 
-/** 获取è®¢å•è¡¨列表 */
+/** 获取订单表列表 */
 export function getOrderList(params: OrderListParams) {
   return requestClient.get<{ list: OrderItem[]; total: number }>(
     `${PREFIX}/list`,
@@ -18,24 +18,24 @@ export function getOrderList(params: OrderListParams) {
   );
 }
 
-/** 获取è®¢å•è¡¨详情 */
+/** 获取订单表详情 */
 export function getOrderDetail(id: string) {
   return requestClient.get<OrderItem>(`${PREFIX}/detail`, {
     params: { id },
   });
 }
 
-/** 创建è®¢å•è¡¨ */
+/** 创建订单表 */
 export function createOrder(data: OrderCreateParams) {
   return requestClient.post(`${PREFIX}/create`, data);
 }
 
-/** 更新è®¢å•è¡¨ */
+/** 更新订单表 */
 export function updateOrder(data: OrderUpdateParams) {
   return requestClient.put(`${PREFIX}/update`, data);
 }
 
-/** 删除è®¢å•è¡¨ */
+/** 删除订单表 */
 export function deleteOrder(id: string) {
   return requestClient.delete(`${PREFIX}/delete`, { data: { id } });
 }

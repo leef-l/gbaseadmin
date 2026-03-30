@@ -13,38 +13,38 @@ import FormModal from './modules/form.vue';
 /** 标签颜色池 */
 const TAG_COLORS = ['green', 'red', 'blue', 'orange', 'cyan', 'purple', 'geekblue', 'magenta'];
 
-/** æ˜¯å¦åŒ¿å选项 */
+/** 是否匿名选项 */
 const isAnonymousOptions = [
-  { label: 'å¦', value: 0 },
-  { label: 'æ˜¯', value: 1 },
+  { label: '否', value: 0 },
+  { label: '是', value: 1 },
 ];
 
-/** æ˜¯å¦åŒ¿å映射 */
+/** 是否匿名映射 */
 const isAnonymousMap: Record<number, string> = {
-  0: 'å¦',
-  1: 'æ˜¯',
+  0: '否',
+  1: '是',
 };
 
-/** æ˜¯å¦åŒ¿å颜色 */
+/** 是否匿名颜色 */
 function getIsAnonymousColor(val: number): string {
   const keys = [0, 1];
   const idx = keys.indexOf(val);
   return TAG_COLORS[idx >= 0 ? idx % TAG_COLORS.length : 0] ?? 'default';
 }
 
-/** çŠ¶æ€选项 */
+/** 状态选项 */
 const statusOptions = [
-  { label: 'éšè—', value: 0 },
-  { label: 'æ˜¾ç¤º', value: 1 },
+  { label: '隐藏', value: 0 },
+  { label: '显示', value: 1 },
 ];
 
-/** çŠ¶æ€映射 */
+/** 状态映射 */
 const statusMap: Record<number, string> = {
-  0: 'éšè—',
-  1: 'æ˜¾ç¤º',
+  0: '隐藏',
+  1: '显示',
 };
 
-/** çŠ¶æ€颜色 */
+/** 状态颜色 */
 function getStatusColor(val: number): string {
   const keys = [0, 1];
   const idx = keys.indexOf(val);
@@ -69,22 +69,22 @@ const formOptions: VbenFormProps = {
       componentProps: {
         allowClear: true,
         options: isAnonymousOptions,
-        placeholder: '请选择æ˜¯å¦åŒ¿å',
+        placeholder: '请选择是否匿名',
         class: 'w-full',
       },
       fieldName: 'isAnonymous',
-      label: 'æ˜¯å¦åŒ¿å',
+      label: '是否匿名',
     },
     {
       component: 'Select',
       componentProps: {
         allowClear: true,
         options: statusOptions,
-        placeholder: '请选择çŠ¶æ€',
+        placeholder: '请选择状态',
         class: 'w-full',
       },
       fieldName: 'status',
-      label: 'çŠ¶æ€',
+      label: '状态',
     },
   ],
 };
@@ -93,16 +93,16 @@ const formOptions: VbenFormProps = {
 const gridOptions: VxeGridProps<ReviewItem> = {
   columns: [
     { title: '序号', type: 'seq', width: 50 },
-    { field: 'orderID', title: 'è®¢å•ID' },
-    { field: 'memberID', title: 'è¯„ä»·ä¼šå‘˜ID' },
-    { field: 'coachID', title: 'è¢«è¯„é™ªçŽ©å¸ˆID' },
-    { field: 'score', title: 'è¯„åˆ†ï¼ˆä¹˜100ï¼‰' },
-    { field: 'reviewContent', title: 'è¯„ä»·å†…å®¹' },
-    { field: 'reviewImage', title: 'è¯„ä»·å›¾ç‰‡ï¼ˆå¤šå¼ é€—å·åˆ†éš”ï¼‰' },
-    { field: 'replyContent', title: 'é™ªçŽ©å¸ˆå›žå¤å†…å®¹' },
-    { field: 'isAnonymous', title: 'æ˜¯å¦åŒ¿å', width: 120, slots: { default: 'isAnonymous_cell' } },
-    { field: 'status', title: 'çŠ¶æ€', width: 120, slots: { default: 'status_cell' } },
-    { field: 'replyAt', title: 'å›žå¤æ—¶é—´', width: 180, formatter: 'formatDateTime' },
+    { field: 'orderID', title: '订单ID' },
+    { field: 'memberID', title: '评价会员ID' },
+    { field: 'coachID', title: '被评陪玩师ID' },
+    { field: 'score', title: '评分（乘100，如 500=5.00分）' },
+    { field: 'reviewContent', title: '评价内容' },
+    { field: 'reviewImage', title: '评价图片（多张逗号分隔）' },
+    { field: 'replyContent', title: '陪玩师回复内容' },
+    { field: 'isAnonymous', title: '是否匿名', width: 120, slots: { default: 'isAnonymous_cell' } },
+    { field: 'status', title: '状态', width: 120, slots: { default: 'status_cell' } },
+    { field: 'replyAt', title: '回复时间', width: 180, formatter: 'formatDateTime' },
     { field: 'createdAt', title: '创建时间', width: 180, formatter: 'formatDateTime' },
     { title: '操作', width: 200, fixed: 'right', slots: { default: 'action' } },
   ],
@@ -146,7 +146,7 @@ function handleEdit(row: ReviewItem) {
 function handleDelete(row: ReviewItem) {
   Modal.confirm({
     title: '确认删除',
-    content: '确定要删除该è¯„ä»·è¡¨吗？',
+    content: '确定要删除该评价表吗？',
     okType: 'danger',
     async onOk() {
       await deleteReview(row.id);

@@ -8,7 +8,7 @@ import (
 
 // Payment DTO 模型
 
-// PaymentCreateInput 创建æ”¯ä»˜è®°å½•è¡¨输入
+// PaymentCreateInput 创建支付记录表输入
 type PaymentCreateInput struct {
 	OrderID snowflake.JsonInt64 `json:"orderID"`
 	MemberID snowflake.JsonInt64 `json:"memberID"`
@@ -23,7 +23,7 @@ type PaymentCreateInput struct {
 	CallbackContent string `json:"callbackContent"`
 }
 
-// PaymentUpdateInput 更新æ”¯ä»˜è®°å½•è¡¨输入
+// PaymentUpdateInput 更新支付记录表输入
 type PaymentUpdateInput struct {
 	ID snowflake.JsonInt64 `json:"id"`
 	OrderID snowflake.JsonInt64 `json:"orderID"`
@@ -39,7 +39,7 @@ type PaymentUpdateInput struct {
 	CallbackContent string `json:"callbackContent"`
 }
 
-// PaymentDetailOutput æ”¯ä»˜è®°å½•è¡¨详情输出
+// PaymentDetailOutput 支付记录表详情输出
 type PaymentDetailOutput struct {
 	ID snowflake.JsonInt64 `json:"id"`
 	OrderID snowflake.JsonInt64 `json:"orderID"`
@@ -57,7 +57,7 @@ type PaymentDetailOutput struct {
 	UpdatedAt *gtime.Time `json:"updatedAt"`
 }
 
-// PaymentListOutput æ”¯ä»˜è®°å½•è¡¨列表输出
+// PaymentListOutput 支付记录表列表输出
 type PaymentListOutput struct {
 	ID snowflake.JsonInt64 `json:"id"`
 	OrderID snowflake.JsonInt64 `json:"orderID"`
@@ -75,7 +75,7 @@ type PaymentListOutput struct {
 	UpdatedAt *gtime.Time `json:"updatedAt"`
 }
 
-// PaymentListInput æ”¯ä»˜è®°å½•è¡¨列表查询输入
+// PaymentListInput 支付记录表列表查询输入
 type PaymentListInput struct {
 	PageNum  int `json:"pageNum"`
 	PageSize int `json:"pageSize"`

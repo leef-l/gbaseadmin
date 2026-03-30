@@ -22,7 +22,7 @@ func New() *sActivityJoin {
 
 type sActivityJoin struct{}
 
-// Create 创建æ´»åŠ¨å‚ä¸Žè®°å½•è¡¨
+// Create 创建活动参与记录表
 func (s *sActivityJoin) Create(ctx context.Context, in *model.ActivityJoinCreateInput) error {
 	id := snowflake.Generate()
 	_, err := dao.PlayActivityJoin.Ctx(ctx).Data(g.Map{
@@ -40,7 +40,7 @@ func (s *sActivityJoin) Create(ctx context.Context, in *model.ActivityJoinCreate
 	return err
 }
 
-// Update 更新æ´»åŠ¨å‚ä¸Žè®°å½•è¡¨
+// Update 更新活动参与记录表
 func (s *sActivityJoin) Update(ctx context.Context, in *model.ActivityJoinUpdateInput) error {
 	data := g.Map{
 		dao.PlayActivityJoin.Columns().ActivityId: in.ActivityID,
@@ -56,7 +56,7 @@ func (s *sActivityJoin) Update(ctx context.Context, in *model.ActivityJoinUpdate
 	return err
 }
 
-// Delete 软删除æ´»åŠ¨å‚ä¸Žè®°å½•è¡¨
+// Delete 软删除活动参与记录表
 func (s *sActivityJoin) Delete(ctx context.Context, id snowflake.JsonInt64) error {
 	_, err := dao.PlayActivityJoin.Ctx(ctx).Where(dao.PlayActivityJoin.Columns().Id, id).Data(g.Map{
 		dao.PlayActivityJoin.Columns().DeletedAt: gtime.Now(),
@@ -64,22 +64,24 @@ func (s *sActivityJoin) Delete(ctx context.Context, id snowflake.JsonInt64) erro
 	return err
 }
 
-// Detail 获取æ´»åŠ¨å‚ä¸Žè®°å½•è¡¨详情
+// Detail 获取活动参与记录表详情
 func (s *sActivityJoin) Detail(ctx context.Context, id snowflake.JsonInt64) (out *model.ActivityJoinDetailOutput, err error) {
 	out = &model.ActivityJoinDetailOutput{}
 	err = dao.PlayActivityJoin.Ctx(ctx).Where(dao.PlayActivityJoin.Columns().Id, id).Where(dao.PlayActivityJoin.Columns().DeletedAt, nil).Scan(out)
 	if err != nil {
 		return nil, err
 	}
-	// 查询æ´»åŠ¨ID关联显示
+	// 查询活动ID关联显示
 	if out.ActivityID != 0 {
-		val, _ := g.DB().Ctx(ctx).Model("play_activity").Where("id", out.ActivityID).Where("deleted_at", nil).Value("title")
-		out.ActivityTitle = val.String()
+		val, err := g.DB().Ctx(ctx).Model("play_activity").Where("id", out.ActivityID).Where("deleted_at", nil).Value("title")
+		if err == nil {
+			out.ActivityTitle = val.String()
+		}
 	}
 	return
 }
 
-// List 获取æ´»åŠ¨å‚ä¸Žè®°å½•è¡¨列表
+// List 获取活动参与记录表列表
 func (s *sActivityJoin) List(ctx context.Context, in *model.ActivityJoinListInput) (list []*model.ActivityJoinListOutput, total int, err error) {
 	m := dao.PlayActivityJoin.Ctx(ctx).Where(dao.PlayActivityJoin.Columns().DeletedAt, nil)
 	if in.JoinStatus > 0 {
@@ -96,8 +98,10 @@ func (s *sActivityJoin) List(ctx context.Context, in *model.ActivityJoinListInpu
 	// 填充关联显示字段
 	for _, item := range list {
 		if item.ActivityID != 0 {
-			val, _ := g.DB().Ctx(ctx).Model("play_activity").Where("id", item.ActivityID).Where("deleted_at", nil).Value("title")
-			item.ActivityTitle = val.String()
+			val, err := g.DB().Ctx(ctx).Model("play_activity").Where("id", item.ActivityID).Where("deleted_at", nil).Value("title")
+			if err == nil {
+				item.ActivityTitle = val.String()
+			}
 		}
 	}
 	return

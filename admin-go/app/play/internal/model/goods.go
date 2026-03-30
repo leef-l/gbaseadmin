@@ -8,7 +8,7 @@ import (
 
 // Goods DTO 模型
 
-// GoodsCreateInput 创建å•†å“è¡¨输入
+// GoodsCreateInput 创建商品表输入
 type GoodsCreateInput struct {
 	CategoryID snowflake.JsonInt64 `json:"categoryID"`
 	CoachID snowflake.JsonInt64 `json:"coachID"`
@@ -22,7 +22,7 @@ type GoodsCreateInput struct {
 	Status int `json:"status"`
 }
 
-// GoodsUpdateInput 更新å•†å“è¡¨输入
+// GoodsUpdateInput 更新商品表输入
 type GoodsUpdateInput struct {
 	ID snowflake.JsonInt64 `json:"id"`
 	CategoryID snowflake.JsonInt64 `json:"categoryID"`
@@ -37,7 +37,7 @@ type GoodsUpdateInput struct {
 	Status int `json:"status"`
 }
 
-// GoodsDetailOutput å•†å“è¡¨详情输出
+// GoodsDetailOutput 商品表详情输出
 type GoodsDetailOutput struct {
 	ID snowflake.JsonInt64 `json:"id"`
 	CategoryID snowflake.JsonInt64 `json:"categoryID"`
@@ -55,7 +55,7 @@ type GoodsDetailOutput struct {
 	UpdatedAt *gtime.Time `json:"updatedAt"`
 }
 
-// GoodsListOutput å•†å“è¡¨列表输出
+// GoodsListOutput 商品表列表输出
 type GoodsListOutput struct {
 	ID snowflake.JsonInt64 `json:"id"`
 	CategoryID snowflake.JsonInt64 `json:"categoryID"`
@@ -73,7 +73,7 @@ type GoodsListOutput struct {
 	UpdatedAt *gtime.Time `json:"updatedAt"`
 }
 
-// GoodsListInput å•†å“è¡¨列表查询输入
+// GoodsListInput 商品表列表查询输入
 type GoodsListInput struct {
 	PageNum  int `json:"pageNum"`
 	PageSize int `json:"pageSize"`

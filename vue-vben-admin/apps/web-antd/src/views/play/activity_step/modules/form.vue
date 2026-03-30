@@ -20,40 +20,40 @@ const [Form, formApi] = useVbenForm({
     {
       component: 'Select',
       fieldName: 'activityID',
-      label: 'æ´»åŠ¨ID',
+      label: '活动ID',
       rules: 'selectRequired',
-      componentProps: { options: activityIDOptions, placeholder: '请选择æ´»åŠ¨ID', allowClear: true, class: 'w-full' },
+      componentProps: { options: activityIDOptions, placeholder: '请选择活动ID', allowClear: true, class: 'w-full' },
     },
     {
       component: 'InputNumber',
       fieldName: 'stepNum',
-      label: 'æ­¥éª¤åºå·',
-      componentProps: { placeholder: '请输入æ­¥éª¤åºå·', class: 'w-full' },
+      label: '步骤序号',
+      componentProps: { placeholder: '请输入步骤序号', class: 'w-full' },
     },
     {
       component: 'Input',
       fieldName: 'title',
-      label: 'æ­¥éª¤æ ‡é¢˜',
+      label: '步骤标题',
       rules: 'required',
-      componentProps: { placeholder: '请输入æ­¥éª¤æ ‡é¢˜', maxlength: 100 },
+      componentProps: { placeholder: '请输入步骤标题', maxlength: 100 },
     },
     {
       component: 'Input',
       fieldName: 'descContent',
-      label: 'æ­¥éª¤è¯´æ˜Ž',
-      componentProps: { placeholder: '请输入æ­¥éª¤è¯´æ˜Ž', maxlength: 65535 },
+      label: '步骤说明（富文本，支持图文）',
+      componentProps: { placeholder: '请输入步骤说明（富文本，支持图文）', maxlength: 65535 },
     },
     {
       component: 'Input',
       fieldName: 'stepImage',
-      label: 'æ­¥éª¤ç¤ºä¾‹å›¾ç‰‡',
-      componentProps: { placeholder: '请输入æ­¥éª¤ç¤ºä¾‹å›¾ç‰‡', maxlength: 500 },
+      label: '步骤示例图片',
+      componentProps: { placeholder: '请输入步骤示例图片', maxlength: 500 },
     },
     {
       component: 'InputNumber',
       fieldName: 'sort',
-      label: 'æŽ’åº',
-      componentProps: { placeholder: '请输入æŽ’åº', class: 'w-full' },
+      label: '排序（升序）',
+      componentProps: { placeholder: '请输入排序（升序）', class: 'w-full' },
     },
   ],
 });
@@ -88,7 +88,7 @@ const [Modal, modalApi] = useVbenModal({
       if (data?.id) {
         isEdit.value = true;
         editId.value = data.id;
-        modalApi.setState({ title: '编辑æ´»åŠ¨æ­¥éª¤è¡¨' });
+        modalApi.setState({ title: '编辑活动步骤表' });
         try {
           const detail = await getActivityStepDetail(data.id);
           if (detail) {
@@ -100,7 +100,7 @@ const [Modal, modalApi] = useVbenModal({
       } else {
         isEdit.value = false;
         editId.value = '';
-        modalApi.setState({ title: '新建æ´»åŠ¨æ­¥éª¤è¡¨' });
+        modalApi.setState({ title: '新建活动步骤表' });
         formApi.resetForm();
       }
     }

@@ -1,21 +1,21 @@
 package consts
 
-// CouponType ä¼˜æƒ åˆ¸ç±»åž‹
+// CouponType 优惠券类型
 const (
-	CouponType1 = 1 // æ»¡å‡åˆ¸
-	CouponType2 = 2 // æŠ˜æ‰£åˆ¸
-	CouponType3 = 3 // æ— é—¨æ§›åˆ¸
+	CouponType1 = 1 // 满减券
+	CouponType2 = 2 // 折扣券
+	CouponType3 = 3 // 无门槛券
 )
 
-// CouponIsNewMember æ˜¯å¦æ–°äººä¸“äº«
+// CouponIsNewMember 是否新人专享
 const (
-	CouponIsNewMember0 = 0 // å¦
-	CouponIsNewMember1 = 1 // æ˜¯
+	CouponIsNewMember0 = 0 // 否
+	CouponIsNewMember1 = 1 // 是
 )
 
-// CouponStatus çŠ¶æ€
+// CouponStatus 状态
 const (
-	CouponStatus0 = 0 // å…³é—­
-	CouponStatus1 = 1 // å¼€å¯
+	CouponStatus0 = 0 // 关闭
+	CouponStatus1 = 1 // 开启
 )
 

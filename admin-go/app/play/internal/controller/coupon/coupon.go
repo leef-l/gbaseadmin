@@ -12,7 +12,7 @@ var Coupon = cCoupon{}
 
 type cCoupon struct{}
 
-// Create 创建ä¼˜æƒ åˆ¸æ¨¡æ¿è¡¨
+// Create 创建优惠券模板表
 func (c *cCoupon) Create(ctx context.Context, req *v1.CouponCreateReq) (res *v1.CouponCreateRes, err error) {
 	err = service.Coupon().Create(ctx, &model.CouponCreateInput{
 		Title: req.Title,
@@ -32,7 +32,7 @@ func (c *cCoupon) Create(ctx context.Context, req *v1.CouponCreateReq) (res *v1.
 	return
 }
 
-// Update 更新ä¼˜æƒ åˆ¸æ¨¡æ¿è¡¨
+// Update 更新优惠券模板表
 func (c *cCoupon) Update(ctx context.Context, req *v1.CouponUpdateReq) (res *v1.CouponUpdateRes, err error) {
 	err = service.Coupon().Update(ctx, &model.CouponUpdateInput{
 		ID: req.ID,
@@ -53,20 +53,20 @@ func (c *cCoupon) Update(ctx context.Context, req *v1.CouponUpdateReq) (res *v1.
 	return
 }
 
-// Delete 删除ä¼˜æƒ åˆ¸æ¨¡æ¿è¡¨
+// Delete 删除优惠券模板表
 func (c *cCoupon) Delete(ctx context.Context, req *v1.CouponDeleteReq) (res *v1.CouponDeleteRes, err error) {
 	err = service.Coupon().Delete(ctx, req.ID)
 	return
 }
 
-// Detail 获取ä¼˜æƒ åˆ¸æ¨¡æ¿è¡¨详情
+// Detail 获取优惠券模板表详情
 func (c *cCoupon) Detail(ctx context.Context, req *v1.CouponDetailReq) (res *v1.CouponDetailRes, err error) {
 	res = &v1.CouponDetailRes{}
 	res.CouponDetailOutput, err = service.Coupon().Detail(ctx, req.ID)
 	return
 }
 
-// List 获取ä¼˜æƒ åˆ¸æ¨¡æ¿è¡¨列表
+// List 获取优惠券模板表列表
 func (c *cCoupon) List(ctx context.Context, req *v1.CouponListReq) (res *v1.CouponListRes, err error) {
 	res = &v1.CouponListRes{}
 	res.List, res.Total, err = service.Coupon().List(ctx, &model.CouponListInput{

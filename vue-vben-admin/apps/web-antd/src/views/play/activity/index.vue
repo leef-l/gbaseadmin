@@ -13,88 +13,88 @@ import FormModal from './modules/form.vue';
 /** 标签颜色池 */
 const TAG_COLORS = ['green', 'red', 'blue', 'orange', 'cyan', 'purple', 'geekblue', 'magenta'];
 
-/** æ´»åŠ¨ç±»åž‹选项 */
+/** 活动类型选项 */
 const typeOptions = [
-  { label: 'å……å€¼æ´»åŠ¨', value: 1 },
-  { label: 'ä¸‹å•æ´»åŠ¨', value: 2 },
-  { label: 'æ³¨å†Œæ´»åŠ¨', value: 3 },
-  { label: 'å›¾æ–‡æ­¥éª¤æ´»åŠ¨', value: 4 },
-  { label: 'è‡ªå®šä¹‰æ´»åŠ¨', value: 5 },
+  { label: '充值活动', value: 1 },
+  { label: '下单活动', value: 2 },
+  { label: '注册活动', value: 3 },
+  { label: '图文步骤活动', value: 4 },
+  { label: '自定义活动', value: 5 },
 ];
 
-/** æ´»åŠ¨ç±»åž‹映射 */
+/** 活动类型映射 */
 const typeMap: Record<number, string> = {
-  1: 'å……å€¼æ´»åŠ¨',
-  2: 'ä¸‹å•æ´»åŠ¨',
-  3: 'æ³¨å†Œæ´»åŠ¨',
-  4: 'å›¾æ–‡æ­¥éª¤æ´»åŠ¨',
-  5: 'è‡ªå®šä¹‰æ´»åŠ¨',
+  1: '充值活动',
+  2: '下单活动',
+  3: '注册活动',
+  4: '图文步骤活动',
+  5: '自定义活动',
 };
 
-/** æ´»åŠ¨ç±»åž‹颜色 */
+/** 活动类型颜色 */
 function getTypeColor(val: number): string {
   const keys = [1, 2, 3, 4, 5];
   const idx = keys.indexOf(val);
   return TAG_COLORS[idx >= 0 ? idx % TAG_COLORS.length : 0] ?? 'default';
 }
 
-/** å‚ä¸Žæ¡ä»¶选项 */
+/** 参与条件选项 */
 const conditionTypeOptions = [
-  { label: 'æ— æ¡ä»¶', value: 0 },
-  { label: 'éœ€æŠ¥å', value: 1 },
-  { label: 'å……å€¼æ»¡é¢', value: 2 },
-  { label: 'ä¸‹å•æ»¡é¢', value: 3 },
-  { label: 'å®Œæˆæ­¥éª¤', value: 4 },
+  { label: '无条件', value: 0 },
+  { label: '需报名', value: 1 },
+  { label: '充值满额', value: 2 },
+  { label: '下单满额', value: 3 },
+  { label: '完成步骤', value: 4 },
 ];
 
-/** å‚ä¸Žæ¡ä»¶映射 */
+/** 参与条件映射 */
 const conditionTypeMap: Record<number, string> = {
-  0: 'æ— æ¡ä»¶',
-  1: 'éœ€æŠ¥å',
-  2: 'å……å€¼æ»¡é¢',
-  3: 'ä¸‹å•æ»¡é¢',
-  4: 'å®Œæˆæ­¥éª¤',
+  0: '无条件',
+  1: '需报名',
+  2: '充值满额',
+  3: '下单满额',
+  4: '完成步骤',
 };
 
-/** å‚ä¸Žæ¡ä»¶颜色 */
+/** 参与条件颜色 */
 function getConditionTypeColor(val: number): string {
   const keys = [0, 1, 2, 3, 4];
   const idx = keys.indexOf(val);
   return TAG_COLORS[idx >= 0 ? idx % TAG_COLORS.length : 0] ?? 'default';
 }
 
-/** æ˜¯å¦è‡ªåŠ¨å‘å¥–选项 */
+/** 是否自动发奖选项 */
 const isAutoRewardOptions = [
-  { label: 'å¦', value: 0 },
-  { label: 'æ˜¯', value: 1 },
+  { label: '否（需审核）', value: 0 },
+  { label: '是（用户完成即发）', value: 1 },
 ];
 
-/** æ˜¯å¦è‡ªåŠ¨å‘å¥–映射 */
+/** 是否自动发奖映射 */
 const isAutoRewardMap: Record<number, string> = {
-  0: 'å¦',
-  1: 'æ˜¯',
+  0: '否（需审核）',
+  1: '是（用户完成即发）',
 };
 
-/** æ˜¯å¦è‡ªåŠ¨å‘å¥–颜色 */
+/** 是否自动发奖颜色 */
 function getIsAutoRewardColor(val: number): string {
   const keys = [0, 1];
   const idx = keys.indexOf(val);
   return TAG_COLORS[idx >= 0 ? idx % TAG_COLORS.length : 0] ?? 'default';
 }
 
-/** çŠ¶æ€选项 */
+/** 状态选项 */
 const statusOptions = [
-  { label: 'å…³é—­', value: 0 },
-  { label: 'å¼€å¯', value: 1 },
+  { label: '关闭', value: 0 },
+  { label: '开启', value: 1 },
 ];
 
-/** çŠ¶æ€映射 */
+/** 状态映射 */
 const statusMap: Record<number, string> = {
-  0: 'å…³é—­',
-  1: 'å¼€å¯',
+  0: '关闭',
+  1: '开启',
 };
 
-/** çŠ¶æ€颜色 */
+/** 状态颜色 */
 function getStatusColor(val: number): string {
   const keys = [0, 1];
   const idx = keys.indexOf(val);
@@ -119,44 +119,44 @@ const formOptions: VbenFormProps = {
       componentProps: {
         allowClear: true,
         options: typeOptions,
-        placeholder: '请选择æ´»åŠ¨ç±»åž‹',
+        placeholder: '请选择活动类型',
         class: 'w-full',
       },
       fieldName: 'type',
-      label: 'æ´»åŠ¨ç±»åž‹',
+      label: '活动类型',
     },
     {
       component: 'Select',
       componentProps: {
         allowClear: true,
         options: conditionTypeOptions,
-        placeholder: '请选择å‚ä¸Žæ¡ä»¶',
+        placeholder: '请选择参与条件',
         class: 'w-full',
       },
       fieldName: 'conditionType',
-      label: 'å‚ä¸Žæ¡ä»¶',
+      label: '参与条件',
     },
     {
       component: 'Select',
       componentProps: {
         allowClear: true,
         options: isAutoRewardOptions,
-        placeholder: '请选择æ˜¯å¦è‡ªåŠ¨å‘å¥–',
+        placeholder: '请选择是否自动发奖',
         class: 'w-full',
       },
       fieldName: 'isAutoReward',
-      label: 'æ˜¯å¦è‡ªåŠ¨å‘å¥–',
+      label: '是否自动发奖',
     },
     {
       component: 'Select',
       componentProps: {
         allowClear: true,
         options: statusOptions,
-        placeholder: '请选择çŠ¶æ€',
+        placeholder: '请选择状态',
         class: 'w-full',
       },
       fieldName: 'status',
-      label: 'çŠ¶æ€',
+      label: '状态',
     },
   ],
 };
@@ -165,19 +165,19 @@ const formOptions: VbenFormProps = {
 const gridOptions: VxeGridProps<ActivityItem> = {
   columns: [
     { title: '序号', type: 'seq', width: 50 },
-    { field: 'title', title: 'æ´»åŠ¨åç§°' },
-    { field: 'coverImage', title: 'æ´»åŠ¨å°é¢å›¾' },
-    { field: 'descContent', title: 'æ´»åŠ¨è¯¦æƒ…æè¿°' },
-    { field: 'type', title: 'æ´»åŠ¨ç±»åž‹', width: 120, slots: { default: 'type_cell' } },
-    { field: 'conditionType', title: 'å‚ä¸Žæ¡ä»¶', width: 120, slots: { default: 'conditionType_cell' } },
-    { field: 'conditionValue', title: 'æ¡ä»¶å€¼' },
-    { field: 'isAutoReward', title: 'æ˜¯å¦è‡ªåŠ¨å‘å¥–', width: 120, slots: { default: 'isAutoReward_cell' } },
-    { field: 'maxNum', title: 'å‚ä¸Žäººæ•°ä¸Šé™ï¼ˆ0ä¸é™ï¼‰' },
-    { field: 'joinNum', title: 'å·²å‚ä¸Žäººæ•°' },
-    { field: 'sort', title: 'æŽ’åº' },
-    { field: 'status', title: 'çŠ¶æ€', width: 120, slots: { default: 'status_cell' } },
-    { field: 'startAt', title: 'æ´»åŠ¨å¼€å§‹æ—¶é—´', width: 180, formatter: 'formatDateTime' },
-    { field: 'endAt', title: 'æ´»åŠ¨ç»“æŸæ—¶é—´', width: 180, formatter: 'formatDateTime' },
+    { field: 'title', title: '活动名称' },
+    { field: 'coverImage', title: '活动封面图' },
+    { field: 'descContent', title: '活动详情描述（富文本，支持图文混排）' },
+    { field: 'type', title: '活动类型', width: 120, slots: { default: 'type_cell' } },
+    { field: 'conditionType', title: '参与条件', width: 120, slots: { default: 'conditionType_cell' } },
+    { field: 'conditionValue', title: '条件值（分/次，如充值满5000分、下单满3次）' },
+    { field: 'isAutoReward', title: '是否自动发奖', width: 120, slots: { default: 'isAutoReward_cell' } },
+    { field: 'maxNum', title: '参与人数上限（0表示不限）' },
+    { field: 'joinNum', title: '已参与人数' },
+    { field: 'sort', title: '排序（升序）' },
+    { field: 'status', title: '状态', width: 120, slots: { default: 'status_cell' } },
+    { field: 'startAt', title: '活动开始时间', width: 180, formatter: 'formatDateTime' },
+    { field: 'endAt', title: '活动结束时间', width: 180, formatter: 'formatDateTime' },
     { field: 'createdAt', title: '创建时间', width: 180, formatter: 'formatDateTime' },
     { title: '操作', width: 200, fixed: 'right', slots: { default: 'action' } },
   ],
@@ -221,7 +221,7 @@ function handleEdit(row: ActivityItem) {
 function handleDelete(row: ActivityItem) {
   Modal.confirm({
     title: '确认删除',
-    content: '确定要删除该æ´»åŠ¨è¡¨吗？',
+    content: '确定要删除该活动表吗？',
     okType: 'danger',
     async onOk() {
       await deleteActivity(row.id);

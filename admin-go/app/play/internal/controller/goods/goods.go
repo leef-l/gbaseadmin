@@ -12,7 +12,7 @@ var Goods = cGoods{}
 
 type cGoods struct{}
 
-// Create 创建å•†å“è¡¨
+// Create 创建商品表
 func (c *cGoods) Create(ctx context.Context, req *v1.GoodsCreateReq) (res *v1.GoodsCreateRes, err error) {
 	err = service.Goods().Create(ctx, &model.GoodsCreateInput{
 		CategoryID: req.CategoryID,
@@ -29,7 +29,7 @@ func (c *cGoods) Create(ctx context.Context, req *v1.GoodsCreateReq) (res *v1.Go
 	return
 }
 
-// Update 更新å•†å“è¡¨
+// Update 更新商品表
 func (c *cGoods) Update(ctx context.Context, req *v1.GoodsUpdateReq) (res *v1.GoodsUpdateRes, err error) {
 	err = service.Goods().Update(ctx, &model.GoodsUpdateInput{
 		ID: req.ID,
@@ -47,20 +47,20 @@ func (c *cGoods) Update(ctx context.Context, req *v1.GoodsUpdateReq) (res *v1.Go
 	return
 }
 
-// Delete 删除å•†å“è¡¨
+// Delete 删除商品表
 func (c *cGoods) Delete(ctx context.Context, req *v1.GoodsDeleteReq) (res *v1.GoodsDeleteRes, err error) {
 	err = service.Goods().Delete(ctx, req.ID)
 	return
 }
 
-// Detail 获取å•†å“è¡¨详情
+// Detail 获取商品表详情
 func (c *cGoods) Detail(ctx context.Context, req *v1.GoodsDetailReq) (res *v1.GoodsDetailRes, err error) {
 	res = &v1.GoodsDetailRes{}
 	res.GoodsDetailOutput, err = service.Goods().Detail(ctx, req.ID)
 	return
 }
 
-// List 获取å•†å“è¡¨列表
+// List 获取商品表列表
 func (c *cGoods) List(ctx context.Context, req *v1.GoodsListReq) (res *v1.GoodsListRes, err error) {
 	res = &v1.GoodsListRes{}
 	res.List, res.Total, err = service.Goods().List(ctx, &model.GoodsListInput{

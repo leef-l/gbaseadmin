@@ -8,7 +8,7 @@ import (
 
 // ProfitLog DTO 模型
 
-// ProfitLogCreateInput 创建åˆ©æ¶¦åˆ†æˆæµæ°´è¡¨输入
+// ProfitLogCreateInput 创建利润分成流水表输入
 type ProfitLogCreateInput struct {
 	OrderID snowflake.JsonInt64 `json:"orderID"`
 	OrderNo string `json:"orderNo"`
@@ -24,7 +24,7 @@ type ProfitLogCreateInput struct {
 	SettleAt *gtime.Time `json:"settleAt"`
 }
 
-// ProfitLogUpdateInput 更新åˆ©æ¶¦åˆ†æˆæµæ°´è¡¨输入
+// ProfitLogUpdateInput 更新利润分成流水表输入
 type ProfitLogUpdateInput struct {
 	ID snowflake.JsonInt64 `json:"id"`
 	OrderID snowflake.JsonInt64 `json:"orderID"`
@@ -41,7 +41,7 @@ type ProfitLogUpdateInput struct {
 	SettleAt *gtime.Time `json:"settleAt"`
 }
 
-// ProfitLogDetailOutput åˆ©æ¶¦åˆ†æˆæµæ°´è¡¨详情输出
+// ProfitLogDetailOutput 利润分成流水表详情输出
 type ProfitLogDetailOutput struct {
 	ID snowflake.JsonInt64 `json:"id"`
 	OrderID snowflake.JsonInt64 `json:"orderID"`
@@ -61,7 +61,7 @@ type ProfitLogDetailOutput struct {
 	UpdatedAt *gtime.Time `json:"updatedAt"`
 }
 
-// ProfitLogListOutput åˆ©æ¶¦åˆ†æˆæµæ°´è¡¨列表输出
+// ProfitLogListOutput 利润分成流水表列表输出
 type ProfitLogListOutput struct {
 	ID snowflake.JsonInt64 `json:"id"`
 	OrderID snowflake.JsonInt64 `json:"orderID"`
@@ -81,7 +81,7 @@ type ProfitLogListOutput struct {
 	UpdatedAt *gtime.Time `json:"updatedAt"`
 }
 
-// ProfitLogListInput åˆ©æ¶¦åˆ†æˆæµæ°´è¡¨列表查询输入
+// ProfitLogListInput 利润分成流水表列表查询输入
 type ProfitLogListInput struct {
 	PageNum  int `json:"pageNum"`
 	PageSize int `json:"pageSize"`

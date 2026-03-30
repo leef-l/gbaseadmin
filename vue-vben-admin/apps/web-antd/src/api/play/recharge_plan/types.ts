@@ -1,6 +1,6 @@
-/** å……å€¼æ–¹æ¡ˆè¡¨类型定义 */
+/** 充值方案表类型定义 */
 
-/** å……å€¼æ–¹æ¡ˆè¡¨项 */
+/** 充值方案表项 */
 export interface RechargePlanItem {
   id: string;
   title: string;
@@ -13,14 +13,14 @@ export interface RechargePlanItem {
   updatedAt?: string;
 }
 
-/** å……å€¼æ–¹æ¡ˆè¡¨列表查询参数 */
+/** 充值方案表列表查询参数 */
 export interface RechargePlanListParams {
   pageNum: number;
   pageSize: number;
   status?: number;
 }
 
-/** å……å€¼æ–¹æ¡ˆè¡¨创建参数 */
+/** 充值方案表创建参数 */
 export interface RechargePlanCreateParams {
   title: string;
   amount: string;
@@ -30,7 +30,7 @@ export interface RechargePlanCreateParams {
   status?: number;
 }
 
-/** å……å€¼æ–¹æ¡ˆè¡¨更新参数 */
+/** 充值方案表更新参数 */
 export interface RechargePlanUpdateParams {
   id: string;
   title: string;

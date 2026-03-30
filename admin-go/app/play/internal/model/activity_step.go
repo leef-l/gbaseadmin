@@ -8,7 +8,7 @@ import (
 
 // ActivityStep DTO 模型
 
-// ActivityStepCreateInput 创建æ´»åŠ¨æ­¥éª¤è¡¨输入
+// ActivityStepCreateInput 创建活动步骤表输入
 type ActivityStepCreateInput struct {
 	ActivityID snowflake.JsonInt64 `json:"activityID"`
 	StepNum int `json:"stepNum"`
@@ -18,7 +18,7 @@ type ActivityStepCreateInput struct {
 	Sort int `json:"sort"`
 }
 
-// ActivityStepUpdateInput 更新æ´»åŠ¨æ­¥éª¤è¡¨输入
+// ActivityStepUpdateInput 更新活动步骤表输入
 type ActivityStepUpdateInput struct {
 	ID snowflake.JsonInt64 `json:"id"`
 	ActivityID snowflake.JsonInt64 `json:"activityID"`
@@ -29,7 +29,7 @@ type ActivityStepUpdateInput struct {
 	Sort int `json:"sort"`
 }
 
-// ActivityStepDetailOutput æ´»åŠ¨æ­¥éª¤è¡¨详情输出
+// ActivityStepDetailOutput 活动步骤表详情输出
 type ActivityStepDetailOutput struct {
 	ID snowflake.JsonInt64 `json:"id"`
 	ActivityID snowflake.JsonInt64 `json:"activityID"`
@@ -43,7 +43,7 @@ type ActivityStepDetailOutput struct {
 	UpdatedAt *gtime.Time `json:"updatedAt"`
 }
 
-// ActivityStepListOutput æ´»åŠ¨æ­¥éª¤è¡¨列表输出
+// ActivityStepListOutput 活动步骤表列表输出
 type ActivityStepListOutput struct {
 	ID snowflake.JsonInt64 `json:"id"`
 	ActivityID snowflake.JsonInt64 `json:"activityID"`
@@ -57,7 +57,7 @@ type ActivityStepListOutput struct {
 	UpdatedAt *gtime.Time `json:"updatedAt"`
 }
 
-// ActivityStepListInput æ´»åŠ¨æ­¥éª¤è¡¨列表查询输入
+// ActivityStepListInput 活动步骤表列表查询输入
 type ActivityStepListInput struct {
 	PageNum  int `json:"pageNum"`
 	PageSize int `json:"pageSize"`

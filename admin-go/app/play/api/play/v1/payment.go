@@ -13,82 +13,82 @@ var _ = gtime.New
 
 // Payment API
 
-// PaymentCreateReq 创建æ”¯ä»˜è®°å½•è¡¨请求
+// PaymentCreateReq 创建支付记录表请求
 type PaymentCreateReq struct {
-	g.Meta `path:"/payment/create" method:"post" tags:"æ”¯ä»˜è®°å½•è¡¨" summary:"创建æ”¯ä»˜è®°å½•è¡¨"`
-	OrderID snowflake.JsonInt64 `json:"orderID" v:"required#è®¢å•ID不能为空" dc:"è®¢å•ID"`
-	MemberID snowflake.JsonInt64 `json:"memberID" v:"required#ä¼šå‘˜ID不能为空" dc:"ä¼šå‘˜ID"`
-	PaymentNo string `json:"paymentNo" v:"required#æ”¯ä»˜æµæ°´å·不能为空" dc:"æ”¯ä»˜æµæ°´å·"`
-	TradeNo string `json:"tradeNo"  dc:"ç¬¬ä¸‰æ–¹äº¤æ˜“å·"`
-	PayType int `json:"payType"  dc:"æ”¯ä»˜æ–¹å¼"`
-	PayAmount int64 `json:"payAmount"  dc:"æ”¯ä»˜é‡‘é¢ï¼ˆåˆ†ï¼‰"`
-	PayStatus int `json:"payStatus"  dc:"æ”¯ä»˜çŠ¶æ€"`
-	PayAt *gtime.Time `json:"payAt"  dc:"æ”¯ä»˜æˆåŠŸæ—¶é—´"`
-	RefundAt *gtime.Time `json:"refundAt"  dc:"é€€æ¬¾æ—¶é—´"`
-	RefundAmount int64 `json:"refundAmount"  dc:"é€€æ¬¾é‡‘é¢ï¼ˆåˆ†ï¼‰"`
-	CallbackContent string `json:"callbackContent"  dc:"å›žè°ƒæŠ¥æ–‡"`
+	g.Meta `path:"/payment/create" method:"post" tags:"支付记录表" summary:"创建支付记录表"`
+	OrderID snowflake.JsonInt64 `json:"orderID" v:"required#订单ID不能为空" dc:"订单ID"`
+	MemberID snowflake.JsonInt64 `json:"memberID" v:"required#会员ID不能为空" dc:"会员ID"`
+	PaymentNo string `json:"paymentNo" v:"required#支付流水号（平台内部）不能为空" dc:"支付流水号（平台内部）"`
+	TradeNo string `json:"tradeNo"  dc:"第三方交易号"`
+	PayType int `json:"payType"  dc:"支付方式"`
+	PayAmount int64 `json:"payAmount"  dc:"支付金额（分）"`
+	PayStatus int `json:"payStatus"  dc:"支付状态"`
+	PayAt *gtime.Time `json:"payAt"  dc:"支付成功时间"`
+	RefundAt *gtime.Time `json:"refundAt"  dc:"退款时间"`
+	RefundAmount int64 `json:"refundAmount"  dc:"退款金额（分）"`
+	CallbackContent string `json:"callbackContent"  dc:"回调报文"`
 }
 
-// PaymentCreateRes 创建æ”¯ä»˜è®°å½•è¡¨响应
+// PaymentCreateRes 创建支付记录表响应
 type PaymentCreateRes struct {
 	g.Meta `mime:"application/json"`
 }
 
-// PaymentUpdateReq 更新æ”¯ä»˜è®°å½•è¡¨请求
+// PaymentUpdateReq 更新支付记录表请求
 type PaymentUpdateReq struct {
-	g.Meta `path:"/payment/update" method:"put" tags:"æ”¯ä»˜è®°å½•è¡¨" summary:"更新æ”¯ä»˜è®°å½•è¡¨"`
-	ID     snowflake.JsonInt64 `json:"id" v:"required#ID不能为空" dc:"æ”¯ä»˜è®°å½•è¡¨ID"`
-	OrderID snowflake.JsonInt64 `json:"orderID" dc:"è®¢å•ID"`
-	MemberID snowflake.JsonInt64 `json:"memberID" dc:"ä¼šå‘˜ID"`
-	PaymentNo string `json:"paymentNo" dc:"æ”¯ä»˜æµæ°´å·"`
-	TradeNo string `json:"tradeNo" dc:"ç¬¬ä¸‰æ–¹äº¤æ˜“å·"`
-	PayType int `json:"payType" dc:"æ”¯ä»˜æ–¹å¼"`
-	PayAmount int64 `json:"payAmount" dc:"æ”¯ä»˜é‡‘é¢ï¼ˆåˆ†ï¼‰"`
-	PayStatus int `json:"payStatus" dc:"æ”¯ä»˜çŠ¶æ€"`
-	PayAt *gtime.Time `json:"payAt" dc:"æ”¯ä»˜æˆåŠŸæ—¶é—´"`
-	RefundAt *gtime.Time `json:"refundAt" dc:"é€€æ¬¾æ—¶é—´"`
-	RefundAmount int64 `json:"refundAmount" dc:"é€€æ¬¾é‡‘é¢ï¼ˆåˆ†ï¼‰"`
-	CallbackContent string `json:"callbackContent" dc:"å›žè°ƒæŠ¥æ–‡"`
+	g.Meta `path:"/payment/update" method:"put" tags:"支付记录表" summary:"更新支付记录表"`
+	ID     snowflake.JsonInt64 `json:"id" v:"required#ID不能为空" dc:"支付记录表ID"`
+	OrderID snowflake.JsonInt64 `json:"orderID" dc:"订单ID"`
+	MemberID snowflake.JsonInt64 `json:"memberID" dc:"会员ID"`
+	PaymentNo string `json:"paymentNo" dc:"支付流水号（平台内部）"`
+	TradeNo string `json:"tradeNo" dc:"第三方交易号"`
+	PayType int `json:"payType" dc:"支付方式"`
+	PayAmount int64 `json:"payAmount" dc:"支付金额（分）"`
+	PayStatus int `json:"payStatus" dc:"支付状态"`
+	PayAt *gtime.Time `json:"payAt" dc:"支付成功时间"`
+	RefundAt *gtime.Time `json:"refundAt" dc:"退款时间"`
+	RefundAmount int64 `json:"refundAmount" dc:"退款金额（分）"`
+	CallbackContent string `json:"callbackContent" dc:"回调报文"`
 }
 
-// PaymentUpdateRes 更新æ”¯ä»˜è®°å½•è¡¨响应
+// PaymentUpdateRes 更新支付记录表响应
 type PaymentUpdateRes struct {
 	g.Meta `mime:"application/json"`
 }
 
-// PaymentDeleteReq 删除æ”¯ä»˜è®°å½•è¡¨请求
+// PaymentDeleteReq 删除支付记录表请求
 type PaymentDeleteReq struct {
-	g.Meta `path:"/payment/delete" method:"delete" tags:"æ”¯ä»˜è®°å½•è¡¨" summary:"删除æ”¯ä»˜è®°å½•è¡¨"`
-	ID     snowflake.JsonInt64 `json:"id" v:"required#ID不能为空" dc:"æ”¯ä»˜è®°å½•è¡¨ID"`
+	g.Meta `path:"/payment/delete" method:"delete" tags:"支付记录表" summary:"删除支付记录表"`
+	ID     snowflake.JsonInt64 `json:"id" v:"required#ID不能为空" dc:"支付记录表ID"`
 }
 
-// PaymentDeleteRes 删除æ”¯ä»˜è®°å½•è¡¨响应
+// PaymentDeleteRes 删除支付记录表响应
 type PaymentDeleteRes struct {
 	g.Meta `mime:"application/json"`
 }
 
-// PaymentDetailReq 获取æ”¯ä»˜è®°å½•è¡¨详情请求
+// PaymentDetailReq 获取支付记录表详情请求
 type PaymentDetailReq struct {
-	g.Meta `path:"/payment/detail" method:"get" tags:"æ”¯ä»˜è®°å½•è¡¨" summary:"获取æ”¯ä»˜è®°å½•è¡¨详情"`
-	ID     snowflake.JsonInt64 `json:"id" v:"required#ID不能为空" dc:"æ”¯ä»˜è®°å½•è¡¨ID"`
+	g.Meta `path:"/payment/detail" method:"get" tags:"支付记录表" summary:"获取支付记录表详情"`
+	ID     snowflake.JsonInt64 `json:"id" v:"required#ID不能为空" dc:"支付记录表ID"`
 }
 
-// PaymentDetailRes 获取æ”¯ä»˜è®°å½•è¡¨详情响应
+// PaymentDetailRes 获取支付记录表详情响应
 type PaymentDetailRes struct {
 	g.Meta `mime:"application/json"`
 	*model.PaymentDetailOutput
 }
 
-// PaymentListReq 获取æ”¯ä»˜è®°å½•è¡¨列表请求
+// PaymentListReq 获取支付记录表列表请求
 type PaymentListReq struct {
-	g.Meta   `path:"/payment/list" method:"get" tags:"æ”¯ä»˜è®°å½•è¡¨" summary:"获取æ”¯ä»˜è®°å½•è¡¨列表"`
+	g.Meta   `path:"/payment/list" method:"get" tags:"支付记录表" summary:"获取支付记录表列表"`
 	PageNum  int `json:"pageNum" d:"1" dc:"页码"`
 	PageSize int `json:"pageSize" d:"10" dc:"每页数量"`
-	PayType int `json:"payType" dc:"æ”¯ä»˜æ–¹å¼"`
-	PayStatus int `json:"payStatus" dc:"æ”¯ä»˜çŠ¶æ€"`
+	PayType int `json:"payType" dc:"支付方式"`
+	PayStatus int `json:"payStatus" dc:"支付状态"`
 }
 
-// PaymentListRes 获取æ”¯ä»˜è®°å½•è¡¨列表响应
+// PaymentListRes 获取支付记录表列表响应
 type PaymentListRes struct {
 	g.Meta `mime:"application/json"`
 	List   []*model.PaymentListOutput `json:"list" dc:"列表数据"`

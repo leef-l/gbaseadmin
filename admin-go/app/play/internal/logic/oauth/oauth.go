@@ -22,7 +22,7 @@ func New() *sOauth {
 
 type sOauth struct{}
 
-// Create 创建ç¬¬ä¸‰æ–¹ç™»å½•ç»‘å®šè¡¨
+// Create 创建第三方登录绑定表
 func (s *sOauth) Create(ctx context.Context, in *model.OauthCreateInput) error {
 	id := snowflake.Generate()
 	_, err := dao.PlayOauth.Ctx(ctx).Data(g.Map{
@@ -42,7 +42,7 @@ func (s *sOauth) Create(ctx context.Context, in *model.OauthCreateInput) error {
 	return err
 }
 
-// Update 更新ç¬¬ä¸‰æ–¹ç™»å½•ç»‘å®šè¡¨
+// Update 更新第三方登录绑定表
 func (s *sOauth) Update(ctx context.Context, in *model.OauthUpdateInput) error {
 	data := g.Map{
 		dao.PlayOauth.Columns().MemberId: in.MemberID,
@@ -60,7 +60,7 @@ func (s *sOauth) Update(ctx context.Context, in *model.OauthUpdateInput) error {
 	return err
 }
 
-// Delete 软删除ç¬¬ä¸‰æ–¹ç™»å½•ç»‘å®šè¡¨
+// Delete 软删除第三方登录绑定表
 func (s *sOauth) Delete(ctx context.Context, id snowflake.JsonInt64) error {
 	_, err := dao.PlayOauth.Ctx(ctx).Where(dao.PlayOauth.Columns().Id, id).Data(g.Map{
 		dao.PlayOauth.Columns().DeletedAt: gtime.Now(),
@@ -68,7 +68,7 @@ func (s *sOauth) Delete(ctx context.Context, id snowflake.JsonInt64) error {
 	return err
 }
 
-// Detail 获取ç¬¬ä¸‰æ–¹ç™»å½•ç»‘å®šè¡¨详情
+// Detail 获取第三方登录绑定表详情
 func (s *sOauth) Detail(ctx context.Context, id snowflake.JsonInt64) (out *model.OauthDetailOutput, err error) {
 	out = &model.OauthDetailOutput{}
 	err = dao.PlayOauth.Ctx(ctx).Where(dao.PlayOauth.Columns().Id, id).Where(dao.PlayOauth.Columns().DeletedAt, nil).Scan(out)
@@ -78,7 +78,7 @@ func (s *sOauth) Detail(ctx context.Context, id snowflake.JsonInt64) (out *model
 	return
 }
 
-// List 获取ç¬¬ä¸‰æ–¹ç™»å½•ç»‘å®šè¡¨列表
+// List 获取第三方登录绑定表列表
 func (s *sOauth) List(ctx context.Context, in *model.OauthListInput) (list []*model.OauthListOutput, total int, err error) {
 	m := dao.PlayOauth.Ctx(ctx).Where(dao.PlayOauth.Columns().DeletedAt, nil)
 	if in.Provider > 0 {

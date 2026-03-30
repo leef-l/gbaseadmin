@@ -8,7 +8,7 @@ import (
 
 // RechargeOrder DTO 模型
 
-// RechargeOrderCreateInput 创建å……å€¼è®¢å•è¡¨输入
+// RechargeOrderCreateInput 创建充值订单表输入
 type RechargeOrderCreateInput struct {
 	OrderNo string `json:"orderNo"`
 	MemberID snowflake.JsonInt64 `json:"memberID"`
@@ -21,7 +21,7 @@ type RechargeOrderCreateInput struct {
 	PayAt *gtime.Time `json:"payAt"`
 }
 
-// RechargeOrderUpdateInput 更新å……å€¼è®¢å•è¡¨输入
+// RechargeOrderUpdateInput 更新充值订单表输入
 type RechargeOrderUpdateInput struct {
 	ID snowflake.JsonInt64 `json:"id"`
 	OrderNo string `json:"orderNo"`
@@ -35,7 +35,7 @@ type RechargeOrderUpdateInput struct {
 	PayAt *gtime.Time `json:"payAt"`
 }
 
-// RechargeOrderDetailOutput å……å€¼è®¢å•è¡¨详情输出
+// RechargeOrderDetailOutput 充值订单表详情输出
 type RechargeOrderDetailOutput struct {
 	ID snowflake.JsonInt64 `json:"id"`
 	OrderNo string `json:"orderNo"`
@@ -52,7 +52,7 @@ type RechargeOrderDetailOutput struct {
 	UpdatedAt *gtime.Time `json:"updatedAt"`
 }
 
-// RechargeOrderListOutput å……å€¼è®¢å•è¡¨列表输出
+// RechargeOrderListOutput 充值订单表列表输出
 type RechargeOrderListOutput struct {
 	ID snowflake.JsonInt64 `json:"id"`
 	OrderNo string `json:"orderNo"`
@@ -69,7 +69,7 @@ type RechargeOrderListOutput struct {
 	UpdatedAt *gtime.Time `json:"updatedAt"`
 }
 
-// RechargeOrderListInput å……å€¼è®¢å•è¡¨列表查询输入
+// RechargeOrderListInput 充值订单表列表查询输入
 type RechargeOrderListInput struct {
 	PageNum  int `json:"pageNum"`
 	PageSize int `json:"pageSize"`

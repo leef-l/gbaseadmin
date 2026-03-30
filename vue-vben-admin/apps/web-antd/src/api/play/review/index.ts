@@ -10,7 +10,7 @@ import type {
 /** API 前缀 */
 const PREFIX = '/play/review';
 
-/** 获取è¯„ä»·è¡¨列表 */
+/** 获取评价表列表 */
 export function getReviewList(params: ReviewListParams) {
   return requestClient.get<{ list: ReviewItem[]; total: number }>(
     `${PREFIX}/list`,
@@ -18,24 +18,24 @@ export function getReviewList(params: ReviewListParams) {
   );
 }
 
-/** 获取è¯„ä»·è¡¨详情 */
+/** 获取评价表详情 */
 export function getReviewDetail(id: string) {
   return requestClient.get<ReviewItem>(`${PREFIX}/detail`, {
     params: { id },
   });
 }
 
-/** 创建è¯„ä»·è¡¨ */
+/** 创建评价表 */
 export function createReview(data: ReviewCreateParams) {
   return requestClient.post(`${PREFIX}/create`, data);
 }
 
-/** 更新è¯„ä»·è¡¨ */
+/** 更新评价表 */
 export function updateReview(data: ReviewUpdateParams) {
   return requestClient.put(`${PREFIX}/update`, data);
 }
 
-/** 删除è¯„ä»·è¡¨ */
+/** 删除评价表 */
 export function deleteReview(id: string) {
   return requestClient.delete(`${PREFIX}/delete`, { data: { id } });
 }

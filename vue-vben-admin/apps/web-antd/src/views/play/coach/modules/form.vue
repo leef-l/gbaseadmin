@@ -74,16 +74,16 @@ const [Form, formApi] = useVbenForm({
       componentProps: { placeholder: '请输入评分人数', class: 'w-full' },
     },
     {
-      component: 'Input',
+      component: 'InputNumber',
       fieldName: 'incomeTotal',
       label: '累计收入（分）',
-      componentProps: { placeholder: '请输入累计收入（分）' },
+      componentProps: { placeholder: '请输入累计收入（分）', class: 'w-full' },
     },
     {
-      component: 'Input',
+      component: 'InputNumber',
       fieldName: 'incomeBalance',
       label: '可提现余额（分）',
-      componentProps: { placeholder: '请输入可提现余额（分）' },
+      componentProps: { placeholder: '请输入可提现余额（分）', class: 'w-full' },
     },
     {
       component: 'Switch',

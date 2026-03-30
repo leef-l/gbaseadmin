@@ -8,7 +8,7 @@ import (
 
 // Coupon DTO 模型
 
-// CouponCreateInput 创建ä¼˜æƒ åˆ¸æ¨¡æ¿è¡¨输入
+// CouponCreateInput 创建优惠券模板表输入
 type CouponCreateInput struct {
 	Title string `json:"title"`
 	Type int `json:"type"`
@@ -25,7 +25,7 @@ type CouponCreateInput struct {
 	Status int `json:"status"`
 }
 
-// CouponUpdateInput 更新ä¼˜æƒ åˆ¸æ¨¡æ¿è¡¨输入
+// CouponUpdateInput 更新优惠券模板表输入
 type CouponUpdateInput struct {
 	ID snowflake.JsonInt64 `json:"id"`
 	Title string `json:"title"`
@@ -43,7 +43,7 @@ type CouponUpdateInput struct {
 	Status int `json:"status"`
 }
 
-// CouponDetailOutput ä¼˜æƒ åˆ¸æ¨¡æ¿è¡¨详情输出
+// CouponDetailOutput 优惠券模板表详情输出
 type CouponDetailOutput struct {
 	ID snowflake.JsonInt64 `json:"id"`
 	Title string `json:"title"`
@@ -63,7 +63,7 @@ type CouponDetailOutput struct {
 	UpdatedAt *gtime.Time `json:"updatedAt"`
 }
 
-// CouponListOutput ä¼˜æƒ åˆ¸æ¨¡æ¿è¡¨列表输出
+// CouponListOutput 优惠券模板表列表输出
 type CouponListOutput struct {
 	ID snowflake.JsonInt64 `json:"id"`
 	Title string `json:"title"`
@@ -83,7 +83,7 @@ type CouponListOutput struct {
 	UpdatedAt *gtime.Time `json:"updatedAt"`
 }
 
-// CouponListInput ä¼˜æƒ åˆ¸æ¨¡æ¿è¡¨列表查询输入
+// CouponListInput 优惠券模板表列表查询输入
 type CouponListInput struct {
 	PageNum  int `json:"pageNum"`
 	PageSize int `json:"pageSize"`

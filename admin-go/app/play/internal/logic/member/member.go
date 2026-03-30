@@ -92,8 +92,10 @@ func (s *sMember) Detail(ctx context.Context, id snowflake.JsonInt64) (out *mode
 	}
 	// 查询会员等级ID关联显示
 	if out.MemberLevelID != 0 {
-		val, _ := g.DB().Ctx(ctx).Model("play_member_level").Where("id", out.MemberLevelID).Where("deleted_at", nil).Value("title")
-		out.MemberLevelTitle = val.String()
+		val, err := g.DB().Ctx(ctx).Model("play_member_level").Where("id", out.MemberLevelID).Where("deleted_at", nil).Value("title")
+		if err == nil {
+			out.MemberLevelTitle = val.String()
+		}
 	}
 	return
 }
@@ -121,8 +123,10 @@ func (s *sMember) List(ctx context.Context, in *model.MemberListInput) (list []*
 	// 填充关联显示字段
 	for _, item := range list {
 		if item.MemberLevelID != 0 {
-			val, _ := g.DB().Ctx(ctx).Model("play_member_level").Where("id", item.MemberLevelID).Where("deleted_at", nil).Value("title")
-			item.MemberLevelTitle = val.String()
+			val, err := g.DB().Ctx(ctx).Model("play_member_level").Where("id", item.MemberLevelID).Where("deleted_at", nil).Value("title")
+			if err == nil {
+				item.MemberLevelTitle = val.String()
+			}
 		}
 	}
 	return

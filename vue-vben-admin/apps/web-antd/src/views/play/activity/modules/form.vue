@@ -9,22 +9,22 @@ import {
   updateActivity,
 } from '#/api/play/activity';
 
-/** æ´»åŠ¨ç±»åž‹选项 */
+/** 活动类型选项 */
 const typeOptions = [
-  { label: 'å……å€¼æ´»åŠ¨', value: 1 },
-  { label: 'ä¸‹å•æ´»åŠ¨', value: 2 },
-  { label: 'æ³¨å†Œæ´»åŠ¨', value: 3 },
-  { label: 'å›¾æ–‡æ­¥éª¤æ´»åŠ¨', value: 4 },
-  { label: 'è‡ªå®šä¹‰æ´»åŠ¨', value: 5 },
+  { label: '充值活动', value: 1 },
+  { label: '下单活动', value: 2 },
+  { label: '注册活动', value: 3 },
+  { label: '图文步骤活动', value: 4 },
+  { label: '自定义活动', value: 5 },
 ];
 
-/** å‚ä¸Žæ¡ä»¶选项 */
+/** 参与条件选项 */
 const conditionTypeOptions = [
-  { label: 'æ— æ¡ä»¶', value: 0 },
-  { label: 'éœ€æŠ¥å', value: 1 },
-  { label: 'å……å€¼æ»¡é¢', value: 2 },
-  { label: 'ä¸‹å•æ»¡é¢', value: 3 },
-  { label: 'å®Œæˆæ­¥éª¤', value: 4 },
+  { label: '无条件', value: 0 },
+  { label: '需报名', value: 1 },
+  { label: '充值满额', value: 2 },
+  { label: '下单满额', value: 3 },
+  { label: '完成步骤', value: 4 },
 ];
 
 const emit = defineEmits<{ success: [] }>();
@@ -38,83 +38,83 @@ const [Form, formApi] = useVbenForm({
     {
       component: 'Input',
       fieldName: 'title',
-      label: 'æ´»åŠ¨åç§°',
+      label: '活动名称',
       rules: 'required',
-      componentProps: { placeholder: '请输入æ´»åŠ¨åç§°', maxlength: 100 },
+      componentProps: { placeholder: '请输入活动名称', maxlength: 100 },
     },
     {
       component: 'Input',
       fieldName: 'coverImage',
-      label: 'æ´»åŠ¨å°é¢å›¾',
-      componentProps: { placeholder: '请输入æ´»åŠ¨å°é¢å›¾', maxlength: 500 },
+      label: '活动封面图',
+      componentProps: { placeholder: '请输入活动封面图', maxlength: 500 },
     },
     {
       component: 'Input',
       fieldName: 'descContent',
-      label: 'æ´»åŠ¨è¯¦æƒ…æè¿°',
-      componentProps: { placeholder: '请输入æ´»åŠ¨è¯¦æƒ…æè¿°', maxlength: 65535 },
+      label: '活动详情描述（富文本，支持图文混排）',
+      componentProps: { placeholder: '请输入活动详情描述（富文本，支持图文混排）', maxlength: 65535 },
     },
     {
       component: 'Select',
       fieldName: 'type',
-      label: 'æ´»åŠ¨ç±»åž‹',
-      componentProps: { options: typeOptions, placeholder: '请选择æ´»åŠ¨ç±»åž‹', allowClear: true, class: 'w-full' },
+      label: '活动类型',
+      componentProps: { options: typeOptions, placeholder: '请选择活动类型', allowClear: true, class: 'w-full' },
     },
     {
       component: 'Select',
       fieldName: 'conditionType',
-      label: 'å‚ä¸Žæ¡ä»¶',
-      componentProps: { options: conditionTypeOptions, placeholder: '请选择å‚ä¸Žæ¡ä»¶', allowClear: true, class: 'w-full' },
+      label: '参与条件',
+      componentProps: { options: conditionTypeOptions, placeholder: '请选择参与条件', allowClear: true, class: 'w-full' },
     },
     {
       component: 'Input',
       fieldName: 'conditionValue',
-      label: 'æ¡ä»¶å€¼',
-      componentProps: { placeholder: '请输入æ¡ä»¶å€¼' },
+      label: '条件值（分/次，如充值满5000分、下单满3次）',
+      componentProps: { placeholder: '请输入条件值（分/次，如充值满5000分、下单满3次）' },
     },
     {
       component: 'Switch',
       fieldName: 'isAutoReward',
-      label: 'æ˜¯å¦è‡ªåŠ¨å‘å¥–',
+      label: '是否自动发奖',
       componentProps: { checkedValue: 1, unCheckedValue: 0 },
       defaultValue: 1,
     },
     {
       component: 'DatePicker',
       fieldName: 'startAt',
-      label: 'æ´»åŠ¨å¼€å§‹æ—¶é—´',
+      label: '活动开始时间',
       rules: 'required',
-      componentProps: { showTime: true, placeholder: '请选择æ´»åŠ¨å¼€å§‹æ—¶é—´', class: 'w-full', valueFormat: 'YYYY-MM-DD HH:mm:ss' },
+      componentProps: { showTime: true, placeholder: '请选择活动开始时间', class: 'w-full', valueFormat: 'YYYY-MM-DD HH:mm:ss' },
     },
     {
       component: 'DatePicker',
       fieldName: 'endAt',
-      label: 'æ´»åŠ¨ç»“æŸæ—¶é—´',
+      label: '活动结束时间',
       rules: 'required',
-      componentProps: { showTime: true, placeholder: '请选择æ´»åŠ¨ç»“æŸæ—¶é—´', class: 'w-full', valueFormat: 'YYYY-MM-DD HH:mm:ss' },
+      componentProps: { showTime: true, placeholder: '请选择活动结束时间', class: 'w-full', valueFormat: 'YYYY-MM-DD HH:mm:ss' },
     },
     {
       component: 'InputNumber',
       fieldName: 'maxNum',
-      label: 'å‚ä¸Žäººæ•°ä¸Šé™ï¼ˆ0ä¸é™ï¼‰',
-      componentProps: { placeholder: '请输入å‚ä¸Žäººæ•°ä¸Šé™ï¼ˆ0ä¸é™ï¼‰', class: 'w-full' },
+      label: '参与人数上限（0表示不限）',
+      componentProps: { placeholder: '请输入参与人数上限（0表示不限）', class: 'w-full' },
     },
     {
       component: 'InputNumber',
       fieldName: 'joinNum',
-      label: 'å·²å‚ä¸Žäººæ•°',
-      componentProps: { placeholder: '请输入å·²å‚ä¸Žäººæ•°', class: 'w-full' },
+      label: '已参与人数',
+      componentProps: { placeholder: '请输入已参与人数', class: 'w-full' },
     },
     {
       component: 'InputNumber',
       fieldName: 'sort',
-      label: 'æŽ’åº',
-      componentProps: { placeholder: '请输入æŽ’åº', class: 'w-full' },
+      label: '排序（升序）',
+      componentProps: { placeholder: '请输入排序（升序）', class: 'w-full' },
     },
     {
       component: 'Switch',
       fieldName: 'status',
-      label: 'çŠ¶æ€',
+      label: '状态',
       componentProps: { checkedValue: 1, unCheckedValue: 0 },
       defaultValue: 1,
     },
@@ -151,7 +151,7 @@ const [Modal, modalApi] = useVbenModal({
       if (data?.id) {
         isEdit.value = true;
         editId.value = data.id;
-        modalApi.setState({ title: '编辑æ´»åŠ¨è¡¨' });
+        modalApi.setState({ title: '编辑活动表' });
         try {
           const detail = await getActivityDetail(data.id);
           if (detail) {
@@ -163,7 +163,7 @@ const [Modal, modalApi] = useVbenModal({
       } else {
         isEdit.value = false;
         editId.value = '';
-        modalApi.setState({ title: '新建æ´»åŠ¨è¡¨' });
+        modalApi.setState({ title: '新建活动表' });
         formApi.resetForm();
       }
     }

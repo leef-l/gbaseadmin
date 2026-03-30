@@ -22,7 +22,7 @@ func New() *sBalanceLog {
 
 type sBalanceLog struct{}
 
-// Create 创建ä½™é¢æµæ°´è¡¨
+// Create 创建余额流水表
 func (s *sBalanceLog) Create(ctx context.Context, in *model.BalanceLogCreateInput) error {
 	id := snowflake.Generate()
 	_, err := dao.PlayBalanceLog.Ctx(ctx).Data(g.Map{
@@ -40,7 +40,7 @@ func (s *sBalanceLog) Create(ctx context.Context, in *model.BalanceLogCreateInpu
 	return err
 }
 
-// Update 更新ä½™é¢æµæ°´è¡¨
+// Update 更新余额流水表
 func (s *sBalanceLog) Update(ctx context.Context, in *model.BalanceLogUpdateInput) error {
 	data := g.Map{
 		dao.PlayBalanceLog.Columns().MemberId: in.MemberID,
@@ -56,7 +56,7 @@ func (s *sBalanceLog) Update(ctx context.Context, in *model.BalanceLogUpdateInpu
 	return err
 }
 
-// Delete 软删除ä½™é¢æµæ°´è¡¨
+// Delete 软删除余额流水表
 func (s *sBalanceLog) Delete(ctx context.Context, id snowflake.JsonInt64) error {
 	_, err := dao.PlayBalanceLog.Ctx(ctx).Where(dao.PlayBalanceLog.Columns().Id, id).Data(g.Map{
 		dao.PlayBalanceLog.Columns().DeletedAt: gtime.Now(),
@@ -64,7 +64,7 @@ func (s *sBalanceLog) Delete(ctx context.Context, id snowflake.JsonInt64) error 
 	return err
 }
 
-// Detail 获取ä½™é¢æµæ°´è¡¨详情
+// Detail 获取余额流水表详情
 func (s *sBalanceLog) Detail(ctx context.Context, id snowflake.JsonInt64) (out *model.BalanceLogDetailOutput, err error) {
 	out = &model.BalanceLogDetailOutput{}
 	err = dao.PlayBalanceLog.Ctx(ctx).Where(dao.PlayBalanceLog.Columns().Id, id).Where(dao.PlayBalanceLog.Columns().DeletedAt, nil).Scan(out)
@@ -74,7 +74,7 @@ func (s *sBalanceLog) Detail(ctx context.Context, id snowflake.JsonInt64) (out *
 	return
 }
 
-// List 获取ä½™é¢æµæ°´è¡¨列表
+// List 获取余额流水表列表
 func (s *sBalanceLog) List(ctx context.Context, in *model.BalanceLogListInput) (list []*model.BalanceLogListOutput, total int, err error) {
 	m := dao.PlayBalanceLog.Ctx(ctx).Where(dao.PlayBalanceLog.Columns().DeletedAt, nil)
 	if in.BizType > 0 {

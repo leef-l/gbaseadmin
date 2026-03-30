@@ -20,65 +20,65 @@ const [Form, formApi] = useVbenForm({
     {
       component: 'Select',
       fieldName: 'orderID',
-      label: 'è®¢å•ID',
+      label: '订单ID',
       rules: 'selectRequired',
-      componentProps: { options: orderIDOptions, placeholder: '请选择è®¢å•ID', allowClear: true, class: 'w-full' },
+      componentProps: { options: orderIDOptions, placeholder: '请选择订单ID', allowClear: true, class: 'w-full' },
     },
     {
       component: 'Select',
       fieldName: 'memberID',
-      label: 'è¯„ä»·ä¼šå‘˜ID',
+      label: '评价会员ID',
       rules: 'selectRequired',
-      componentProps: { options: memberIDOptions, placeholder: '请选择è¯„ä»·ä¼šå‘˜ID', allowClear: true, class: 'w-full' },
+      componentProps: { options: memberIDOptions, placeholder: '请选择评价会员ID', allowClear: true, class: 'w-full' },
     },
     {
       component: 'Select',
       fieldName: 'coachID',
-      label: 'è¢«è¯„é™ªçŽ©å¸ˆID',
+      label: '被评陪玩师ID',
       rules: 'selectRequired',
-      componentProps: { options: coachIDOptions, placeholder: '请选择è¢«è¯„é™ªçŽ©å¸ˆID', allowClear: true, class: 'w-full' },
+      componentProps: { options: coachIDOptions, placeholder: '请选择被评陪玩师ID', allowClear: true, class: 'w-full' },
     },
     {
       component: 'Input',
       fieldName: 'score',
-      label: 'è¯„åˆ†ï¼ˆä¹˜100ï¼‰',
-      componentProps: { placeholder: '请输入è¯„åˆ†ï¼ˆä¹˜100ï¼‰' },
+      label: '评分（乘100，如 500=5.00分）',
+      componentProps: { placeholder: '请输入评分（乘100，如 500=5.00分）' },
     },
     {
       component: 'Input',
       fieldName: 'reviewContent',
-      label: 'è¯„ä»·å†…å®¹',
-      componentProps: { placeholder: '请输入è¯„ä»·å†…å®¹', maxlength: 65535 },
+      label: '评价内容',
+      componentProps: { placeholder: '请输入评价内容', maxlength: 65535 },
     },
     {
       component: 'Input',
       fieldName: 'reviewImage',
-      label: 'è¯„ä»·å›¾ç‰‡ï¼ˆå¤šå¼ é€—å·åˆ†éš”ï¼‰',
-      componentProps: { placeholder: '请输入è¯„ä»·å›¾ç‰‡ï¼ˆå¤šå¼ é€—å·åˆ†éš”ï¼‰', maxlength: 2000 },
+      label: '评价图片（多张逗号分隔）',
+      componentProps: { placeholder: '请输入评价图片（多张逗号分隔）', maxlength: 2000 },
     },
     {
       component: 'Input',
       fieldName: 'replyContent',
-      label: 'é™ªçŽ©å¸ˆå›žå¤å†…å®¹',
-      componentProps: { placeholder: '请输入é™ªçŽ©å¸ˆå›žå¤å†…å®¹', maxlength: 65535 },
+      label: '陪玩师回复内容',
+      componentProps: { placeholder: '请输入陪玩师回复内容', maxlength: 65535 },
     },
     {
       component: 'DatePicker',
       fieldName: 'replyAt',
-      label: 'å›žå¤æ—¶é—´',
-      componentProps: { showTime: true, placeholder: '请选择å›žå¤æ—¶é—´', class: 'w-full', valueFormat: 'YYYY-MM-DD HH:mm:ss' },
+      label: '回复时间',
+      componentProps: { showTime: true, placeholder: '请选择回复时间', class: 'w-full', valueFormat: 'YYYY-MM-DD HH:mm:ss' },
     },
     {
       component: 'Switch',
       fieldName: 'isAnonymous',
-      label: 'æ˜¯å¦åŒ¿å',
+      label: '是否匿名',
       componentProps: { checkedValue: 1, unCheckedValue: 0 },
       defaultValue: 0,
     },
     {
       component: 'Switch',
       fieldName: 'status',
-      label: 'çŠ¶æ€',
+      label: '状态',
       componentProps: { checkedValue: 1, unCheckedValue: 0 },
       defaultValue: 1,
     },
@@ -115,7 +115,7 @@ const [Modal, modalApi] = useVbenModal({
       if (data?.id) {
         isEdit.value = true;
         editId.value = data.id;
-        modalApi.setState({ title: '编辑è¯„ä»·è¡¨' });
+        modalApi.setState({ title: '编辑评价表' });
         try {
           const detail = await getReviewDetail(data.id);
           if (detail) {
@@ -127,7 +127,7 @@ const [Modal, modalApi] = useVbenModal({
       } else {
         isEdit.value = false;
         editId.value = '';
-        modalApi.setState({ title: '新建è¯„ä»·è¡¨' });
+        modalApi.setState({ title: '新建评价表' });
         formApi.resetForm();
       }
     }

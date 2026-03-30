@@ -8,7 +8,7 @@ import (
 
 // Oauth DTO 模型
 
-// OauthCreateInput 创建ç¬¬ä¸‰æ–¹ç™»å½•ç»‘å®šè¡¨输入
+// OauthCreateInput 创建第三方登录绑定表输入
 type OauthCreateInput struct {
 	MemberID snowflake.JsonInt64 `json:"memberID"`
 	Provider int `json:"provider"`
@@ -21,7 +21,7 @@ type OauthCreateInput struct {
 	ExpireAt *gtime.Time `json:"expireAt"`
 }
 
-// OauthUpdateInput 更新ç¬¬ä¸‰æ–¹ç™»å½•ç»‘å®šè¡¨输入
+// OauthUpdateInput 更新第三方登录绑定表输入
 type OauthUpdateInput struct {
 	ID snowflake.JsonInt64 `json:"id"`
 	MemberID snowflake.JsonInt64 `json:"memberID"`
@@ -35,7 +35,7 @@ type OauthUpdateInput struct {
 	ExpireAt *gtime.Time `json:"expireAt"`
 }
 
-// OauthDetailOutput ç¬¬ä¸‰æ–¹ç™»å½•ç»‘å®šè¡¨详情输出
+// OauthDetailOutput 第三方登录绑定表详情输出
 type OauthDetailOutput struct {
 	ID snowflake.JsonInt64 `json:"id"`
 	MemberID snowflake.JsonInt64 `json:"memberID"`
@@ -51,7 +51,7 @@ type OauthDetailOutput struct {
 	UpdatedAt *gtime.Time `json:"updatedAt"`
 }
 
-// OauthListOutput ç¬¬ä¸‰æ–¹ç™»å½•ç»‘å®šè¡¨列表输出
+// OauthListOutput 第三方登录绑定表列表输出
 type OauthListOutput struct {
 	ID snowflake.JsonInt64 `json:"id"`
 	MemberID snowflake.JsonInt64 `json:"memberID"`
@@ -67,7 +67,7 @@ type OauthListOutput struct {
 	UpdatedAt *gtime.Time `json:"updatedAt"`
 }
 
-// OauthListInput ç¬¬ä¸‰æ–¹ç™»å½•ç»‘å®šè¡¨列表查询输入
+// OauthListInput 第三方登录绑定表列表查询输入
 type OauthListInput struct {
 	PageNum  int `json:"pageNum"`
 	PageSize int `json:"pageSize"`

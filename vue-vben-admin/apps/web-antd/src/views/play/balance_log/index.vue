@@ -13,25 +13,25 @@ import FormModal from './modules/form.vue';
 /** 标签颜色池 */
 const TAG_COLORS = ['green', 'red', 'blue', 'orange', 'cyan', 'purple', 'geekblue', 'magenta'];
 
-/** ä¸šåŠ¡ç±»åž‹选项 */
+/** 业务类型选项 */
 const bizTypeOptions = [
-  { label: 'å……å€¼', value: 1 },
-  { label: 'æ¶ˆè´¹', value: 2 },
-  { label: 'é€€æ¬¾', value: 3 },
-  { label: 'æ´»åŠ¨èµ é€', value: 4 },
-  { label: 'æçŽ°', value: 5 },
+  { label: '充值', value: 1 },
+  { label: '消费', value: 2 },
+  { label: '退款', value: 3 },
+  { label: '活动赠送', value: 4 },
+  { label: '提现', value: 5 },
 ];
 
-/** ä¸šåŠ¡ç±»åž‹映射 */
+/** 业务类型映射 */
 const bizTypeMap: Record<number, string> = {
-  1: 'å……å€¼',
-  2: 'æ¶ˆè´¹',
-  3: 'é€€æ¬¾',
-  4: 'æ´»åŠ¨èµ é€',
-  5: 'æçŽ°',
+  1: '充值',
+  2: '消费',
+  3: '退款',
+  4: '活动赠送',
+  5: '提现',
 };
 
-/** ä¸šåŠ¡ç±»åž‹颜色 */
+/** 业务类型颜色 */
 function getBizTypeColor(val: number): string {
   const keys = [1, 2, 3, 4, 5];
   const idx = keys.indexOf(val);
@@ -56,11 +56,11 @@ const formOptions: VbenFormProps = {
       componentProps: {
         allowClear: true,
         options: bizTypeOptions,
-        placeholder: '请选择ä¸šåŠ¡ç±»åž‹',
+        placeholder: '请选择业务类型',
         class: 'w-full',
       },
       fieldName: 'bizType',
-      label: 'ä¸šåŠ¡ç±»åž‹',
+      label: '业务类型',
     },
   ],
 };
@@ -69,13 +69,13 @@ const formOptions: VbenFormProps = {
 const gridOptions: VxeGridProps<BalanceLogItem> = {
   columns: [
     { title: '序号', type: 'seq', width: 50 },
-    { field: 'memberID', title: 'ä¼šå‘˜ID' },
-    { field: 'bizType', title: 'ä¸šåŠ¡ç±»åž‹', width: 120, slots: { default: 'bizType_cell' } },
-    { field: 'bizID', title: 'å…³è”ä¸šåŠ¡ID' },
-    { field: 'changeAmount', title: 'å˜åŠ¨é‡‘é¢ï¼ˆåˆ†ï¼‰' },
-    { field: 'beforeBalance', title: 'å˜åŠ¨å‰ä½™é¢ï¼ˆåˆ†ï¼‰' },
-    { field: 'afterBalance', title: 'å˜åŠ¨åŽä½™é¢ï¼ˆåˆ†ï¼‰' },
-    { field: 'remark', title: 'å¤‡æ³¨è¯´æ˜Ž' },
+    { field: 'memberID', title: '会员ID' },
+    { field: 'bizType', title: '业务类型', width: 120, slots: { default: 'bizType_cell' } },
+    { field: 'bizID', title: '关联业务ID（订单ID/充值订单ID/活动ID）' },
+    { field: 'changeAmount', title: '变动金额（分，正数增加负数减少）' },
+    { field: 'beforeBalance', title: '变动前余额（分）' },
+    { field: 'afterBalance', title: '变动后余额（分）' },
+    { field: 'remark', title: '备注说明' },
     { field: 'createdAt', title: '创建时间', width: 180, formatter: 'formatDateTime' },
     { title: '操作', width: 200, fixed: 'right', slots: { default: 'action' } },
   ],
@@ -119,7 +119,7 @@ function handleEdit(row: BalanceLogItem) {
 function handleDelete(row: BalanceLogItem) {
   Modal.confirm({
     title: '确认删除',
-    content: '确定要删除该ä½™é¢æµæ°´è¡¨吗？',
+    content: '确定要删除该余额流水表吗？',
     okType: 'danger',
     async onOk() {
       await deleteBalanceLog(row.id);

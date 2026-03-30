@@ -13,79 +13,79 @@ var _ = gtime.New
 
 // Goods API
 
-// GoodsCreateReq 创建å•†å“è¡¨请求
+// GoodsCreateReq 创建商品表请求
 type GoodsCreateReq struct {
-	g.Meta `path:"/goods/create" method:"post" tags:"å•†å“è¡¨" summary:"创建å•†å“è¡¨"`
-	CategoryID snowflake.JsonInt64 `json:"categoryID" v:"required#åˆ†ç±»ID不能为空" dc:"åˆ†ç±»ID"`
-	CoachID snowflake.JsonInt64 `json:"coachID" v:"required#é™ªçŽ©å¸ˆID不能为空" dc:"é™ªçŽ©å¸ˆID"`
-	Title string `json:"title" v:"required#å•†å“åç§°不能为空" dc:"å•†å“åç§°"`
-	CoverImage string `json:"coverImage"  dc:"å•†å“å°é¢å›¾"`
-	DescContent string `json:"descContent"  dc:"å•†å“è¯¦æƒ…æè¿°"`
-	Price int64 `json:"price"  dc:"å•ä»·ï¼ˆåˆ†ï¼‰"`
-	Unit string `json:"unit"  dc:"è®¡é‡å•ä½"`
-	SalesNum int `json:"salesNum"  dc:"é”€é‡"`
-	Sort int `json:"sort"  dc:"æŽ’åºï¼ˆå‡åºï¼‰"`
-	Status int `json:"status"  dc:"çŠ¶æ€"`
+	g.Meta `path:"/goods/create" method:"post" tags:"商品表" summary:"创建商品表"`
+	CategoryID snowflake.JsonInt64 `json:"categoryID" v:"required#分类ID不能为空" dc:"分类ID"`
+	CoachID snowflake.JsonInt64 `json:"coachID" v:"required#陪玩师ID不能为空" dc:"陪玩师ID"`
+	Title string `json:"title" v:"required#商品名称不能为空" dc:"商品名称"`
+	CoverImage string `json:"coverImage"  dc:"商品封面图"`
+	DescContent string `json:"descContent"  dc:"商品详情描述"`
+	Price int64 `json:"price"  dc:"单价（分）"`
+	Unit string `json:"unit"  dc:"计量单位（如"`
+	SalesNum int `json:"salesNum"  dc:"销量"`
+	Sort int `json:"sort"  dc:"排序（升序）"`
+	Status int `json:"status"  dc:"状态"`
 }
 
-// GoodsCreateRes 创建å•†å“è¡¨响应
+// GoodsCreateRes 创建商品表响应
 type GoodsCreateRes struct {
 	g.Meta `mime:"application/json"`
 }
 
-// GoodsUpdateReq 更新å•†å“è¡¨请求
+// GoodsUpdateReq 更新商品表请求
 type GoodsUpdateReq struct {
-	g.Meta `path:"/goods/update" method:"put" tags:"å•†å“è¡¨" summary:"更新å•†å“è¡¨"`
-	ID     snowflake.JsonInt64 `json:"id" v:"required#ID不能为空" dc:"å•†å“è¡¨ID"`
-	CategoryID snowflake.JsonInt64 `json:"categoryID" dc:"åˆ†ç±»ID"`
-	CoachID snowflake.JsonInt64 `json:"coachID" dc:"é™ªçŽ©å¸ˆID"`
-	Title string `json:"title" dc:"å•†å“åç§°"`
-	CoverImage string `json:"coverImage" dc:"å•†å“å°é¢å›¾"`
-	DescContent string `json:"descContent" dc:"å•†å“è¯¦æƒ…æè¿°"`
-	Price int64 `json:"price" dc:"å•ä»·ï¼ˆåˆ†ï¼‰"`
-	Unit string `json:"unit" dc:"è®¡é‡å•ä½"`
-	SalesNum int `json:"salesNum" dc:"é”€é‡"`
-	Sort int `json:"sort" dc:"æŽ’åºï¼ˆå‡åºï¼‰"`
-	Status int `json:"status" dc:"çŠ¶æ€"`
+	g.Meta `path:"/goods/update" method:"put" tags:"商品表" summary:"更新商品表"`
+	ID     snowflake.JsonInt64 `json:"id" v:"required#ID不能为空" dc:"商品表ID"`
+	CategoryID snowflake.JsonInt64 `json:"categoryID" dc:"分类ID"`
+	CoachID snowflake.JsonInt64 `json:"coachID" dc:"陪玩师ID"`
+	Title string `json:"title" dc:"商品名称"`
+	CoverImage string `json:"coverImage" dc:"商品封面图"`
+	DescContent string `json:"descContent" dc:"商品详情描述"`
+	Price int64 `json:"price" dc:"单价（分）"`
+	Unit string `json:"unit" dc:"计量单位（如"`
+	SalesNum int `json:"salesNum" dc:"销量"`
+	Sort int `json:"sort" dc:"排序（升序）"`
+	Status int `json:"status" dc:"状态"`
 }
 
-// GoodsUpdateRes 更新å•†å“è¡¨响应
+// GoodsUpdateRes 更新商品表响应
 type GoodsUpdateRes struct {
 	g.Meta `mime:"application/json"`
 }
 
-// GoodsDeleteReq 删除å•†å“è¡¨请求
+// GoodsDeleteReq 删除商品表请求
 type GoodsDeleteReq struct {
-	g.Meta `path:"/goods/delete" method:"delete" tags:"å•†å“è¡¨" summary:"删除å•†å“è¡¨"`
-	ID     snowflake.JsonInt64 `json:"id" v:"required#ID不能为空" dc:"å•†å“è¡¨ID"`
+	g.Meta `path:"/goods/delete" method:"delete" tags:"商品表" summary:"删除商品表"`
+	ID     snowflake.JsonInt64 `json:"id" v:"required#ID不能为空" dc:"商品表ID"`
 }
 
-// GoodsDeleteRes 删除å•†å“è¡¨响应
+// GoodsDeleteRes 删除商品表响应
 type GoodsDeleteRes struct {
 	g.Meta `mime:"application/json"`
 }
 
-// GoodsDetailReq 获取å•†å“è¡¨详情请求
+// GoodsDetailReq 获取商品表详情请求
 type GoodsDetailReq struct {
-	g.Meta `path:"/goods/detail" method:"get" tags:"å•†å“è¡¨" summary:"获取å•†å“è¡¨详情"`
-	ID     snowflake.JsonInt64 `json:"id" v:"required#ID不能为空" dc:"å•†å“è¡¨ID"`
+	g.Meta `path:"/goods/detail" method:"get" tags:"商品表" summary:"获取商品表详情"`
+	ID     snowflake.JsonInt64 `json:"id" v:"required#ID不能为空" dc:"商品表ID"`
 }
 
-// GoodsDetailRes 获取å•†å“è¡¨详情响应
+// GoodsDetailRes 获取商品表详情响应
 type GoodsDetailRes struct {
 	g.Meta `mime:"application/json"`
 	*model.GoodsDetailOutput
 }
 
-// GoodsListReq 获取å•†å“è¡¨列表请求
+// GoodsListReq 获取商品表列表请求
 type GoodsListReq struct {
-	g.Meta   `path:"/goods/list" method:"get" tags:"å•†å“è¡¨" summary:"获取å•†å“è¡¨列表"`
+	g.Meta   `path:"/goods/list" method:"get" tags:"商品表" summary:"获取商品表列表"`
 	PageNum  int `json:"pageNum" d:"1" dc:"页码"`
 	PageSize int `json:"pageSize" d:"10" dc:"每页数量"`
-	Status int `json:"status" dc:"çŠ¶æ€"`
+	Status int `json:"status" dc:"状态"`
 }
 
-// GoodsListRes 获取å•†å“è¡¨列表响应
+// GoodsListRes 获取商品表列表响应
 type GoodsListRes struct {
 	g.Meta `mime:"application/json"`
 	List   []*model.GoodsListOutput `json:"list" dc:"列表数据"`

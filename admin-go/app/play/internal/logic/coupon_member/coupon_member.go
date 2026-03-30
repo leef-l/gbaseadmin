@@ -22,7 +22,7 @@ func New() *sCouponMember {
 
 type sCouponMember struct{}
 
-// Create 创建ä¼šå‘˜ä¼˜æƒ åˆ¸è¡¨
+// Create 创建会员优惠券表
 func (s *sCouponMember) Create(ctx context.Context, in *model.CouponMemberCreateInput) error {
 	id := snowflake.Generate()
 	_, err := dao.PlayCouponMember.Ctx(ctx).Data(g.Map{
@@ -40,7 +40,7 @@ func (s *sCouponMember) Create(ctx context.Context, in *model.CouponMemberCreate
 	return err
 }
 
-// Update 更新ä¼šå‘˜ä¼˜æƒ åˆ¸è¡¨
+// Update 更新会员优惠券表
 func (s *sCouponMember) Update(ctx context.Context, in *model.CouponMemberUpdateInput) error {
 	data := g.Map{
 		dao.PlayCouponMember.Columns().CouponId: in.CouponID,
@@ -56,7 +56,7 @@ func (s *sCouponMember) Update(ctx context.Context, in *model.CouponMemberUpdate
 	return err
 }
 
-// Delete 软删除ä¼šå‘˜ä¼˜æƒ åˆ¸è¡¨
+// Delete 软删除会员优惠券表
 func (s *sCouponMember) Delete(ctx context.Context, id snowflake.JsonInt64) error {
 	_, err := dao.PlayCouponMember.Ctx(ctx).Where(dao.PlayCouponMember.Columns().Id, id).Data(g.Map{
 		dao.PlayCouponMember.Columns().DeletedAt: gtime.Now(),
@@ -64,22 +64,24 @@ func (s *sCouponMember) Delete(ctx context.Context, id snowflake.JsonInt64) erro
 	return err
 }
 
-// Detail 获取ä¼šå‘˜ä¼˜æƒ åˆ¸è¡¨详情
+// Detail 获取会员优惠券表详情
 func (s *sCouponMember) Detail(ctx context.Context, id snowflake.JsonInt64) (out *model.CouponMemberDetailOutput, err error) {
 	out = &model.CouponMemberDetailOutput{}
 	err = dao.PlayCouponMember.Ctx(ctx).Where(dao.PlayCouponMember.Columns().Id, id).Where(dao.PlayCouponMember.Columns().DeletedAt, nil).Scan(out)
 	if err != nil {
 		return nil, err
 	}
-	// 查询ä¼˜æƒ åˆ¸æ¨¡æ¿ID关联显示
+	// 查询优惠券模板ID关联显示
 	if out.CouponID != 0 {
-		val, _ := g.DB().Ctx(ctx).Model("play_coupon").Where("id", out.CouponID).Where("deleted_at", nil).Value("title")
-		out.CouponTitle = val.String()
+		val, err := g.DB().Ctx(ctx).Model("play_coupon").Where("id", out.CouponID).Where("deleted_at", nil).Value("title")
+		if err == nil {
+			out.CouponTitle = val.String()
+		}
 	}
 	return
 }
 
-// List 获取ä¼šå‘˜ä¼˜æƒ åˆ¸è¡¨列表
+// List 获取会员优惠券表列表
 func (s *sCouponMember) List(ctx context.Context, in *model.CouponMemberListInput) (list []*model.CouponMemberListOutput, total int, err error) {
 	m := dao.PlayCouponMember.Ctx(ctx).Where(dao.PlayCouponMember.Columns().DeletedAt, nil)
 	if in.UseStatus > 0 {
@@ -96,8 +98,10 @@ func (s *sCouponMember) List(ctx context.Context, in *model.CouponMemberListInpu
 	// 填充关联显示字段
 	for _, item := range list {
 		if item.CouponID != 0 {
-			val, _ := g.DB().Ctx(ctx).Model("play_coupon").Where("id", item.CouponID).Where("deleted_at", nil).Value("title")
-			item.CouponTitle = val.String()
+			val, err := g.DB().Ctx(ctx).Model("play_coupon").Where("id", item.CouponID).Where("deleted_at", nil).Value("title")
+			if err == nil {
+				item.CouponTitle = val.String()
+			}
 		}
 	}
 	return

@@ -1,6 +1,6 @@
-/** ä¼˜æƒ åˆ¸æ¨¡æ¿è¡¨类型定义 */
+/** 优惠券模板表类型定义 */
 
-/** ä¼˜æƒ åˆ¸æ¨¡æ¿è¡¨项 */
+/** 优惠券模板表项 */
 export interface CouponItem {
   id: string;
   title: string;
@@ -20,7 +20,7 @@ export interface CouponItem {
   updatedAt?: string;
 }
 
-/** ä¼˜æƒ åˆ¸æ¨¡æ¿è¡¨列表查询参数 */
+/** 优惠券模板表列表查询参数 */
 export interface CouponListParams {
   pageNum: number;
   pageSize: number;
@@ -29,7 +29,7 @@ export interface CouponListParams {
   status?: number;
 }
 
-/** ä¼˜æƒ åˆ¸æ¨¡æ¿è¡¨创建参数 */
+/** 优惠券模板表创建参数 */
 export interface CouponCreateParams {
   title: string;
   type?: number;
@@ -46,7 +46,7 @@ export interface CouponCreateParams {
   status?: number;
 }
 
-/** ä¼˜æƒ åˆ¸æ¨¡æ¿è¡¨更新参数 */
+/** 优惠券模板表更新参数 */
 export interface CouponUpdateParams {
   id: string;
   title: string;

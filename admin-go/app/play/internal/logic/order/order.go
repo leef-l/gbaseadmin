@@ -22,7 +22,7 @@ func New() *sOrder {
 
 type sOrder struct{}
 
-// Create 创建è®¢å•è¡¨
+// Create 创建订单表
 func (s *sOrder) Create(ctx context.Context, in *model.OrderCreateInput) error {
 	id := snowflake.Generate()
 	_, err := dao.PlayOrder.Ctx(ctx).Data(g.Map{
@@ -54,7 +54,7 @@ func (s *sOrder) Create(ctx context.Context, in *model.OrderCreateInput) error {
 	return err
 }
 
-// Update 更新è®¢å•è¡¨
+// Update 更新订单表
 func (s *sOrder) Update(ctx context.Context, in *model.OrderUpdateInput) error {
 	data := g.Map{
 		dao.PlayOrder.Columns().OrderNo: in.OrderNo,
@@ -84,7 +84,7 @@ func (s *sOrder) Update(ctx context.Context, in *model.OrderUpdateInput) error {
 	return err
 }
 
-// Delete 软删除è®¢å•è¡¨
+// Delete 软删除订单表
 func (s *sOrder) Delete(ctx context.Context, id snowflake.JsonInt64) error {
 	_, err := dao.PlayOrder.Ctx(ctx).Where(dao.PlayOrder.Columns().Id, id).Data(g.Map{
 		dao.PlayOrder.Columns().DeletedAt: gtime.Now(),
@@ -92,27 +92,24 @@ func (s *sOrder) Delete(ctx context.Context, id snowflake.JsonInt64) error {
 	return err
 }
 
-// Detail 获取è®¢å•è¡¨详情
+// Detail 获取订单表详情
 func (s *sOrder) Detail(ctx context.Context, id snowflake.JsonInt64) (out *model.OrderDetailOutput, err error) {
 	out = &model.OrderDetailOutput{}
 	err = dao.PlayOrder.Ctx(ctx).Where(dao.PlayOrder.Columns().Id, id).Where(dao.PlayOrder.Columns().DeletedAt, nil).Scan(out)
 	if err != nil {
 		return nil, err
 	}
-	// 查询åº—é“ºID关联显示
+	// 查询店铺ID（0表示无店铺）关联显示
 	if out.ShopID != 0 {
-		val, _ := g.DB().Ctx(ctx).Model("play_shop").Where("id", out.ShopID).Where("deleted_at", nil).Value("title")
-		out.ShopTitle = val.String()
-	}
-	// 查询å•†å“ID关联显示
-	if out.GoodsID != 0 {
-		val, _ := g.DB().Ctx(ctx).Model("play_goods").Where("id", out.GoodsID).Where("deleted_at", nil).Value("title")
-		out.GoodsTitle = val.String()
+		val, err := g.DB().Ctx(ctx).Model("play_shop").Where("id", out.ShopID).Where("deleted_at", nil).Value("title")
+		if err == nil {
+			out.ShopTitle = val.String()
+		}
 	}
 	return
 }
 
-// List 获取è®¢å•è¡¨列表
+// List 获取订单表列表
 func (s *sOrder) List(ctx context.Context, in *model.OrderListInput) (list []*model.OrderListOutput, total int, err error) {
 	m := dao.PlayOrder.Ctx(ctx).Where(dao.PlayOrder.Columns().DeletedAt, nil)
 	if in.PayType > 0 {
@@ -132,12 +129,10 @@ func (s *sOrder) List(ctx context.Context, in *model.OrderListInput) (list []*mo
 	// 填充关联显示字段
 	for _, item := range list {
 		if item.ShopID != 0 {
-			val, _ := g.DB().Ctx(ctx).Model("play_shop").Where("id", item.ShopID).Where("deleted_at", nil).Value("title")
-			item.ShopTitle = val.String()
-		}
-		if item.GoodsID != 0 {
-			val, _ := g.DB().Ctx(ctx).Model("play_goods").Where("id", item.GoodsID).Where("deleted_at", nil).Value("title")
-			item.GoodsTitle = val.String()
+			val, err := g.DB().Ctx(ctx).Model("play_shop").Where("id", item.ShopID).Where("deleted_at", nil).Value("title")
+			if err == nil {
+				item.ShopTitle = val.String()
+			}
 		}
 	}
 	return

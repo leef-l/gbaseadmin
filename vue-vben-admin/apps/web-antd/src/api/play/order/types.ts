@@ -1,6 +1,6 @@
-/** è®¢å•è¡¨类型定义 */
+/** 订单表类型定义 */
 
-/** è®¢å•è¡¨项 */
+/** 订单表项 */
 export interface OrderItem {
   id: string;
   orderNo: string;
@@ -9,7 +9,6 @@ export interface OrderItem {
   shopID?: string;
   shopTitle?: string;
   goodsID: string;
-  goodsTitle?: string;
   goodsTitle: string;
   goodsPrice: string;
   quantity?: number;
@@ -30,7 +29,7 @@ export interface OrderItem {
   updatedAt?: string;
 }
 
-/** è®¢å•è¡¨列表查询参数 */
+/** 订单表列表查询参数 */
 export interface OrderListParams {
   pageNum: number;
   pageSize: number;
@@ -38,7 +37,7 @@ export interface OrderListParams {
   orderStatus?: number;
 }
 
-/** è®¢å•è¡¨创建参数 */
+/** 订单表创建参数 */
 export interface OrderCreateParams {
   orderNo: string;
   memberID: string;
@@ -63,7 +62,7 @@ export interface OrderCreateParams {
   remark?: string;
 }
 
-/** è®¢å•è¡¨更新参数 */
+/** 订单表更新参数 */
 export interface OrderUpdateParams {
   id: string;
   orderNo: string;

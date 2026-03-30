@@ -9,17 +9,17 @@ import {
   updateRechargeOrder,
 } from '#/api/play/recharge_order';
 
-/** æ”¯ä»˜æ–¹å¼选项 */
+/** 支付方式选项 */
 const payTypeOptions = [
-  { label: 'å¾®ä¿¡æ”¯ä»˜', value: 1 },
-  { label: 'æ”¯ä»˜å®æ”¯ä»˜', value: 2 },
+  { label: '微信支付', value: 1 },
+  { label: '支付宝支付', value: 2 },
 ];
 
-/** æ”¯ä»˜çŠ¶æ€选项 */
+/** 支付状态选项 */
 const payStatusOptions = [
-  { label: 'å¾…æ”¯ä»˜', value: 0 },
-  { label: 'æ”¯ä»˜æˆåŠŸ', value: 1 },
-  { label: 'æ”¯ä»˜å¤±è´¥', value: 2 },
+  { label: '待支付', value: 0 },
+  { label: '支付成功', value: 1 },
+  { label: '支付失败', value: 2 },
 ];
 
 const emit = defineEmits<{ success: [] }>();
@@ -33,60 +33,60 @@ const [Form, formApi] = useVbenForm({
     {
       component: 'Input',
       fieldName: 'orderNo',
-      label: 'å……å€¼è®¢å•å·',
+      label: '充值订单号',
       rules: 'required',
-      componentProps: { placeholder: '请输入å……å€¼è®¢å•å·', maxlength: 32 },
+      componentProps: { placeholder: '请输入充值订单号', maxlength: 32 },
     },
     {
       component: 'Select',
       fieldName: 'memberID',
-      label: 'ä¼šå‘˜ID',
+      label: '会员ID',
       rules: 'selectRequired',
-      componentProps: { options: memberIDOptions, placeholder: '请选择ä¼šå‘˜ID', allowClear: true, class: 'w-full' },
+      componentProps: { options: memberIDOptions, placeholder: '请选择会员ID', allowClear: true, class: 'w-full' },
     },
     {
       component: 'Select',
       fieldName: 'rechargePlanID',
-      label: 'å……å€¼æ–¹æ¡ˆID',
+      label: '充值方案ID',
       rules: 'selectRequired',
-      componentProps: { options: rechargePlanIDOptions, placeholder: '请选择å……å€¼æ–¹æ¡ˆID', allowClear: true, class: 'w-full' },
+      componentProps: { options: rechargePlanIDOptions, placeholder: '请选择充值方案ID', allowClear: true, class: 'w-full' },
     },
     {
-      component: 'Input',
+      component: 'InputNumber',
       fieldName: 'amount',
-      label: 'å……å€¼é‡‘é¢ï¼ˆåˆ†ï¼‰',
+      label: '充值金额（分）',
       rules: 'required',
-      componentProps: { placeholder: '请输入å……å€¼é‡‘é¢ï¼ˆåˆ†ï¼‰' },
+      componentProps: { placeholder: '请输入充值金额（分）', class: 'w-full' },
     },
     {
-      component: 'Input',
+      component: 'InputNumber',
       fieldName: 'giftAmount',
-      label: 'èµ é€é‡‘é¢ï¼ˆåˆ†ï¼‰',
-      componentProps: { placeholder: '请输入èµ é€é‡‘é¢ï¼ˆåˆ†ï¼‰' },
+      label: '赠送金额（分）',
+      componentProps: { placeholder: '请输入赠送金额（分）', class: 'w-full' },
     },
     {
       component: 'Select',
       fieldName: 'payType',
-      label: 'æ”¯ä»˜æ–¹å¼',
-      componentProps: { options: payTypeOptions, placeholder: '请选择æ”¯ä»˜æ–¹å¼', allowClear: true, class: 'w-full' },
+      label: '支付方式',
+      componentProps: { options: payTypeOptions, placeholder: '请选择支付方式', allowClear: true, class: 'w-full' },
     },
     {
       component: 'Input',
       fieldName: 'tradeNo',
-      label: 'ç¬¬ä¸‰æ–¹äº¤æ˜“å·',
-      componentProps: { placeholder: '请输入ç¬¬ä¸‰æ–¹äº¤æ˜“å·', maxlength: 64 },
+      label: '第三方交易号',
+      componentProps: { placeholder: '请输入第三方交易号', maxlength: 64 },
     },
     {
       component: 'Select',
       fieldName: 'payStatus',
-      label: 'æ”¯ä»˜çŠ¶æ€',
-      componentProps: { options: payStatusOptions, placeholder: '请选择æ”¯ä»˜çŠ¶æ€', allowClear: true, class: 'w-full' },
+      label: '支付状态',
+      componentProps: { options: payStatusOptions, placeholder: '请选择支付状态', allowClear: true, class: 'w-full' },
     },
     {
       component: 'DatePicker',
       fieldName: 'payAt',
-      label: 'æ”¯ä»˜æ—¶é—´',
-      componentProps: { showTime: true, placeholder: '请选择æ”¯ä»˜æ—¶é—´', class: 'w-full', valueFormat: 'YYYY-MM-DD HH:mm:ss' },
+      label: '支付时间',
+      componentProps: { showTime: true, placeholder: '请选择支付时间', class: 'w-full', valueFormat: 'YYYY-MM-DD HH:mm:ss' },
     },
   ],
 });
@@ -121,7 +121,7 @@ const [Modal, modalApi] = useVbenModal({
       if (data?.id) {
         isEdit.value = true;
         editId.value = data.id;
-        modalApi.setState({ title: '编辑å……å€¼è®¢å•è¡¨' });
+        modalApi.setState({ title: '编辑充值订单表' });
         try {
           const detail = await getRechargeOrderDetail(data.id);
           if (detail) {
@@ -133,7 +133,7 @@ const [Modal, modalApi] = useVbenModal({
       } else {
         isEdit.value = false;
         editId.value = '';
-        modalApi.setState({ title: '新建å……å€¼è®¢å•è¡¨' });
+        modalApi.setState({ title: '新建充值订单表' });
         formApi.resetForm();
       }
     }

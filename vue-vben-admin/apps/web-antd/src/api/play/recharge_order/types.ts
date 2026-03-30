@@ -1,6 +1,6 @@
-/** å……å€¼è®¢å•è¡¨类型定义 */
+/** 充值订单表类型定义 */
 
-/** å……å€¼è®¢å•è¡¨项 */
+/** 充值订单表项 */
 export interface RechargeOrderItem {
   id: string;
   orderNo: string;
@@ -17,7 +17,7 @@ export interface RechargeOrderItem {
   updatedAt?: string;
 }
 
-/** å……å€¼è®¢å•è¡¨列表查询参数 */
+/** 充值订单表列表查询参数 */
 export interface RechargeOrderListParams {
   pageNum: number;
   pageSize: number;
@@ -25,7 +25,7 @@ export interface RechargeOrderListParams {
   payStatus?: number;
 }
 
-/** å……å€¼è®¢å•è¡¨创建参数 */
+/** 充值订单表创建参数 */
 export interface RechargeOrderCreateParams {
   orderNo: string;
   memberID: string;
@@ -38,7 +38,7 @@ export interface RechargeOrderCreateParams {
   payAt?: string;
 }
 
-/** å……å€¼è®¢å•è¡¨更新参数 */
+/** 充值订单表更新参数 */
 export interface RechargeOrderUpdateParams {
   id: string;
   orderNo: string;

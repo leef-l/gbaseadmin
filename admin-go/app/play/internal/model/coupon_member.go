@@ -8,7 +8,7 @@ import (
 
 // CouponMember DTO 模型
 
-// CouponMemberCreateInput 创建ä¼šå‘˜ä¼˜æƒ åˆ¸è¡¨输入
+// CouponMemberCreateInput 创建会员优惠券表输入
 type CouponMemberCreateInput struct {
 	CouponID snowflake.JsonInt64 `json:"couponID"`
 	MemberID snowflake.JsonInt64 `json:"memberID"`
@@ -19,7 +19,7 @@ type CouponMemberCreateInput struct {
 	ExpireAt *gtime.Time `json:"expireAt"`
 }
 
-// CouponMemberUpdateInput 更新ä¼šå‘˜ä¼˜æƒ åˆ¸è¡¨输入
+// CouponMemberUpdateInput 更新会员优惠券表输入
 type CouponMemberUpdateInput struct {
 	ID snowflake.JsonInt64 `json:"id"`
 	CouponID snowflake.JsonInt64 `json:"couponID"`
@@ -31,7 +31,7 @@ type CouponMemberUpdateInput struct {
 	ExpireAt *gtime.Time `json:"expireAt"`
 }
 
-// CouponMemberDetailOutput ä¼šå‘˜ä¼˜æƒ åˆ¸è¡¨详情输出
+// CouponMemberDetailOutput 会员优惠券表详情输出
 type CouponMemberDetailOutput struct {
 	ID snowflake.JsonInt64 `json:"id"`
 	CouponID snowflake.JsonInt64 `json:"couponID"`
@@ -46,7 +46,7 @@ type CouponMemberDetailOutput struct {
 	UpdatedAt *gtime.Time `json:"updatedAt"`
 }
 
-// CouponMemberListOutput ä¼šå‘˜ä¼˜æƒ åˆ¸è¡¨列表输出
+// CouponMemberListOutput 会员优惠券表列表输出
 type CouponMemberListOutput struct {
 	ID snowflake.JsonInt64 `json:"id"`
 	CouponID snowflake.JsonInt64 `json:"couponID"`
@@ -61,7 +61,7 @@ type CouponMemberListOutput struct {
 	UpdatedAt *gtime.Time `json:"updatedAt"`
 }
 
-// CouponMemberListInput ä¼šå‘˜ä¼˜æƒ åˆ¸è¡¨列表查询输入
+// CouponMemberListInput 会员优惠券表列表查询输入
 type CouponMemberListInput struct {
 	PageNum  int `json:"pageNum"`
 	PageSize int `json:"pageSize"`

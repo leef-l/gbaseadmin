@@ -9,11 +9,11 @@ import {
   updateCouponMember,
 } from '#/api/play/coupon_member';
 
-/** ä½¿ç”¨çŠ¶æ€选项 */
+/** 使用状态选项 */
 const useStatusOptions = [
-  { label: 'æœªä½¿ç”¨', value: 0 },
-  { label: 'å·²ä½¿ç”¨', value: 1 },
-  { label: 'å·²è¿‡æœŸ', value: 2 },
+  { label: '未使用', value: 0 },
+  { label: '已使用', value: 1 },
+  { label: '已过期', value: 2 },
 ];
 
 const emit = defineEmits<{ success: [] }>();
@@ -27,46 +27,46 @@ const [Form, formApi] = useVbenForm({
     {
       component: 'Select',
       fieldName: 'couponID',
-      label: 'ä¼˜æƒ åˆ¸æ¨¡æ¿ID',
+      label: '优惠券模板ID',
       rules: 'selectRequired',
-      componentProps: { options: couponIDOptions, placeholder: '请选择ä¼˜æƒ åˆ¸æ¨¡æ¿ID', allowClear: true, class: 'w-full' },
+      componentProps: { options: couponIDOptions, placeholder: '请选择优惠券模板ID', allowClear: true, class: 'w-full' },
     },
     {
       component: 'Select',
       fieldName: 'memberID',
-      label: 'ä¼šå‘˜ID',
+      label: '会员ID',
       rules: 'selectRequired',
-      componentProps: { options: memberIDOptions, placeholder: '请选择ä¼šå‘˜ID', allowClear: true, class: 'w-full' },
+      componentProps: { options: memberIDOptions, placeholder: '请选择会员ID', allowClear: true, class: 'w-full' },
     },
     {
       component: 'Select',
       fieldName: 'orderID',
-      label: 'ä½¿ç”¨çš„è®¢å•ID',
-      componentProps: { options: orderIDOptions, placeholder: '请选择ä½¿ç”¨çš„è®¢å•ID', allowClear: true, class: 'w-full' },
+      label: '使用的订单ID（0表示未使用）',
+      componentProps: { options: orderIDOptions, placeholder: '请选择使用的订单ID（0表示未使用）', allowClear: true, class: 'w-full' },
     },
     {
       component: 'Select',
       fieldName: 'useStatus',
-      label: 'ä½¿ç”¨çŠ¶æ€',
-      componentProps: { options: useStatusOptions, placeholder: '请选择ä½¿ç”¨çŠ¶æ€', allowClear: true, class: 'w-full' },
+      label: '使用状态',
+      componentProps: { options: useStatusOptions, placeholder: '请选择使用状态', allowClear: true, class: 'w-full' },
     },
     {
       component: 'DatePicker',
       fieldName: 'claimAt',
-      label: 'é¢†å–æ—¶é—´',
-      componentProps: { showTime: true, placeholder: '请选择é¢†å–æ—¶é—´', class: 'w-full', valueFormat: 'YYYY-MM-DD HH:mm:ss' },
+      label: '领取时间',
+      componentProps: { showTime: true, placeholder: '请选择领取时间', class: 'w-full', valueFormat: 'YYYY-MM-DD HH:mm:ss' },
     },
     {
       component: 'DatePicker',
       fieldName: 'useAt',
-      label: 'ä½¿ç”¨æ—¶é—´',
-      componentProps: { showTime: true, placeholder: '请选择ä½¿ç”¨æ—¶é—´', class: 'w-full', valueFormat: 'YYYY-MM-DD HH:mm:ss' },
+      label: '使用时间',
+      componentProps: { showTime: true, placeholder: '请选择使用时间', class: 'w-full', valueFormat: 'YYYY-MM-DD HH:mm:ss' },
     },
     {
       component: 'DatePicker',
       fieldName: 'expireAt',
-      label: 'è¿‡æœŸæ—¶é—´',
-      componentProps: { showTime: true, placeholder: '请选择è¿‡æœŸæ—¶é—´', class: 'w-full', valueFormat: 'YYYY-MM-DD HH:mm:ss' },
+      label: '过期时间',
+      componentProps: { showTime: true, placeholder: '请选择过期时间', class: 'w-full', valueFormat: 'YYYY-MM-DD HH:mm:ss' },
     },
   ],
 });
@@ -101,7 +101,7 @@ const [Modal, modalApi] = useVbenModal({
       if (data?.id) {
         isEdit.value = true;
         editId.value = data.id;
-        modalApi.setState({ title: '编辑ä¼šå‘˜ä¼˜æƒ åˆ¸è¡¨' });
+        modalApi.setState({ title: '编辑会员优惠券表' });
         try {
           const detail = await getCouponMemberDetail(data.id);
           if (detail) {
@@ -113,7 +113,7 @@ const [Modal, modalApi] = useVbenModal({
       } else {
         isEdit.value = false;
         editId.value = '';
-        modalApi.setState({ title: '新建ä¼šå‘˜ä¼˜æƒ åˆ¸è¡¨' });
+        modalApi.setState({ title: '新建会员优惠券表' });
         formApi.resetForm();
       }
     }

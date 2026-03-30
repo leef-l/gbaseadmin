@@ -1,6 +1,6 @@
-/** æ”¯ä»˜è®°å½•è¡¨类型定义 */
+/** 支付记录表类型定义 */
 
-/** æ”¯ä»˜è®°å½•è¡¨项 */
+/** 支付记录表项 */
 export interface PaymentItem {
   id: string;
   orderID: string;
@@ -18,7 +18,7 @@ export interface PaymentItem {
   updatedAt?: string;
 }
 
-/** æ”¯ä»˜è®°å½•è¡¨列表查询参数 */
+/** 支付记录表列表查询参数 */
 export interface PaymentListParams {
   pageNum: number;
   pageSize: number;
@@ -26,7 +26,7 @@ export interface PaymentListParams {
   payStatus?: number;
 }
 
-/** æ”¯ä»˜è®°å½•è¡¨创建参数 */
+/** 支付记录表创建参数 */
 export interface PaymentCreateParams {
   orderID: string;
   memberID: string;
@@ -41,7 +41,7 @@ export interface PaymentCreateParams {
   callbackContent?: string;
 }
 
-/** æ”¯ä»˜è®°å½•è¡¨更新参数 */
+/** 支付记录表更新参数 */
 export interface PaymentUpdateParams {
   id: string;
   orderID: string;

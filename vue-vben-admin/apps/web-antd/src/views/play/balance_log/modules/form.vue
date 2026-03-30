@@ -9,13 +9,13 @@ import {
   updateBalanceLog,
 } from '#/api/play/balance_log';
 
-/** ä¸šåŠ¡ç±»åž‹选项 */
+/** 业务类型选项 */
 const bizTypeOptions = [
-  { label: 'å……å€¼', value: 1 },
-  { label: 'æ¶ˆè´¹', value: 2 },
-  { label: 'é€€æ¬¾', value: 3 },
-  { label: 'æ´»åŠ¨èµ é€', value: 4 },
-  { label: 'æçŽ°', value: 5 },
+  { label: '充值', value: 1 },
+  { label: '消费', value: 2 },
+  { label: '退款', value: 3 },
+  { label: '活动赠送', value: 4 },
+  { label: '提现', value: 5 },
 ];
 
 const emit = defineEmits<{ success: [] }>();
@@ -29,49 +29,49 @@ const [Form, formApi] = useVbenForm({
     {
       component: 'Select',
       fieldName: 'memberID',
-      label: 'ä¼šå‘˜ID',
+      label: '会员ID',
       rules: 'selectRequired',
-      componentProps: { options: memberIDOptions, placeholder: '请选择ä¼šå‘˜ID', allowClear: true, class: 'w-full' },
+      componentProps: { options: memberIDOptions, placeholder: '请选择会员ID', allowClear: true, class: 'w-full' },
     },
     {
       component: 'Select',
       fieldName: 'bizType',
-      label: 'ä¸šåŠ¡ç±»åž‹',
+      label: '业务类型',
       rules: 'selectRequired',
-      componentProps: { options: bizTypeOptions, placeholder: '请选择ä¸šåŠ¡ç±»åž‹', allowClear: true, class: 'w-full' },
+      componentProps: { options: bizTypeOptions, placeholder: '请选择业务类型', allowClear: true, class: 'w-full' },
     },
     {
       component: 'Select',
       fieldName: 'bizID',
-      label: 'å…³è”ä¸šåŠ¡ID',
-      componentProps: { options: bizIDOptions, placeholder: '请选择å…³è”ä¸šåŠ¡ID', allowClear: true, class: 'w-full' },
+      label: '关联业务ID（订单ID/充值订单ID/活动ID）',
+      componentProps: { options: bizIDOptions, placeholder: '请选择关联业务ID（订单ID/充值订单ID/活动ID）', allowClear: true, class: 'w-full' },
     },
     {
-      component: 'Input',
+      component: 'InputNumber',
       fieldName: 'changeAmount',
-      label: 'å˜åŠ¨é‡‘é¢ï¼ˆåˆ†ï¼‰',
+      label: '变动金额（分，正数增加负数减少）',
       rules: 'required',
-      componentProps: { placeholder: '请输入å˜åŠ¨é‡‘é¢ï¼ˆåˆ†ï¼‰' },
+      componentProps: { placeholder: '请输入变动金额（分，正数增加负数减少）', class: 'w-full' },
     },
     {
-      component: 'Input',
+      component: 'InputNumber',
       fieldName: 'beforeBalance',
-      label: 'å˜åŠ¨å‰ä½™é¢ï¼ˆåˆ†ï¼‰',
+      label: '变动前余额（分）',
       rules: 'required',
-      componentProps: { placeholder: '请输入å˜åŠ¨å‰ä½™é¢ï¼ˆåˆ†ï¼‰' },
+      componentProps: { placeholder: '请输入变动前余额（分）', class: 'w-full' },
     },
     {
-      component: 'Input',
+      component: 'InputNumber',
       fieldName: 'afterBalance',
-      label: 'å˜åŠ¨åŽä½™é¢ï¼ˆåˆ†ï¼‰',
+      label: '变动后余额（分）',
       rules: 'required',
-      componentProps: { placeholder: '请输入å˜åŠ¨åŽä½™é¢ï¼ˆåˆ†ï¼‰' },
+      componentProps: { placeholder: '请输入变动后余额（分）', class: 'w-full' },
     },
     {
       component: 'Input',
       fieldName: 'remark',
-      label: 'å¤‡æ³¨è¯´æ˜Ž',
-      componentProps: { placeholder: '请输入å¤‡æ³¨è¯´æ˜Ž', maxlength: 200 },
+      label: '备注说明',
+      componentProps: { placeholder: '请输入备注说明', maxlength: 200 },
     },
   ],
 });
@@ -106,7 +106,7 @@ const [Modal, modalApi] = useVbenModal({
       if (data?.id) {
         isEdit.value = true;
         editId.value = data.id;
-        modalApi.setState({ title: '编辑ä½™é¢æµæ°´è¡¨' });
+        modalApi.setState({ title: '编辑余额流水表' });
         try {
           const detail = await getBalanceLogDetail(data.id);
           if (detail) {
@@ -118,7 +118,7 @@ const [Modal, modalApi] = useVbenModal({
       } else {
         isEdit.value = false;
         editId.value = '';
-        modalApi.setState({ title: '新建ä½™é¢æµæ°´è¡¨' });
+        modalApi.setState({ title: '新建余额流水表' });
         formApi.resetForm();
       }
     }

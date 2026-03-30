@@ -13,19 +13,19 @@ import FormModal from './modules/form.vue';
 /** 标签颜色池 */
 const TAG_COLORS = ['green', 'red', 'blue', 'orange', 'cyan', 'purple', 'geekblue', 'magenta'];
 
-/** ç¬¬ä¸‰æ–¹å¹³å°选项 */
+/** 第三方平台选项 */
 const providerOptions = [
-  { label: 'å¾®ä¿¡', value: 1 },
-  { label: 'æ”¯ä»˜å®', value: 2 },
+  { label: '微信', value: 1 },
+  { label: '支付宝', value: 2 },
 ];
 
-/** ç¬¬ä¸‰æ–¹å¹³å°映射 */
+/** 第三方平台映射 */
 const providerMap: Record<number, string> = {
-  1: 'å¾®ä¿¡',
-  2: 'æ”¯ä»˜å®',
+  1: '微信',
+  2: '支付宝',
 };
 
-/** ç¬¬ä¸‰æ–¹å¹³å°颜色 */
+/** 第三方平台颜色 */
 function getProviderColor(val: number): string {
   const keys = [1, 2];
   const idx = keys.indexOf(val);
@@ -50,11 +50,11 @@ const formOptions: VbenFormProps = {
       componentProps: {
         allowClear: true,
         options: providerOptions,
-        placeholder: '请选择ç¬¬ä¸‰æ–¹å¹³å°',
+        placeholder: '请选择第三方平台',
         class: 'w-full',
       },
       fieldName: 'provider',
-      label: 'ç¬¬ä¸‰æ–¹å¹³å°',
+      label: '第三方平台',
     },
   ],
 };
@@ -63,15 +63,15 @@ const formOptions: VbenFormProps = {
 const gridOptions: VxeGridProps<OauthItem> = {
   columns: [
     { title: '序号', type: 'seq', width: 50 },
-    { field: 'memberID', title: 'ä¼šå‘˜ID' },
-    { field: 'provider', title: 'ç¬¬ä¸‰æ–¹å¹³å°', width: 120, slots: { default: 'provider_cell' } },
-    { field: 'openID', title: 'ç¬¬ä¸‰æ–¹OpenID' },
-    { field: 'unionID', title: 'ç¬¬ä¸‰æ–¹UnionID' },
-    { field: 'nickname', title: 'ç¬¬ä¸‰æ–¹æ˜µç§°' },
-    { field: 'avatar', title: 'ç¬¬ä¸‰æ–¹å¤´åƒ' },
-    { field: 'accessToken', title: 'è®¿é—®ä»¤ç‰Œ' },
-    { field: 'refreshToken', title: 'åˆ·æ–°ä»¤ç‰Œ' },
-    { field: 'expireAt', title: 'ä»¤ç‰Œè¿‡æœŸæ—¶é—´', width: 180, formatter: 'formatDateTime' },
+    { field: 'memberID', title: '会员ID' },
+    { field: 'provider', title: '第三方平台', width: 120, slots: { default: 'provider_cell' } },
+    { field: 'openID', title: '第三方OpenID' },
+    { field: 'unionID', title: '第三方UnionID' },
+    { field: 'nickname', title: '第三方昵称' },
+    { field: 'avatar', title: '第三方头像' },
+    { field: 'accessToken', title: '访问令牌' },
+    { field: 'refreshToken', title: '刷新令牌' },
+    { field: 'expireAt', title: '令牌过期时间', width: 180, formatter: 'formatDateTime' },
     { field: 'createdAt', title: '创建时间', width: 180, formatter: 'formatDateTime' },
     { title: '操作', width: 200, fixed: 'right', slots: { default: 'action' } },
   ],
@@ -115,7 +115,7 @@ function handleEdit(row: OauthItem) {
 function handleDelete(row: OauthItem) {
   Modal.confirm({
     title: '确认删除',
-    content: '确定要删除该ç¬¬ä¸‰æ–¹ç™»å½•ç»‘å®šè¡¨吗？',
+    content: '确定要删除该第三方登录绑定表吗？',
     okType: 'danger',
     async onOk() {
       await deleteOauth(row.id);

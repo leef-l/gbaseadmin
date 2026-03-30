@@ -22,7 +22,7 @@ func New() *sActivityReward {
 
 type sActivityReward struct{}
 
-// Create 创建æ´»åŠ¨å¥–åŠ±è¡¨
+// Create 创建活动奖励表
 func (s *sActivityReward) Create(ctx context.Context, in *model.ActivityRewardCreateInput) error {
 	id := snowflake.Generate()
 	_, err := dao.PlayActivityReward.Ctx(ctx).Data(g.Map{
@@ -38,7 +38,7 @@ func (s *sActivityReward) Create(ctx context.Context, in *model.ActivityRewardCr
 	return err
 }
 
-// Update 更新æ´»åŠ¨å¥–åŠ±è¡¨
+// Update 更新活动奖励表
 func (s *sActivityReward) Update(ctx context.Context, in *model.ActivityRewardUpdateInput) error {
 	data := g.Map{
 		dao.PlayActivityReward.Columns().ActivityId: in.ActivityID,
@@ -52,7 +52,7 @@ func (s *sActivityReward) Update(ctx context.Context, in *model.ActivityRewardUp
 	return err
 }
 
-// Delete 软删除æ´»åŠ¨å¥–åŠ±è¡¨
+// Delete 软删除活动奖励表
 func (s *sActivityReward) Delete(ctx context.Context, id snowflake.JsonInt64) error {
 	_, err := dao.PlayActivityReward.Ctx(ctx).Where(dao.PlayActivityReward.Columns().Id, id).Data(g.Map{
 		dao.PlayActivityReward.Columns().DeletedAt: gtime.Now(),
@@ -60,22 +60,24 @@ func (s *sActivityReward) Delete(ctx context.Context, id snowflake.JsonInt64) er
 	return err
 }
 
-// Detail 获取æ´»åŠ¨å¥–åŠ±è¡¨详情
+// Detail 获取活动奖励表详情
 func (s *sActivityReward) Detail(ctx context.Context, id snowflake.JsonInt64) (out *model.ActivityRewardDetailOutput, err error) {
 	out = &model.ActivityRewardDetailOutput{}
 	err = dao.PlayActivityReward.Ctx(ctx).Where(dao.PlayActivityReward.Columns().Id, id).Where(dao.PlayActivityReward.Columns().DeletedAt, nil).Scan(out)
 	if err != nil {
 		return nil, err
 	}
-	// 查询æ´»åŠ¨ID关联显示
+	// 查询活动ID关联显示
 	if out.ActivityID != 0 {
-		val, _ := g.DB().Ctx(ctx).Model("play_activity").Where("id", out.ActivityID).Where("deleted_at", nil).Value("title")
-		out.ActivityTitle = val.String()
+		val, err := g.DB().Ctx(ctx).Model("play_activity").Where("id", out.ActivityID).Where("deleted_at", nil).Value("title")
+		if err == nil {
+			out.ActivityTitle = val.String()
+		}
 	}
 	return
 }
 
-// List 获取æ´»åŠ¨å¥–åŠ±è¡¨列表
+// List 获取活动奖励表列表
 func (s *sActivityReward) List(ctx context.Context, in *model.ActivityRewardListInput) (list []*model.ActivityRewardListOutput, total int, err error) {
 	m := dao.PlayActivityReward.Ctx(ctx).Where(dao.PlayActivityReward.Columns().DeletedAt, nil)
 	if in.RewardType > 0 {
@@ -92,8 +94,10 @@ func (s *sActivityReward) List(ctx context.Context, in *model.ActivityRewardList
 	// 填充关联显示字段
 	for _, item := range list {
 		if item.ActivityID != 0 {
-			val, _ := g.DB().Ctx(ctx).Model("play_activity").Where("id", item.ActivityID).Where("deleted_at", nil).Value("title")
-			item.ActivityTitle = val.String()
+			val, err := g.DB().Ctx(ctx).Model("play_activity").Where("id", item.ActivityID).Where("deleted_at", nil).Value("title")
+			if err == nil {
+				item.ActivityTitle = val.String()
+			}
 		}
 	}
 	return

@@ -9,10 +9,10 @@ import {
   updateOauth,
 } from '#/api/play/oauth';
 
-/** ç¬¬ä¸‰æ–¹å¹³å°选项 */
+/** 第三方平台选项 */
 const providerOptions = [
-  { label: 'å¾®ä¿¡', value: 1 },
-  { label: 'æ”¯ä»˜å®', value: 2 },
+  { label: '微信', value: 1 },
+  { label: '支付宝', value: 2 },
 ];
 
 const emit = defineEmits<{ success: [] }>();
@@ -26,59 +26,59 @@ const [Form, formApi] = useVbenForm({
     {
       component: 'Select',
       fieldName: 'memberID',
-      label: 'ä¼šå‘˜ID',
+      label: '会员ID',
       rules: 'selectRequired',
-      componentProps: { options: memberIDOptions, placeholder: '请选择ä¼šå‘˜ID', allowClear: true, class: 'w-full' },
+      componentProps: { options: memberIDOptions, placeholder: '请选择会员ID', allowClear: true, class: 'w-full' },
     },
     {
       component: 'Select',
       fieldName: 'provider',
-      label: 'ç¬¬ä¸‰æ–¹å¹³å°',
+      label: '第三方平台',
       rules: 'selectRequired',
-      componentProps: { options: providerOptions, placeholder: '请选择ç¬¬ä¸‰æ–¹å¹³å°', allowClear: true, class: 'w-full' },
+      componentProps: { options: providerOptions, placeholder: '请选择第三方平台', allowClear: true, class: 'w-full' },
     },
     {
       component: 'Select',
       fieldName: 'openID',
-      label: 'ç¬¬ä¸‰æ–¹OpenID',
+      label: '第三方OpenID',
       rules: 'selectRequired',
-      componentProps: { options: openIDOptions, placeholder: '请选择ç¬¬ä¸‰æ–¹OpenID', allowClear: true, class: 'w-full' },
+      componentProps: { options: openIDOptions, placeholder: '请选择第三方OpenID', allowClear: true, class: 'w-full' },
     },
     {
       component: 'Select',
       fieldName: 'unionID',
-      label: 'ç¬¬ä¸‰æ–¹UnionID',
-      componentProps: { options: unionIDOptions, placeholder: '请选择ç¬¬ä¸‰æ–¹UnionID', allowClear: true, class: 'w-full' },
+      label: '第三方UnionID',
+      componentProps: { options: unionIDOptions, placeholder: '请选择第三方UnionID', allowClear: true, class: 'w-full' },
     },
     {
       component: 'Input',
       fieldName: 'nickname',
-      label: 'ç¬¬ä¸‰æ–¹æ˜µç§°',
-      componentProps: { placeholder: '请输入ç¬¬ä¸‰æ–¹æ˜µç§°', maxlength: 50 },
+      label: '第三方昵称',
+      componentProps: { placeholder: '请输入第三方昵称', maxlength: 50 },
     },
     {
       component: 'Input',
       fieldName: 'avatar',
-      label: 'ç¬¬ä¸‰æ–¹å¤´åƒ',
-      componentProps: { placeholder: '请输入ç¬¬ä¸‰æ–¹å¤´åƒ', maxlength: 500 },
+      label: '第三方头像',
+      componentProps: { placeholder: '请输入第三方头像', maxlength: 500 },
     },
     {
       component: 'Input',
       fieldName: 'accessToken',
-      label: 'è®¿é—®ä»¤ç‰Œ',
-      componentProps: { placeholder: '请输入è®¿é—®ä»¤ç‰Œ', maxlength: 500 },
+      label: '访问令牌',
+      componentProps: { placeholder: '请输入访问令牌', maxlength: 500 },
     },
     {
       component: 'Input',
       fieldName: 'refreshToken',
-      label: 'åˆ·æ–°ä»¤ç‰Œ',
-      componentProps: { placeholder: '请输入åˆ·æ–°ä»¤ç‰Œ', maxlength: 500 },
+      label: '刷新令牌',
+      componentProps: { placeholder: '请输入刷新令牌', maxlength: 500 },
     },
     {
       component: 'DatePicker',
       fieldName: 'expireAt',
-      label: 'ä»¤ç‰Œè¿‡æœŸæ—¶é—´',
-      componentProps: { showTime: true, placeholder: '请选择ä»¤ç‰Œè¿‡æœŸæ—¶é—´', class: 'w-full', valueFormat: 'YYYY-MM-DD HH:mm:ss' },
+      label: '令牌过期时间',
+      componentProps: { showTime: true, placeholder: '请选择令牌过期时间', class: 'w-full', valueFormat: 'YYYY-MM-DD HH:mm:ss' },
     },
   ],
 });
@@ -113,7 +113,7 @@ const [Modal, modalApi] = useVbenModal({
       if (data?.id) {
         isEdit.value = true;
         editId.value = data.id;
-        modalApi.setState({ title: '编辑ç¬¬ä¸‰æ–¹ç™»å½•ç»‘å®šè¡¨' });
+        modalApi.setState({ title: '编辑第三方登录绑定表' });
         try {
           const detail = await getOauthDetail(data.id);
           if (detail) {
@@ -125,7 +125,7 @@ const [Modal, modalApi] = useVbenModal({
       } else {
         isEdit.value = false;
         editId.value = '';
-        modalApi.setState({ title: '新建ç¬¬ä¸‰æ–¹ç™»å½•ç»‘å®šè¡¨' });
+        modalApi.setState({ title: '新建第三方登录绑定表' });
         formApi.resetForm();
       }
     }

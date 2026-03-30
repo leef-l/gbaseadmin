@@ -13,73 +13,73 @@ var _ = gtime.New
 
 // CouponMember API
 
-// CouponMemberCreateReq 创建ä¼šå‘˜ä¼˜æƒ åˆ¸è¡¨请求
+// CouponMemberCreateReq 创建会员优惠券表请求
 type CouponMemberCreateReq struct {
-	g.Meta `path:"/coupon_member/create" method:"post" tags:"ä¼šå‘˜ä¼˜æƒ åˆ¸è¡¨" summary:"创建ä¼šå‘˜ä¼˜æƒ åˆ¸è¡¨"`
-	CouponID snowflake.JsonInt64 `json:"couponID" v:"required#ä¼˜æƒ åˆ¸æ¨¡æ¿ID不能为空" dc:"ä¼˜æƒ åˆ¸æ¨¡æ¿ID"`
-	MemberID snowflake.JsonInt64 `json:"memberID" v:"required#ä¼šå‘˜ID不能为空" dc:"ä¼šå‘˜ID"`
-	OrderID snowflake.JsonInt64 `json:"orderID"  dc:"ä½¿ç”¨çš„è®¢å•ID"`
-	UseStatus int `json:"useStatus"  dc:"ä½¿ç”¨çŠ¶æ€"`
-	ClaimAt *gtime.Time `json:"claimAt"  dc:"é¢†å–æ—¶é—´"`
-	UseAt *gtime.Time `json:"useAt"  dc:"ä½¿ç”¨æ—¶é—´"`
-	ExpireAt *gtime.Time `json:"expireAt"  dc:"è¿‡æœŸæ—¶é—´"`
+	g.Meta `path:"/coupon_member/create" method:"post" tags:"会员优惠券表" summary:"创建会员优惠券表"`
+	CouponID snowflake.JsonInt64 `json:"couponID" v:"required#优惠券模板ID不能为空" dc:"优惠券模板ID"`
+	MemberID snowflake.JsonInt64 `json:"memberID" v:"required#会员ID不能为空" dc:"会员ID"`
+	OrderID snowflake.JsonInt64 `json:"orderID"  dc:"使用的订单ID（0表示未使用）"`
+	UseStatus int `json:"useStatus"  dc:"使用状态"`
+	ClaimAt *gtime.Time `json:"claimAt"  dc:"领取时间"`
+	UseAt *gtime.Time `json:"useAt"  dc:"使用时间"`
+	ExpireAt *gtime.Time `json:"expireAt"  dc:"过期时间"`
 }
 
-// CouponMemberCreateRes 创建ä¼šå‘˜ä¼˜æƒ åˆ¸è¡¨响应
+// CouponMemberCreateRes 创建会员优惠券表响应
 type CouponMemberCreateRes struct {
 	g.Meta `mime:"application/json"`
 }
 
-// CouponMemberUpdateReq 更新ä¼šå‘˜ä¼˜æƒ åˆ¸è¡¨请求
+// CouponMemberUpdateReq 更新会员优惠券表请求
 type CouponMemberUpdateReq struct {
-	g.Meta `path:"/coupon_member/update" method:"put" tags:"ä¼šå‘˜ä¼˜æƒ åˆ¸è¡¨" summary:"更新ä¼šå‘˜ä¼˜æƒ åˆ¸è¡¨"`
-	ID     snowflake.JsonInt64 `json:"id" v:"required#ID不能为空" dc:"ä¼šå‘˜ä¼˜æƒ åˆ¸è¡¨ID"`
-	CouponID snowflake.JsonInt64 `json:"couponID" dc:"ä¼˜æƒ åˆ¸æ¨¡æ¿ID"`
-	MemberID snowflake.JsonInt64 `json:"memberID" dc:"ä¼šå‘˜ID"`
-	OrderID snowflake.JsonInt64 `json:"orderID" dc:"ä½¿ç”¨çš„è®¢å•ID"`
-	UseStatus int `json:"useStatus" dc:"ä½¿ç”¨çŠ¶æ€"`
-	ClaimAt *gtime.Time `json:"claimAt" dc:"é¢†å–æ—¶é—´"`
-	UseAt *gtime.Time `json:"useAt" dc:"ä½¿ç”¨æ—¶é—´"`
-	ExpireAt *gtime.Time `json:"expireAt" dc:"è¿‡æœŸæ—¶é—´"`
+	g.Meta `path:"/coupon_member/update" method:"put" tags:"会员优惠券表" summary:"更新会员优惠券表"`
+	ID     snowflake.JsonInt64 `json:"id" v:"required#ID不能为空" dc:"会员优惠券表ID"`
+	CouponID snowflake.JsonInt64 `json:"couponID" dc:"优惠券模板ID"`
+	MemberID snowflake.JsonInt64 `json:"memberID" dc:"会员ID"`
+	OrderID snowflake.JsonInt64 `json:"orderID" dc:"使用的订单ID（0表示未使用）"`
+	UseStatus int `json:"useStatus" dc:"使用状态"`
+	ClaimAt *gtime.Time `json:"claimAt" dc:"领取时间"`
+	UseAt *gtime.Time `json:"useAt" dc:"使用时间"`
+	ExpireAt *gtime.Time `json:"expireAt" dc:"过期时间"`
 }
 
-// CouponMemberUpdateRes 更新ä¼šå‘˜ä¼˜æƒ åˆ¸è¡¨响应
+// CouponMemberUpdateRes 更新会员优惠券表响应
 type CouponMemberUpdateRes struct {
 	g.Meta `mime:"application/json"`
 }
 
-// CouponMemberDeleteReq 删除ä¼šå‘˜ä¼˜æƒ åˆ¸è¡¨请求
+// CouponMemberDeleteReq 删除会员优惠券表请求
 type CouponMemberDeleteReq struct {
-	g.Meta `path:"/coupon_member/delete" method:"delete" tags:"ä¼šå‘˜ä¼˜æƒ åˆ¸è¡¨" summary:"删除ä¼šå‘˜ä¼˜æƒ åˆ¸è¡¨"`
-	ID     snowflake.JsonInt64 `json:"id" v:"required#ID不能为空" dc:"ä¼šå‘˜ä¼˜æƒ åˆ¸è¡¨ID"`
+	g.Meta `path:"/coupon_member/delete" method:"delete" tags:"会员优惠券表" summary:"删除会员优惠券表"`
+	ID     snowflake.JsonInt64 `json:"id" v:"required#ID不能为空" dc:"会员优惠券表ID"`
 }
 
-// CouponMemberDeleteRes 删除ä¼šå‘˜ä¼˜æƒ åˆ¸è¡¨响应
+// CouponMemberDeleteRes 删除会员优惠券表响应
 type CouponMemberDeleteRes struct {
 	g.Meta `mime:"application/json"`
 }
 
-// CouponMemberDetailReq 获取ä¼šå‘˜ä¼˜æƒ åˆ¸è¡¨详情请求
+// CouponMemberDetailReq 获取会员优惠券表详情请求
 type CouponMemberDetailReq struct {
-	g.Meta `path:"/coupon_member/detail" method:"get" tags:"ä¼šå‘˜ä¼˜æƒ åˆ¸è¡¨" summary:"获取ä¼šå‘˜ä¼˜æƒ åˆ¸è¡¨详情"`
-	ID     snowflake.JsonInt64 `json:"id" v:"required#ID不能为空" dc:"ä¼šå‘˜ä¼˜æƒ åˆ¸è¡¨ID"`
+	g.Meta `path:"/coupon_member/detail" method:"get" tags:"会员优惠券表" summary:"获取会员优惠券表详情"`
+	ID     snowflake.JsonInt64 `json:"id" v:"required#ID不能为空" dc:"会员优惠券表ID"`
 }
 
-// CouponMemberDetailRes 获取ä¼šå‘˜ä¼˜æƒ åˆ¸è¡¨详情响应
+// CouponMemberDetailRes 获取会员优惠券表详情响应
 type CouponMemberDetailRes struct {
 	g.Meta `mime:"application/json"`
 	*model.CouponMemberDetailOutput
 }
 
-// CouponMemberListReq 获取ä¼šå‘˜ä¼˜æƒ åˆ¸è¡¨列表请求
+// CouponMemberListReq 获取会员优惠券表列表请求
 type CouponMemberListReq struct {
-	g.Meta   `path:"/coupon_member/list" method:"get" tags:"ä¼šå‘˜ä¼˜æƒ åˆ¸è¡¨" summary:"获取ä¼šå‘˜ä¼˜æƒ åˆ¸è¡¨列表"`
+	g.Meta   `path:"/coupon_member/list" method:"get" tags:"会员优惠券表" summary:"获取会员优惠券表列表"`
 	PageNum  int `json:"pageNum" d:"1" dc:"页码"`
 	PageSize int `json:"pageSize" d:"10" dc:"每页数量"`
-	UseStatus int `json:"useStatus" dc:"ä½¿ç”¨çŠ¶æ€"`
+	UseStatus int `json:"useStatus" dc:"使用状态"`
 }
 
-// CouponMemberListRes 获取ä¼šå‘˜ä¼˜æƒ åˆ¸è¡¨列表响应
+// CouponMemberListRes 获取会员优惠券表列表响应
 type CouponMemberListRes struct {
 	g.Meta `mime:"application/json"`
 	List   []*model.CouponMemberListOutput `json:"list" dc:"列表数据"`

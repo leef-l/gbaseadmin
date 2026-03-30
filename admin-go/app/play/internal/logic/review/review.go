@@ -22,7 +22,7 @@ func New() *sReview {
 
 type sReview struct{}
 
-// Create 创建è¯„ä»·è¡¨
+// Create 创建评价表
 func (s *sReview) Create(ctx context.Context, in *model.ReviewCreateInput) error {
 	id := snowflake.Generate()
 	_, err := dao.PlayReview.Ctx(ctx).Data(g.Map{
@@ -43,7 +43,7 @@ func (s *sReview) Create(ctx context.Context, in *model.ReviewCreateInput) error
 	return err
 }
 
-// Update 更新è¯„ä»·è¡¨
+// Update 更新评价表
 func (s *sReview) Update(ctx context.Context, in *model.ReviewUpdateInput) error {
 	data := g.Map{
 		dao.PlayReview.Columns().OrderId: in.OrderID,
@@ -62,7 +62,7 @@ func (s *sReview) Update(ctx context.Context, in *model.ReviewUpdateInput) error
 	return err
 }
 
-// Delete 软删除è¯„ä»·è¡¨
+// Delete 软删除评价表
 func (s *sReview) Delete(ctx context.Context, id snowflake.JsonInt64) error {
 	_, err := dao.PlayReview.Ctx(ctx).Where(dao.PlayReview.Columns().Id, id).Data(g.Map{
 		dao.PlayReview.Columns().DeletedAt: gtime.Now(),
@@ -70,7 +70,7 @@ func (s *sReview) Delete(ctx context.Context, id snowflake.JsonInt64) error {
 	return err
 }
 
-// Detail 获取è¯„ä»·è¡¨详情
+// Detail 获取评价表详情
 func (s *sReview) Detail(ctx context.Context, id snowflake.JsonInt64) (out *model.ReviewDetailOutput, err error) {
 	out = &model.ReviewDetailOutput{}
 	err = dao.PlayReview.Ctx(ctx).Where(dao.PlayReview.Columns().Id, id).Where(dao.PlayReview.Columns().DeletedAt, nil).Scan(out)
@@ -80,7 +80,7 @@ func (s *sReview) Detail(ctx context.Context, id snowflake.JsonInt64) (out *mode
 	return
 }
 
-// List 获取è¯„ä»·è¡¨列表
+// List 获取评价表列表
 func (s *sReview) List(ctx context.Context, in *model.ReviewListInput) (list []*model.ReviewListOutput, total int, err error) {
 	m := dao.PlayReview.Ctx(ctx).Where(dao.PlayReview.Columns().DeletedAt, nil)
 	if in.IsAnonymous > 0 {

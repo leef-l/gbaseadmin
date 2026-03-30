@@ -9,11 +9,11 @@ import {
   updateCoupon,
 } from '#/api/play/coupon';
 
-/** ä¼˜æƒ åˆ¸ç±»åž‹选项 */
+/** 优惠券类型选项 */
 const typeOptions = [
-  { label: 'æ»¡å‡åˆ¸', value: 1 },
-  { label: 'æŠ˜æ‰£åˆ¸', value: 2 },
-  { label: 'æ— é—¨æ§›åˆ¸', value: 3 },
+  { label: '满减券', value: 1 },
+  { label: '折扣券', value: 2 },
+  { label: '无门槛券', value: 3 },
 ];
 
 const emit = defineEmits<{ success: [] }>();
@@ -27,83 +27,83 @@ const [Form, formApi] = useVbenForm({
     {
       component: 'Input',
       fieldName: 'title',
-      label: 'ä¼˜æƒ åˆ¸åç§°',
+      label: '优惠券名称',
       rules: 'required',
-      componentProps: { placeholder: '请输入ä¼˜æƒ åˆ¸åç§°', maxlength: 100 },
+      componentProps: { placeholder: '请输入优惠券名称', maxlength: 100 },
     },
     {
       component: 'Select',
       fieldName: 'type',
-      label: 'ä¼˜æƒ åˆ¸ç±»åž‹',
-      componentProps: { options: typeOptions, placeholder: '请选择ä¼˜æƒ åˆ¸ç±»åž‹', allowClear: true, class: 'w-full' },
+      label: '优惠券类型',
+      componentProps: { options: typeOptions, placeholder: '请选择优惠券类型', allowClear: true, class: 'w-full' },
     },
     {
       component: 'Switch',
       fieldName: 'isNewMember',
-      label: 'æ˜¯å¦æ–°äººä¸“äº«',
+      label: '是否新人专享',
       componentProps: { checkedValue: 1, unCheckedValue: 0 },
       defaultValue: 0,
     },
     {
       component: 'Input',
       fieldName: 'faceValue',
-      label: 'é¢å€¼ï¼ˆåˆ†ï¼‰',
-      componentProps: { placeholder: '请输入é¢å€¼ï¼ˆåˆ†ï¼‰' },
+      label: '面值（分，满减/无门槛时为抵扣额，折扣时为折扣值如 85=8.5折）',
+      componentProps: { placeholder: '请输入面值（分，满减/无门槛时为抵扣额，折扣时为折扣值如 85=8.5折）' },
     },
     {
-      component: 'Input',
+      component: 'InputNumber',
       fieldName: 'minAmount',
-      label: 'æœ€ä½Žæ¶ˆè´¹é‡‘é¢ï¼ˆåˆ†ï¼‰',
-      componentProps: { placeholder: '请输入æœ€ä½Žæ¶ˆè´¹é‡‘é¢ï¼ˆåˆ†ï¼‰' },
+      label: '最低消费金额（分，0表示无门槛）',
+      componentProps: { placeholder: '请输入最低消费金额（分，0表示无门槛）', class: 'w-full' },
     },
     {
       component: 'InputNumber',
       fieldName: 'totalNum',
-      label: 'å‘æ”¾æ€»é‡ï¼ˆ0ä¸é™ï¼‰',
-      componentProps: { placeholder: '请输入å‘æ”¾æ€»é‡ï¼ˆ0ä¸é™ï¼‰', class: 'w-full' },
+      label: '发放总量（0表示不限）',
+      componentProps: { placeholder: '请输入发放总量（0表示不限）', class: 'w-full' },
     },
     {
       component: 'InputNumber',
       fieldName: 'usedNum',
-      label: 'å·²ä½¿ç”¨æ•°é‡',
-      componentProps: { placeholder: '请输入å·²ä½¿ç”¨æ•°é‡', class: 'w-full' },
+      label: '已使用数量',
+      componentProps: { placeholder: '请输入已使用数量', class: 'w-full' },
     },
     {
       component: 'InputNumber',
       fieldName: 'claimNum',
-      label: 'å·²é¢†å–æ•°é‡',
-      componentProps: { placeholder: '请输入å·²é¢†å–æ•°é‡', class: 'w-full' },
+      label: '已领取数量',
+      componentProps: { placeholder: '请输入已领取数量', class: 'w-full' },
     },
     {
       component: 'Input',
       fieldName: 'perLimit',
-      label: 'æ¯äººé™é¢†å¼ æ•°',
-      componentProps: { placeholder: '请输入æ¯äººé™é¢†å¼ æ•°' },
+      label: '每人限领张数',
+      componentProps: { placeholder: '请输入每人限领张数' },
     },
     {
       component: 'DatePicker',
       fieldName: 'validStartAt',
-      label: 'æœ‰æ•ˆæœŸå¼€å§‹æ—¶é—´',
+      label: '有效期开始时间',
       rules: 'required',
-      componentProps: { showTime: true, placeholder: '请选择æœ‰æ•ˆæœŸå¼€å§‹æ—¶é—´', class: 'w-full', valueFormat: 'YYYY-MM-DD HH:mm:ss' },
+      componentProps: { showTime: true, placeholder: '请选择有效期开始时间', class: 'w-full', valueFormat: 'YYYY-MM-DD HH:mm:ss' },
     },
     {
       component: 'DatePicker',
       fieldName: 'validEndAt',
-      label: 'æœ‰æ•ˆæœŸç»“æŸæ—¶é—´',
+      label: '有效期结束时间',
       rules: 'required',
-      componentProps: { showTime: true, placeholder: '请选择æœ‰æ•ˆæœŸç»“æŸæ—¶é—´', class: 'w-full', valueFormat: 'YYYY-MM-DD HH:mm:ss' },
+      componentProps: { showTime: true, placeholder: '请选择有效期结束时间', class: 'w-full', valueFormat: 'YYYY-MM-DD HH:mm:ss' },
     },
     {
       component: 'InputNumber',
       fieldName: 'sort',
-      label: 'æŽ’åº',
-      componentProps: { placeholder: '请输入æŽ’åº', class: 'w-full' },
+      label: '排序（升序）',
+      componentProps: { placeholder: '请输入排序（升序）', class: 'w-full' },
     },
     {
       component: 'Switch',
       fieldName: 'status',
-      label: 'çŠ¶æ€',
+      label: '状态',
       componentProps: { checkedValue: 1, unCheckedValue: 0 },
       defaultValue: 1,
     },
@@ -140,7 +140,7 @@ const [Modal, modalApi] = useVbenModal({
       if (data?.id) {
         isEdit.value = true;
         editId.value = data.id;
-        modalApi.setState({ title: '编辑ä¼˜æƒ åˆ¸æ¨¡æ¿è¡¨' });
+        modalApi.setState({ title: '编辑优惠券模板表' });
         try {
           const detail = await getCouponDetail(data.id);
           if (detail) {
@@ -152,7 +152,7 @@ const [Modal, modalApi] = useVbenModal({
       } else {
         isEdit.value = false;
         editId.value = '';
-        modalApi.setState({ title: '新建ä¼˜æƒ åˆ¸æ¨¡æ¿è¡¨' });
+        modalApi.setState({ title: '新建优惠券模板表' });
         formApi.resetForm();
       }
     }

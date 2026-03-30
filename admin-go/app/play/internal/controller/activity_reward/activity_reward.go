@@ -12,7 +12,7 @@ var ActivityReward = cActivityReward{}
 
 type cActivityReward struct{}
 
-// Create 创建æ´»åŠ¨å¥–åŠ±è¡¨
+// Create 创建活动奖励表
 func (c *cActivityReward) Create(ctx context.Context, req *v1.ActivityRewardCreateReq) (res *v1.ActivityRewardCreateRes, err error) {
 	err = service.ActivityReward().Create(ctx, &model.ActivityRewardCreateInput{
 		ActivityID: req.ActivityID,
@@ -24,7 +24,7 @@ func (c *cActivityReward) Create(ctx context.Context, req *v1.ActivityRewardCrea
 	return
 }
 
-// Update 更新æ´»åŠ¨å¥–åŠ±è¡¨
+// Update 更新活动奖励表
 func (c *cActivityReward) Update(ctx context.Context, req *v1.ActivityRewardUpdateReq) (res *v1.ActivityRewardUpdateRes, err error) {
 	err = service.ActivityReward().Update(ctx, &model.ActivityRewardUpdateInput{
 		ID: req.ID,
@@ -37,20 +37,20 @@ func (c *cActivityReward) Update(ctx context.Context, req *v1.ActivityRewardUpda
 	return
 }
 
-// Delete 删除æ´»åŠ¨å¥–åŠ±è¡¨
+// Delete 删除活动奖励表
 func (c *cActivityReward) Delete(ctx context.Context, req *v1.ActivityRewardDeleteReq) (res *v1.ActivityRewardDeleteRes, err error) {
 	err = service.ActivityReward().Delete(ctx, req.ID)
 	return
 }
 
-// Detail 获取æ´»åŠ¨å¥–åŠ±è¡¨详情
+// Detail 获取活动奖励表详情
 func (c *cActivityReward) Detail(ctx context.Context, req *v1.ActivityRewardDetailReq) (res *v1.ActivityRewardDetailRes, err error) {
 	res = &v1.ActivityRewardDetailRes{}
 	res.ActivityRewardDetailOutput, err = service.ActivityReward().Detail(ctx, req.ID)
 	return
 }
 
-// List 获取æ´»åŠ¨å¥–åŠ±è¡¨列表
+// List 获取活动奖励表列表
 func (c *cActivityReward) List(ctx context.Context, req *v1.ActivityRewardListReq) (res *v1.ActivityRewardListRes, err error) {
 	res = &v1.ActivityRewardListRes{}
 	res.List, res.Total, err = service.ActivityReward().List(ctx, &model.ActivityRewardListInput{

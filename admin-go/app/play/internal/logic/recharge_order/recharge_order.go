@@ -22,7 +22,7 @@ func New() *sRechargeOrder {
 
 type sRechargeOrder struct{}
 
-// Create 创建å……å€¼è®¢å•è¡¨
+// Create 创建充值订单表
 func (s *sRechargeOrder) Create(ctx context.Context, in *model.RechargeOrderCreateInput) error {
 	id := snowflake.Generate()
 	_, err := dao.PlayRechargeOrder.Ctx(ctx).Data(g.Map{
@@ -42,7 +42,7 @@ func (s *sRechargeOrder) Create(ctx context.Context, in *model.RechargeOrderCrea
 	return err
 }
 
-// Update 更新å……å€¼è®¢å•è¡¨
+// Update 更新充值订单表
 func (s *sRechargeOrder) Update(ctx context.Context, in *model.RechargeOrderUpdateInput) error {
 	data := g.Map{
 		dao.PlayRechargeOrder.Columns().OrderNo: in.OrderNo,
@@ -60,7 +60,7 @@ func (s *sRechargeOrder) Update(ctx context.Context, in *model.RechargeOrderUpda
 	return err
 }
 
-// Delete 软删除å……å€¼è®¢å•è¡¨
+// Delete 软删除充值订单表
 func (s *sRechargeOrder) Delete(ctx context.Context, id snowflake.JsonInt64) error {
 	_, err := dao.PlayRechargeOrder.Ctx(ctx).Where(dao.PlayRechargeOrder.Columns().Id, id).Data(g.Map{
 		dao.PlayRechargeOrder.Columns().DeletedAt: gtime.Now(),
@@ -68,22 +68,24 @@ func (s *sRechargeOrder) Delete(ctx context.Context, id snowflake.JsonInt64) err
 	return err
 }
 
-// Detail 获取å……å€¼è®¢å•è¡¨详情
+// Detail 获取充值订单表详情
 func (s *sRechargeOrder) Detail(ctx context.Context, id snowflake.JsonInt64) (out *model.RechargeOrderDetailOutput, err error) {
 	out = &model.RechargeOrderDetailOutput{}
 	err = dao.PlayRechargeOrder.Ctx(ctx).Where(dao.PlayRechargeOrder.Columns().Id, id).Where(dao.PlayRechargeOrder.Columns().DeletedAt, nil).Scan(out)
 	if err != nil {
 		return nil, err
 	}
-	// 查询å……å€¼æ–¹æ¡ˆID关联显示
+	// 查询充值方案ID关联显示
 	if out.RechargePlanID != 0 {
-		val, _ := g.DB().Ctx(ctx).Model("play_recharge_plan").Where("id", out.RechargePlanID).Where("deleted_at", nil).Value("title")
-		out.RechargePlanTitle = val.String()
+		val, err := g.DB().Ctx(ctx).Model("play_recharge_plan").Where("id", out.RechargePlanID).Where("deleted_at", nil).Value("title")
+		if err == nil {
+			out.RechargePlanTitle = val.String()
+		}
 	}
 	return
 }
 
-// List 获取å……å€¼è®¢å•è¡¨列表
+// List 获取充值订单表列表
 func (s *sRechargeOrder) List(ctx context.Context, in *model.RechargeOrderListInput) (list []*model.RechargeOrderListOutput, total int, err error) {
 	m := dao.PlayRechargeOrder.Ctx(ctx).Where(dao.PlayRechargeOrder.Columns().DeletedAt, nil)
 	if in.PayType > 0 {
@@ -103,8 +105,10 @@ func (s *sRechargeOrder) List(ctx context.Context, in *model.RechargeOrderListIn
 	// 填充关联显示字段
 	for _, item := range list {
 		if item.RechargePlanID != 0 {
-			val, _ := g.DB().Ctx(ctx).Model("play_recharge_plan").Where("id", item.RechargePlanID).Where("deleted_at", nil).Value("title")
-			item.RechargePlanTitle = val.String()
+			val, err := g.DB().Ctx(ctx).Model("play_recharge_plan").Where("id", item.RechargePlanID).Where("deleted_at", nil).Value("title")
+			if err == nil {
+				item.RechargePlanTitle = val.String()
+			}
 		}
 	}
 	return

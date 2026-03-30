@@ -33,12 +33,12 @@ const formOptions: VbenFormProps = {
 const gridOptions: VxeGridProps<ActivityStepItem> = {
   columns: [
     { title: '序号', type: 'seq', width: 50 },
-    { field: 'activityTitle', title: 'æ´»åŠ¨ID' },
-    { field: 'stepNum', title: 'æ­¥éª¤åºå·' },
-    { field: 'title', title: 'æ­¥éª¤æ ‡é¢˜' },
-    { field: 'descContent', title: 'æ­¥éª¤è¯´æ˜Ž' },
-    { field: 'stepImage', title: 'æ­¥éª¤ç¤ºä¾‹å›¾ç‰‡' },
-    { field: 'sort', title: 'æŽ’åº' },
+    { field: 'activityTitle', title: '活动ID' },
+    { field: 'stepNum', title: '步骤序号' },
+    { field: 'title', title: '步骤标题' },
+    { field: 'descContent', title: '步骤说明（富文本，支持图文）' },
+    { field: 'stepImage', title: '步骤示例图片' },
+    { field: 'sort', title: '排序（升序）' },
     { field: 'createdAt', title: '创建时间', width: 180, formatter: 'formatDateTime' },
     { title: '操作', width: 200, fixed: 'right', slots: { default: 'action' } },
   ],
@@ -82,7 +82,7 @@ function handleEdit(row: ActivityStepItem) {
 function handleDelete(row: ActivityStepItem) {
   Modal.confirm({
     title: '确认删除',
-    content: '确定要删除该æ´»åŠ¨æ­¥éª¤è¡¨吗？',
+    content: '确定要删除该活动步骤表吗？',
     okType: 'danger',
     async onOk() {
       await deleteActivityStep(row.id);

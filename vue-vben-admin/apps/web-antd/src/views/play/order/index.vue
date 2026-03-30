@@ -13,52 +13,52 @@ import FormModal from './modules/form.vue';
 /** 标签颜色池 */
 const TAG_COLORS = ['green', 'red', 'blue', 'orange', 'cyan', 'purple', 'geekblue', 'magenta'];
 
-/** æ”¯ä»˜æ–¹å¼选项 */
+/** 支付方式选项 */
 const payTypeOptions = [
-  { label: 'æœªæ”¯ä»˜', value: 0 },
-  { label: 'å¾®ä¿¡æ”¯ä»˜', value: 1 },
-  { label: 'æ”¯ä»˜å®æ”¯ä»˜', value: 2 },
-  { label: 'ä½™é¢æ”¯ä»˜', value: 3 },
+  { label: '未支付', value: 0 },
+  { label: '微信支付', value: 1 },
+  { label: '支付宝支付', value: 2 },
+  { label: '余额支付', value: 3 },
 ];
 
-/** æ”¯ä»˜æ–¹å¼映射 */
+/** 支付方式映射 */
 const payTypeMap: Record<number, string> = {
-  0: 'æœªæ”¯ä»˜',
-  1: 'å¾®ä¿¡æ”¯ä»˜',
-  2: 'æ”¯ä»˜å®æ”¯ä»˜',
-  3: 'ä½™é¢æ”¯ä»˜',
+  0: '未支付',
+  1: '微信支付',
+  2: '支付宝支付',
+  3: '余额支付',
 };
 
-/** æ”¯ä»˜æ–¹å¼颜色 */
+/** 支付方式颜色 */
 function getPayTypeColor(val: number): string {
   const keys = [0, 1, 2, 3];
   const idx = keys.indexOf(val);
   return TAG_COLORS[idx >= 0 ? idx % TAG_COLORS.length : 0] ?? 'default';
 }
 
-/** è®¢å•çŠ¶æ€选项 */
+/** 订单状态选项 */
 const orderStatusOptions = [
-  { label: 'å¾…æ”¯ä»˜', value: 0 },
-  { label: 'å·²æ”¯ä»˜', value: 1 },
-  { label: 'è¿›è¡Œä¸­', value: 2 },
-  { label: 'å·²å®Œæˆ', value: 3 },
-  { label: 'å·²å–æ¶ˆ', value: 4 },
-  { label: 'é€€æ¬¾ä¸­', value: 5 },
-  { label: 'å·²é€€æ¬¾', value: 6 },
+  { label: '待支付', value: 0 },
+  { label: '已支付', value: 1 },
+  { label: '进行中', value: 2 },
+  { label: '已完成', value: 3 },
+  { label: '已取消', value: 4 },
+  { label: '退款中', value: 5 },
+  { label: '已退款', value: 6 },
 ];
 
-/** è®¢å•çŠ¶æ€映射 */
+/** 订单状态映射 */
 const orderStatusMap: Record<number, string> = {
-  0: 'å¾…æ”¯ä»˜',
-  1: 'å·²æ”¯ä»˜',
-  2: 'è¿›è¡Œä¸­',
-  3: 'å·²å®Œæˆ',
-  4: 'å·²å–æ¶ˆ',
-  5: 'é€€æ¬¾ä¸­',
-  6: 'å·²é€€æ¬¾',
+  0: '待支付',
+  1: '已支付',
+  2: '进行中',
+  3: '已完成',
+  4: '已取消',
+  5: '退款中',
+  6: '已退款',
 };
 
-/** è®¢å•çŠ¶æ€颜色 */
+/** 订单状态颜色 */
 function getOrderStatusColor(val: number): string {
   const keys = [0, 1, 2, 3, 4, 5, 6];
   const idx = keys.indexOf(val);
@@ -83,22 +83,22 @@ const formOptions: VbenFormProps = {
       componentProps: {
         allowClear: true,
         options: payTypeOptions,
-        placeholder: '请选择æ”¯ä»˜æ–¹å¼',
+        placeholder: '请选择支付方式',
         class: 'w-full',
       },
       fieldName: 'payType',
-      label: 'æ”¯ä»˜æ–¹å¼',
+      label: '支付方式',
     },
     {
       component: 'Select',
       componentProps: {
         allowClear: true,
         options: orderStatusOptions,
-        placeholder: '请选择è®¢å•çŠ¶æ€',
+        placeholder: '请选择订单状态',
         class: 'w-full',
       },
       fieldName: 'orderStatus',
-      label: 'è®¢å•çŠ¶æ€',
+      label: '订单状态',
     },
   ],
 };
@@ -107,27 +107,27 @@ const formOptions: VbenFormProps = {
 const gridOptions: VxeGridProps<OrderItem> = {
   columns: [
     { title: '序号', type: 'seq', width: 50 },
-    { field: 'orderNo', title: 'è®¢å•ç¼–å·' },
-    { field: 'memberID', title: 'ä¸‹å•ä¼šå‘˜ID' },
-    { field: 'coachID', title: 'é™ªçŽ©å¸ˆID' },
-    { field: 'shopTitle', title: 'åº—é“ºID' },
-    { field: 'goodsTitle', title: 'å•†å“ID' },
-    { field: 'goodsTitle', title: 'å•†å“åç§°ï¼ˆå†—ä½™ï¼‰' },
-    { field: 'goodsPrice', title: 'å•†å“å•ä»·ï¼ˆåˆ†ï¼‰' },
-    { field: 'quantity', title: 'æ•°é‡' },
-    { field: 'totalAmount', title: 'è®¢å•æ€»é¢ï¼ˆåˆ†ï¼‰' },
-    { field: 'discountAmount', title: 'ä¼šå‘˜æŠ˜æ‰£é‡‘é¢ï¼ˆåˆ†ï¼‰' },
-    { field: 'couponAmount', title: 'ä¼˜æƒ åˆ¸æŠµæ‰£é‡‘é¢ï¼ˆåˆ†ï¼‰' },
-    { field: 'payAmount', title: 'å®žä»˜é‡‘é¢ï¼ˆåˆ†ï¼‰' },
-    { field: 'couponMemberID', title: 'ä½¿ç”¨çš„ä¼˜æƒ åˆ¸é¢†å–è®°å½•ID' },
-    { field: 'payType', title: 'æ”¯ä»˜æ–¹å¼', width: 120, slots: { default: 'payType_cell' } },
-    { field: 'orderStatus', title: 'è®¢å•çŠ¶æ€', width: 120, slots: { default: 'orderStatus_cell' } },
-    { field: 'cancelReason', title: 'å–æ¶ˆåŽŸå›' },
-    { field: 'remark', title: 'è®¢å•å¤‡æ³¨' },
-    { field: 'payAt', title: 'æ”¯ä»˜æ—¶é—´', width: 180, formatter: 'formatDateTime' },
-    { field: 'startAt', title: 'æœåŠ¡å¼€å§‹æ—¶é—´', width: 180, formatter: 'formatDateTime' },
-    { field: 'finishAt', title: 'æœåŠ¡å®Œæˆæ—¶é—´', width: 180, formatter: 'formatDateTime' },
-    { field: 'cancelAt', title: 'å–æ¶ˆæ—¶é—´', width: 180, formatter: 'formatDateTime' },
+    { field: 'orderNo', title: '订单编号' },
+    { field: 'memberID', title: '下单会员ID' },
+    { field: 'coachID', title: '陪玩师ID' },
+    { field: 'shopTitle', title: '店铺ID（0表示无店铺）' },
+    { field: 'goodsID', title: '商品ID' },
+    { field: 'goodsTitle', title: '商品名称（冗余）' },
+    { field: 'goodsPrice', title: '商品单价（分，下单时快照）' },
+    { field: 'quantity', title: '数量' },
+    { field: 'totalAmount', title: '订单总额（分）' },
+    { field: 'discountAmount', title: '会员折扣金额（分）' },
+    { field: 'couponAmount', title: '优惠券抵扣金额（分）' },
+    { field: 'payAmount', title: '实付金额（分）' },
+    { field: 'couponMemberID', title: '使用的优惠券领取记录ID' },
+    { field: 'payType', title: '支付方式', width: 120, slots: { default: 'payType_cell' } },
+    { field: 'orderStatus', title: '订单状态', width: 120, slots: { default: 'orderStatus_cell' } },
+    { field: 'cancelReason', title: '取消原因' },
+    { field: 'remark', title: '订单备注' },
+    { field: 'payAt', title: '支付时间', width: 180, formatter: 'formatDateTime' },
+    { field: 'startAt', title: '服务开始时间', width: 180, formatter: 'formatDateTime' },
+    { field: 'finishAt', title: '服务完成时间', width: 180, formatter: 'formatDateTime' },
+    { field: 'cancelAt', title: '取消时间', width: 180, formatter: 'formatDateTime' },
     { field: 'createdAt', title: '创建时间', width: 180, formatter: 'formatDateTime' },
     { title: '操作', width: 200, fixed: 'right', slots: { default: 'action' } },
   ],
@@ -171,7 +171,7 @@ function handleEdit(row: OrderItem) {
 function handleDelete(row: OrderItem) {
   Modal.confirm({
     title: '确认删除',
-    content: '确定要删除该è®¢å•è¡¨吗？',
+    content: '确定要删除该订单表吗？',
     okType: 'danger',
     async onOk() {
       await deleteOrder(row.id);

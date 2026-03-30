@@ -22,7 +22,7 @@ func New() *sActivity {
 
 type sActivity struct{}
 
-// Create 创建æ´»åŠ¨è¡¨
+// Create 创建活动表
 func (s *sActivity) Create(ctx context.Context, in *model.ActivityCreateInput) error {
 	id := snowflake.Generate()
 	_, err := dao.PlayActivity.Ctx(ctx).Data(g.Map{
@@ -46,7 +46,7 @@ func (s *sActivity) Create(ctx context.Context, in *model.ActivityCreateInput) e
 	return err
 }
 
-// Update 更新æ´»åŠ¨è¡¨
+// Update 更新活动表
 func (s *sActivity) Update(ctx context.Context, in *model.ActivityUpdateInput) error {
 	data := g.Map{
 		dao.PlayActivity.Columns().Title: in.Title,
@@ -68,7 +68,7 @@ func (s *sActivity) Update(ctx context.Context, in *model.ActivityUpdateInput) e
 	return err
 }
 
-// Delete 软删除æ´»åŠ¨è¡¨
+// Delete 软删除活动表
 func (s *sActivity) Delete(ctx context.Context, id snowflake.JsonInt64) error {
 	_, err := dao.PlayActivity.Ctx(ctx).Where(dao.PlayActivity.Columns().Id, id).Data(g.Map{
 		dao.PlayActivity.Columns().DeletedAt: gtime.Now(),
@@ -76,7 +76,7 @@ func (s *sActivity) Delete(ctx context.Context, id snowflake.JsonInt64) error {
 	return err
 }
 
-// Detail 获取æ´»åŠ¨è¡¨详情
+// Detail 获取活动表详情
 func (s *sActivity) Detail(ctx context.Context, id snowflake.JsonInt64) (out *model.ActivityDetailOutput, err error) {
 	out = &model.ActivityDetailOutput{}
 	err = dao.PlayActivity.Ctx(ctx).Where(dao.PlayActivity.Columns().Id, id).Where(dao.PlayActivity.Columns().DeletedAt, nil).Scan(out)
@@ -86,7 +86,7 @@ func (s *sActivity) Detail(ctx context.Context, id snowflake.JsonInt64) (out *mo
 	return
 }
 
-// List 获取æ´»åŠ¨è¡¨列表
+// List 获取活动表列表
 func (s *sActivity) List(ctx context.Context, in *model.ActivityListInput) (list []*model.ActivityListOutput, total int, err error) {
 	m := dao.PlayActivity.Ctx(ctx).Where(dao.PlayActivity.Columns().DeletedAt, nil)
 	if in.Type > 0 {

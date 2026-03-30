@@ -9,23 +9,23 @@ import {
   updateOrder,
 } from '#/api/play/order';
 
-/** æ”¯ä»˜æ–¹å¼选项 */
+/** 支付方式选项 */
 const payTypeOptions = [
-  { label: 'æœªæ”¯ä»˜', value: 0 },
-  { label: 'å¾®ä¿¡æ”¯ä»˜', value: 1 },
-  { label: 'æ”¯ä»˜å®æ”¯ä»˜', value: 2 },
-  { label: 'ä½™é¢æ”¯ä»˜', value: 3 },
+  { label: '未支付', value: 0 },
+  { label: '微信支付', value: 1 },
+  { label: '支付宝支付', value: 2 },
+  { label: '余额支付', value: 3 },
 ];
 
-/** è®¢å•çŠ¶æ€选项 */
+/** 订单状态选项 */
 const orderStatusOptions = [
-  { label: 'å¾…æ”¯ä»˜', value: 0 },
-  { label: 'å·²æ”¯ä»˜', value: 1 },
-  { label: 'è¿›è¡Œä¸­', value: 2 },
-  { label: 'å·²å®Œæˆ', value: 3 },
-  { label: 'å·²å–æ¶ˆ', value: 4 },
-  { label: 'é€€æ¬¾ä¸­', value: 5 },
-  { label: 'å·²é€€æ¬¾', value: 6 },
+  { label: '待支付', value: 0 },
+  { label: '已支付', value: 1 },
+  { label: '进行中', value: 2 },
+  { label: '已完成', value: 3 },
+  { label: '已取消', value: 4 },
+  { label: '退款中', value: 5 },
+  { label: '已退款', value: 6 },
 ];
 
 const emit = defineEmits<{ success: [] }>();
@@ -39,134 +39,134 @@ const [Form, formApi] = useVbenForm({
     {
       component: 'Input',
       fieldName: 'orderNo',
-      label: 'è®¢å•ç¼–å·',
+      label: '订单编号',
       rules: 'required',
-      componentProps: { placeholder: '请输入è®¢å•ç¼–å·', maxlength: 32 },
+      componentProps: { placeholder: '请输入订单编号', maxlength: 32 },
     },
     {
       component: 'Select',
       fieldName: 'memberID',
-      label: 'ä¸‹å•ä¼šå‘˜ID',
+      label: '下单会员ID',
       rules: 'selectRequired',
-      componentProps: { options: memberIDOptions, placeholder: '请选择ä¸‹å•ä¼šå‘˜ID', allowClear: true, class: 'w-full' },
+      componentProps: { options: memberIDOptions, placeholder: '请选择下单会员ID', allowClear: true, class: 'w-full' },
     },
     {
       component: 'Select',
       fieldName: 'coachID',
-      label: 'é™ªçŽ©å¸ˆID',
+      label: '陪玩师ID',
       rules: 'selectRequired',
-      componentProps: { options: coachIDOptions, placeholder: '请选择é™ªçŽ©å¸ˆID', allowClear: true, class: 'w-full' },
+      componentProps: { options: coachIDOptions, placeholder: '请选择陪玩师ID', allowClear: true, class: 'w-full' },
     },
     {
       component: 'Select',
       fieldName: 'shopID',
-      label: 'åº—é“ºID',
-      componentProps: { options: shopIDOptions, placeholder: '请选择åº—é“ºID', allowClear: true, class: 'w-full' },
+      label: '店铺ID（0表示无店铺）',
+      componentProps: { options: shopIDOptions, placeholder: '请选择店铺ID（0表示无店铺）', allowClear: true, class: 'w-full' },
     },
     {
       component: 'Select',
       fieldName: 'goodsID',
-      label: 'å•†å“ID',
+      label: '商品ID',
       rules: 'selectRequired',
-      componentProps: { options: goodsIDOptions, placeholder: '请选择å•†å“ID', allowClear: true, class: 'w-full' },
+      componentProps: { options: goodsIDOptions, placeholder: '请选择商品ID', allowClear: true, class: 'w-full' },
     },
     {
       component: 'Input',
       fieldName: 'goodsTitle',
-      label: 'å•†å“åç§°ï¼ˆå†—ä½™ï¼‰',
+      label: '商品名称（冗余）',
       rules: 'required',
-      componentProps: { placeholder: '请输入å•†å“åç§°ï¼ˆå†—ä½™ï¼‰', maxlength: 100 },
+      componentProps: { placeholder: '请输入商品名称（冗余）', maxlength: 100 },
     },
     {
-      component: 'Input',
+      component: 'InputNumber',
       fieldName: 'goodsPrice',
-      label: 'å•†å“å•ä»·ï¼ˆåˆ†ï¼‰',
+      label: '商品单价（分，下单时快照）',
       rules: 'required',
-      componentProps: { placeholder: '请输入å•†å“å•ä»·ï¼ˆåˆ†ï¼‰' },
+      componentProps: { placeholder: '请输入商品单价（分，下单时快照）', class: 'w-full' },
     },
     {
-      component: 'Input',
+      component: 'InputNumber',
       fieldName: 'quantity',
-      label: 'æ•°é‡',
-      componentProps: { placeholder: '请输入æ•°é‡' },
+      label: '数量',
+      componentProps: { placeholder: '请输入数量', class: 'w-full' },
     },
     {
-      component: 'Input',
+      component: 'InputNumber',
       fieldName: 'totalAmount',
-      label: 'è®¢å•æ€»é¢ï¼ˆåˆ†ï¼‰',
-      componentProps: { placeholder: '请输入è®¢å•æ€»é¢ï¼ˆåˆ†ï¼‰' },
+      label: '订单总额（分）',
+      componentProps: { placeholder: '请输入订单总额（分）', class: 'w-full' },
     },
     {
-      component: 'Input',
+      component: 'InputNumber',
       fieldName: 'discountAmount',
-      label: 'ä¼šå‘˜æŠ˜æ‰£é‡‘é¢ï¼ˆåˆ†ï¼‰',
-      componentProps: { placeholder: '请输入ä¼šå‘˜æŠ˜æ‰£é‡‘é¢ï¼ˆåˆ†ï¼‰' },
+      label: '会员折扣金额（分）',
+      componentProps: { placeholder: '请输入会员折扣金额（分）', class: 'w-full' },
     },
     {
-      component: 'Input',
+      component: 'InputNumber',
       fieldName: 'couponAmount',
-      label: 'ä¼˜æƒ åˆ¸æŠµæ‰£é‡‘é¢ï¼ˆåˆ†ï¼‰',
-      componentProps: { placeholder: '请输入ä¼˜æƒ åˆ¸æŠµæ‰£é‡‘é¢ï¼ˆåˆ†ï¼‰' },
+      label: '优惠券抵扣金额（分）',
+      componentProps: { placeholder: '请输入优惠券抵扣金额（分）', class: 'w-full' },
     },
     {
-      component: 'Input',
+      component: 'InputNumber',
       fieldName: 'payAmount',
-      label: 'å®žä»˜é‡‘é¢ï¼ˆåˆ†ï¼‰',
-      componentProps: { placeholder: '请输入å®žä»˜é‡‘é¢ï¼ˆåˆ†ï¼‰' },
+      label: '实付金额（分）',
+      componentProps: { placeholder: '请输入实付金额（分）', class: 'w-full' },
     },
     {
       component: 'Select',
       fieldName: 'couponMemberID',
-      label: 'ä½¿ç”¨çš„ä¼˜æƒ åˆ¸é¢†å–è®°å½•ID',
-      componentProps: { options: couponMemberIDOptions, placeholder: '请选择ä½¿ç”¨çš„ä¼˜æƒ åˆ¸é¢†å–è®°å½•ID', allowClear: true, class: 'w-full' },
+      label: '使用的优惠券领取记录ID',
+      componentProps: { options: couponMemberIDOptions, placeholder: '请选择使用的优惠券领取记录ID', allowClear: true, class: 'w-full' },
     },
     {
       component: 'Select',
       fieldName: 'payType',
-      label: 'æ”¯ä»˜æ–¹å¼',
-      componentProps: { options: payTypeOptions, placeholder: '请选择æ”¯ä»˜æ–¹å¼', allowClear: true, class: 'w-full' },
+      label: '支付方式',
+      componentProps: { options: payTypeOptions, placeholder: '请选择支付方式', allowClear: true, class: 'w-full' },
     },
     {
       component: 'Select',
       fieldName: 'orderStatus',
-      label: 'è®¢å•çŠ¶æ€',
-      componentProps: { options: orderStatusOptions, placeholder: '请选择è®¢å•çŠ¶æ€', allowClear: true, class: 'w-full' },
+      label: '订单状态',
+      componentProps: { options: orderStatusOptions, placeholder: '请选择订单状态', allowClear: true, class: 'w-full' },
     },
     {
       component: 'DatePicker',
       fieldName: 'payAt',
-      label: 'æ”¯ä»˜æ—¶é—´',
-      componentProps: { showTime: true, placeholder: '请选择æ”¯ä»˜æ—¶é—´', class: 'w-full', valueFormat: 'YYYY-MM-DD HH:mm:ss' },
+      label: '支付时间',
+      componentProps: { showTime: true, placeholder: '请选择支付时间', class: 'w-full', valueFormat: 'YYYY-MM-DD HH:mm:ss' },
     },
     {
       component: 'DatePicker',
       fieldName: 'startAt',
-      label: 'æœåŠ¡å¼€å§‹æ—¶é—´',
-      componentProps: { showTime: true, placeholder: '请选择æœåŠ¡å¼€å§‹æ—¶é—´', class: 'w-full', valueFormat: 'YYYY-MM-DD HH:mm:ss' },
+      label: '服务开始时间',
+      componentProps: { showTime: true, placeholder: '请选择服务开始时间', class: 'w-full', valueFormat: 'YYYY-MM-DD HH:mm:ss' },
     },
     {
       component: 'DatePicker',
       fieldName: 'finishAt',
-      label: 'æœåŠ¡å®Œæˆæ—¶é—´',
-      componentProps: { showTime: true, placeholder: '请选择æœåŠ¡å®Œæˆæ—¶é—´', class: 'w-full', valueFormat: 'YYYY-MM-DD HH:mm:ss' },
+      label: '服务完成时间',
+      componentProps: { showTime: true, placeholder: '请选择服务完成时间', class: 'w-full', valueFormat: 'YYYY-MM-DD HH:mm:ss' },
     },
     {
       component: 'DatePicker',
       fieldName: 'cancelAt',
-      label: 'å–æ¶ˆæ—¶é—´',
-      componentProps: { showTime: true, placeholder: '请选择å–æ¶ˆæ—¶é—´', class: 'w-full', valueFormat: 'YYYY-MM-DD HH:mm:ss' },
+      label: '取消时间',
+      componentProps: { showTime: true, placeholder: '请选择取消时间', class: 'w-full', valueFormat: 'YYYY-MM-DD HH:mm:ss' },
     },
     {
       component: 'Input',
       fieldName: 'cancelReason',
-      label: 'å–æ¶ˆåŽŸå›',
-      componentProps: { placeholder: '请输入å–æ¶ˆåŽŸå›', maxlength: 500 },
+      label: '取消原因',
+      componentProps: { placeholder: '请输入取消原因', maxlength: 500 },
     },
     {
       component: 'Input',
       fieldName: 'remark',
-      label: 'è®¢å•å¤‡æ³¨',
-      componentProps: { placeholder: '请输入è®¢å•å¤‡æ³¨', maxlength: 500 },
+      label: '订单备注',
+      componentProps: { placeholder: '请输入订单备注', maxlength: 500 },
     },
   ],
 });
@@ -201,7 +201,7 @@ const [Modal, modalApi] = useVbenModal({
       if (data?.id) {
         isEdit.value = true;
         editId.value = data.id;
-        modalApi.setState({ title: '编辑è®¢å•è¡¨' });
+        modalApi.setState({ title: '编辑订单表' });
         try {
           const detail = await getOrderDetail(data.id);
           if (detail) {
@@ -213,7 +213,7 @@ const [Modal, modalApi] = useVbenModal({
       } else {
         isEdit.value = false;
         editId.value = '';
-        modalApi.setState({ title: '新建è®¢å•è¡¨' });
+        modalApi.setState({ title: '新建订单表' });
         formApi.resetForm();
       }
     }

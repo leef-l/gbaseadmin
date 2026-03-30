@@ -13,40 +13,40 @@ import FormModal from './modules/form.vue';
 /** 标签颜色池 */
 const TAG_COLORS = ['green', 'red', 'blue', 'orange', 'cyan', 'purple', 'geekblue', 'magenta'];
 
-/** æ”¯ä»˜æ–¹å¼选项 */
+/** 支付方式选项 */
 const payTypeOptions = [
-  { label: 'å¾®ä¿¡æ”¯ä»˜', value: 1 },
-  { label: 'æ”¯ä»˜å®æ”¯ä»˜', value: 2 },
+  { label: '微信支付', value: 1 },
+  { label: '支付宝支付', value: 2 },
 ];
 
-/** æ”¯ä»˜æ–¹å¼映射 */
+/** 支付方式映射 */
 const payTypeMap: Record<number, string> = {
-  1: 'å¾®ä¿¡æ”¯ä»˜',
-  2: 'æ”¯ä»˜å®æ”¯ä»˜',
+  1: '微信支付',
+  2: '支付宝支付',
 };
 
-/** æ”¯ä»˜æ–¹å¼颜色 */
+/** 支付方式颜色 */
 function getPayTypeColor(val: number): string {
   const keys = [1, 2];
   const idx = keys.indexOf(val);
   return TAG_COLORS[idx >= 0 ? idx % TAG_COLORS.length : 0] ?? 'default';
 }
 
-/** æ”¯ä»˜çŠ¶æ€选项 */
+/** 支付状态选项 */
 const payStatusOptions = [
-  { label: 'å¾…æ”¯ä»˜', value: 0 },
-  { label: 'æ”¯ä»˜æˆåŠŸ', value: 1 },
-  { label: 'æ”¯ä»˜å¤±è´¥', value: 2 },
+  { label: '待支付', value: 0 },
+  { label: '支付成功', value: 1 },
+  { label: '支付失败', value: 2 },
 ];
 
-/** æ”¯ä»˜çŠ¶æ€映射 */
+/** 支付状态映射 */
 const payStatusMap: Record<number, string> = {
-  0: 'å¾…æ”¯ä»˜',
-  1: 'æ”¯ä»˜æˆåŠŸ',
-  2: 'æ”¯ä»˜å¤±è´¥',
+  0: '待支付',
+  1: '支付成功',
+  2: '支付失败',
 };
 
-/** æ”¯ä»˜çŠ¶æ€颜色 */
+/** 支付状态颜色 */
 function getPayStatusColor(val: number): string {
   const keys = [0, 1, 2];
   const idx = keys.indexOf(val);
@@ -71,22 +71,22 @@ const formOptions: VbenFormProps = {
       componentProps: {
         allowClear: true,
         options: payTypeOptions,
-        placeholder: '请选择æ”¯ä»˜æ–¹å¼',
+        placeholder: '请选择支付方式',
         class: 'w-full',
       },
       fieldName: 'payType',
-      label: 'æ”¯ä»˜æ–¹å¼',
+      label: '支付方式',
     },
     {
       component: 'Select',
       componentProps: {
         allowClear: true,
         options: payStatusOptions,
-        placeholder: '请选择æ”¯ä»˜çŠ¶æ€',
+        placeholder: '请选择支付状态',
         class: 'w-full',
       },
       fieldName: 'payStatus',
-      label: 'æ”¯ä»˜çŠ¶æ€',
+      label: '支付状态',
     },
   ],
 };
@@ -95,15 +95,15 @@ const formOptions: VbenFormProps = {
 const gridOptions: VxeGridProps<RechargeOrderItem> = {
   columns: [
     { title: '序号', type: 'seq', width: 50 },
-    { field: 'orderNo', title: 'å……å€¼è®¢å•å·' },
-    { field: 'memberID', title: 'ä¼šå‘˜ID' },
-    { field: 'rechargePlanTitle', title: 'å……å€¼æ–¹æ¡ˆID' },
-    { field: 'amount', title: 'å……å€¼é‡‘é¢ï¼ˆåˆ†ï¼‰' },
-    { field: 'giftAmount', title: 'èµ é€é‡‘é¢ï¼ˆåˆ†ï¼‰' },
-    { field: 'payType', title: 'æ”¯ä»˜æ–¹å¼', width: 120, slots: { default: 'payType_cell' } },
-    { field: 'tradeNo', title: 'ç¬¬ä¸‰æ–¹äº¤æ˜“å·' },
-    { field: 'payStatus', title: 'æ”¯ä»˜çŠ¶æ€', width: 120, slots: { default: 'payStatus_cell' } },
-    { field: 'payAt', title: 'æ”¯ä»˜æ—¶é—´', width: 180, formatter: 'formatDateTime' },
+    { field: 'orderNo', title: '充值订单号' },
+    { field: 'memberID', title: '会员ID' },
+    { field: 'rechargePlanTitle', title: '充值方案ID' },
+    { field: 'amount', title: '充值金额（分）' },
+    { field: 'giftAmount', title: '赠送金额（分）' },
+    { field: 'payType', title: '支付方式', width: 120, slots: { default: 'payType_cell' } },
+    { field: 'tradeNo', title: '第三方交易号' },
+    { field: 'payStatus', title: '支付状态', width: 120, slots: { default: 'payStatus_cell' } },
+    { field: 'payAt', title: '支付时间', width: 180, formatter: 'formatDateTime' },
     { field: 'createdAt', title: '创建时间', width: 180, formatter: 'formatDateTime' },
     { title: '操作', width: 200, fixed: 'right', slots: { default: 'action' } },
   ],
@@ -147,7 +147,7 @@ function handleEdit(row: RechargeOrderItem) {
 function handleDelete(row: RechargeOrderItem) {
   Modal.confirm({
     title: '确认删除',
-    content: '确定要删除该å……å€¼è®¢å•è¡¨吗？',
+    content: '确定要删除该充值订单表吗？',
     okType: 'danger',
     async onOk() {
       await deleteRechargeOrder(row.id);

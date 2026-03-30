@@ -13,19 +13,19 @@ import FormModal from './modules/form.vue';
 /** 标签颜色池 */
 const TAG_COLORS = ['green', 'red', 'blue', 'orange', 'cyan', 'purple', 'geekblue', 'magenta'];
 
-/** çŠ¶æ€选项 */
+/** 状态选项 */
 const statusOptions = [
-  { label: 'å…³é—­', value: 0 },
-  { label: 'å¼€å¯', value: 1 },
+  { label: '关闭', value: 0 },
+  { label: '开启', value: 1 },
 ];
 
-/** çŠ¶æ€映射 */
+/** 状态映射 */
 const statusMap: Record<number, string> = {
-  0: 'å…³é—­',
-  1: 'å¼€å¯',
+  0: '关闭',
+  1: '开启',
 };
 
-/** çŠ¶æ€颜色 */
+/** 状态颜色 */
 function getStatusColor(val: number): string {
   const keys = [0, 1];
   const idx = keys.indexOf(val);
@@ -50,11 +50,11 @@ const formOptions: VbenFormProps = {
       componentProps: {
         allowClear: true,
         options: statusOptions,
-        placeholder: '请选择çŠ¶æ€',
+        placeholder: '请选择状态',
         class: 'w-full',
       },
       fieldName: 'status',
-      label: 'çŠ¶æ€',
+      label: '状态',
     },
   ],
 };
@@ -63,12 +63,12 @@ const formOptions: VbenFormProps = {
 const gridOptions: VxeGridProps<RechargePlanItem> = {
   columns: [
     { title: '序号', type: 'seq', width: 50 },
-    { field: 'title', title: 'æ–¹æ¡ˆåç§°' },
-    { field: 'amount', title: 'å……å€¼é‡‘é¢ï¼ˆåˆ†ï¼‰' },
-    { field: 'giftAmount', title: 'èµ é€é‡‘é¢ï¼ˆåˆ†ï¼‰' },
-    { field: 'coverImage', title: 'æ–¹æ¡ˆå°é¢å›¾' },
-    { field: 'sort', title: 'æŽ’åºï¼ˆå‡åºï¼‰' },
-    { field: 'status', title: 'çŠ¶æ€', width: 120, slots: { default: 'status_cell' } },
+    { field: 'title', title: '方案名称' },
+    { field: 'amount', title: '充值金额（分）' },
+    { field: 'giftAmount', title: '赠送金额（分）' },
+    { field: 'coverImage', title: '方案封面图' },
+    { field: 'sort', title: '排序（升序）' },
+    { field: 'status', title: '状态', width: 120, slots: { default: 'status_cell' } },
     { field: 'createdAt', title: '创建时间', width: 180, formatter: 'formatDateTime' },
     { title: '操作', width: 200, fixed: 'right', slots: { default: 'action' } },
   ],
@@ -112,7 +112,7 @@ function handleEdit(row: RechargePlanItem) {
 function handleDelete(row: RechargePlanItem) {
   Modal.confirm({
     title: '确认删除',
-    content: '确定要删除该å……å€¼æ–¹æ¡ˆè¡¨吗？',
+    content: '确定要删除该充值方案表吗？',
     okType: 'danger',
     async onOk() {
       await deleteRechargePlan(row.id);

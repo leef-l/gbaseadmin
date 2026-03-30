@@ -1,6 +1,6 @@
-/** åˆ©æ¶¦åˆ†æˆæµæ°´è¡¨类型定义 */
+/** 利润分成流水表类型定义 */
 
-/** åˆ©æ¶¦åˆ†æˆæµæ°´è¡¨项 */
+/** 利润分成流水表项 */
 export interface ProfitLogItem {
   id: string;
   orderID: string;
@@ -20,14 +20,14 @@ export interface ProfitLogItem {
   updatedAt?: string;
 }
 
-/** åˆ©æ¶¦åˆ†æˆæµæ°´è¡¨列表查询参数 */
+/** 利润分成流水表列表查询参数 */
 export interface ProfitLogListParams {
   pageNum: number;
   pageSize: number;
   settleStatus?: number;
 }
 
-/** åˆ©æ¶¦åˆ†æˆæµæ°´è¡¨创建参数 */
+/** 利润分成流水表创建参数 */
 export interface ProfitLogCreateParams {
   orderID: string;
   orderNo: string;
@@ -43,7 +43,7 @@ export interface ProfitLogCreateParams {
   settleAt?: string;
 }
 
-/** åˆ©æ¶¦åˆ†æˆæµæ°´è¡¨更新参数 */
+/** 利润分成流水表更新参数 */
 export interface ProfitLogUpdateParams {
   id: string;
   orderID: string;

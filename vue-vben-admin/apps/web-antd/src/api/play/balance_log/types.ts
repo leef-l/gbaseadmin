@@ -1,6 +1,6 @@
-/** ä½™é¢æµæ°´è¡¨类型定义 */
+/** 余额流水表类型定义 */
 
-/** ä½™é¢æµæ°´è¡¨项 */
+/** 余额流水表项 */
 export interface BalanceLogItem {
   id: string;
   memberID: string;
@@ -14,14 +14,14 @@ export interface BalanceLogItem {
   updatedAt?: string;
 }
 
-/** ä½™é¢æµæ°´è¡¨列表查询参数 */
+/** 余额流水表列表查询参数 */
 export interface BalanceLogListParams {
   pageNum: number;
   pageSize: number;
   bizType?: number;
 }
 
-/** ä½™é¢æµæ°´è¡¨创建参数 */
+/** 余额流水表创建参数 */
 export interface BalanceLogCreateParams {
   memberID: string;
   bizType: number;
@@ -32,7 +32,7 @@ export interface BalanceLogCreateParams {
   remark?: string;
 }
 
-/** ä½™é¢æµæ°´è¡¨更新参数 */
+/** 余额流水表更新参数 */
 export interface BalanceLogUpdateParams {
   id: string;
   memberID: string;

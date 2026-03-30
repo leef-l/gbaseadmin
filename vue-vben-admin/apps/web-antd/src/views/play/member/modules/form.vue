@@ -69,10 +69,10 @@ const [Form, formApi] = useVbenForm({
       componentProps: { placeholder: '请输入经验值' },
     },
     {
-      component: 'Input',
+      component: 'InputNumber',
       fieldName: 'balance',
       label: '账户余额（分）',
-      componentProps: { placeholder: '请输入账户余额（分）' },
+      componentProps: { placeholder: '请输入账户余额（分）', class: 'w-full' },
     },
     {
       component: 'Switch',

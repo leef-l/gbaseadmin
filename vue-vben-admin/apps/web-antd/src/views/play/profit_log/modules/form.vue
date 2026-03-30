@@ -9,10 +9,10 @@ import {
   updateProfitLog,
 } from '#/api/play/profit_log';
 
-/** ç»“ç®—çŠ¶æ€选项 */
+/** 结算状态选项 */
 const settleStatusOptions = [
-  { label: 'å¾…ç»“ç®—', value: 0 },
-  { label: 'å·²ç»“ç®—', value: 1 },
+  { label: '待结算', value: 0 },
+  { label: '已结算', value: 1 },
 ];
 
 const emit = defineEmits<{ success: [] }>();
@@ -26,77 +26,77 @@ const [Form, formApi] = useVbenForm({
     {
       component: 'Select',
       fieldName: 'orderID',
-      label: 'è®¢å•ID',
+      label: '订单ID',
       rules: 'selectRequired',
-      componentProps: { options: orderIDOptions, placeholder: '请选择è®¢å•ID', allowClear: true, class: 'w-full' },
+      componentProps: { options: orderIDOptions, placeholder: '请选择订单ID', allowClear: true, class: 'w-full' },
     },
     {
       component: 'Input',
       fieldName: 'orderNo',
-      label: 'è®¢å•ç¼–å·',
+      label: '订单编号',
       rules: 'required',
-      componentProps: { placeholder: '请输入è®¢å•ç¼–å·', maxlength: 32 },
+      componentProps: { placeholder: '请输入订单编号', maxlength: 32 },
     },
     {
-      component: 'Input',
+      component: 'InputNumber',
       fieldName: 'payAmount',
-      label: 'å®žä»˜é‡‘é¢ï¼ˆåˆ†ï¼‰',
-      componentProps: { placeholder: '请输入å®žä»˜é‡‘é¢ï¼ˆåˆ†ï¼‰' },
+      label: '实付金额（分）',
+      componentProps: { placeholder: '请输入实付金额（分）', class: 'w-full' },
     },
     {
       component: 'Select',
       fieldName: 'coachID',
-      label: 'é™ªçŽ©å¸ˆID',
+      label: '陪玩师ID',
       rules: 'selectRequired',
-      componentProps: { options: coachIDOptions, placeholder: '请选择é™ªçŽ©å¸ˆID', allowClear: true, class: 'w-full' },
+      componentProps: { options: coachIDOptions, placeholder: '请选择陪玩师ID', allowClear: true, class: 'w-full' },
     },
     {
       component: 'Select',
       fieldName: 'shopID',
-      label: 'åº—é“ºID',
-      componentProps: { options: shopIDOptions, placeholder: '请选择åº—é“ºID', allowClear: true, class: 'w-full' },
+      label: '店铺ID（0表示无店铺）',
+      componentProps: { options: shopIDOptions, placeholder: '请选择店铺ID（0表示无店铺）', allowClear: true, class: 'w-full' },
     },
     {
       component: 'Input',
       fieldName: 'platformRate',
-      label: 'å¹³å°æŠ½æˆæ¯”ä¾‹',
-      componentProps: { placeholder: '请输入å¹³å°æŠ½æˆæ¯”ä¾‹' },
+      label: '平台抽成比例（百分比）',
+      componentProps: { placeholder: '请输入平台抽成比例（百分比）' },
     },
     {
-      component: 'Input',
+      component: 'InputNumber',
       fieldName: 'platformAmount',
-      label: 'å¹³å°æŠ½æˆé‡‘é¢ï¼ˆåˆ†ï¼‰',
-      componentProps: { placeholder: '请输入å¹³å°æŠ½æˆé‡‘é¢ï¼ˆåˆ†ï¼‰' },
+      label: '平台抽成金额（分）',
+      componentProps: { placeholder: '请输入平台抽成金额（分）', class: 'w-full' },
     },
     {
       component: 'Input',
       fieldName: 'shopRate',
-      label: 'åº—é“ºæŠ½æˆæ¯”ä¾‹',
-      componentProps: { placeholder: '请输入åº—é“ºæŠ½æˆæ¯”ä¾‹' },
+      label: '店铺抽成比例（百分比）',
+      componentProps: { placeholder: '请输入店铺抽成比例（百分比）' },
     },
     {
-      component: 'Input',
+      component: 'InputNumber',
       fieldName: 'shopAmount',
-      label: 'åº—é“ºæŠ½æˆé‡‘é¢ï¼ˆåˆ†ï¼‰',
-      componentProps: { placeholder: '请输入åº—é“ºæŠ½æˆé‡‘é¢ï¼ˆåˆ†ï¼‰' },
+      label: '店铺抽成金额（分）',
+      componentProps: { placeholder: '请输入店铺抽成金额（分）', class: 'w-full' },
     },
     {
-      component: 'Input',
+      component: 'InputNumber',
       fieldName: 'coachAmount',
-      label: 'é™ªçŽ©å¸ˆæ”¶å…¥ï¼ˆåˆ†ï¼‰',
-      componentProps: { placeholder: '请输入é™ªçŽ©å¸ˆæ”¶å…¥ï¼ˆåˆ†ï¼‰' },
+      label: '陪玩师收入（分）',
+      componentProps: { placeholder: '请输入陪玩师收入（分）', class: 'w-full' },
     },
     {
       component: 'Select',
       fieldName: 'settleStatus',
-      label: 'ç»“ç®—çŠ¶æ€',
-      componentProps: { options: settleStatusOptions, placeholder: '请选择ç»“ç®—çŠ¶æ€', allowClear: true, class: 'w-full' },
+      label: '结算状态',
+      componentProps: { options: settleStatusOptions, placeholder: '请选择结算状态', allowClear: true, class: 'w-full' },
     },
     {
       component: 'DatePicker',
       fieldName: 'settleAt',
-      label: 'ç»“ç®—æ—¶é—´',
-      componentProps: { showTime: true, placeholder: '请选择ç»“ç®—æ—¶é—´', class: 'w-full', valueFormat: 'YYYY-MM-DD HH:mm:ss' },
+      label: '结算时间',
+      componentProps: { showTime: true, placeholder: '请选择结算时间', class: 'w-full', valueFormat: 'YYYY-MM-DD HH:mm:ss' },
     },
   ],
 });
@@ -131,7 +131,7 @@ const [Modal, modalApi] = useVbenModal({
       if (data?.id) {
         isEdit.value = true;
         editId.value = data.id;
-        modalApi.setState({ title: '编辑åˆ©æ¶¦åˆ†æˆæµæ°´è¡¨' });
+        modalApi.setState({ title: '编辑利润分成流水表' });
         try {
           const detail = await getProfitLogDetail(data.id);
           if (detail) {
@@ -143,7 +143,7 @@ const [Modal, modalApi] = useVbenModal({
       } else {
         isEdit.value = false;
         editId.value = '';
-        modalApi.setState({ title: '新建åˆ©æ¶¦åˆ†æˆæµæ°´è¡¨' });
+        modalApi.setState({ title: '新建利润分成流水表' });
         formApi.resetForm();
       }
     }

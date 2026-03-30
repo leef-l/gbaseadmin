@@ -13,23 +13,23 @@ import FormModal from './modules/form.vue';
 /** 标签颜色池 */
 const TAG_COLORS = ['green', 'red', 'blue', 'orange', 'cyan', 'purple', 'geekblue', 'magenta'];
 
-/** å‚ä¸ŽçŠ¶æ€选项 */
+/** 参与状态选项 */
 const joinStatusOptions = [
-  { label: 'å·²æŠ¥å', value: 0 },
-  { label: 'è¿›è¡Œä¸­', value: 1 },
-  { label: 'å·²å®Œæˆ', value: 2 },
-  { label: 'å·²é¢†å¥–', value: 3 },
+  { label: '已报名', value: 0 },
+  { label: '进行中', value: 1 },
+  { label: '已完成', value: 2 },
+  { label: '已领奖', value: 3 },
 ];
 
-/** å‚ä¸ŽçŠ¶æ€映射 */
+/** 参与状态映射 */
 const joinStatusMap: Record<number, string> = {
-  0: 'å·²æŠ¥å',
-  1: 'è¿›è¡Œä¸­',
-  2: 'å·²å®Œæˆ',
-  3: 'å·²é¢†å¥–',
+  0: '已报名',
+  1: '进行中',
+  2: '已完成',
+  3: '已领奖',
 };
 
-/** å‚ä¸ŽçŠ¶æ€颜色 */
+/** 参与状态颜色 */
 function getJoinStatusColor(val: number): string {
   const keys = [0, 1, 2, 3];
   const idx = keys.indexOf(val);
@@ -54,11 +54,11 @@ const formOptions: VbenFormProps = {
       componentProps: {
         allowClear: true,
         options: joinStatusOptions,
-        placeholder: '请选择å‚ä¸ŽçŠ¶æ€',
+        placeholder: '请选择参与状态',
         class: 'w-full',
       },
       fieldName: 'joinStatus',
-      label: 'å‚ä¸ŽçŠ¶æ€',
+      label: '参与状态',
     },
   ],
 };
@@ -67,13 +67,13 @@ const formOptions: VbenFormProps = {
 const gridOptions: VxeGridProps<ActivityJoinItem> = {
   columns: [
     { title: '序号', type: 'seq', width: 50 },
-    { field: 'activityTitle', title: 'æ´»åŠ¨ID' },
-    { field: 'memberID', title: 'ä¼šå‘˜ID' },
-    { field: 'joinStatus', title: 'å‚ä¸ŽçŠ¶æ€', width: 120, slots: { default: 'joinStatus_cell' } },
-    { field: 'currentStep', title: 'å½“å‰å®Œæˆåˆ°ç¬¬å‡ æ­¥' },
-    { field: 'remark', title: 'å¤‡æ³¨' },
-    { field: 'finishAt', title: 'å®Œæˆæ—¶é—´', width: 180, formatter: 'formatDateTime' },
-    { field: 'rewardAt', title: 'é¢†å¥–æ—¶é—´', width: 180, formatter: 'formatDateTime' },
+    { field: 'activityTitle', title: '活动ID' },
+    { field: 'memberID', title: '会员ID' },
+    { field: 'joinStatus', title: '参与状态', width: 120, slots: { default: 'joinStatus_cell' } },
+    { field: 'currentStep', title: '当前完成到第几步（步骤活动用）' },
+    { field: 'remark', title: '备注' },
+    { field: 'finishAt', title: '完成时间', width: 180, formatter: 'formatDateTime' },
+    { field: 'rewardAt', title: '领奖时间', width: 180, formatter: 'formatDateTime' },
     { field: 'createdAt', title: '创建时间', width: 180, formatter: 'formatDateTime' },
     { title: '操作', width: 200, fixed: 'right', slots: { default: 'action' } },
   ],
@@ -117,7 +117,7 @@ function handleEdit(row: ActivityJoinItem) {
 function handleDelete(row: ActivityJoinItem) {
   Modal.confirm({
     title: '确认删除',
-    content: '确定要删除该æ´»åŠ¨å‚ä¸Žè®°å½•è¡¨吗？',
+    content: '确定要删除该活动参与记录表吗？',
     okType: 'danger',
     async onOk() {
       await deleteActivityJoin(row.id);

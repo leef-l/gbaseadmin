@@ -1,6 +1,6 @@
-/** æ´»åŠ¨è¡¨类型定义 */
+/** 活动表类型定义 */
 
-/** æ´»åŠ¨è¡¨项 */
+/** 活动表项 */
 export interface ActivityItem {
   id: string;
   title: string;
@@ -20,7 +20,7 @@ export interface ActivityItem {
   updatedAt?: string;
 }
 
-/** æ´»åŠ¨è¡¨列表查询参数 */
+/** 活动表列表查询参数 */
 export interface ActivityListParams {
   pageNum: number;
   pageSize: number;
@@ -30,7 +30,7 @@ export interface ActivityListParams {
   status?: number;
 }
 
-/** æ´»åŠ¨è¡¨创建参数 */
+/** 活动表创建参数 */
 export interface ActivityCreateParams {
   title: string;
   coverImage?: string;
@@ -47,7 +47,7 @@ export interface ActivityCreateParams {
   status?: number;
 }
 
-/** æ´»åŠ¨è¡¨更新参数 */
+/** 活动表更新参数 */
 export interface ActivityUpdateParams {
   id: string;
   title: string;

@@ -135,7 +135,7 @@ func (p *Parser) ParseTable(tableName string) (*TableMeta, error) {
 			// 检查 RefFieldName 是否与已有字段的 CamelCase 名冲突
 			collision := false
 			for _, other := range meta.Fields {
-				if other.NameCamel == refFieldName {
+				if other.NameCamel == refFieldName || other.RefFieldName == refFieldName {
 					collision = true
 					break
 				}

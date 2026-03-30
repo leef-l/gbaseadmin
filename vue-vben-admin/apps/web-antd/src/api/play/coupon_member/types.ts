@@ -1,6 +1,6 @@
-/** ä¼šå‘˜ä¼˜æƒ åˆ¸è¡¨类型定义 */
+/** 会员优惠券表类型定义 */
 
-/** ä¼šå‘˜ä¼˜æƒ åˆ¸è¡¨项 */
+/** 会员优惠券表项 */
 export interface CouponMemberItem {
   id: string;
   couponID: string;
@@ -15,14 +15,14 @@ export interface CouponMemberItem {
   updatedAt?: string;
 }
 
-/** ä¼šå‘˜ä¼˜æƒ åˆ¸è¡¨列表查询参数 */
+/** 会员优惠券表列表查询参数 */
 export interface CouponMemberListParams {
   pageNum: number;
   pageSize: number;
   useStatus?: number;
 }
 
-/** ä¼šå‘˜ä¼˜æƒ åˆ¸è¡¨创建参数 */
+/** 会员优惠券表创建参数 */
 export interface CouponMemberCreateParams {
   couponID: string;
   memberID: string;
@@ -33,7 +33,7 @@ export interface CouponMemberCreateParams {
   expireAt?: string;
 }
 
-/** ä¼šå‘˜ä¼˜æƒ åˆ¸è¡¨更新参数 */
+/** 会员优惠券表更新参数 */
 export interface CouponMemberUpdateParams {
   id: string;
   couponID: string;
