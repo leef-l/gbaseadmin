@@ -1,16 +1,17 @@
 package consts
 
-// PaymentPayType 支付方式
+// PaymentPayType æ”¯ä»˜æ–¹å¼
 const (
-	PaymentPayTypeWechat  = 1 // 微信支付
-	PaymentPayTypeAlipay  = 2 // 支付宝支付
-	PaymentPayTypeBalance = 3 // 余额支付
+	PaymentPayType1 = 1 // å¾®ä¿¡æ”¯ä»˜
+	PaymentPayType2 = 2 // æ”¯ä»˜å®æ”¯ä»˜
+	PaymentPayType3 = 3 // ä½™é¢æ”¯ä»˜
 )
 
-// PaymentPayStatus 支付状态
+// PaymentPayStatus æ”¯ä»˜çŠ¶æ€
 const (
-	PaymentPayStatusPending = 0 // 待支付
-	PaymentPayStatusSuccess = 1 // 支付成功
-	PaymentPayStatusFailed  = 2 // 支付失败
-	PaymentPayStatusRefunded = 3 // 已退款
+	PaymentPayStatus0 = 0 // å¾…æ”¯ä»˜
+	PaymentPayStatus1 = 1 // æ”¯ä»˜æˆåŠŸ
+	PaymentPayStatus2 = 2 // æ”¯ä»˜å¤±è´¥
+	PaymentPayStatus3 = 3 // å·²é€€æ¬¾
 )
+

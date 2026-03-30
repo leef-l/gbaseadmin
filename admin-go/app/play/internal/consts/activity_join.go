@@ -1,9 +1,10 @@
 package consts
 
-// ActivityJoinJoinStatus 参与状态
+// ActivityJoinJoinStatus å‚ä¸ŽçŠ¶æ€
 const (
-	ActivityJoinJoinStatusSignedUp  = 0 // 已报名
-	ActivityJoinJoinStatusInProgress = 1 // 进行中
-	ActivityJoinJoinStatusCompleted = 2 // 已完成
-	ActivityJoinJoinStatusRewarded  = 3 // 已领奖
+	ActivityJoinJoinStatus0 = 0 // å·²æŠ¥å
+	ActivityJoinJoinStatus1 = 1 // è¿›è¡Œä¸­
+	ActivityJoinJoinStatus2 = 2 // å·²å®Œæˆ
+	ActivityJoinJoinStatus3 = 3 // å·²é¢†å¥–
 )
+

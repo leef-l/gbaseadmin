@@ -8,6 +8,9 @@ import (
 	"gbaseadmin/utility/snowflake"
 )
 
+// 确保 gtime 被引用
+var _ = gtime.New
+
 // Member API
 
 // MemberCreateReq 创建会员表请求

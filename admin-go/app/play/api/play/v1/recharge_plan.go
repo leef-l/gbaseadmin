@@ -2,10 +2,14 @@ package v1
 
 import (
 	"github.com/gogf/gf/v2/frame/g"
+	"github.com/gogf/gf/v2/os/gtime"
 
 	"gbaseadmin/app/play/internal/model"
 	"gbaseadmin/utility/snowflake"
 )
+
+// 确保 gtime 被引用
+var _ = gtime.New
 
 // RechargePlan API
 

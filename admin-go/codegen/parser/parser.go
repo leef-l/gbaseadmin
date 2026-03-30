@@ -39,6 +39,11 @@ func (p *Parser) ParseTable(tableName string) (*TableMeta, error) {
 	}
 	defer db.Close()
 
+	// 确保连接使用 UTF-8 编码
+	if _, err := db.Exec("SET NAMES utf8mb4"); err != nil {
+		return nil, fmt.Errorf("设置字符集失败: %w", err)
+	}
+
 	// 从 DSN 中提取数据库名
 	dbName, err := extractDBName(p.DSN)
 	if err != nil {

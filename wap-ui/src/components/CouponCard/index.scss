@@ -1,0 +1,65 @@
+.coupon-card {
+  display: flex;
+  margin-bottom: 12px;
+  overflow: hidden;
+
+  &__left {
+    width: 100px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 12px;
+    background: linear-gradient(135deg, #6C5CE7, #A29BFE);
+    color: #fff;
+
+    &--used, &--expired {
+      background: #b2bec3;
+    }
+  }
+
+  &__amount {
+    font-size: 28px;
+    font-weight: 700;
+  }
+
+  &__unit {
+    font-size: 12px;
+  }
+
+  &__condition {
+    font-size: 10px;
+    opacity: 0.8;
+    margin-top: 4px;
+  }
+
+  &__right {
+    flex: 1;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  &__name {
+    font-size: 14px;
+    font-weight: 600;
+    display: block;
+    margin-bottom: 4px;
+  }
+
+  &__expire {
+    font-size: 11px;
+    color: var(--text-light);
+  }
+
+  &__btn {
+    align-self: flex-end;
+    font-size: 12px;
+    padding: 4px 14px;
+    border-radius: 12px;
+    background: var(--primary-bg);
+    color: var(--primary);
+    margin-top: 8px;
+  }
+}

@@ -2,6 +2,7 @@ package consts
 
 // ShopStatus 状态
 const (
-	ShopStatusOff = 0
-	ShopStatusOn  = 1
+	ShopStatus0 = 0 // 关闭
+	ShopStatus1 = 1 // 开启
 )
+

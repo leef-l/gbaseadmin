@@ -8,6 +8,9 @@ import (
 	"gbaseadmin/utility/snowflake"
 )
 
+// 确保 gtime 被引用
+var _ = gtime.New
+
 // ActivityJoin API
 
 // ActivityJoinCreateReq 创建æ´»åŠ¨å‚ä¸Žè®°å½•è¡¨请求

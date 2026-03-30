@@ -8,6 +8,9 @@ import (
 	"gbaseadmin/utility/snowflake"
 )
 
+// 确保 gtime 被引用
+var _ = gtime.New
+
 // Coupon API
 
 // CouponCreateReq 创建ä¼˜æƒ åˆ¸æ¨¡æ¿è¡¨请求

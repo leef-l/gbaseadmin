@@ -2,6 +2,7 @@ package consts
 
 // CategoryStatus 状态
 const (
-	CategoryStatusOff = 0
-	CategoryStatusOn  = 1
+	CategoryStatus0 = 0 // 关闭
+	CategoryStatus1 = 1 // 开启
 )
+

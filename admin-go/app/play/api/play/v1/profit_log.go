@@ -8,6 +8,9 @@ import (
 	"gbaseadmin/utility/snowflake"
 )
 
+// 确保 gtime 被引用
+var _ = gtime.New
+
 // ProfitLog API
 
 // ProfitLogCreateReq 创建åˆ©æ¶¦åˆ†æˆæµæ°´è¡¨请求

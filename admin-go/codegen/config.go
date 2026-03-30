@@ -44,6 +44,6 @@ func LoadConfig(path string) (*Config, error) {
 
 // DSN 生成数据库连接字符串
 func (c *DatabaseConfig) DSN() string {
-	return fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8mb4&parseTime=True&loc=Local",
+	return fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8mb4&collation=utf8mb4_unicode_ci&parseTime=True&loc=Local",
 		c.User, c.Password, c.Host, c.Port, c.DBName)
 }

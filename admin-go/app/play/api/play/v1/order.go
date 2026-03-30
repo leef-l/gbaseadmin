@@ -8,6 +8,9 @@ import (
 	"gbaseadmin/utility/snowflake"
 )
 
+// 确保 gtime 被引用
+var _ = gtime.New
+
 // Order API
 
 // OrderCreateReq 创建è®¢å•è¡¨请求

@@ -8,6 +8,9 @@ import (
 	"gbaseadmin/utility/snowflake"
 )
 
+// 确保 gtime 被引用
+var _ = gtime.New
+
 // Review API
 
 // ReviewCreateReq 创建è¯„ä»·è¡¨请求

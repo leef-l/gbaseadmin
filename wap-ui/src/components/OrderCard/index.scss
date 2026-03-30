@@ -1,0 +1,92 @@
+.order-card {
+  margin-bottom: 12px;
+  padding: 12px;
+
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+
+  &__no {
+    font-size: 12px;
+    color: var(--text-light);
+  }
+
+  &__body {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+
+  &__cover {
+    flex-shrink: 0;
+  }
+
+  &__img, &__img-placeholder {
+    width: 60px;
+    height: 60px;
+    border-radius: 8px;
+  }
+
+  &__img-placeholder {
+    background: var(--border);
+  }
+
+  &__detail {
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__goods {
+    font-size: 14px;
+    font-weight: 600;
+    display: block;
+    margin-bottom: 4px;
+  }
+
+  &__coach {
+    font-size: 12px;
+    color: var(--text-secondary);
+    display: block;
+    margin-bottom: 2px;
+  }
+
+  &__spec {
+    font-size: 12px;
+    color: var(--text-light);
+  }
+
+  &__footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid var(--border);
+    padding-top: 12px;
+  }
+
+  &__amount {
+    font-size: 13px;
+    color: var(--text-secondary);
+  }
+
+  &__actions {
+    display: flex;
+    gap: 8px;
+  }
+
+  &__btn {
+    font-size: 12px;
+    padding: 6px 14px;
+    border-radius: 16px;
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
+
+    &--primary {
+      background: linear-gradient(135deg, #6C5CE7, #A29BFE);
+      color: #fff;
+      border: none;
+    }
+  }
+}

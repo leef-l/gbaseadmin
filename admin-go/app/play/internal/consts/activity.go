@@ -1,31 +1,32 @@
 package consts
 
-// ActivityType 活动类型
+// ActivityType æ´»åŠ¨ç±»åž‹
 const (
-	ActivityTypeRecharge = 1 // 充值活动
-	ActivityTypeOrder    = 2 // 下单活动
-	ActivityTypeRegister = 3 // 注册活动
-	ActivityTypeStep     = 4 // 图文步骤活动
-	ActivityTypeCustom   = 5 // 自定义活动
+	ActivityType1 = 1 // å……å€¼æ´»åŠ¨
+	ActivityType2 = 2 // ä¸‹å•æ´»åŠ¨
+	ActivityType3 = 3 // æ³¨å†Œæ´»åŠ¨
+	ActivityType4 = 4 // å›¾æ–‡æ­¥éª¤æ´»åŠ¨
+	ActivityType5 = 5 // è‡ªå®šä¹‰æ´»åŠ¨
 )
 
-// ActivityConditionType 参与条件
+// ActivityConditionType å‚ä¸Žæ¡ä»¶
 const (
-	ActivityConditionTypeNone       = 0 // 无条件
-	ActivityConditionTypeSignUp     = 1 // 需报名
-	ActivityConditionTypeRecharge   = 2 // 充值满额
-	ActivityConditionTypeOrder      = 3 // 下单满额
-	ActivityConditionTypeCompleteStep = 4 // 完成步骤
+	ActivityConditionType0 = 0 // æ— æ¡ä»¶
+	ActivityConditionType1 = 1 // éœ€æŠ¥å
+	ActivityConditionType2 = 2 // å……å€¼æ»¡é¢
+	ActivityConditionType3 = 3 // ä¸‹å•æ»¡é¢
+	ActivityConditionType4 = 4 // å®Œæˆæ­¥éª¤
 )
 
-// ActivityIsAutoReward 是否自动发奖
+// ActivityIsAutoReward æ˜¯å¦è‡ªåŠ¨å‘å¥–
 const (
-	ActivityIsAutoRewardNo  = 0
-	ActivityIsAutoRewardYes = 1
+	ActivityIsAutoReward0 = 0 // å¦
+	ActivityIsAutoReward1 = 1 // æ˜¯
 )
 
-// ActivityStatus 状态
+// ActivityStatus çŠ¶æ€
 const (
-	ActivityStatusOff = 0
-	ActivityStatusOn  = 1
+	ActivityStatus0 = 0 // å…³é—­
+	ActivityStatus1 = 1 // å¼€å¯
 )
+

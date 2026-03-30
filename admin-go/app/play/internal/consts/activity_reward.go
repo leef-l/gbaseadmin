@@ -1,9 +1,10 @@
 package consts
 
-// ActivityRewardRewardType 奖励类型
+// ActivityRewardRewardType å¥–åŠ±ç±»åž‹
 const (
-	ActivityRewardRewardTypeBalance      = 1 // 余额
-	ActivityRewardRewardTypeCoupon       = 2 // 优惠券
-	ActivityRewardRewardTypeExp          = 3 // 经验值
-	ActivityRewardRewardTypeMemberLevel  = 4 // 会员等级天数
+	ActivityRewardRewardType1 = 1 // ä½™é¢
+	ActivityRewardRewardType2 = 2 // ä¼˜æƒ åˆ¸
+	ActivityRewardRewardType3 = 3 // ç»éªŒå€¼
+	ActivityRewardRewardType4 = 4 // ä¼šå‘˜ç­‰çº§å¤©æ•°
 )
+

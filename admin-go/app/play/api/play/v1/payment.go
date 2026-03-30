@@ -8,6 +8,9 @@ import (
 	"gbaseadmin/utility/snowflake"
 )
 
+// 确保 gtime 被引用
+var _ = gtime.New
+
 // Payment API
 
 // PaymentCreateReq 创建æ”¯ä»˜è®°å½•è¡¨请求

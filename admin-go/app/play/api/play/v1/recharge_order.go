@@ -8,6 +8,9 @@ import (
 	"gbaseadmin/utility/snowflake"
 )
 
+// 确保 gtime 被引用
+var _ = gtime.New
+
 // RechargeOrder API
 
 // RechargeOrderCreateReq 创建å……å€¼è®¢å•è¡¨请求
