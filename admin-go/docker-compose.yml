@@ -1,5 +1,3 @@
-version: '3.8'
-
 # ═════════════════════════════════════════════════════════════
 # GBaseAdmin Docker Compose - 通用版（国外/直连 Docker Hub）
 # 国内用户请使用 docker-compose.cn.yml
