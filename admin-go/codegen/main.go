@@ -11,24 +11,27 @@ import (
 
 	"gbaseadmin/codegen/generator/backend"
 	"gbaseadmin/codegen/generator/frontend"
+	"gbaseadmin/codegen/generator/menu"
 	"gbaseadmin/codegen/parser"
 )
 
 func main() {
 	// 命令行参数
 	var (
-		table  string // 表名，逗号分隔
-		only   string // backend | frontend | 空=都生成
-		force  bool   // 强制覆盖
-		config string // 配置文件路径
-		dryRun bool   // 只打印不写入
+		table    string // 表名，逗号分隔
+		only     string // backend | frontend | menu | 空=都生成
+		force    bool   // 强制覆盖
+		config   string // 配置文件路径
+		dryRun   bool   // 只打印不写入
+		withMenu bool   // 同时生成菜单
 	)
 
 	flag.StringVar(&table, "table", "", "要生成的表名，多个用逗号分隔 (required)")
-	flag.StringVar(&only, "only", "", "只生成指定端: backend | frontend")
+	flag.StringVar(&only, "only", "", "只生成指定端: backend | frontend | menu")
 	flag.BoolVar(&force, "force", false, "强制覆盖已存在文件")
 	flag.StringVar(&config, "config", "./codegen.yaml", "配置文件路径")
 	flag.BoolVar(&dryRun, "dry-run", false, "只打印将生成的文件列表")
+	flag.BoolVar(&withMenu, "menu", false, "同时生成菜单数据到数据库")
 	flag.Parse()
 
 	if table == "" {
@@ -103,7 +106,7 @@ func main() {
 		var files []string
 
 		// 生成后端代码
-		if only != "frontend" {
+		if only != "frontend" && only != "menu" {
 			// 后端输出目录 = 配置根目录 + 应用名
 			backendOutput := filepath.Join(cfg.Backend.Output, meta.AppName)
 			backendGen := backend.New(backend.Config{
@@ -127,7 +130,7 @@ func main() {
 		}
 
 		// 生成前端代码
-		if only != "backend" {
+		if only != "backend" && only != "menu" {
 			frontendGen := frontend.New(frontend.Config{
 				TemplateDir: filepath.Join(templateDir, "frontend"),
 				OutputDir:   cfg.Frontend.Output,
@@ -150,6 +153,22 @@ func main() {
 
 		fmt.Printf("[codegen] 表 %s 生成完成，共 %d 个文件\n", tableName, len(files))
 		totalFiles += len(files)
+
+		// 生成菜单数据
+		if only == "menu" || withMenu {
+			menuGen := menu.New(menu.Config{
+				DSN:    cfg.Database.DSN(),
+				Force:  force,
+				DryRun: dryRun,
+			})
+			menuCount, err := menuGen.Generate(meta)
+			if err != nil {
+				fmt.Printf("[codegen] ✗ 菜单生成失败: %v\n", err)
+			} else {
+				fmt.Printf("[codegen] 表 %s 菜单生成完成，新增 %d 条\n", tableName, menuCount)
+				totalFiles += menuCount
+			}
+		}
 	}
 
 	elapsed := time.Since(start)
