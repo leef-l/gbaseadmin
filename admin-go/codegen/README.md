@@ -14,6 +14,10 @@
 | `system_role_menu` | system | role_menu |
 | `system_role_dept` | system | role_dept |
 | `system_user_dept` | system | user_dept |
+| `upload_dir` | upload | dir |
+| `upload_file` | upload | file |
+| `upload_config` | upload | config |
+| `upload_dir_rule` | upload | dir_rule |
 | `demo_demo` | demo | demo |
 
 代码生成器根据第一个 `_` 拆分表名，前半部分为应用名，后半部分为模块名。

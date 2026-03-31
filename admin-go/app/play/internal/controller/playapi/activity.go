@@ -5,7 +5,7 @@ import (
 
 	"github.com/gogf/gf/v2/frame/g"
 
-	v1 "gbaseadmin/api/playapi/v1"
+	v1 "gbaseadmin/app/play/api/playapi/v1"
 	"gbaseadmin/app/play/internal/service"
 )
 

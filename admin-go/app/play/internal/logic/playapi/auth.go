@@ -12,7 +12,7 @@ import (
 	"github.com/gogf/gf/v2/os/gtime"
 	"github.com/gogf/gf/v2/util/grand"
 
-	v1 "gbaseadmin/api/playapi/v1"
+	v1 "gbaseadmin/app/play/api/playapi/v1"
 	"gbaseadmin/app/play/internal/dao"
 	"gbaseadmin/utility/jwt"
 	"gbaseadmin/utility/snowflake"

@@ -3,7 +3,7 @@ package playapi
 import (
 	"context"
 
-	v1 "gbaseadmin/api/playapi/v1"
+	v1 "gbaseadmin/app/play/api/playapi/v1"
 )
 
 type sMessage struct{}
