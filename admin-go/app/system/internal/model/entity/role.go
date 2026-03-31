@@ -16,6 +16,7 @@ type Role struct {
 	DataScope int         `orm:"data_scope" description:"数据范围:1=全部,2=本部门及以下,3=本部门,4=仅本人,5=自定义"` // 数据范围:1=全部,2=本部门及以下,3=本部门,4=仅本人,5=自定义
 	Sort      int         `orm:"sort"       description:"排序（升序）"`                               // 排序（升序）
 	Status    int         `orm:"status"     description:"状态:0=关闭,1=开启"`                         // 状态:0=关闭,1=开启
+	IsAdmin   int         `orm:"is_admin"   description:"是否超级管理员:0=否,1=是"`                      // 是否超级管理员:0=否,1=是
 	CreatedBy uint64      `orm:"created_by" description:"创建人ID"`                                // 创建人ID
 	DeptId    uint64      `orm:"dept_id"    description:"所属部门ID"`                               // 所属部门ID
 	CreatedAt *gtime.Time `orm:"created_at" description:"创建时间"`                                 // 创建时间

@@ -34,6 +34,10 @@ const [Form, formApi] = useVbenForm({
       label: '密码',
       rules: 'required',
       componentProps: { placeholder: '请输入密码' },
+      dependencies: {
+        triggerFields: ['_mode'],
+        if: () => !isEdit.value,
+      },
     },
     {
       component: 'Input',
@@ -95,12 +99,7 @@ const [Modal, modalApi] = useVbenModal({
     modalApi.lock();
     try {
       if (isEdit.value) {
-        const updateData = { id: editId.value, ...values };
-        // 编辑时密码为空则不传，避免后端将空字符串作为新密码处理
-        if (!updateData.password) {
-          delete updateData.password;
-        }
-        await updateUsers(updateData);
+        await updateUsers({ id: editId.value, ...values });
         message.success('更新成功');
       } else {
         await createUsers(values);
@@ -145,21 +144,10 @@ const [Modal, modalApi] = useVbenModal({
         isEdit.value = true;
         editId.value = data.id;
         modalApi.setState({ title: '编辑用户' });
-        // 编辑时密码非必填
-        formApi.updateSchema([
-          {
-            fieldName: 'password',
-            rules: undefined,
-            componentProps: { placeholder: '留空则不修改密码' },
-          },
-        ]);
         try {
           const detail = await getUsersDetail(data.id);
           if (detail) {
-            formApi.setValues({
-              ...detail,
-              password: '',
-            });
+            formApi.setValues(detail);
           }
         } catch {
           message.error('获取详情失败');
@@ -168,13 +156,6 @@ const [Modal, modalApi] = useVbenModal({
         isEdit.value = false;
         editId.value = '';
         modalApi.setState({ title: '新建用户' });
-        formApi.updateSchema([
-          {
-            fieldName: 'password',
-            rules: 'required',
-            componentProps: { placeholder: '请输入密码' },
-          },
-        ]);
         formApi.resetForm();
       }
     }

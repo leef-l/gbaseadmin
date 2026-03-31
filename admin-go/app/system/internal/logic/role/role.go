@@ -32,7 +32,7 @@ func (s *sRole) Create(ctx context.Context, in *model.RoleCreateInput) error {
 		dao.Role.Columns().DataScope: in.DataScope,
 		dao.Role.Columns().Sort: in.Sort,
 		dao.Role.Columns().Status: in.Status,
-		"is_admin":                  in.IsAdmin,
+		dao.Role.Columns().IsAdmin:   in.IsAdmin,
 		dao.Role.Columns().CreatedAt: gtime.Now(),
 		dao.Role.Columns().UpdatedAt: gtime.Now(),
 	}).Insert()
@@ -47,7 +47,7 @@ func (s *sRole) Update(ctx context.Context, in *model.RoleUpdateInput) error {
 		dao.Role.Columns().DataScope: in.DataScope,
 		dao.Role.Columns().Sort: in.Sort,
 		dao.Role.Columns().Status: in.Status,
-		"is_admin":                  in.IsAdmin,
+		dao.Role.Columns().IsAdmin:   in.IsAdmin,
 		dao.Role.Columns().UpdatedAt: gtime.Now(),
 	}
 	_, err := dao.Role.Ctx(ctx).Where(dao.Role.Columns().Id, in.ID).Data(data).Update()

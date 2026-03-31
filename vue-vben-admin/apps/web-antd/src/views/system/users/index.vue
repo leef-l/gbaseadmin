@@ -2,7 +2,7 @@
 import type { VbenFormProps } from '#/adapter/form';
 import type { VxeGridProps } from '#/adapter/vxe-table';
 
-import { onMounted, ref } from 'vue';
+import { h, onMounted, ref } from 'vue';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 import { Button, Card, Input, message, Modal, Tag, Tree } from 'ant-design-vue';
@@ -10,7 +10,7 @@ import { Button, Card, Input, message, Modal, Tag, Tree } from 'ant-design-vue';
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getDeptTree } from '#/api/system/dept';
 import type { DeptItem } from '#/api/system/dept/types';
-import { getUsersList, deleteUsers } from '#/api/system/users';
+import { getUsersList, deleteUsers, resetUsersPassword } from '#/api/system/users';
 import type { UsersItem } from '#/api/system/users/types';
 import FormModal from './modules/form.vue';
 
@@ -142,7 +142,7 @@ const gridOptions: VxeGridProps<UsersItem> = {
     { field: 'email', title: '邮箱' },
     { field: 'status', title: '状态', width: 120, slots: { default: 'status_cell' } },
     { field: 'createdAt', title: '创建时间', width: 180, formatter: 'formatDateTime' },
-    { title: '操作', width: 200, fixed: 'right', slots: { default: 'action' } },
+    { title: '操作', width: 260, fixed: 'right', slots: { default: 'action' } },
   ],
   height: 'auto',
   pagerConfig: {},
@@ -185,12 +185,35 @@ function handleEdit(row: UsersItem) {
 function handleDelete(row: UsersItem) {
   Modal.confirm({
     title: '确认删除',
-    content: '确定要删除该用户表吗？',
+    content: '确定要删除该用户吗？',
     okType: 'danger',
     async onOk() {
       await deleteUsers(row.id);
       message.success('删除成功');
       gridApi.reload();
+    },
+  });
+}
+
+/** 重置密码 */
+function handleResetPassword(row: UsersItem) {
+  let newPassword = '';
+  Modal.confirm({
+    title: '重置密码',
+    content: () =>
+      h(Input.Password, {
+        placeholder: '请输入新密码',
+        onChange: (e: any) => {
+          newPassword = e.target.value;
+        },
+      }),
+    async onOk() {
+      if (!newPassword) {
+        message.warning('请输入新密码');
+        return Promise.reject();
+      }
+      await resetUsersPassword({ id: row.id, password: newPassword });
+      message.success('密码重置成功');
     },
   });
 }
@@ -245,7 +268,8 @@ function handleDelete(row: UsersItem) {
           </template>
           <template #action="{ row }">
             <Button type="link" size="small" @click="handleEdit(row)">编辑</Button>
-            <Button type="link" danger size="small" @click="handleDelete(row)">删除</Button>
+            <Button type="link" size="small" @click="handleResetPassword(row)">重置密码</Button>
+            <Button v-if="row.username !== 'admin'" type="link" danger size="small" @click="handleDelete(row)">删除</Button>
           </template>
         </Grid>
       </div>

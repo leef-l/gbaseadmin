@@ -5,6 +5,7 @@ import type {
   UsersListParams,
   UsersCreateParams,
   UsersUpdateParams,
+  UsersResetPasswordParams,
 } from './types';
 
 /** API 前缀 */
@@ -38,4 +39,9 @@ export function updateUsers(data: UsersUpdateParams) {
 /** 删除用户表 */
 export function deleteUsers(id: string) {
   return requestClient.delete(`${PREFIX}/delete`, { data: { id } });
+}
+
+/** 重置用户密码 */
+export function resetUsersPassword(data: UsersResetPasswordParams) {
+  return requestClient.put(`${PREFIX}/reset-password`, data);
 }
