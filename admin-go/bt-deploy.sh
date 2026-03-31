@@ -109,7 +109,8 @@ if mysql -u"$DB_USER" -p"$DB_PASS" -h"$DB_HOST" -P"$DB_PORT" -e "USE $DB_NAME" 2
 else
   info "创建数据库并导入..."
   mysql -u root -p"$DB_PASS" -h"$DB_HOST" -P"$DB_PORT" -e "CREATE DATABASE IF NOT EXISTS $DB_NAME DEFAULT CHARSET utf8mb4 COLLATE utf8mb4_general_ci;"
-  mysql -u root -p"$DB_PASS" -h"$DB_HOST" -P"$DB_PORT" -e "GRANT ALL ON $DB_NAME.* TO '$DB_USER'@'%' IDENTIFIED BY '$DB_PASS'; FLUSH PRIVILEGES;"
+  mysql -u root -p"$DB_PASS" -h"$DB_HOST" -P"$DB_PORT" -e "CREATE USER IF NOT EXISTS '$DB_USER'@'%' IDENTIFIED BY '$DB_PASS';"
+  mysql -u root -p"$DB_PASS" -h"$DB_HOST" -P"$DB_PORT" -e "GRANT ALL ON $DB_NAME.* TO '$DB_USER'@'%'; FLUSH PRIVILEGES;"
   if [ -f "$SCRIPT_DIR/codegen/sql/init.sql" ]; then
     mysql -u"$DB_USER" -p"$DB_PASS" -h"$DB_HOST" -P"$DB_PORT" "$DB_NAME" < "$SCRIPT_DIR/codegen/sql/init.sql"
     info "数据库导入完成"
