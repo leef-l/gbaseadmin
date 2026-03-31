@@ -52,7 +52,7 @@ for i in "${!APPS[@]}"; do
   app="${APPS[$i]}"
   info "编译 $app ..."
   cd "app/$app"
-  CGO_ENABLED=0 GOOS=linux go build -o "$DEPLOY_DIR/$app" .
+  CGO_ENABLED=0 GOOS=linux go build -o "$DEPLOY_DIR/$app/$app" .
   chmod +x "$DEPLOY_DIR/$app/$app"
   cd "$SCRIPT_DIR"
   info "$app 编译完成"
