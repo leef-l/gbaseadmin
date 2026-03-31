@@ -1,24 +1,22 @@
 <script setup lang="ts">
-import type { UploadChangeParam, UploadFile, UploadProps } from 'ant-design-vue';
-
 import { computed, ref, watch } from 'vue';
 
+import { useVbenModal } from '@vben/common-ui';
 import { PlusOutlined } from '@ant-design/icons-vue';
-import { Image, message, Upload } from 'ant-design-vue';
+import { Image } from 'ant-design-vue';
 
-import { uploadFile } from '#/api/upload/uploader';
+import FileManagerModal from '#/components/file-manager/modal.vue';
+import type { FileManagerItem } from '#/components/file-manager/index.vue';
 
 interface Props {
   value?: string;
   maxCount?: number;
-  maxSize?: number; // MB
   disabled?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
   value: '',
   maxCount: 1,
-  maxSize: 5,
   disabled: false,
 });
 
@@ -26,120 +24,86 @@ const emit = defineEmits<{
   'update:value': [val: string];
 }>();
 
-const fileList = ref<UploadFile[]>([]);
+/** 解析 value 为图片列表 */
+const imageList = computed(() => {
+  if (!props.value) return [];
+  return props.value
+    .split(',')
+    .filter(Boolean)
+    .map((url, i) => ({ uid: `${i}`, url, name: url.split('/').pop() || '' }));
+});
+
 const previewVisible = ref(false);
 const previewUrl = ref('');
 
-/** Convert comma-separated URL string to UploadFile array */
-function urlsToFileList(val: string): UploadFile[] {
-  if (!val) return [];
-  return val
-    .split(',')
-    .filter(Boolean)
-    .map((url, index) => ({
-      uid: `${index}-${Date.now()}`,
-      name: url.split('/').pop() || 'image',
-      status: 'done' as const,
-      url,
-    }));
+/** 文件管理器 Modal */
+const [PickerModal, pickerApi] = useVbenModal({
+  connectedComponent: FileManagerModal,
+});
+
+function openPicker() {
+  if (props.disabled) return;
+  const remaining = props.maxCount - imageList.value.length;
+  if (remaining <= 0) return;
+  pickerApi.setData({
+    mode: 'image',
+    multiple: remaining > 1,
+    maxCount: remaining,
+    accept: 'image/*',
+  });
+  pickerApi.open();
 }
 
-/** Convert UploadFile array to comma-separated URL string */
-function fileListToUrls(list: UploadFile[]): string {
-  return list
-    .filter((f) => f.status === 'done' && f.url)
-    .map((f) => f.url)
-    .join(',');
-}
-// Sync from prop to internal fileList
-watch(
-  () => props.value,
-  (val) => {
-    const newUrls = val || '';
-    const currentUrls = fileListToUrls(fileList.value);
-    if (newUrls !== currentUrls) {
-      fileList.value = urlsToFileList(newUrls);
-    }
-  },
-  { immediate: true },
-);
-
-const customRequest: UploadProps['customRequest'] = async (options) => {
-  const { file, onSuccess, onError } = options;
-  try {
-    const res = await uploadFile(file as File);
-    const uploadedFile = fileList.value.find(
-      (f) => (f.originFileObj as File) === file,
-    );
-    if (uploadedFile) {
-      uploadedFile.status = 'done';
-      uploadedFile.url = res.url;
-    }
-    onSuccess?.(res);
-    emit('update:value', fileListToUrls(fileList.value));
-  } catch (error: any) {
-    const failedFile = fileList.value.find(
-      (f) => (f.originFileObj as File) === file,
-    );
-    if (failedFile) {
-      failedFile.status = 'error';
-    }
-    onError?.(error);
-  }
-};
-
-function beforeUpload(file: File) {
-  const isImage = file.type.startsWith('image/');
-  if (!isImage) {
-    message.error('只能上传图片文件');
-    return false;
-  }
-  const isLtMax = file.size / 1024 / 1024 < props.maxSize;
-  if (!isLtMax) {
-    message.error(`图片大小不能超过 ${props.maxSize}MB`);
-    return false;
-  }
-  return true;
-}
-function handleChange(info: UploadChangeParam) {
-  fileList.value = info.fileList;
+function onPickerConfirm(files: FileManagerItem[]) {
+  const currentUrls = props.value ? props.value.split(',').filter(Boolean) : [];
+  const newUrls = [...currentUrls, ...files.map((f) => f.url)];
+  emit('update:value', newUrls.join(','));
 }
 
-function handleRemove(file: UploadFile) {
-  fileList.value = fileList.value.filter((f) => f.uid !== file.uid);
-  emit('update:value', fileListToUrls(fileList.value));
-  return true;
+function removeImage(index: number) {
+  const urls = props.value ? props.value.split(',').filter(Boolean) : [];
+  urls.splice(index, 1);
+  emit('update:value', urls.join(','));
 }
 
-function handlePreview(file: UploadFile) {
-  previewUrl.value = file.url || '';
+function handlePreview(url: string) {
+  previewUrl.value = url;
   previewVisible.value = true;
 }
-
-const showUploadButton = computed(
-  () => !props.disabled && fileList.value.length < props.maxCount,
-);
 </script>
 
 <template>
-  <div class="image-upload-wrapper">
-    <Upload
-      v-model:file-list="fileList"
-      accept="image/*"
-      :before-upload="beforeUpload"
-      :custom-request="customRequest"
-      :disabled="disabled"
-      :max-count="maxCount"
-      list-type="picture-card"
-      @change="handleChange"
-      @preview="handlePreview"
-      @remove="handleRemove"
-    >
-      <div v-if="showUploadButton">
-        <PlusOutlined />
-        <div class="mt-2 text-xs">上传图片</div>
+  <div class="image-upload">
+    <div class="image-upload__list">
+      <div
+        v-for="(img, index) in imageList"
+        :key="img.uid"
+        class="image-upload__item"
+      >
+        <img
+          :src="img.url"
+          :alt="img.name"
+          class="image-upload__thumb"
+          @click="handlePreview(img.url)"
+        />
+        <div
+          v-if="!disabled"
+          class="image-upload__remove"
+          @click.stop="removeImage(index)"
+        >
+          ×
+        </div>
       </div>
-    </Upload>
+      <div
+        v-if="imageList.length < maxCount && !disabled"
+        class="image-upload__add"
+        @click="openPicker"
+      >
+        <PlusOutlined style="font-size: 20px; color: #999" />
+        <span class="image-upload__add-text">选择图片</span>
+      </div>
+    </div>
+    <PickerModal @confirm="onPickerConfirm" />
     <Image
       :preview="{
         visible: previewVisible,
@@ -150,3 +114,67 @@ const showUploadButton = computed(
     />
   </div>
 </template>
+
+<style scoped>
+.image-upload__list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.image-upload__item {
+  position: relative;
+  width: 104px;
+  height: 104px;
+  border: 1px solid #d9d9d9;
+  border-radius: 8px;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.image-upload__thumb {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.image-upload__remove {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  width: 20px;
+  height: 20px;
+  background: rgba(0, 0, 0, 0.5);
+  color: #fff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 14px;
+  line-height: 1;
+}
+
+.image-upload__add {
+  width: 104px;
+  height: 104px;
+  border: 1px dashed #d9d9d9;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: border-color 0.3s;
+  gap: 4px;
+}
+
+.image-upload__add:hover {
+  border-color: #1677ff;
+}
+
+.image-upload__add-text {
+  font-size: 12px;
+  color: #999;
+}
+</style>
