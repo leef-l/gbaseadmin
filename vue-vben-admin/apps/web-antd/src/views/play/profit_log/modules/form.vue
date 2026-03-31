@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { h, ref } from 'vue';
 import { useVbenModal } from '@vben/common-ui';
 import { useVbenForm } from '#/adapter/form';
-import { message } from 'ant-design-vue';
+import { message, Tooltip } from 'ant-design-vue';
+import { QuestionCircleOutlined } from '@ant-design/icons-vue';
 import {
   getProfitLogDetail,
   createProfitLog,
@@ -40,7 +41,7 @@ const [Form, formApi] = useVbenForm({
     {
       component: 'InputNumber',
       fieldName: 'payAmount',
-      label: '实付金额（分）',
+      label: () => h('span', {}, ['实付金额 ', h(Tooltip, { title: '分' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]),
       componentProps: { placeholder: '请输入实付金额（分）', class: 'w-full' },
     },
     {
@@ -53,37 +54,37 @@ const [Form, formApi] = useVbenForm({
     {
       component: 'Select',
       fieldName: 'shopID',
-      label: '店铺ID（0表示无店铺）',
+      label: () => h('span', {}, ['店铺ID ', h(Tooltip, { title: '0表示无店铺' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]),
       componentProps: { options: shopIDOptions, placeholder: '请选择店铺ID（0表示无店铺）', allowClear: true, class: 'w-full' },
     },
     {
       component: 'Input',
       fieldName: 'platformRate',
-      label: '平台抽成比例（百分比）',
+      label: () => h('span', {}, ['平台抽成比例 ', h(Tooltip, { title: '百分比' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]),
       componentProps: { placeholder: '请输入平台抽成比例（百分比）' },
     },
     {
       component: 'InputNumber',
       fieldName: 'platformAmount',
-      label: '平台抽成金额（分）',
+      label: () => h('span', {}, ['平台抽成金额 ', h(Tooltip, { title: '分' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]),
       componentProps: { placeholder: '请输入平台抽成金额（分）', class: 'w-full' },
     },
     {
       component: 'Input',
       fieldName: 'shopRate',
-      label: '店铺抽成比例（百分比）',
+      label: () => h('span', {}, ['店铺抽成比例 ', h(Tooltip, { title: '百分比' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]),
       componentProps: { placeholder: '请输入店铺抽成比例（百分比）' },
     },
     {
       component: 'InputNumber',
       fieldName: 'shopAmount',
-      label: '店铺抽成金额（分）',
+      label: () => h('span', {}, ['店铺抽成金额 ', h(Tooltip, { title: '分' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]),
       componentProps: { placeholder: '请输入店铺抽成金额（分）', class: 'w-full' },
     },
     {
       component: 'InputNumber',
       fieldName: 'coachAmount',
-      label: '陪玩师收入（分）',
+      label: () => h('span', {}, ['陪玩师收入 ', h(Tooltip, { title: '分' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]),
       componentProps: { placeholder: '请输入陪玩师收入（分）', class: 'w-full' },
     },
     {

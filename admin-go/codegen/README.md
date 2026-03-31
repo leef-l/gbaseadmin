@@ -40,7 +40,24 @@ go run . --table system_dept --force
 
 # 预览（不写入文件）
 go run . --table system_dept --dry-run
+
+# 只生成菜单数据（写入数据库）
+go run . --table system_dept --only menu
+
+# 生成代码同时写入菜单
+go run . --table system_dept --menu
 ```
+
+### CLI 参数一览
+
+| 参数 | 类型 | 默认值 | 说明 |
+|------|------|--------|------|
+| `--table` | string | （必填） | 表名，多表用逗号分隔 |
+| `--only` | string | （空） | 只生成指定部分：`backend`、`frontend`、`menu` |
+| `--force` | bool | false | 强制覆盖已有文件 |
+| `--config` | string | `./codegen.yaml` | 配置文件路径 |
+| `--dry-run` | bool | false | 预览模式，不写入文件 |
+| `--menu` | bool | false | 生成代码同时写入菜单数据到数据库 |
 
 ## 自动创建应用
 
@@ -106,3 +123,168 @@ skip_fields:               # 跳过生成的公共字段
 - 枚举字段注释格式：`字段说明:值1=标签1,值2=标签2`
 - 外键字段命名：`{关联模块}_id`（如 `dept_id`、`role_id`）
 - 多选外键字段命名：`{关联模块}_ids`（如 `role_ids`）
+
+## 字段注释与枚举格式
+
+数据库字段的 `COMMENT` 决定了前端表单标签和组件类型。格式：
+
+```
+{标签}:{值1}={显示名1},{值2}={显示名2},...
+```
+
+### Tooltip 提示（括号语法）
+
+当字段注释的标签部分包含中文括号 `（）` 或英文括号 `()` 时，括号内的内容会自动提取为 Tooltip 提示文字，括号前的文字作为精简标签。
+
+```
+{精简标签}（{提示文字}）
+```
+
+效果：表单 label 和表格列头显示精简标签 + 问号图标，鼠标悬停显示提示文字。
+
+示例：
+
+| 注释 | 精简标签 | Tooltip 提示 | 前端效果 |
+|------|---------|-------------|---------|
+| `部门名称` | 部门名称 | （无） | 普通文字标签 |
+| `排序（升序）` | 排序 | 升序 | 排序 ❓ |
+| `支付金额（分）` | 支付金额 | 分 | 支付金额 ❓ |
+| `面值（分，满减时为抵扣额）` | 面值 | 分，满减时为抵扣额 | 面值 ❓ |
+| `状态:0=关闭,1=开启` | 状态 | （无） | 普通文字标签 + 枚举 |
+
+> 括号语法和枚举语法可以组合使用：`排序（升序）:0=默认,1=热门` → 精简标签="排序"，Tooltip="升序"，枚举=[{0,"默认"},{1,"热门"}]
+
+### 枚举格式
+
+示例：
+
+| 注释 | 解析结果 |
+|------|---------|
+| `部门名称` | 标签="部门名称"，无枚举 |
+| `状态:0=关闭,1=开启` | 标签="状态"，枚举=[{0,"关闭"},{1,"开启"}] |
+| `类型:1=普通,2=VIP,3=管理员` | 标签="类型"，枚举=[{1,"普通"},{2,"VIP"},{3,"管理员"}] |
+
+枚举字段会自动在后端生成 Go 常量（`internal/consts/{module}.go`），前端生成对应的 options 数组。
+
+## 前端组件自动映射
+
+代码生成器根据字段名、数据库类型、枚举数量自动选择前端组件，无需手动配置。
+
+### 按字段名匹配
+
+| 字段名模式 | 映射组件 | 说明 |
+|-----------|---------|------|
+| `parent_id` | `TreeSelectSingle` | 树形单选 |
+| `parent_ids` | `TreeSelectMulti` | 树形多选 |
+| `*_ids` | `SelectMulti` | 多选下拉框 |
+| `*_id`（排除 `id`、`dept_id`） | `Select` | 单选下拉框（外键关联） |
+| `password`、`*_password`、`*_pwd` | `Password` | 密码输入框 |
+| `*_url`、`*_link` | `InputUrl` | URL 输入框 |
+| `*_at` | `DateTimePicker` | 日期时间选择器 |
+| `sort`、`order`、`*_num`、`*_price`、`*_amount`、`*_income`、`*_balance` | `InputNumber` | 数字输入框 |
+| `icon` | `IconPicker` | 图标选择器 |
+
+### 按枚举数量匹配
+
+| 条件 | 映射组件 |
+|------|---------|
+| `status`/`is_*` + 2个枚举值 | `Switch` | 开关切换 |
+| `status`/`is_*` + 3个以上枚举值 | `Radio` | 单选按钮组 |
+| `type`/`level`/`grade` | `Select` | 下拉选择 |
+
+### 按数据库类型匹配
+
+| 数据库类型 | 映射组件 |
+|-----------|---------|
+| `TEXT`、`LONGTEXT`、`MEDIUMTEXT`、`TINYTEXT` | `Textarea` |
+| 其他 | `Input` |
+
+### 全部可用组件
+
+| 组件名 | 说明 |
+|--------|------|
+| `Input` | 文本输入框 |
+| `InputNumber` | 数字输入框 |
+| `Textarea` | 多行文本框 |
+| `Switch` | 开关（两态切换） |
+| `Radio` | 单选按钮组 |
+| `Select` | 下拉选择（单选） |
+| `SelectMulti` | 下拉选择（多选） |
+| `TreeSelectSingle` | 树形下拉（单选） |
+| `TreeSelectMulti` | 树形下拉（多选） |
+| `ImageUpload` | 图片上传 |
+| `FileUpload` | 文件上传 |
+| `RichText` | 富文本编辑器 |
+| `JsonEditor` | JSON 编辑器 |
+| `Password` | 密码输入框 |
+| `InputUrl` | URL 输入框 |
+| `DateTimePicker` | 日期时间选择器 |
+| `IconPicker` | 图标选择器 |
+
+## 类型映射
+
+### Go 类型映射
+
+| 数据库类型 | Go 类型 |
+|-----------|---------|
+| `BIGINT UNSIGNED` | `JsonInt64`（防止前端精度丢失） |
+| `BIGINT` | `JsonInt64` |
+| `INT`、`MEDIUMINT`、`SMALLINT`、`TINYINT` | `int` |
+| `FLOAT`、`DOUBLE`、`DECIMAL` | `float64` |
+| `DATETIME`、`TIMESTAMP`、`DATE`、`TIME` | `*gtime.Time` |
+| 其他 | `string` |
+
+### TypeScript 类型映射
+
+| 数据库类型 | TS 类型 |
+|-----------|---------|
+| `BIGINT` | `string`（Snowflake ID 防精度丢失） |
+| `INT`、`TINYINT`、`FLOAT`、`DOUBLE`、`DECIMAL` | `number` |
+| 其他 | `string` |
+
+## 隐藏字段
+
+以下字段自动从表单中排除（不出现在新增/编辑表单中）：
+
+- `id` — 主键，自动生成
+- `created_at`、`updated_at`、`deleted_at` — 时间戳，自动维护
+- `created_by` — 创建人，自动填充
+- `dept_id` — 部门 ID，自动填充
+
+## 智能特性检测
+
+| 特性 | 触发条件 | 生成效果 |
+|------|---------|---------|
+| 树形结构 | 表中存在 `parent_id` 字段 | 后端生成树形查询接口，前端生成树形表格 |
+| 密码加密 | 字段名为 `password`/`*_password`/`*_pwd` | 后端自动 bcrypt 加密 |
+| 外键关联 | 字段名为 `*_id`（排除 `id`、`dept_id`） | 自动查询关联表，填充显示字段（title/name/username） |
+| 多选外键 | 字段名为 `*_ids` | 前端多选组件，后端数组处理 |
+| Snowflake ID | 所有 `BIGINT` 主键/外键 | 使用 `JsonInt64` 防止 JS 精度丢失 |
+| 软删除 | 存在 `deleted_at` 字段 | 查询自动过滤已删除记录 |
+| 枚举常量 | 字段注释包含枚举定义 | 后端生成 Go 常量，前端生成 options |
+| Tooltip 提示 | 字段注释标签含 `（）` 或 `()` | 前端表单 label 和列头自动渲染 Tooltip 问号图标 |
+
+## 菜单生成
+
+使用 `--menu` 或 `--only menu` 可将菜单数据写入 `system_menu` 表。
+
+每个模块生成 3 条菜单记录：
+
+| 菜单 | 类型 | 说明 |
+|------|------|------|
+| `{模块名}管理` | 目录 | 一级菜单，挂载到对应应用目录下 |
+| `{模块名}列表` | 页面 | 列表页面，路由指向生成的 `index.vue` |
+| 按钮权限 | 按钮 | 包含 新增、编辑、删除 三个操作按钮 |
+
+菜单写入前会检查是否已存在，避免重复插入。
+
+## 命名转换规则
+
+| snake_case | CamelCase（Go 导出） | DAO 风格 | camelCase（JSON/TS） |
+|-----------|---------------------|----------|---------------------|
+| `dept_name` | `DeptName` | `DeptName` | `deptName` |
+| `parent_id` | `ParentID` | `ParentId` | `parentID` |
+| `link_url` | `LinkURL` | `LinkUrl` | `linkURL` |
+| `id` | `ID` | `Id` | `id` |
+
+常见缩写（`ID`、`URL`、`IP`、`API`、`HTTP` 等）在 CamelCase 中保持全大写。

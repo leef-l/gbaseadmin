@@ -2,8 +2,11 @@
 import type { VbenFormProps } from '#/adapter/form';
 import type { VxeGridProps } from '#/adapter/vxe-table';
 
+import { h } from 'vue';
+
 import { Page, useVbenModal } from '@vben/common-ui';
-import { Button, message, Modal, Tag } from 'ant-design-vue';
+import { Button, message, Modal, Tag, Tooltip } from 'ant-design-vue';
+import { QuestionCircleOutlined } from '@ant-design/icons-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getCouponMemberList, deleteCouponMember } from '#/api/play/coupon_member';
@@ -67,7 +70,7 @@ const gridOptions: VxeGridProps<CouponMemberItem> = {
     { title: '序号', type: 'seq', width: 50 },
     { field: 'couponTitle', title: '优惠券模板ID' },
     { field: 'memberID', title: '会员ID' },
-    { field: 'orderID', title: '使用的订单ID（0表示未使用）' },
+    { field: 'orderID', title: '订单ID', slots: { header: () => h('span', {}, ['订单ID ', h(Tooltip, { title: '0表示未使用' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]) } },
     { field: 'useStatus', title: '使用状态', width: 120, slots: { default: 'useStatus_cell' } },
     { field: 'claimAt', title: '领取时间', width: 180, formatter: 'formatDateTime' },
     { field: 'useAt', title: '使用时间', width: 180, formatter: 'formatDateTime' },

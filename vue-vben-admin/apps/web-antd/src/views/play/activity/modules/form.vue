@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { h, ref } from 'vue';
 import { useVbenModal } from '@vben/common-ui';
 import { useVbenForm } from '#/adapter/form';
-import { message } from 'ant-design-vue';
+import { message, Tooltip } from 'ant-design-vue';
+import { QuestionCircleOutlined } from '@ant-design/icons-vue';
 import {
   getActivityDetail,
   createActivity,
@@ -51,7 +52,7 @@ const [Form, formApi] = useVbenForm({
     {
       component: 'Input',
       fieldName: 'descContent',
-      label: '活动详情描述（富文本，支持图文混排）',
+      label: () => h('span', {}, ['活动详情描述 ', h(Tooltip, { title: '富文本，支持图文混排' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]),
       componentProps: { placeholder: '请输入活动详情描述（富文本，支持图文混排）', maxlength: 65535 },
     },
     {
@@ -69,7 +70,7 @@ const [Form, formApi] = useVbenForm({
     {
       component: 'Input',
       fieldName: 'conditionValue',
-      label: '条件值（分/次，如充值满5000分、下单满3次）',
+      label: () => h('span', {}, ['条件值 ', h(Tooltip, { title: '分/次，如充值满5000分、下单满3次' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]),
       componentProps: { placeholder: '请输入条件值（分/次，如充值满5000分、下单满3次）' },
     },
     {
@@ -96,7 +97,7 @@ const [Form, formApi] = useVbenForm({
     {
       component: 'InputNumber',
       fieldName: 'maxNum',
-      label: '参与人数上限（0表示不限）',
+      label: () => h('span', {}, ['参与人数上限 ', h(Tooltip, { title: '0表示不限' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]),
       componentProps: { placeholder: '请输入参与人数上限（0表示不限）', class: 'w-full' },
     },
     {
@@ -108,7 +109,7 @@ const [Form, formApi] = useVbenForm({
     {
       component: 'InputNumber',
       fieldName: 'sort',
-      label: '排序（升序）',
+      label: () => h('span', {}, ['排序 ', h(Tooltip, { title: '升序' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]),
       componentProps: { placeholder: '请输入排序（升序）', class: 'w-full' },
     },
     {

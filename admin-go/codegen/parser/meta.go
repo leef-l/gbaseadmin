@@ -37,7 +37,9 @@ type FieldMeta struct {
 	GoType       string      // string/int/int64/JsonInt64 等
 	TSType       string      // string/number/boolean
 	Comment      string      // 原始备注
-	Label        string      // 前端 Label
+	Label        string      // 前端 Label（完整，含括号）
+	ShortLabel   string      // 精简标签（去掉括号部分，用于列头等紧凑场景）
+	TooltipText  string      // 括号内的提示文字（为空则无需 Tooltip）
 	EnumValues   []EnumValue // 枚举值列表
 	Component    string      // 前端组件类型
 	IsRequired   bool
@@ -78,4 +80,5 @@ type TableMeta struct {
 	HasStatus    bool // 有 status 字段
 	HasSort      bool // 有 sort 字段
 	HasPassword  bool // 有 password 字段
+	HasTooltip   bool // 有字段需要 Tooltip 提示
 }

@@ -573,16 +573,20 @@ export type ComponentType =
   | 'DatePicker'
   | 'DefaultButton'
   | 'Divider'
+  | 'FileUpload'
   | 'IconPicker'
+  | 'ImageUpload'
   | 'Input'
   | 'InputNumber'
   | 'InputPassword'
+  | 'JsonEditor'
   | 'Mentions'
   | 'PrimaryButton'
   | 'Radio'
   | 'RadioGroup'
   | 'RangePicker'
   | 'Rate'
+  | 'RichText'
   | 'Select'
   | 'Space'
   | 'Switch'
@@ -629,14 +633,23 @@ async function initComponentAdapter() {
       return h(Button, { ...props, attrs, type: 'default' }, slots);
     },
     Divider,
+    FileUpload: defineAsyncComponent(
+      () => import('#/components/upload/file-upload.vue'),
+    ),
     IconPicker: withDefaultPlaceholder(IconPicker, 'select', {
       iconSlot: 'addonAfter',
       inputComponent: Input,
       modelValueProp: 'value',
     }),
+    ImageUpload: defineAsyncComponent(
+      () => import('#/components/upload/image-upload.vue'),
+    ),
     Input: withDefaultPlaceholder(Input, 'input'),
     InputNumber: withDefaultPlaceholder(InputNumber, 'input'),
     InputPassword: withDefaultPlaceholder(InputPassword, 'input'),
+    JsonEditor: defineAsyncComponent(
+      () => import('#/components/json-editor/index.vue'),
+    ),
     Mentions: withDefaultPlaceholder(Mentions, 'input'),
     // 自定义主要按钮
     PrimaryButton: (props, { attrs, slots }) => {
@@ -646,6 +659,9 @@ async function initComponentAdapter() {
     RadioGroup,
     RangePicker,
     Rate,
+    RichText: defineAsyncComponent(
+      () => import('#/components/tinymce/index.vue'),
+    ),
     Select: withDefaultPlaceholder(Select, 'select'),
     Space,
     Switch,

@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { h, ref } from 'vue';
 import { useVbenModal } from '@vben/common-ui';
 import { useVbenForm } from '#/adapter/form';
-import { message } from 'ant-design-vue';
+import { message, Tooltip } from 'ant-design-vue';
+import { QuestionCircleOutlined } from '@ant-design/icons-vue';
 import {
   getOrderDetail,
   createOrder,
@@ -60,7 +61,7 @@ const [Form, formApi] = useVbenForm({
     {
       component: 'Select',
       fieldName: 'shopID',
-      label: '店铺ID（0表示无店铺）',
+      label: () => h('span', {}, ['店铺ID ', h(Tooltip, { title: '0表示无店铺' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]),
       componentProps: { options: shopIDOptions, placeholder: '请选择店铺ID（0表示无店铺）', allowClear: true, class: 'w-full' },
     },
     {
@@ -73,14 +74,14 @@ const [Form, formApi] = useVbenForm({
     {
       component: 'Input',
       fieldName: 'goodsTitle',
-      label: '商品名称（冗余）',
+      label: () => h('span', {}, ['商品名称 ', h(Tooltip, { title: '冗余' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]),
       rules: 'required',
       componentProps: { placeholder: '请输入商品名称（冗余）', maxlength: 100 },
     },
     {
       component: 'InputNumber',
       fieldName: 'goodsPrice',
-      label: '商品单价（分，下单时快照）',
+      label: () => h('span', {}, ['商品单价 ', h(Tooltip, { title: '分，下单时快照' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]),
       rules: 'required',
       componentProps: { placeholder: '请输入商品单价（分，下单时快照）', class: 'w-full' },
     },
@@ -93,25 +94,25 @@ const [Form, formApi] = useVbenForm({
     {
       component: 'InputNumber',
       fieldName: 'totalAmount',
-      label: '订单总额（分）',
+      label: () => h('span', {}, ['订单总额 ', h(Tooltip, { title: '分' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]),
       componentProps: { placeholder: '请输入订单总额（分）', class: 'w-full' },
     },
     {
       component: 'InputNumber',
       fieldName: 'discountAmount',
-      label: '会员折扣金额（分）',
+      label: () => h('span', {}, ['会员折扣金额 ', h(Tooltip, { title: '分' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]),
       componentProps: { placeholder: '请输入会员折扣金额（分）', class: 'w-full' },
     },
     {
       component: 'InputNumber',
       fieldName: 'couponAmount',
-      label: '优惠券抵扣金额（分）',
+      label: () => h('span', {}, ['优惠券抵扣金额 ', h(Tooltip, { title: '分' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]),
       componentProps: { placeholder: '请输入优惠券抵扣金额（分）', class: 'w-full' },
     },
     {
       component: 'InputNumber',
       fieldName: 'payAmount',
-      label: '实付金额（分）',
+      label: () => h('span', {}, ['实付金额 ', h(Tooltip, { title: '分' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]),
       componentProps: { placeholder: '请输入实付金额（分）', class: 'w-full' },
     },
     {

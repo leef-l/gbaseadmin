@@ -47,3 +47,10 @@ func (c *DatabaseConfig) DSN() string {
 	return fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8mb4&collation=utf8mb4_unicode_ci&parseTime=True&loc=Local",
 		c.User, c.Password, c.Host, c.Port, c.DBName)
 }
+
+// DSNForHack 生成 hack/config.yaml 中 gf gen dao 使用的 link 格式
+// 格式: mysql:user:password@tcp(host:port)/dbname
+func (c *DatabaseConfig) DSNForHack() string {
+	return fmt.Sprintf("mysql:%s:%s@tcp(%s:%d)/%s",
+		c.User, c.Password, c.Host, c.Port, c.DBName)
+}

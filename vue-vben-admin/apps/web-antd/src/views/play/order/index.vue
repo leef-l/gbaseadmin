@@ -1,12 +1,15 @@
 <script setup lang="ts">
+import { h } from 'vue';
 import type { VbenFormProps } from '#/adapter/form';
 import type { VxeGridProps } from '#/adapter/vxe-table';
 
 import { Page, useVbenModal } from '@vben/common-ui';
-import { Button, message, Modal, Tag } from 'ant-design-vue';
+import { Button, Input, message, Modal, Tag, Tooltip } from 'ant-design-vue';
+import { QuestionCircleOutlined } from '@ant-design/icons-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getOrderList, deleteOrder } from '#/api/play/order';
+import { changeOrderStatus } from '#/api/play/order/enhance';
 import type { OrderItem } from '#/api/play/order/types';
 import FormModal from './modules/form.vue';
 
@@ -110,15 +113,15 @@ const gridOptions: VxeGridProps<OrderItem> = {
     { field: 'orderNo', title: '订单编号' },
     { field: 'memberID', title: '下单会员ID' },
     { field: 'coachID', title: '陪玩师ID' },
-    { field: 'shopTitle', title: '店铺ID（0表示无店铺）' },
+    { field: 'shopTitle', title: '店铺', slots: { header: () => h('span', {}, ['店铺 ', h(Tooltip, { title: '0表示无店铺' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]) } },
     { field: 'goodsID', title: '商品ID' },
-    { field: 'goodsTitle', title: '商品名称（冗余）' },
-    { field: 'goodsPrice', title: '商品单价（分，下单时快照）' },
+    { field: 'goodsTitle', title: '商品名称', slots: { header: () => h('span', {}, ['商品名称 ', h(Tooltip, { title: '冗余快照' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]) } },
+    { field: 'goodsPrice', title: '商品单价', slots: { header: () => h('span', {}, ['商品单价 ', h(Tooltip, { title: '分，下单时快照' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]) } },
     { field: 'quantity', title: '数量' },
-    { field: 'totalAmount', title: '订单总额（分）' },
-    { field: 'discountAmount', title: '会员折扣金额（分）' },
-    { field: 'couponAmount', title: '优惠券抵扣金额（分）' },
-    { field: 'payAmount', title: '实付金额（分）' },
+    { field: 'totalAmount', title: '订单总额', slots: { header: () => h('span', {}, ['订单总额 ', h(Tooltip, { title: '单位：分' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]) } },
+    { field: 'discountAmount', title: '折扣金额', slots: { header: () => h('span', {}, ['折扣金额 ', h(Tooltip, { title: '会员折扣，单位：分' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]) } },
+    { field: 'couponAmount', title: '券抵扣', slots: { header: () => h('span', {}, ['券抵扣 ', h(Tooltip, { title: '优惠券抵扣，单位：分' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]) } },
+    { field: 'payAmount', title: '实付金额', slots: { header: () => h('span', {}, ['实付金额 ', h(Tooltip, { title: '单位：分' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]) } },
     { field: 'couponMemberID', title: '使用的优惠券领取记录ID' },
     { field: 'payType', title: '支付方式', width: 120, slots: { default: 'payType_cell' } },
     { field: 'orderStatus', title: '订单状态', width: 120, slots: { default: 'orderStatus_cell' } },
@@ -129,7 +132,7 @@ const gridOptions: VxeGridProps<OrderItem> = {
     { field: 'finishAt', title: '服务完成时间', width: 180, formatter: 'formatDateTime' },
     { field: 'cancelAt', title: '取消时间', width: 180, formatter: 'formatDateTime' },
     { field: 'createdAt', title: '创建时间', width: 180, formatter: 'formatDateTime' },
-    { title: '操作', width: 200, fixed: 'right', slots: { default: 'action' } },
+    { title: '操作', width: 300, fixed: 'right', slots: { default: 'action' } },
   ],
   height: 'auto',
   pagerConfig: {},
@@ -180,6 +183,53 @@ function handleDelete(row: OrderItem) {
     },
   });
 }
+
+/** 订单状态转换规则 */
+const statusActions: Record<number, { label: string; status: number; danger?: boolean; needReason?: boolean }[]> = {
+  0: [{ label: '取消订单', status: 4, danger: true, needReason: true }],
+  1: [{ label: '开始服务', status: 2 }],
+  2: [{ label: '完成服务', status: 3 }],
+  5: [{ label: '同意退款', status: 6, danger: true }, { label: '拒绝退款', status: 1 }],
+};
+
+/** 变更订单状态 */
+function handleChangeStatus(row: OrderItem, targetStatus: number, label: string, needReason?: boolean) {
+  if (needReason) {
+    let cancelReason = '';
+    Modal.confirm({
+      title: `${label}`,
+      content: () => h('div', [
+        h('p', `确定要将订单 ${row.orderNo} 取消吗？`),
+        h(Input.TextArea, {
+          placeholder: '请输入取消原因',
+          rows: 3,
+          onChange: (e: any) => { cancelReason = e.target.value; },
+        }),
+      ]),
+      okType: 'danger',
+      async onOk() {
+        if (!cancelReason.trim()) {
+          message.warning('请输入取消原因');
+          throw new Error('请输入取消原因');
+        }
+        await changeOrderStatus({ id: row.id, orderStatus: targetStatus, cancelReason });
+        message.success(`${label}成功`);
+        gridApi.reload();
+      },
+    });
+  } else {
+    Modal.confirm({
+      title: `${label}确认`,
+      content: `确定要将订单 ${row.orderNo} ${label}吗？`,
+      okType: targetStatus === 6 ? 'danger' : 'primary',
+      async onOk() {
+        await changeOrderStatus({ id: row.id, orderStatus: targetStatus });
+        message.success(`${label}成功`);
+        gridApi.reload();
+      },
+    });
+  }
+}
 </script>
 
 <template>
@@ -200,6 +250,9 @@ function handleDelete(row: OrderItem) {
         </Tag>
       </template>
       <template #action="{ row }">
+        <template v-for="act in (statusActions[row.orderStatus] || [])" :key="act.status">
+          <Button type="link" :danger="act.danger" size="small" @click="handleChangeStatus(row, act.status, act.label, act.needReason)">{{ act.label }}</Button>
+        </template>
         <Button type="link" size="small" @click="handleEdit(row)">编辑</Button>
         <Button type="link" danger size="small" @click="handleDelete(row)">删除</Button>
       </template>

@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { h, ref } from 'vue';
 import { useVbenModal } from '@vben/common-ui';
 import { useVbenForm } from '#/adapter/form';
-import { message } from 'ant-design-vue';
+import { message, Tooltip } from 'ant-design-vue';
+import { QuestionCircleOutlined } from '@ant-design/icons-vue';
 import {
   getCoachDetail,
   createCoach,
@@ -33,7 +34,7 @@ const [Form, formApi] = useVbenForm({
     {
       component: 'Select',
       fieldName: 'shopID',
-      label: '所属店铺ID（0表示无店铺）',
+      label: () => h('span', {}, ['所属店铺ID ', h(Tooltip, { title: '0表示无店铺' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]),
       componentProps: { options: shopIDOptions, placeholder: '请选择所属店铺ID（0表示无店铺）', allowClear: true, class: 'w-full' },
     },
     {
@@ -64,7 +65,7 @@ const [Form, formApi] = useVbenForm({
     {
       component: 'Input',
       fieldName: 'totalScore',
-      label: '总评分（乘100，如 500=5.00）',
+      label: () => h('span', {}, ['总评分 ', h(Tooltip, { title: '乘100，如 500=5.00' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]),
       componentProps: { placeholder: '请输入总评分（乘100，如 500=5.00）' },
     },
     {
@@ -76,13 +77,13 @@ const [Form, formApi] = useVbenForm({
     {
       component: 'InputNumber',
       fieldName: 'incomeTotal',
-      label: '累计收入（分）',
+      label: () => h('span', {}, ['累计收入 ', h(Tooltip, { title: '分' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]),
       componentProps: { placeholder: '请输入累计收入（分）', class: 'w-full' },
     },
     {
       component: 'InputNumber',
       fieldName: 'incomeBalance',
-      label: '可提现余额（分）',
+      label: () => h('span', {}, ['可提现余额 ', h(Tooltip, { title: '分' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]),
       componentProps: { placeholder: '请输入可提现余额（分）', class: 'w-full' },
     },
     {
@@ -95,7 +96,7 @@ const [Form, formApi] = useVbenForm({
     {
       component: 'InputNumber',
       fieldName: 'sort',
-      label: '排序（升序）',
+      label: () => h('span', {}, ['排序 ', h(Tooltip, { title: '升序' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]),
       componentProps: { placeholder: '请输入排序（升序）', class: 'w-full' },
     },
     {

@@ -2,13 +2,17 @@
 import type { VbenFormProps } from '#/adapter/form';
 import type { VxeGridProps } from '#/adapter/vxe-table';
 
+import { h } from 'vue';
+
 import { Page, useVbenModal } from '@vben/common-ui';
-import { Button, message, Modal, Tag } from 'ant-design-vue';
+import { Button, message, Modal, Tag, Tooltip } from 'ant-design-vue';
+import { QuestionCircleOutlined } from '@ant-design/icons-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getActivityList, deleteActivity } from '#/api/play/activity';
 import type { ActivityItem } from '#/api/play/activity/types';
 import FormModal from './modules/form.vue';
+import DetailDrawer from './modules/detail-drawer.vue';
 
 /** 标签颜色池 */
 const TAG_COLORS = ['green', 'red', 'blue', 'orange', 'cyan', 'purple', 'geekblue', 'magenta'];
@@ -107,6 +111,12 @@ const [FormModalComp, formModalApi] = useVbenModal({
   destroyOnClose: true,
 });
 
+/** 详情弹窗 */
+const [DetailDrawerComp, detailDrawerApi] = useVbenModal({
+  connectedComponent: DetailDrawer,
+  destroyOnClose: true,
+});
+
 /** 搜索表单配置 */
 const formOptions: VbenFormProps = {
   collapsed: false,
@@ -167,19 +177,19 @@ const gridOptions: VxeGridProps<ActivityItem> = {
     { title: '序号', type: 'seq', width: 50 },
     { field: 'title', title: '活动名称' },
     { field: 'coverImage', title: '活动封面图' },
-    { field: 'descContent', title: '活动详情描述（富文本，支持图文混排）' },
+    { field: 'descContent', title: '详情描述', slots: { header: () => h('span', {}, ['详情描述 ', h(Tooltip, { title: '富文本，支持图文混排' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]) } },
     { field: 'type', title: '活动类型', width: 120, slots: { default: 'type_cell' } },
     { field: 'conditionType', title: '参与条件', width: 120, slots: { default: 'conditionType_cell' } },
-    { field: 'conditionValue', title: '条件值（分/次，如充值满5000分、下单满3次）' },
+    { field: 'conditionValue', title: '条件值', slots: { header: () => h('span', {}, ['条件值 ', h(Tooltip, { title: '分/次，如充值满5000分、下单满3次' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]) } },
     { field: 'isAutoReward', title: '是否自动发奖', width: 120, slots: { default: 'isAutoReward_cell' } },
-    { field: 'maxNum', title: '参与人数上限（0表示不限）' },
+    { field: 'maxNum', title: '人数上限', slots: { header: () => h('span', {}, ['人数上限 ', h(Tooltip, { title: '0表示不限' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]) } },
     { field: 'joinNum', title: '已参与人数' },
-    { field: 'sort', title: '排序（升序）' },
+    { field: 'sort', title: '排序', slots: { header: () => h('span', {}, ['排序 ', h(Tooltip, { title: '升序' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]) } },
     { field: 'status', title: '状态', width: 120, slots: { default: 'status_cell' } },
     { field: 'startAt', title: '活动开始时间', width: 180, formatter: 'formatDateTime' },
     { field: 'endAt', title: '活动结束时间', width: 180, formatter: 'formatDateTime' },
     { field: 'createdAt', title: '创建时间', width: 180, formatter: 'formatDateTime' },
-    { title: '操作', width: 200, fixed: 'right', slots: { default: 'action' } },
+    { title: '操作', width: 280, fixed: 'right', slots: { default: 'action' } },
   ],
   height: 'auto',
   pagerConfig: {},
@@ -230,11 +240,22 @@ function handleDelete(row: ActivityItem) {
     },
   });
 }
+
+/** 管理奖励 */
+function handleRewards(row: ActivityItem) {
+  detailDrawerApi.setData({ id: row.id, title: row.title, type: row.type, tab: 'rewards' }).open();
+}
+
+/** 管理步骤 */
+function handleSteps(row: ActivityItem) {
+  detailDrawerApi.setData({ id: row.id, title: row.title, type: row.type, tab: 'steps' }).open();
+}
 </script>
 
 <template>
   <Page auto-content-height>
     <FormModalComp @success="() => gridApi.reload()" />
+    <DetailDrawerComp />
     <Grid>
       <template #toolbar-actions>
         <Button type="primary" @click="handleCreate">新建</Button>
@@ -260,6 +281,8 @@ function handleDelete(row: ActivityItem) {
         </Tag>
       </template>
       <template #action="{ row }">
+        <Button type="link" size="small" @click="handleRewards(row)">管理奖励</Button>
+        <Button v-if="row.type === 4" type="link" size="small" @click="handleSteps(row)">管理步骤</Button>
         <Button type="link" size="small" @click="handleEdit(row)">编辑</Button>
         <Button type="link" danger size="small" @click="handleDelete(row)">删除</Button>
       </template>

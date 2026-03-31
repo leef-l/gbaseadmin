@@ -102,6 +102,9 @@ func (p *Parser) ParseTable(tableName string) (*TableMeta, error) {
 		if field.IsPassword {
 			meta.HasPassword = true
 		}
+		if field.TooltipText != "" {
+			meta.HasTooltip = true
+		}
 	}
 
 	// 解析关联字段：对 *_id 外键和 parent_id 查找关联表的显示字段
@@ -259,7 +262,7 @@ func buildFieldMeta(col columnInfo) FieldMeta {
 	isPassword := name == "password" || strings.HasSuffix(name, "_password") || strings.HasSuffix(name, "_pwd")
 
 	// 解析备注
-	label, enums := ParseComment(col.ColumnComment)
+	label, shortLabel, tooltipText, enums := ParseComment(col.ColumnComment)
 
 	// 构建基础数据库类型（简化，去掉长度信息用于映射）
 	dbType := col.ColumnType
@@ -274,6 +277,8 @@ func buildFieldMeta(col columnInfo) FieldMeta {
 		TSType:       MapTSType(col.DataType, isID || isForeignKey || isParentID || name == "dept_id" || name == "created_by"),
 		Comment:      col.ColumnComment,
 		Label:        label,
+		ShortLabel:   shortLabel,
+		TooltipText:  tooltipText,
 		EnumValues:   enums,
 		IsRequired:   col.IsNullable == "NO" && col.ColumnDefault.Valid == false && name != "id",
 		IsID:         isID,

@@ -2,8 +2,10 @@
 import type { VbenFormProps } from '#/adapter/form';
 import type { VxeGridProps } from '#/adapter/vxe-table';
 
+import { h } from 'vue';
 import { Page, useVbenModal } from '@vben/common-ui';
-import { Button, message, Modal, Tag } from 'ant-design-vue';
+import { Button, message, Modal, Tag, Tooltip } from 'ant-design-vue';
+import { QuestionCircleOutlined } from '@ant-design/icons-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getActivityStepList, deleteActivityStep } from '#/api/play/activity_step';
@@ -36,9 +38,9 @@ const gridOptions: VxeGridProps<ActivityStepItem> = {
     { field: 'activityTitle', title: '活动ID' },
     { field: 'stepNum', title: '步骤序号' },
     { field: 'title', title: '步骤标题' },
-    { field: 'descContent', title: '步骤说明（富文本，支持图文）' },
+    { field: 'descContent', title: '步骤说明', slots: { header: () => h('span', {}, ['步骤说明 ', h(Tooltip, { title: '富文本，支持图文' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]) } },
     { field: 'stepImage', title: '步骤示例图片' },
-    { field: 'sort', title: '排序（升序）' },
+    { field: 'sort', title: '排序', slots: { header: () => h('span', {}, ['排序 ', h(Tooltip, { title: '升序' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]) } },
     { field: 'createdAt', title: '创建时间', width: 180, formatter: 'formatDateTime' },
     { title: '操作', width: 200, fixed: 'right', slots: { default: 'action' } },
   ],

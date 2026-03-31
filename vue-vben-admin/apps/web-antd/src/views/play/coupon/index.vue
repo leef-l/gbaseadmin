@@ -2,8 +2,11 @@
 import type { VbenFormProps } from '#/adapter/form';
 import type { VxeGridProps } from '#/adapter/vxe-table';
 
+import { h } from 'vue';
+
 import { Page, useVbenModal } from '@vben/common-ui';
-import { Button, message, Modal, Tag } from 'ant-design-vue';
+import { Button, message, Modal, Tag, Tooltip } from 'ant-design-vue';
+import { QuestionCircleOutlined } from '@ant-design/icons-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getCouponList, deleteCoupon } from '#/api/play/coupon';
@@ -128,13 +131,13 @@ const gridOptions: VxeGridProps<CouponItem> = {
     { field: 'title', title: '优惠券名称' },
     { field: 'type', title: '优惠券类型', width: 120, slots: { default: 'type_cell' } },
     { field: 'isNewMember', title: '是否新人专享', width: 120, slots: { default: 'isNewMember_cell' } },
-    { field: 'faceValue', title: '面值（分，满减/无门槛时为抵扣额，折扣时为折扣值如 85=8.5折）' },
-    { field: 'minAmount', title: '最低消费金额（分，0表示无门槛）' },
-    { field: 'totalNum', title: '发放总量（0表示不限）' },
+    { field: 'faceValue', title: '面值', slots: { header: () => h('span', {}, ['面值 ', h(Tooltip, { title: '分，满减/无门槛时为抵扣额，折扣时为折扣值如 85=8.5折' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]) } },
+    { field: 'minAmount', title: '最低消费', slots: { header: () => h('span', {}, ['最低消费 ', h(Tooltip, { title: '分，0表示无门槛' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]) } },
+    { field: 'totalNum', title: '发放总量', slots: { header: () => h('span', {}, ['发放总量 ', h(Tooltip, { title: '0表示不限' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]) } },
     { field: 'usedNum', title: '已使用数量' },
     { field: 'claimNum', title: '已领取数量' },
     { field: 'perLimit', title: '每人限领张数' },
-    { field: 'sort', title: '排序（升序）' },
+    { field: 'sort', title: '排序', slots: { header: () => h('span', {}, ['排序 ', h(Tooltip, { title: '升序' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]) } },
     { field: 'status', title: '状态', width: 120, slots: { default: 'status_cell' } },
     { field: 'validStartAt', title: '有效期开始时间', width: 180, formatter: 'formatDateTime' },
     { field: 'validEndAt', title: '有效期结束时间', width: 180, formatter: 'formatDateTime' },

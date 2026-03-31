@@ -2,8 +2,10 @@
 import type { VbenFormProps } from '#/adapter/form';
 import type { VxeGridProps } from '#/adapter/vxe-table';
 
+import { h } from 'vue';
 import { Page, useVbenModal } from '@vben/common-ui';
-import { Button, message, Modal, Tag } from 'ant-design-vue';
+import { Button, message, Modal, Tag, Tooltip } from 'ant-design-vue';
+import { QuestionCircleOutlined } from '@ant-design/icons-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getShopList, deleteShop } from '#/api/play/shop';
@@ -69,9 +71,9 @@ const gridOptions: VxeGridProps<ShopItem> = {
     { field: 'contactName', title: '联系人姓名' },
     { field: 'contactPhone', title: '联系电话' },
     { field: 'intro', title: '店铺简介' },
-    { field: 'commissionRate', title: '店铺抽成比例（百分比，如 10 表示 10%）' },
+    { field: 'commissionRate', title: '抽成比例', slots: { header: () => h('span', {}, ['抽成比例 ', h(Tooltip, { title: '百分比，如 10 表示 10%' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]) } },
     { field: 'coachNum', title: '陪玩师数量' },
-    { field: 'sort', title: '排序（升序）' },
+    { field: 'sort', title: '排序', slots: { header: () => h('span', {}, ['排序 ', h(Tooltip, { title: '升序' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]) } },
     { field: 'status', title: '状态', width: 120, slots: { default: 'status_cell' } },
     { field: 'createdAt', title: '创建时间', width: 180, formatter: 'formatDateTime' },
     { title: '操作', width: 200, fixed: 'right', slots: { default: 'action' } },

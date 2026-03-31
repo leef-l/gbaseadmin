@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { h, ref } from 'vue';
 import { useVbenModal } from '@vben/common-ui';
 import { useVbenForm } from '#/adapter/form';
-import { message } from 'ant-design-vue';
+import { message, Tooltip } from 'ant-design-vue';
+import { QuestionCircleOutlined } from '@ant-design/icons-vue';
 import {
   getActivityRewardDetail,
   createActivityReward,
@@ -41,20 +42,20 @@ const [Form, formApi] = useVbenForm({
     {
       component: 'Input',
       fieldName: 'rewardValue',
-      label: '奖励数值（余额=分，优惠券=coupon_id，经验=值，等级天数=天）',
+      label: () => h('span', {}, ['奖励数值 ', h(Tooltip, { title: '余额=分，优惠券=coupon_id，经验=值，等级天数=天' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]),
       componentProps: { placeholder: '请输入奖励数值（余额=分，优惠券=coupon_id，经验=值，等级天数=天）' },
     },
     {
       component: 'Input',
       fieldName: 'rewardName',
-      label: '奖励名称（展示用，如"送50元余额"）',
+      label: () => h('span', {}, ['奖励名称 ', h(Tooltip, { title: '展示用，如"送50元余额"' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]),
       rules: 'required',
       componentProps: { placeholder: '请输入奖励名称（展示用，如"送50元余额"）', maxlength: 100 },
     },
     {
       component: 'InputNumber',
       fieldName: 'sort',
-      label: '排序（升序）',
+      label: () => h('span', {}, ['排序 ', h(Tooltip, { title: '升序' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]),
       componentProps: { placeholder: '请输入排序（升序）', class: 'w-full' },
     },
   ],

@@ -2,8 +2,11 @@
 import type { VbenFormProps } from '#/adapter/form';
 import type { VxeGridProps } from '#/adapter/vxe-table';
 
+import { h } from 'vue';
+
 import { Page, useVbenModal } from '@vben/common-ui';
-import { Button, message, Modal, Tag } from 'ant-design-vue';
+import { Button, message, Modal, Tag, Tooltip } from 'ant-design-vue';
+import { QuestionCircleOutlined } from '@ant-design/icons-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getMemberList, deleteMember } from '#/api/play/member';
@@ -131,7 +134,7 @@ const gridOptions: VxeGridProps<MemberItem> = {
     { field: 'gender', title: '性别', width: 120, slots: { default: 'gender_cell' } },
     { field: 'memberLevelTitle', title: '会员等级ID' },
     { field: 'exp', title: '经验值' },
-    { field: 'balance', title: '账户余额（分）' },
+    { field: 'balance', title: '余额', slots: { header: () => h('span', {}, ['余额 ', h(Tooltip, { title: '单位：分' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]) } },
     { field: 'isCoach', title: '是否陪玩师', width: 120, slots: { default: 'isCoach_cell' } },
     { field: 'status', title: '状态', width: 120, slots: { default: 'status_cell' } },
     { field: 'lastLoginAt', title: '最后登录时间', width: 180, formatter: 'formatDateTime' },

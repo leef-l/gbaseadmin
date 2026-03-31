@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { h, ref } from 'vue';
 import { useVbenModal } from '@vben/common-ui';
 import { useVbenForm } from '#/adapter/form';
-import { message } from 'ant-design-vue';
+import { message, Tooltip } from 'ant-design-vue';
+import { QuestionCircleOutlined } from '@ant-design/icons-vue';
 import {
   getMemberDetail,
   createMember,
@@ -34,7 +35,7 @@ const [Form, formApi] = useVbenForm({
     {
       component: 'InputPassword',
       fieldName: 'password',
-      label: '密码（bcrypt 加密）',
+      label: () => h('span', {}, ['密码 ', h(Tooltip, { title: 'bcrypt 加密' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]),
       rules: 'required',
       componentProps: { placeholder: '请输入密码（bcrypt 加密）' },
     },
@@ -71,7 +72,7 @@ const [Form, formApi] = useVbenForm({
     {
       component: 'InputNumber',
       fieldName: 'balance',
-      label: '账户余额（分）',
+      label: () => h('span', {}, ['账户余额 ', h(Tooltip, { title: '分' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]),
       componentProps: { placeholder: '请输入账户余额（分）', class: 'w-full' },
     },
     {

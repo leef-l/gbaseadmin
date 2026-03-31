@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { h, ref } from 'vue';
 import { useVbenModal } from '@vben/common-ui';
 import { useVbenForm } from '#/adapter/form';
-import { message } from 'ant-design-vue';
+import { message, Tooltip } from 'ant-design-vue';
+import { QuestionCircleOutlined } from '@ant-design/icons-vue';
 import {
   getBalanceLogDetail,
   createBalanceLog,
@@ -43,27 +44,27 @@ const [Form, formApi] = useVbenForm({
     {
       component: 'Select',
       fieldName: 'bizID',
-      label: '关联业务ID（订单ID/充值订单ID/活动ID）',
+      label: () => h('span', {}, ['关联业务ID ', h(Tooltip, { title: '订单ID/充值订单ID/活动ID' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]),
       componentProps: { options: bizIDOptions, placeholder: '请选择关联业务ID（订单ID/充值订单ID/活动ID）', allowClear: true, class: 'w-full' },
     },
     {
       component: 'InputNumber',
       fieldName: 'changeAmount',
-      label: '变动金额（分，正数增加负数减少）',
+      label: () => h('span', {}, ['变动金额 ', h(Tooltip, { title: '分，正数增加负数减少' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]),
       rules: 'required',
       componentProps: { placeholder: '请输入变动金额（分，正数增加负数减少）', class: 'w-full' },
     },
     {
       component: 'InputNumber',
       fieldName: 'beforeBalance',
-      label: '变动前余额（分）',
+      label: () => h('span', {}, ['变动前余额 ', h(Tooltip, { title: '分' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]),
       rules: 'required',
       componentProps: { placeholder: '请输入变动前余额（分）', class: 'w-full' },
     },
     {
       component: 'InputNumber',
       fieldName: 'afterBalance',
-      label: '变动后余额（分）',
+      label: () => h('span', {}, ['变动后余额 ', h(Tooltip, { title: '分' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]),
       rules: 'required',
       componentProps: { placeholder: '请输入变动后余额（分）', class: 'w-full' },
     },

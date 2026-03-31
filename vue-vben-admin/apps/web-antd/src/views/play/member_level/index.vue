@@ -2,8 +2,10 @@
 import type { VbenFormProps } from '#/adapter/form';
 import type { VxeGridProps } from '#/adapter/vxe-table';
 
+import { h } from 'vue';
 import { Page, useVbenModal } from '@vben/common-ui';
-import { Button, message, Modal, Tag } from 'ant-design-vue';
+import { Button, message, Modal, Tag, Tooltip } from 'ant-design-vue';
+import { QuestionCircleOutlined } from '@ant-design/icons-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getMemberLevelList, deleteMemberLevel } from '#/api/play/member_level';
@@ -103,8 +105,8 @@ const gridOptions: VxeGridProps<MemberLevelItem> = {
     { field: 'level', title: '等级', width: 120, slots: { default: 'level_cell' } },
     { field: 'icon', title: '等级图标' },
     { field: 'minExp', title: '所需最低经验值' },
-    { field: 'discount', title: '折扣（百分比，如 90 表示九折）' },
-    { field: 'sort', title: '排序（升序）' },
+    { field: 'discount', title: '折扣', slots: { header: () => h('span', {}, ['折扣 ', h(Tooltip, { title: '百分比，如 90 表示九折' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]) } },
+    { field: 'sort', title: '排序', slots: { header: () => h('span', {}, ['排序 ', h(Tooltip, { title: '升序' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]) } },
     { field: 'status', title: '状态', width: 120, slots: { default: 'status_cell' } },
     { field: 'createdAt', title: '创建时间', width: 180, formatter: 'formatDateTime' },
     { title: '操作', width: 200, fixed: 'right', slots: { default: 'action' } },

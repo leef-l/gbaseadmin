@@ -13,6 +13,8 @@ type ActivityStepCreateInput struct {
 	ActivityID snowflake.JsonInt64 `json:"activityID"`
 	StepNum int `json:"stepNum"`
 	Title string `json:"title"`
+	StepType int `json:"stepType"`
+	ExampleText string `json:"exampleText"`
 	DescContent string `json:"descContent"`
 	StepImage string `json:"stepImage"`
 	Sort int `json:"sort"`
@@ -24,6 +26,8 @@ type ActivityStepUpdateInput struct {
 	ActivityID snowflake.JsonInt64 `json:"activityID"`
 	StepNum int `json:"stepNum"`
 	Title string `json:"title"`
+	StepType int `json:"stepType"`
+	ExampleText string `json:"exampleText"`
 	DescContent string `json:"descContent"`
 	StepImage string `json:"stepImage"`
 	Sort int `json:"sort"`
@@ -36,6 +40,8 @@ type ActivityStepDetailOutput struct {
 	ActivityTitle string `json:"activityTitle"`
 	StepNum int `json:"stepNum"`
 	Title string `json:"title"`
+	StepType int `json:"stepType"`
+	ExampleText string `json:"exampleText"`
 	DescContent string `json:"descContent"`
 	StepImage string `json:"stepImage"`
 	Sort int `json:"sort"`
@@ -50,6 +56,8 @@ type ActivityStepListOutput struct {
 	ActivityTitle string `json:"activityTitle"`
 	StepNum int `json:"stepNum"`
 	Title string `json:"title"`
+	StepType int `json:"stepType"`
+	ExampleText string `json:"exampleText"`
 	DescContent string `json:"descContent"`
 	StepImage string `json:"stepImage"`
 	Sort int `json:"sort"`

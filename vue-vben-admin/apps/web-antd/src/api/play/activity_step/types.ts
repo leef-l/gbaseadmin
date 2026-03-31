@@ -7,6 +7,8 @@ export interface ActivityStepItem {
   activityTitle?: string;
   stepNum?: number;
   title: string;
+  stepType?: number; // 1=文字 2=链接 3=图片
+  exampleText?: string; // 示例文字或链接URL
   descContent?: string;
   stepImage?: string;
   sort?: number;
@@ -26,6 +28,8 @@ export interface ActivityStepCreateParams {
   activityID: string;
   stepNum?: number;
   title: string;
+  stepType?: number;
+  exampleText?: string;
   descContent?: string;
   stepImage?: string;
   sort?: number;
@@ -37,6 +41,8 @@ export interface ActivityStepUpdateParams {
   activityID: string;
   stepNum?: number;
   title: string;
+  stepType?: number;
+  exampleText?: string;
   descContent?: string;
   stepImage?: string;
   sort?: number;

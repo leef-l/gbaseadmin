@@ -26,15 +26,17 @@ type sActivityStep struct{}
 func (s *sActivityStep) Create(ctx context.Context, in *model.ActivityStepCreateInput) error {
 	id := snowflake.Generate()
 	_, err := dao.PlayActivityStep.Ctx(ctx).Data(g.Map{
-		dao.PlayActivityStep.Columns().Id:        id,
-		dao.PlayActivityStep.Columns().ActivityId: in.ActivityID,
-		dao.PlayActivityStep.Columns().StepNum: in.StepNum,
-		dao.PlayActivityStep.Columns().Title: in.Title,
-		dao.PlayActivityStep.Columns().DescContent: in.DescContent,
-		dao.PlayActivityStep.Columns().StepImage: in.StepImage,
-		dao.PlayActivityStep.Columns().Sort: in.Sort,
-		dao.PlayActivityStep.Columns().CreatedAt: gtime.Now(),
-		dao.PlayActivityStep.Columns().UpdatedAt: gtime.Now(),
+		dao.PlayActivityStep.Columns().Id:          id,
+		dao.PlayActivityStep.Columns().ActivityId:   in.ActivityID,
+		dao.PlayActivityStep.Columns().StepNum:      in.StepNum,
+		dao.PlayActivityStep.Columns().Title:        in.Title,
+		dao.PlayActivityStep.Columns().StepType:     in.StepType,
+		dao.PlayActivityStep.Columns().ExampleText:  in.ExampleText,
+		dao.PlayActivityStep.Columns().DescContent:  in.DescContent,
+		dao.PlayActivityStep.Columns().StepImage:    in.StepImage,
+		dao.PlayActivityStep.Columns().Sort:         in.Sort,
+		dao.PlayActivityStep.Columns().CreatedAt:    gtime.Now(),
+		dao.PlayActivityStep.Columns().UpdatedAt:    gtime.Now(),
 	}).Insert()
 	return err
 }
@@ -42,13 +44,15 @@ func (s *sActivityStep) Create(ctx context.Context, in *model.ActivityStepCreate
 // Update 更新活动步骤表
 func (s *sActivityStep) Update(ctx context.Context, in *model.ActivityStepUpdateInput) error {
 	data := g.Map{
-		dao.PlayActivityStep.Columns().ActivityId: in.ActivityID,
-		dao.PlayActivityStep.Columns().StepNum: in.StepNum,
-		dao.PlayActivityStep.Columns().Title: in.Title,
-		dao.PlayActivityStep.Columns().DescContent: in.DescContent,
-		dao.PlayActivityStep.Columns().StepImage: in.StepImage,
-		dao.PlayActivityStep.Columns().Sort: in.Sort,
-		dao.PlayActivityStep.Columns().UpdatedAt: gtime.Now(),
+		dao.PlayActivityStep.Columns().ActivityId:   in.ActivityID,
+		dao.PlayActivityStep.Columns().StepNum:      in.StepNum,
+		dao.PlayActivityStep.Columns().Title:        in.Title,
+		dao.PlayActivityStep.Columns().StepType:     in.StepType,
+		dao.PlayActivityStep.Columns().ExampleText:  in.ExampleText,
+		dao.PlayActivityStep.Columns().DescContent:  in.DescContent,
+		dao.PlayActivityStep.Columns().StepImage:    in.StepImage,
+		dao.PlayActivityStep.Columns().Sort:         in.Sort,
+		dao.PlayActivityStep.Columns().UpdatedAt:    gtime.Now(),
 	}
 	_, err := dao.PlayActivityStep.Ctx(ctx).Where(dao.PlayActivityStep.Columns().Id, in.ID).Data(data).Update()
 	return err

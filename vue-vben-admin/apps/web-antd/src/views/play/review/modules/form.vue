@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { h, ref } from 'vue';
 import { useVbenModal } from '@vben/common-ui';
 import { useVbenForm } from '#/adapter/form';
-import { message } from 'ant-design-vue';
+import { message, Tooltip } from 'ant-design-vue';
+import { QuestionCircleOutlined } from '@ant-design/icons-vue';
 import {
   getReviewDetail,
   createReview,
@@ -41,7 +42,7 @@ const [Form, formApi] = useVbenForm({
     {
       component: 'Input',
       fieldName: 'score',
-      label: '评分（乘100，如 500=5.00分）',
+      label: () => h('span', {}, ['评分 ', h(Tooltip, { title: '乘100，如 500=5.00分' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]),
       componentProps: { placeholder: '请输入评分（乘100，如 500=5.00分）' },
     },
     {
@@ -53,7 +54,7 @@ const [Form, formApi] = useVbenForm({
     {
       component: 'Input',
       fieldName: 'reviewImage',
-      label: '评价图片（多张逗号分隔）',
+      label: () => h('span', {}, ['评价图片 ', h(Tooltip, { title: '多张逗号分隔' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]),
       componentProps: { placeholder: '请输入评价图片（多张逗号分隔）', maxlength: 2000 },
     },
     {

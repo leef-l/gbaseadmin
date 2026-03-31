@@ -17,7 +17,11 @@ async function initSetupVbenForm() {
       // 一些组件是 v-model:checked 或者 v-model:fileList
       modelPropNameMap: {
         Checkbox: 'checked',
+        FileUpload: 'value',
+        ImageUpload: 'value',
+        JsonEditor: 'value',
         Radio: 'checked',
+        RichText: 'value',
         Switch: 'checked',
         Upload: 'fileList',
       },

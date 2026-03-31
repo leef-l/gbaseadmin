@@ -10,16 +10,18 @@ import (
 
 // PlayActivityStep is the golang structure for table play_activity_step.
 type PlayActivityStep struct {
-	Id          uint64      `orm:"id"           description:"æ­¥éª¤IDï¼ˆSnowflakeï¼‰"` // æ­¥éª¤IDï¼ˆSnowflakeï¼‰
-	ActivityId  uint64      `orm:"activity_id"  description:"æ´»åŠ¨ID"`                // æ´»åŠ¨ID
-	StepNum     int         `orm:"step_num"     description:"æ­¥éª¤åºå·"`            // æ­¥éª¤åºå·
-	Title       string      `orm:"title"        description:"æ­¥éª¤æ ‡é¢˜"`            // æ­¥éª¤æ ‡é¢˜
-	DescContent string      `orm:"desc_content" description:"æ­¥éª¤è¯´æ˜Ž"`            // æ­¥éª¤è¯´æ˜Ž
-	StepImage   string      `orm:"step_image"   description:"æ­¥éª¤ç¤ºä¾‹å›¾ç‰‡"`      // æ­¥éª¤ç¤ºä¾‹å›¾ç‰‡
-	Sort        int         `orm:"sort"         description:"æŽ’åº"`                  // æŽ’åº
-	CreatedBy   uint64      `orm:"created_by"   description:"åˆ›å»ºäººID"`             // åˆ›å»ºäººID
-	DeptId      uint64      `orm:"dept_id"      description:"æ‰€å±žéƒ¨é—¨ID"`          // æ‰€å±žéƒ¨é—¨ID
-	CreatedAt   *gtime.Time `orm:"created_at"   description:"åˆ›å»ºæ—¶é—´"`            // åˆ›å»ºæ—¶é—´
-	UpdatedAt   *gtime.Time `orm:"updated_at"   description:"æ›´æ–°æ—¶é—´"`            // æ›´æ–°æ—¶é—´
-	DeletedAt   *gtime.Time `orm:"deleted_at"   description:"è½¯åˆ é™¤æ—¶é—´"`         // è½¯åˆ é™¤æ—¶é—´
+	Id          uint64      `orm:"id"           description:"步骤ID（Snowflake）"`
+	ActivityId  uint64      `orm:"activity_id"  description:"活动ID"`
+	StepNum     int         `orm:"step_num"     description:"步骤序号"`
+	Title       string      `orm:"title"        description:"步骤标题"`
+	StepType    int         `orm:"step_type"    description:"步骤类型：1=文字 2=链接 3=图片"`
+	ExampleText string      `orm:"example_text" description:"示例文字或链接URL"`
+	DescContent string      `orm:"desc_content" description:"步骤说明"`
+	StepImage   string      `orm:"step_image"   description:"步骤示例图片"`
+	Sort        int         `orm:"sort"         description:"排序"`
+	CreatedBy   uint64      `orm:"created_by"   description:"创建人ID"`
+	DeptId      uint64      `orm:"dept_id"      description:"所属部门ID"`
+	CreatedAt   *gtime.Time `orm:"created_at"   description:"创建时间"`
+	UpdatedAt   *gtime.Time `orm:"updated_at"   description:"更新时间"`
+	DeletedAt   *gtime.Time `orm:"deleted_at"   description:"软删除时间"`
 }

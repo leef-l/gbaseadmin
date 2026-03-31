@@ -2,8 +2,10 @@
 import type { VbenFormProps } from '#/adapter/form';
 import type { VxeGridProps } from '#/adapter/vxe-table';
 
+import { h } from 'vue';
 import { Page, useVbenModal } from '@vben/common-ui';
-import { Button, message, Modal, Tag } from 'ant-design-vue';
+import { Button, message, Modal, Tag, Tooltip } from 'ant-design-vue';
+import { QuestionCircleOutlined } from '@ant-design/icons-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getActivityJoinList, deleteActivityJoin } from '#/api/play/activity_join';
@@ -70,7 +72,7 @@ const gridOptions: VxeGridProps<ActivityJoinItem> = {
     { field: 'activityTitle', title: '活动ID' },
     { field: 'memberID', title: '会员ID' },
     { field: 'joinStatus', title: '参与状态', width: 120, slots: { default: 'joinStatus_cell' } },
-    { field: 'currentStep', title: '当前完成到第几步（步骤活动用）' },
+    { field: 'currentStep', title: '当前步骤', slots: { header: () => h('span', {}, ['当前步骤 ', h(Tooltip, { title: '步骤活动用' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]) } },
     { field: 'remark', title: '备注' },
     { field: 'finishAt', title: '完成时间', width: 180, formatter: 'formatDateTime' },
     { field: 'rewardAt', title: '领奖时间', width: 180, formatter: 'formatDateTime' },

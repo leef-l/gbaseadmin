@@ -40,17 +40,24 @@
   },
   "pnpm": {
     "onlyBuiltDependencies": [
+      "@parcel/watcher",
+      "@swc/core",
+      "@tarojs/binding",
+      "@tarojs/cli",
       "core-js",
-      "core-js-pure"
+      "core-js-pure",
+      "esbuild"
     ]
   },
   "devDependencies": {
     "@babel/core": "^7.24.0",
     "@babel/preset-react": "^7.24.0",
     "@babel/preset-typescript": "^7.24.0",
+    "@pmmmwh/react-refresh-webpack-plugin": "^0.6.2",
     "@tarojs/webpack5-runner": "4.x",
     "@types/react": "^18.3.0",
     "babel-preset-taro": "^4.1.11",
+    "react-refresh": "^0.18.0",
     "sass": "^1.77.0",
     "typescript": "^5.4.0"
   }

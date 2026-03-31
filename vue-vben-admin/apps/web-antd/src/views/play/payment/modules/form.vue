@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { h, ref } from 'vue';
 import { useVbenModal } from '@vben/common-ui';
 import { useVbenForm } from '#/adapter/form';
-import { message } from 'ant-design-vue';
+import { message, Tooltip } from 'ant-design-vue';
+import { QuestionCircleOutlined } from '@ant-design/icons-vue';
 import {
   getPaymentDetail,
   createPayment,
@@ -49,7 +50,7 @@ const [Form, formApi] = useVbenForm({
     {
       component: 'Input',
       fieldName: 'paymentNo',
-      label: '支付流水号（平台内部）',
+      label: () => h('span', {}, ['支付流水号 ', h(Tooltip, { title: '平台内部' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]),
       rules: 'required',
       componentProps: { placeholder: '请输入支付流水号（平台内部）', maxlength: 64 },
     },
@@ -68,7 +69,7 @@ const [Form, formApi] = useVbenForm({
     {
       component: 'InputNumber',
       fieldName: 'payAmount',
-      label: '支付金额（分）',
+      label: () => h('span', {}, ['支付金额 ', h(Tooltip, { title: '分' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]),
       componentProps: { placeholder: '请输入支付金额（分）', class: 'w-full' },
     },
     {
@@ -92,7 +93,7 @@ const [Form, formApi] = useVbenForm({
     {
       component: 'InputNumber',
       fieldName: 'refundAmount',
-      label: '退款金额（分）',
+      label: () => h('span', {}, ['退款金额 ', h(Tooltip, { title: '分' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]),
       componentProps: { placeholder: '请输入退款金额（分）', class: 'w-full' },
     },
     {

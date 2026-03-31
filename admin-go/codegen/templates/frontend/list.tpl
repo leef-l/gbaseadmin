@@ -1,9 +1,17 @@
 <script setup lang="ts">
+{{- if .HasTooltip}}
+import { h } from 'vue';
+{{- end}}
 import type { VbenFormProps } from '#/adapter/form';
 import type { VxeGridProps } from '#/adapter/vxe-table';
 
 import { Page, useVbenModal } from '@vben/common-ui';
+{{- if .HasTooltip}}
+import { Button, message, Modal, Tag, Tooltip } from 'ant-design-vue';
+import { QuestionCircleOutlined } from '@ant-design/icons-vue';
+{{- else}}
 import { Button, message, Modal, Tag } from 'ant-design-vue';
+{{- end}}
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 {{- if .HasParentID}}
@@ -64,7 +72,7 @@ const formOptions: VbenFormProps = {
         class: 'w-full',
       },
       fieldName: '{{.NameLower}}',
-      label: '{{.Label}}',
+      label: '{{.ShortLabel}}',
     },
 {{- end}}
 {{- end}}
@@ -80,18 +88,18 @@ const gridOptions: VxeGridProps<{{.ModelName}}Item> = {
 {{- range .Fields}}
 {{- if and (not .IsHidden) (not .IsID) (not .IsParentID) (not .IsTimeField) (not .IsMultiFK) (not .IsPassword)}}
 {{- if .RefFieldJSON}}
-    { field: '{{.RefFieldJSON}}', title: '{{.Label}}'{{if and $isTree $firstDataCol}}, treeNode: true{{end}} },
+    { field: '{{.RefFieldJSON}}', title: '{{.ShortLabel}}'{{if .TooltipText}}, slots: { header: () => h('span', {}, ['{{.ShortLabel}} ', h(Tooltip, { title: '{{.TooltipText}}' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]) }{{end}}{{if and $isTree $firstDataCol}}, treeNode: true{{end}} },
 {{- else if .IsEnum}}
-    { field: '{{.NameLower}}', title: '{{.Label}}', width: 120, slots: { default: '{{.NameLower}}_cell' }{{if and $isTree $firstDataCol}}, treeNode: true{{end}} },
+    { field: '{{.NameLower}}', title: '{{.ShortLabel}}', width: 120, slots: { default: '{{.NameLower}}_cell' }{{if and $isTree $firstDataCol}}, treeNode: true{{end}} },
 {{- else}}
-    { field: '{{.NameLower}}', title: '{{.Label}}'{{if and $isTree $firstDataCol}}, treeNode: true{{end}} },
+    { field: '{{.NameLower}}', title: '{{.ShortLabel}}'{{if .TooltipText}}, slots: { header: () => h('span', {}, ['{{.ShortLabel}} ', h(Tooltip, { title: '{{.TooltipText}}' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]) }{{end}}{{if and $isTree $firstDataCol}}, treeNode: true{{end}} },
 {{- end}}
 {{- $firstDataCol = false}}
 {{- end}}
 {{- end}}
 {{- range .Fields}}
 {{- if and (not .IsHidden) (.IsTimeField)}}
-    { field: '{{.NameLower}}', title: '{{.Label}}', width: 180, formatter: 'formatDateTime' },
+    { field: '{{.NameLower}}', title: '{{.ShortLabel}}'{{if .TooltipText}}, slots: { header: () => h('span', {}, ['{{.ShortLabel}} ', h(Tooltip, { title: '{{.TooltipText}}' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]) }{{end}}, width: 180, formatter: 'formatDateTime' },
 {{- end}}
 {{- end}}
     { field: 'createdAt', title: '创建时间', width: 180, formatter: 'formatDateTime' },

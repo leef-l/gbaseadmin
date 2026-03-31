@@ -19,6 +19,8 @@ type ActivityStepCreateReq struct {
 	ActivityID snowflake.JsonInt64 `json:"activityID" v:"required#活动ID不能为空" dc:"活动ID"`
 	StepNum int `json:"stepNum"  dc:"步骤序号"`
 	Title string `json:"title" v:"required#步骤标题不能为空" dc:"步骤标题"`
+	StepType int `json:"stepType" d:"1" dc:"步骤类型：1=文字 2=链接 3=图片"`
+	ExampleText string `json:"exampleText" dc:"示例文字或链接URL"`
 	DescContent string `json:"descContent"  dc:"步骤说明（富文本，支持图文）"`
 	StepImage string `json:"stepImage"  dc:"步骤示例图片"`
 	Sort int `json:"sort"  dc:"排序（升序）"`
@@ -36,6 +38,8 @@ type ActivityStepUpdateReq struct {
 	ActivityID snowflake.JsonInt64 `json:"activityID" dc:"活动ID"`
 	StepNum int `json:"stepNum" dc:"步骤序号"`
 	Title string `json:"title" dc:"步骤标题"`
+	StepType int `json:"stepType" dc:"步骤类型：1=文字 2=链接 3=图片"`
+	ExampleText string `json:"exampleText" dc:"示例文字或链接URL"`
 	DescContent string `json:"descContent" dc:"步骤说明（富文本，支持图文）"`
 	StepImage string `json:"stepImage" dc:"步骤示例图片"`
 	Sort int `json:"sort" dc:"排序（升序）"`

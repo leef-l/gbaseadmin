@@ -128,7 +128,7 @@ export default function IndexPage() {
       </View>
       <View className="home__goods">
         {goods.map((g) => (
-          <GoodsCard key={g.goodsId} {...g} onClick={() => Taro.navigateTo({ url: `/pages/goods/detail?id=${g.goodsId}` })} />
+          <GoodsCard key={g.id} {...g} onClick={() => Taro.navigateTo({ url: `/pages/goods/detail?id=${g.id}` })} />
         ))}
         <LoadMore hasMore={hasMore} loading={loading} />
       </View>

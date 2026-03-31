@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { h, ref } from 'vue';
 import { useVbenModal } from '@vben/common-ui';
 import { useVbenForm } from '#/adapter/form';
-import { message } from 'ant-design-vue';
+import { message, Tooltip } from 'ant-design-vue';
+import { QuestionCircleOutlined } from '@ant-design/icons-vue';
 import {
   getCouponDetail,
   createCoupon,
@@ -47,19 +48,19 @@ const [Form, formApi] = useVbenForm({
     {
       component: 'Input',
       fieldName: 'faceValue',
-      label: '面值（分，满减/无门槛时为抵扣额，折扣时为折扣值如 85=8.5折）',
+      label: () => h('span', {}, ['面值 ', h(Tooltip, { title: '分，满减/无门槛时为抵扣额，折扣时为折扣值如 85=8.5折' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]),
       componentProps: { placeholder: '请输入面值（分，满减/无门槛时为抵扣额，折扣时为折扣值如 85=8.5折）' },
     },
     {
       component: 'InputNumber',
       fieldName: 'minAmount',
-      label: '最低消费金额（分，0表示无门槛）',
+      label: () => h('span', {}, ['最低消费金额 ', h(Tooltip, { title: '分，0表示无门槛' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]),
       componentProps: { placeholder: '请输入最低消费金额（分，0表示无门槛）', class: 'w-full' },
     },
     {
       component: 'InputNumber',
       fieldName: 'totalNum',
-      label: '发放总量（0表示不限）',
+      label: () => h('span', {}, ['发放总量 ', h(Tooltip, { title: '0表示不限' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]),
       componentProps: { placeholder: '请输入发放总量（0表示不限）', class: 'w-full' },
     },
     {
@@ -97,7 +98,7 @@ const [Form, formApi] = useVbenForm({
     {
       component: 'InputNumber',
       fieldName: 'sort',
-      label: '排序（升序）',
+      label: () => h('span', {}, ['排序 ', h(Tooltip, { title: '升序' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]),
       componentProps: { placeholder: '请输入排序（升序）', class: 'w-full' },
     },
     {

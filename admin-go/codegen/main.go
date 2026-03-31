@@ -1,13 +1,17 @@
 package main
 
 import (
+	"bytes"
 	"flag"
 	"fmt"
 	"os"
 	"os/exec"
 	"path/filepath"
+	"sort"
 	"strings"
+	"text/template"
 	"time"
+	"unicode"
 
 	"gbaseadmin/codegen/generator/backend"
 	"gbaseadmin/codegen/generator/frontend"
@@ -63,6 +67,10 @@ func main() {
 	cwd, _ := os.Getwd()
 	templateDir := filepath.Join(cwd, "templates")
 
+	// 按应用分组：记录每个应用的模块名和表名
+	appModules := make(map[string][]string) // appName -> []moduleName
+	appTables := make(map[string][]string)  // appName -> []tableName
+
 	for _, tableName := range tableNames {
 		fmt.Printf("\n[codegen] 开始生成表: %s\n", tableName)
 
@@ -80,20 +88,23 @@ func main() {
 
 		fmt.Printf("[codegen] 应用: %s, 模块: %s, DAO: %s\n", meta.AppName, meta.ModuleName, meta.DaoName)
 
+		// 记录应用的模块和表名
+		appModules[meta.AppName] = append(appModules[meta.AppName], meta.ModuleName)
+		appTables[meta.AppName] = append(appTables[meta.AppName], meta.TableName)
+
 		// 检查后端应用目录是否存在，不存在则自动创建
 		appDir := filepath.Join(cfg.Backend.Output, meta.AppName)
 		if _, err := os.Stat(appDir); os.IsNotExist(err) {
 			fmt.Printf("[codegen] 应用目录 %s 不存在，正在创建...\n", appDir)
-			// 切换到项目根目录执行 gf init
-			projectRoot := filepath.Dir(cfg.Backend.Output) // ../app/ → ..
+			projectRoot := filepath.Dir(cfg.Backend.Output)
 			if projectRoot == "" {
 				projectRoot = "."
 			}
-			cmd := exec.Command("gf", "init", "app/"+meta.AppName, "-a")
-			cmd.Dir = projectRoot
-			cmd.Stdout = os.Stdout
-			cmd.Stderr = os.Stderr
-			if err := cmd.Run(); err != nil {
+			initCmd := exec.Command("gf", "init", "app/"+meta.AppName, "-a")
+			initCmd.Dir = projectRoot
+			initCmd.Stdout = os.Stdout
+			initCmd.Stderr = os.Stderr
+			if err := initCmd.Run(); err != nil {
 				fmt.Printf("[codegen] ⚠ gf init 执行失败: %v，尝试手动创建目录\n", err)
 				if mkErr := os.MkdirAll(appDir, 0755); mkErr != nil {
 					fmt.Printf("[codegen] ✗ 创建目录失败: %v\n", mkErr)
@@ -107,7 +118,6 @@ func main() {
 
 		// 生成后端代码
 		if only != "frontend" && only != "menu" {
-			// 后端输出目录 = 配置根目录 + 应用名
 			backendOutput := filepath.Join(cfg.Backend.Output, meta.AppName)
 			backendGen := backend.New(backend.Config{
 				TemplateDir: filepath.Join(templateDir, "backend"),
@@ -171,6 +181,287 @@ func main() {
 		}
 	}
 
+	// ========== 后置生成：按应用生成 DAO / main.go / cmd.go / middleware ==========
+	if only != "frontend" && only != "menu" && !dryRun {
+		for appName, newModules := range appModules {
+			appDir := filepath.Join(cfg.Backend.Output, appName)
+			fmt.Printf("\n[codegen] ===== 应用 %s 后置生成 =====\n", appName)
+
+			// 1. 扫描已有的 logic 和 controller 目录，合并模块列表
+			allModules := scanExistingModules(appDir, newModules)
+
+			// 2. 收集所有表名（已有 + 新增）用于 hack/config.yaml
+			allTables := scanExistingTables(appDir, appName, appTables[appName])
+
+			// 3. 生成 hack/config.yaml
+			hackDir := filepath.Join(appDir, "hack")
+			hackFile := filepath.Join(hackDir, "config.yaml")
+			if err := os.MkdirAll(hackDir, 0755); err != nil {
+				fmt.Printf("[codegen] ✗ 创建 hack 目录失败: %v\n", err)
+			} else {
+				hackData := map[string]string{
+					"DBLink": cfg.Database.DSNForHack(),
+					"Tables": strings.Join(allTables, ","),
+				}
+				if err := renderTemplate(
+					filepath.Join(templateDir, "backend", "hack_config.tpl"),
+					hackFile,
+					hackData,
+					true, // hack/config.yaml 总是覆盖
+				); err != nil {
+					fmt.Printf("[codegen] ✗ 生成 hack/config.yaml 失败: %v\n", err)
+				} else {
+					fmt.Printf("[codegen] ✓ hack/config.yaml\n")
+					totalFiles++
+				}
+			}
+
+			// 4. 执行 gf gen dao
+			fmt.Printf("[codegen] 执行 gf gen dao (应用: %s)...\n", appName)
+			daoCmd := exec.Command("gf", "gen", "dao")
+			daoCmd.Dir = appDir
+			daoCmd.Stdout = os.Stdout
+			daoCmd.Stderr = os.Stderr
+			if err := daoCmd.Run(); err != nil {
+				fmt.Printf("[codegen] ⚠ gf gen dao 执行失败: %v\n", err)
+			} else {
+				fmt.Printf("[codegen] ✓ gf gen dao 完成\n")
+			}
+
+			// 5. 生成 main.go
+			mainFile := filepath.Join(appDir, "main.go")
+			mainData := map[string]interface{}{
+				"AppName": appName,
+				"Modules": allModules,
+			}
+			if err := renderTemplate(
+				filepath.Join(templateDir, "backend", "main.tpl"),
+				mainFile,
+				mainData,
+				force,
+			); err != nil {
+				fmt.Printf("[codegen] ✗ 生成 main.go 失败: %v\n", err)
+			} else {
+				fmt.Printf("[codegen] ✓ main.go\n")
+				totalFiles++
+			}
+
+			// 6. 生成 internal/cmd/cmd.go
+			cmdDir := filepath.Join(appDir, "internal", "cmd")
+			if err := os.MkdirAll(cmdDir, 0755); err != nil {
+				fmt.Printf("[codegen] ✗ 创建 cmd 目录失败: %v\n", err)
+			} else {
+				cmdFile := filepath.Join(cmdDir, "cmd.go")
+				cmdData := map[string]interface{}{
+					"AppName": appName,
+					"Modules": allModules,
+				}
+				if err := renderTemplateWithFuncs(
+					filepath.Join(templateDir, "backend", "cmd.tpl"),
+					cmdFile,
+					cmdData,
+					force,
+				); err != nil {
+					fmt.Printf("[codegen] ✗ 生成 cmd.go 失败: %v\n", err)
+				} else {
+					fmt.Printf("[codegen] ✓ internal/cmd/cmd.go\n")
+					totalFiles++
+				}
+			}
+
+			// 7. 复制 middleware/auth.go（如果不存在）
+			mwDir := filepath.Join(appDir, "internal", "middleware")
+			mwFile := filepath.Join(mwDir, "auth.go")
+			if _, err := os.Stat(mwFile); os.IsNotExist(err) {
+				if err := os.MkdirAll(mwDir, 0755); err != nil {
+					fmt.Printf("[codegen] ✗ 创建 middleware 目录失败: %v\n", err)
+				} else {
+					tplPath := filepath.Join(templateDir, "backend", "middleware_auth.tpl")
+					content, err := os.ReadFile(tplPath)
+					if err != nil {
+						fmt.Printf("[codegen] ✗ 读取 middleware 模板失败: %v\n", err)
+					} else {
+						if err := os.WriteFile(mwFile, content, 0644); err != nil {
+							fmt.Printf("[codegen] ✗ 写入 middleware/auth.go 失败: %v\n", err)
+						} else {
+							fmt.Printf("[codegen] ✓ internal/middleware/auth.go\n")
+							totalFiles++
+						}
+					}
+				}
+			} else {
+				fmt.Printf("[codegen] 跳过（已存在）: internal/middleware/auth.go\n")
+			}
+
+			// 8. 确保 internal/packed/packed.go 存在
+			packedDir := filepath.Join(appDir, "internal", "packed")
+			packedFile := filepath.Join(packedDir, "packed.go")
+			if _, err := os.Stat(packedFile); os.IsNotExist(err) {
+				if err := os.MkdirAll(packedDir, 0755); err != nil {
+					fmt.Printf("[codegen] ✗ 创建 packed 目录失败: %v\n", err)
+				} else {
+					if err := os.WriteFile(packedFile, []byte("package packed\n"), 0644); err != nil {
+						fmt.Printf("[codegen] ✗ 写入 packed.go 失败: %v\n", err)
+					} else {
+						fmt.Printf("[codegen] ✓ internal/packed/packed.go\n")
+						totalFiles++
+					}
+				}
+			}
+		}
+	}
+
 	elapsed := time.Since(start)
 	fmt.Printf("\n[codegen] 全部完成！共生成 %d 个文件，耗时 %.1fs\n", totalFiles, elapsed.Seconds())
+}
+
+// scanExistingModules 扫描应用目录下已有的 logic 子目录，合并新模块，返回去重排序后的列表
+func scanExistingModules(appDir string, newModules []string) []string {
+	moduleSet := make(map[string]bool)
+	for _, m := range newModules {
+		moduleSet[m] = true
+	}
+
+	// 扫描 internal/logic/ 下的子目录
+	logicDir := filepath.Join(appDir, "internal", "logic")
+	entries, err := os.ReadDir(logicDir)
+	if err == nil {
+		for _, e := range entries {
+			if e.IsDir() {
+				moduleSet[e.Name()] = true
+			}
+		}
+	}
+
+	// 扫描 internal/controller/ 下的子目录
+	ctrlDir := filepath.Join(appDir, "internal", "controller")
+	entries, err = os.ReadDir(ctrlDir)
+	if err == nil {
+		for _, e := range entries {
+			if e.IsDir() {
+				moduleSet[e.Name()] = true
+			}
+		}
+	}
+
+	// 去重排序
+	var modules []string
+	for m := range moduleSet {
+		modules = append(modules, m)
+	}
+	sort.Strings(modules)
+	return modules
+}
+
+// scanExistingTables 扫描已有的 hack/config.yaml 中的表名，合并新表名，返回去重排序后的列表
+func scanExistingTables(appDir string, appName string, newTables []string) []string {
+	tableSet := make(map[string]bool)
+	for _, t := range newTables {
+		tableSet[t] = true
+	}
+
+	// 尝试从已有的 hack/config.yaml 中提取 tables 字段
+	hackFile := filepath.Join(appDir, "hack", "config.yaml")
+	data, err := os.ReadFile(hackFile)
+	if err == nil {
+		content := string(data)
+		// 简单解析: 找到 tables: "xxx,yyy" 行
+		for _, line := range strings.Split(content, "\n") {
+			line = strings.TrimSpace(line)
+			if strings.HasPrefix(line, "tables:") {
+				val := strings.TrimPrefix(line, "tables:")
+				val = strings.TrimSpace(val)
+				val = strings.Trim(val, "\"")
+				for _, t := range strings.Split(val, ",") {
+					t = strings.TrimSpace(t)
+					if t != "" {
+						tableSet[t] = true
+					}
+				}
+			}
+		}
+	}
+
+	// 也扫描 internal/dao/internal/ 下的 .go 文件名作为表名推断
+	// DAO 文件名就是完整表名（如 play_activity.go → play_activity）
+	daoInternalDir := filepath.Join(appDir, "internal", "dao", "internal")
+	entries, err := os.ReadDir(daoInternalDir)
+	if err == nil {
+		for _, e := range entries {
+			if !e.IsDir() && strings.HasSuffix(e.Name(), ".go") {
+				name := strings.TrimSuffix(e.Name(), ".go")
+				if name != "" {
+					tableSet[name] = true
+				}
+			}
+		}
+	}
+
+	var tables []string
+	for t := range tableSet {
+		tables = append(tables, t)
+	}
+	sort.Strings(tables)
+	return tables
+}
+
+// renderTemplate 渲染模板到文件，overwrite 控制是否覆盖已有文件
+func renderTemplate(tplPath, outPath string, data interface{}, overwrite bool) error {
+	if !overwrite {
+		if _, err := os.Stat(outPath); err == nil {
+			fmt.Printf("  跳过（已存在）: %s\n", outPath)
+			return nil
+		}
+	}
+	tpl, err := template.ParseFiles(tplPath)
+	if err != nil {
+		return fmt.Errorf("解析模板 %s 失败: %v", tplPath, err)
+	}
+	var buf bytes.Buffer
+	if err := tpl.Execute(&buf, data); err != nil {
+		return fmt.Errorf("渲染模板失败: %v", err)
+	}
+	if err := os.MkdirAll(filepath.Dir(outPath), 0755); err != nil {
+		return fmt.Errorf("创建目录失败: %v", err)
+	}
+	return os.WriteFile(outPath, buf.Bytes(), 0644)
+}
+
+// renderTemplateWithFuncs 渲染模板到文件，支持自定义模板函数
+func renderTemplateWithFuncs(tplPath, outPath string, data interface{}, overwrite bool) error {
+	if !overwrite {
+		if _, err := os.Stat(outPath); err == nil {
+			fmt.Printf("  跳过（已存在）: %s\n", outPath)
+			return nil
+		}
+	}
+	funcMap := template.FuncMap{
+		"ModuleCamel": snakeToCamelLocal,
+	}
+	tpl, err := template.New(filepath.Base(tplPath)).Funcs(funcMap).ParseFiles(tplPath)
+	if err != nil {
+		return fmt.Errorf("解析模板 %s 失败: %v", tplPath, err)
+	}
+	var buf bytes.Buffer
+	if err := tpl.Execute(&buf, data); err != nil {
+		return fmt.Errorf("渲染模板失败: %v", err)
+	}
+	if err := os.MkdirAll(filepath.Dir(outPath), 0755); err != nil {
+		return fmt.Errorf("创建目录失败: %v", err)
+	}
+	return os.WriteFile(outPath, buf.Bytes(), 0644)
+}
+
+// snakeToCamelLocal 将 snake_case 转为 CamelCase（本地版本，不依赖 parser 包）
+func snakeToCamelLocal(s string) string {
+	parts := strings.Split(s, "_")
+	for i, p := range parts {
+		if p == "" {
+			continue
+		}
+		runes := []rune(p)
+		runes[0] = unicode.ToUpper(runes[0])
+		parts[i] = string(runes)
+	}
+	return strings.Join(parts, "")
 }

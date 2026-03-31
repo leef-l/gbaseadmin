@@ -37,7 +37,7 @@ const config = {
       port: 10086,
       proxy: {
         '/api/playapi': {
-          target: 'http://localhost:8001',
+          target: 'https://pw.easytestdev.online',
           changeOrigin: true,
         },
       },

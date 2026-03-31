@@ -2,8 +2,11 @@
 import type { VbenFormProps } from '#/adapter/form';
 import type { VxeGridProps } from '#/adapter/vxe-table';
 
+import { h } from 'vue';
+
 import { Page, useVbenModal } from '@vben/common-ui';
-import { Button, message, Modal, Tag } from 'ant-design-vue';
+import { Button, message, Modal, Tag, Tooltip } from 'ant-design-vue';
+import { QuestionCircleOutlined } from '@ant-design/icons-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getReviewList, deleteReview } from '#/api/play/review';
@@ -96,9 +99,9 @@ const gridOptions: VxeGridProps<ReviewItem> = {
     { field: 'orderID', title: '订单ID' },
     { field: 'memberID', title: '评价会员ID' },
     { field: 'coachID', title: '被评陪玩师ID' },
-    { field: 'score', title: '评分（乘100，如 500=5.00分）' },
+    { field: 'score', title: '评分', slots: { header: () => h('span', {}, ['评分 ', h(Tooltip, { title: '乘100，如 500=5.00分' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]) } },
     { field: 'reviewContent', title: '评价内容' },
-    { field: 'reviewImage', title: '评价图片（多张逗号分隔）' },
+    { field: 'reviewImage', title: '评价图片', slots: { header: () => h('span', {}, ['评价图片 ', h(Tooltip, { title: '多张逗号分隔' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]) } },
     { field: 'replyContent', title: '陪玩师回复内容' },
     { field: 'isAnonymous', title: '是否匿名', width: 120, slots: { default: 'isAnonymous_cell' } },
     { field: 'status', title: '状态', width: 120, slots: { default: 'status_cell' } },

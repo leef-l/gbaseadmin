@@ -2,8 +2,10 @@
 import type { VbenFormProps } from '#/adapter/form';
 import type { VxeGridProps } from '#/adapter/vxe-table';
 
+import { h } from 'vue';
 import { Page, useVbenModal } from '@vben/common-ui';
-import { Button, message, Modal, Tag } from 'ant-design-vue';
+import { Button, message, Modal, Tag, Tooltip } from 'ant-design-vue';
+import { QuestionCircleOutlined } from '@ant-design/icons-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getBalanceLogList, deleteBalanceLog } from '#/api/play/balance_log';
@@ -71,10 +73,10 @@ const gridOptions: VxeGridProps<BalanceLogItem> = {
     { title: '序号', type: 'seq', width: 50 },
     { field: 'memberID', title: '会员ID' },
     { field: 'bizType', title: '业务类型', width: 120, slots: { default: 'bizType_cell' } },
-    { field: 'bizID', title: '关联业务ID（订单ID/充值订单ID/活动ID）' },
-    { field: 'changeAmount', title: '变动金额（分，正数增加负数减少）' },
-    { field: 'beforeBalance', title: '变动前余额（分）' },
-    { field: 'afterBalance', title: '变动后余额（分）' },
+    { field: 'bizID', title: '业务ID', slots: { header: () => h('span', {}, ['业务ID ', h(Tooltip, { title: '订单ID/充值订单ID/活动ID' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]) } },
+    { field: 'changeAmount', title: '变动金额', slots: { header: () => h('span', {}, ['变动金额 ', h(Tooltip, { title: '分，正数增加负数减少' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]) } },
+    { field: 'beforeBalance', title: '变动前余额', slots: { header: () => h('span', {}, ['变动前余额 ', h(Tooltip, { title: '单位：分' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]) } },
+    { field: 'afterBalance', title: '变动后余额', slots: { header: () => h('span', {}, ['变动后余额 ', h(Tooltip, { title: '单位：分' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]) } },
     { field: 'remark', title: '备注说明' },
     { field: 'createdAt', title: '创建时间', width: 180, formatter: 'formatDateTime' },
     { title: '操作', width: 200, fixed: 'right', slots: { default: 'action' } },

@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { h, ref } from 'vue';
 import { useVbenModal } from '@vben/common-ui';
 import { useVbenForm } from '#/adapter/form';
-import { message } from 'ant-design-vue';
+import { message, Tooltip } from 'ant-design-vue';
+import { QuestionCircleOutlined } from '@ant-design/icons-vue';
 import {
   getCouponMemberDetail,
   createCouponMember,
@@ -41,7 +42,7 @@ const [Form, formApi] = useVbenForm({
     {
       component: 'Select',
       fieldName: 'orderID',
-      label: '使用的订单ID（0表示未使用）',
+      label: () => h('span', {}, ['使用的订单ID ', h(Tooltip, { title: '0表示未使用' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]),
       componentProps: { options: orderIDOptions, placeholder: '请选择使用的订单ID（0表示未使用）', allowClear: true, class: 'w-full' },
     },
     {

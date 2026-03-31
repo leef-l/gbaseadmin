@@ -2,8 +2,10 @@
 import type { VbenFormProps } from '#/adapter/form';
 import type { VxeGridProps } from '#/adapter/vxe-table';
 
+import { h } from 'vue';
 import { Page, useVbenModal } from '@vben/common-ui';
-import { Button, message, Modal, Tag } from 'ant-design-vue';
+import { Button, message, Modal, Tag, Tooltip } from 'ant-design-vue';
+import { QuestionCircleOutlined } from '@ant-design/icons-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getRechargeOrderList, deleteRechargeOrder } from '#/api/play/recharge_order';
@@ -98,8 +100,8 @@ const gridOptions: VxeGridProps<RechargeOrderItem> = {
     { field: 'orderNo', title: '充值订单号' },
     { field: 'memberID', title: '会员ID' },
     { field: 'rechargePlanTitle', title: '充值方案ID' },
-    { field: 'amount', title: '充值金额（分）' },
-    { field: 'giftAmount', title: '赠送金额（分）' },
+    { field: 'amount', title: '充值金额', slots: { header: () => h('span', {}, ['充值金额 ', h(Tooltip, { title: '单位：分' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]) } },
+    { field: 'giftAmount', title: '赠送金额', slots: { header: () => h('span', {}, ['赠送金额 ', h(Tooltip, { title: '单位：分' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]) } },
     { field: 'payType', title: '支付方式', width: 120, slots: { default: 'payType_cell' } },
     { field: 'tradeNo', title: '第三方交易号' },
     { field: 'payStatus', title: '支付状态', width: 120, slots: { default: 'payStatus_cell' } },

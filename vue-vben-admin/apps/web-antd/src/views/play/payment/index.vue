@@ -2,8 +2,10 @@
 import type { VbenFormProps } from '#/adapter/form';
 import type { VxeGridProps } from '#/adapter/vxe-table';
 
+import { h } from 'vue';
 import { Page, useVbenModal } from '@vben/common-ui';
-import { Button, message, Modal, Tag } from 'ant-design-vue';
+import { Button, message, Modal, Tag, Tooltip } from 'ant-design-vue';
+import { QuestionCircleOutlined } from '@ant-design/icons-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getPaymentList, deletePayment } from '#/api/play/payment';
@@ -101,12 +103,12 @@ const gridOptions: VxeGridProps<PaymentItem> = {
     { title: '序号', type: 'seq', width: 50 },
     { field: 'orderID', title: '订单ID' },
     { field: 'memberID', title: '会员ID' },
-    { field: 'paymentNo', title: '支付流水号（平台内部）' },
+    { field: 'paymentNo', title: '流水号', slots: { header: () => h('span', {}, ['流水号 ', h(Tooltip, { title: '平台内部' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]) } },
     { field: 'tradeNo', title: '第三方交易号' },
     { field: 'payType', title: '支付方式', width: 120, slots: { default: 'payType_cell' } },
-    { field: 'payAmount', title: '支付金额（分）' },
+    { field: 'payAmount', title: '支付金额', slots: { header: () => h('span', {}, ['支付金额 ', h(Tooltip, { title: '单位：分' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]) } },
     { field: 'payStatus', title: '支付状态', width: 120, slots: { default: 'payStatus_cell' } },
-    { field: 'refundAmount', title: '退款金额（分）' },
+    { field: 'refundAmount', title: '退款金额', slots: { header: () => h('span', {}, ['退款金额 ', h(Tooltip, { title: '单位：分' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]) } },
     { field: 'callbackContent', title: '回调报文' },
     { field: 'payAt', title: '支付成功时间', width: 180, formatter: 'formatDateTime' },
     { field: 'refundAt', title: '退款时间', width: 180, formatter: 'formatDateTime' },

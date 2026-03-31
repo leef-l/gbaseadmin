@@ -2,8 +2,11 @@
 import type { VbenFormProps } from '#/adapter/form';
 import type { VxeGridProps } from '#/adapter/vxe-table';
 
+import { h } from 'vue';
+
 import { Page, useVbenModal } from '@vben/common-ui';
-import { Button, message, Modal, Tag } from 'ant-design-vue';
+import { Button, message, Modal, Tag, Tooltip } from 'ant-design-vue';
+import { QuestionCircleOutlined } from '@ant-design/icons-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getActivityRewardList, deleteActivityReward } from '#/api/play/activity_reward';
@@ -69,9 +72,9 @@ const gridOptions: VxeGridProps<ActivityRewardItem> = {
     { title: '序号', type: 'seq', width: 50 },
     { field: 'activityTitle', title: '活动ID' },
     { field: 'rewardType', title: '奖励类型', width: 120, slots: { default: 'rewardType_cell' } },
-    { field: 'rewardValue', title: '奖励数值（余额=分，优惠券=coupon_id，经验=值，等级天数=天）' },
-    { field: 'rewardName', title: '奖励名称（展示用，如"送50元余额"）' },
-    { field: 'sort', title: '排序（升序）' },
+    { field: 'rewardValue', title: '奖励数值', slots: { header: () => h('span', {}, ['奖励数值 ', h(Tooltip, { title: '余额=分，优惠券=coupon_id，经验=值，等级天数=天' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]) } },
+    { field: 'rewardName', title: '奖励名称', slots: { header: () => h('span', {}, ['奖励名称 ', h(Tooltip, { title: '展示用，如"送50元余额"' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]) } },
+    { field: 'sort', title: '排序', slots: { header: () => h('span', {}, ['排序 ', h(Tooltip, { title: '升序' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]) } },
     { field: 'createdAt', title: '创建时间', width: 180, formatter: 'formatDateTime' },
     { title: '操作', width: 200, fixed: 'right', slots: { default: 'action' } },
   ],

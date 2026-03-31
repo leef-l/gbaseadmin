@@ -2,8 +2,11 @@
 import type { VbenFormProps } from '#/adapter/form';
 import type { VxeGridProps } from '#/adapter/vxe-table';
 
+import { h } from 'vue';
+
 import { Page, useVbenModal } from '@vben/common-ui';
-import { Button, message, Modal, Tag } from 'ant-design-vue';
+import { Button, message, Modal, Tag, Tooltip } from 'ant-design-vue';
+import { QuestionCircleOutlined } from '@ant-design/icons-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getCoachList, deleteCoach } from '#/api/play/coach';
@@ -95,17 +98,17 @@ const gridOptions: VxeGridProps<CoachItem> = {
     { title: '序号', type: 'seq', width: 50 },
     { field: 'memberID', title: '关联会员ID' },
     { field: 'coachLevelTitle', title: '陪玩师等级ID' },
-    { field: 'shopTitle', title: '所属店铺ID（0表示无店铺）' },
+    { field: 'shopTitle', title: '所属店铺', slots: { header: () => h('span', {}, ['所属店铺 ', h(Tooltip, { title: '0表示无店铺' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]) } },
     { field: 'realName', title: '真实姓名' },
     { field: 'intro', title: '个人简介' },
     { field: 'coverImage', title: '封面图' },
     { field: 'totalOrders', title: '总接单数' },
-    { field: 'totalScore', title: '总评分（乘100，如 500=5.00）' },
+    { field: 'totalScore', title: '总评分', slots: { header: () => h('span', {}, ['总评分 ', h(Tooltip, { title: '乘100，如 500=5.00' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]) } },
     { field: 'scoreNum', title: '评分人数' },
-    { field: 'incomeTotal', title: '累计收入（分）' },
-    { field: 'incomeBalance', title: '可提现余额（分）' },
+    { field: 'incomeTotal', title: '累计收入', slots: { header: () => h('span', {}, ['累计收入 ', h(Tooltip, { title: '单位：分' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]) } },
+    { field: 'incomeBalance', title: '可提现余额', slots: { header: () => h('span', {}, ['可提现余额 ', h(Tooltip, { title: '单位：分' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]) } },
     { field: 'isOnline', title: '是否在线', width: 120, slots: { default: 'isOnline_cell' } },
-    { field: 'sort', title: '排序（升序）' },
+    { field: 'sort', title: '排序', slots: { header: () => h('span', {}, ['排序 ', h(Tooltip, { title: '升序' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]) } },
     { field: 'status', title: '状态', width: 120, slots: { default: 'status_cell' } },
     { field: 'createdAt', title: '创建时间', width: 180, formatter: 'formatDateTime' },
     { title: '操作', width: 200, fixed: 'right', slots: { default: 'action' } },

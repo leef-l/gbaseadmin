@@ -10,6 +10,7 @@ import (
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/os/glog"
 	"github.com/gogf/gf/v2/os/gtime"
+	"github.com/gogf/gf/v2/util/grand"
 
 	v1 "gbaseadmin/api/playapi/v1"
 	"gbaseadmin/app/play/internal/dao"
@@ -67,12 +68,16 @@ func (s *sAuth) Login(ctx context.Context, req *v1.AuthLoginReq) (*v1.AuthLoginR
 			phone4 = phone4[len(phone4)-4:]
 		}
 
+		// 生成32位随机密码
+		randomPwd := grand.S(32)
+
 		_, err = dao.PlayMember.Ctx(ctx).Data(g.Map{
 			memberColumns.Id:            memberId,
 			memberColumns.Phone:         req.Phone,
 			memberColumns.Nickname:      "用户" + phone4,
 			memberColumns.Avatar:        "",
 			memberColumns.Gender:        0,
+			memberColumns.Password:      randomPwd,
 			memberColumns.MemberLevelId: levelId.Int64(),
 			memberColumns.Exp:           0,
 			memberColumns.Balance:       0,

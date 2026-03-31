@@ -1,8 +1,17 @@
 <script setup lang="ts">
+{{- if .HasTooltip}}
+import { h, ref } from 'vue';
+{{- else}}
 import { ref } from 'vue';
+{{- end}}
 import { useVbenModal } from '@vben/common-ui';
 import { useVbenForm } from '#/adapter/form';
+{{- if .HasTooltip}}
+import { message, Tooltip } from 'ant-design-vue';
+import { QuestionCircleOutlined } from '@ant-design/icons-vue';
+{{- else}}
 import { message } from 'ant-design-vue';
+{{- end}}
 import {
   get{{.ModelName}}Detail,
   create{{.ModelName}},
@@ -38,7 +47,7 @@ const [Form, formApi] = useVbenForm({
     {
       component: 'InputPassword',
       fieldName: '{{.NameLower}}',
-      label: '{{.Label}}',
+      label: {{if .TooltipText}}() => h('span', {}, ['{{.ShortLabel}} ', h(Tooltip, { title: '{{.TooltipText}}' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]){{else}}'{{.Label}}'{{end}},
 {{- if .IsRequired}}
       rules: 'required',
 {{- end}}
@@ -48,7 +57,7 @@ const [Form, formApi] = useVbenForm({
     {
       component: 'InputNumber',
       fieldName: '{{.NameLower}}',
-      label: '{{.Label}}',
+      label: {{if .TooltipText}}() => h('span', {}, ['{{.ShortLabel}} ', h(Tooltip, { title: '{{.TooltipText}}' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]){{else}}'{{.Label}}'{{end}},
 {{- if .IsRequired}}
       rules: 'required',
 {{- end}}
@@ -58,7 +67,7 @@ const [Form, formApi] = useVbenForm({
     {
       component: 'Textarea',
       fieldName: '{{.NameLower}}',
-      label: '{{.Label}}',
+      label: {{if .TooltipText}}() => h('span', {}, ['{{.ShortLabel}} ', h(Tooltip, { title: '{{.TooltipText}}' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]){{else}}'{{.Label}}'{{end}},
 {{- if .IsRequired}}
       rules: 'required',
 {{- end}}
@@ -68,7 +77,7 @@ const [Form, formApi] = useVbenForm({
     {
       component: 'Switch',
       fieldName: '{{.NameLower}}',
-      label: '{{.Label}}',
+      label: {{if .TooltipText}}() => h('span', {}, ['{{.ShortLabel}} ', h(Tooltip, { title: '{{.TooltipText}}' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]){{else}}'{{.Label}}'{{end}},
       componentProps: { checkedValue: 1, unCheckedValue: 0 },
       defaultValue: {{if .DefaultValue}}{{.DefaultValue}}{{else}}0{{end}},
     },
@@ -76,7 +85,7 @@ const [Form, formApi] = useVbenForm({
     {
       component: 'RadioGroup',
       fieldName: '{{.NameLower}}',
-      label: '{{.Label}}',
+      label: {{if .TooltipText}}() => h('span', {}, ['{{.ShortLabel}} ', h(Tooltip, { title: '{{.TooltipText}}' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]){{else}}'{{.Label}}'{{end}},
 {{- if .IsRequired}}
       rules: 'required',
 {{- end}}
@@ -86,7 +95,7 @@ const [Form, formApi] = useVbenForm({
     {
       component: 'Select',
       fieldName: '{{.NameLower}}',
-      label: '{{.Label}}',
+      label: {{if .TooltipText}}() => h('span', {}, ['{{.ShortLabel}} ', h(Tooltip, { title: '{{.TooltipText}}' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]){{else}}'{{.Label}}'{{end}},
 {{- if .IsRequired}}
       rules: 'selectRequired',
 {{- end}}
@@ -96,7 +105,7 @@ const [Form, formApi] = useVbenForm({
     {
       component: 'Select',
       fieldName: '{{.NameLower}}',
-      label: '{{.Label}}',
+      label: {{if .TooltipText}}() => h('span', {}, ['{{.ShortLabel}} ', h(Tooltip, { title: '{{.TooltipText}}' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]){{else}}'{{.Label}}'{{end}},
 {{- if .IsRequired}}
       rules: 'selectRequired',
 {{- end}}
@@ -106,7 +115,7 @@ const [Form, formApi] = useVbenForm({
     {
       component: 'TreeSelect',
       fieldName: '{{.NameLower}}',
-      label: '{{.Label}}',
+      label: {{if .TooltipText}}() => h('span', {}, ['{{.ShortLabel}} ', h(Tooltip, { title: '{{.TooltipText}}' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]){{else}}'{{.Label}}'{{end}},
 {{- if .IsRequired}}
       rules: 'selectRequired',
 {{- end}}
@@ -123,7 +132,7 @@ const [Form, formApi] = useVbenForm({
     {
       component: 'TreeSelect',
       fieldName: '{{.NameLower}}',
-      label: '{{.Label}}',
+      label: {{if .TooltipText}}() => h('span', {}, ['{{.ShortLabel}} ', h(Tooltip, { title: '{{.TooltipText}}' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]){{else}}'{{.Label}}'{{end}},
 {{- if .IsRequired}}
       rules: 'selectRequired',
 {{- end}}
@@ -141,17 +150,57 @@ const [Form, formApi] = useVbenForm({
     {
       component: 'DatePicker',
       fieldName: '{{.NameLower}}',
-      label: '{{.Label}}',
+      label: {{if .TooltipText}}() => h('span', {}, ['{{.ShortLabel}} ', h(Tooltip, { title: '{{.TooltipText}}' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]){{else}}'{{.Label}}'{{end}},
 {{- if .IsRequired}}
       rules: 'required',
 {{- end}}
       componentProps: { showTime: true, placeholder: '请选择{{.Label}}', class: 'w-full', valueFormat: 'YYYY-MM-DD HH:mm:ss' },
     },
+{{- else if eq .Component "ImageUpload"}}
+    {
+      component: 'ImageUpload',
+      fieldName: '{{.NameLower}}',
+      label: '{{.Label}}',
+{{- if .IsRequired}}
+      rules: 'required',
+{{- end}}
+      componentProps: { maxCount: 1 },
+    },
+{{- else if eq .Component "FileUpload"}}
+    {
+      component: 'FileUpload',
+      fieldName: '{{.NameLower}}',
+      label: '{{.Label}}',
+{{- if .IsRequired}}
+      rules: 'required',
+{{- end}}
+      componentProps: { maxCount: 1 },
+    },
+{{- else if eq .Component "RichText"}}
+    {
+      component: 'RichText',
+      fieldName: '{{.NameLower}}',
+      label: '{{.Label}}',
+{{- if .IsRequired}}
+      rules: 'required',
+{{- end}}
+      formItemClass: 'col-span-full',
+    },
+{{- else if eq .Component "JsonEditor"}}
+    {
+      component: 'JsonEditor',
+      fieldName: '{{.NameLower}}',
+      label: '{{.Label}}',
+{{- if .IsRequired}}
+      rules: 'required',
+{{- end}}
+      formItemClass: 'col-span-full',
+    },
 {{- else}}
     {
       component: 'Input',
       fieldName: '{{.NameLower}}',
-      label: '{{.Label}}',
+      label: {{if .TooltipText}}() => h('span', {}, ['{{.ShortLabel}} ', h(Tooltip, { title: '{{.TooltipText}}' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]){{else}}'{{.Label}}'{{end}},
 {{- if .IsRequired}}
       rules: 'required',
 {{- end}}

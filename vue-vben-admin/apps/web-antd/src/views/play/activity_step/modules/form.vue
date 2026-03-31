@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { h, ref } from 'vue';
 import { useVbenModal } from '@vben/common-ui';
 import { useVbenForm } from '#/adapter/form';
-import { message } from 'ant-design-vue';
+import { message, Tooltip } from 'ant-design-vue';
+import { QuestionCircleOutlined } from '@ant-design/icons-vue';
 import {
   getActivityStepDetail,
   createActivityStep,
@@ -40,7 +41,7 @@ const [Form, formApi] = useVbenForm({
     {
       component: 'Input',
       fieldName: 'descContent',
-      label: '步骤说明（富文本，支持图文）',
+      label: () => h('span', {}, ['步骤说明 ', h(Tooltip, { title: '富文本，支持图文' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]),
       componentProps: { placeholder: '请输入步骤说明（富文本，支持图文）', maxlength: 65535 },
     },
     {
@@ -52,7 +53,7 @@ const [Form, formApi] = useVbenForm({
     {
       component: 'InputNumber',
       fieldName: 'sort',
-      label: '排序（升序）',
+      label: () => h('span', {}, ['排序 ', h(Tooltip, { title: '升序' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]),
       componentProps: { placeholder: '请输入排序（升序）', class: 'w-full' },
     },
   ],
