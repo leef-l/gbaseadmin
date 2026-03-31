@@ -115,6 +115,35 @@ services:
     networks:
       - gbaseadmin_net
 
+  # ─────────────────────────────────────────────
+  # upload - 上传服务（后端）
+  # ─────────────────────────────────────────────
+  upload:
+    build:
+      context: .
+      dockerfile: deploy/Dockerfile.upload
+    container_name: gbaseadmin_upload
+    restart: always
+    depends_on:
+      mysql: { condition: service_healthy }
+      redis: { condition: service_healthy }
+    environment:
+      - GF_GCFG_FILE=config.yaml
+      - DB_HOST=mysql
+      - DB_PORT=3306
+      - DB_USER=${MYSQL_USER}
+      - DB_PASS=${MYSQL_PASSWORD}
+      - DB_NAME=${MYSQL_DATABASE}
+      - REDIS_ADDR=redis:6379
+      - REDIS_PASS=${REDIS_PASSWORD}
+      - JWT_SECRET=${JWT_SECRET}
+      - GF_SERVER_ADDRESS=:8002
+      - TZ=Asia/Shanghai
+    ports:
+      - "127.0.0.1:${UPLOAD_PORT:-8002}:8002"
+    networks:
+      - gbaseadmin_net
+
 # ─────────────────────────────────────────────
 # 数据卷
 # ─────────────────────────────────────────────
