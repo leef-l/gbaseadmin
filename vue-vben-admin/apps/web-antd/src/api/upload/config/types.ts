@@ -1,6 +1,6 @@
-/** ä¸Šä¼ é…ç½®类型定义 */
+/** 上传配置类型定义 */
 
-/** ä¸Šä¼ é…ç½®项 */
+/** 上传配置项 */
 export interface ConfigItem {
   id: string;
   name: string;
@@ -21,7 +21,7 @@ export interface ConfigItem {
   updatedAt?: string;
 }
 
-/** ä¸Šä¼ é…ç½®列表查询参数 */
+/** 上传配置列表查询参数 */
 export interface ConfigListParams {
   pageNum: number;
   pageSize: number;
@@ -30,7 +30,7 @@ export interface ConfigListParams {
   status?: number;
 }
 
-/** ä¸Šä¼ é…ç½®创建参数 */
+/** 上传配置创建参数 */
 export interface ConfigCreateParams {
   name: string;
   storage?: number;
@@ -48,7 +48,7 @@ export interface ConfigCreateParams {
   status?: number;
 }
 
-/** ä¸Šä¼ é…ç½®更新参数 */
+/** 上传配置更新参数 */
 export interface ConfigUpdateParams {
   id: string;
   name: string;

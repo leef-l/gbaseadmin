@@ -1,6 +1,6 @@
-/** æ–‡ä»¶è®°å½•类型定义 */
+/** 文件记录类型定义 */
 
-/** æ–‡ä»¶è®°å½•项 */
+/** 文件记录项 */
 export interface FileItem {
   id: string;
   dirID?: string;
@@ -16,17 +16,15 @@ export interface FileItem {
   updatedAt?: string;
 }
 
-/** æ–‡ä»¶è®°å½•列表查询参数 */
+/** 文件记录列表查询参数 */
 export interface FileListParams {
   pageNum: number;
   pageSize: number;
-  dirID?: string;
-  name?: string;
   storage?: number;
   isImage?: number;
 }
 
-/** æ–‡ä»¶è®°å½•创建参数 */
+/** 文件记录创建参数 */
 export interface FileCreateParams {
   dirID?: string;
   name: string;
@@ -38,7 +36,7 @@ export interface FileCreateParams {
   isImage?: number;
 }
 
-/** æ–‡ä»¶è®°å½•更新参数 */
+/** 文件记录更新参数 */
 export interface FileUpdateParams {
   id: string;
   dirID?: string;

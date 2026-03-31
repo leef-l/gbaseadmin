@@ -8,14 +8,12 @@ import {
   createDirRule,
   updateDirRule,
 } from '#/api/upload/dir_rule';
-import { getDirTree } from '#/api/upload/dir';
-import type { DirItem } from '#/api/upload/dir/types';
 
-/** ç±»åˆ«选项 */
+/** 类别选项 */
 const categoryOptions = [
-  { label: 'é»˜è®¤', value: 1 },
-  { label: 'ç±»åž‹', value: 2 },
-  { label: 'æŽ¥å£', value: 3 },
+  { label: '默认', value: 1 },
+  { label: '类型', value: 2 },
+  { label: '接口', value: 3 },
 ];
 
 const emit = defineEmits<{ success: [] }>();
@@ -29,26 +27,26 @@ const [Form, formApi] = useVbenForm({
     {
       component: 'Select',
       fieldName: 'dirID',
-      label: 'ç›®å½•ID',
+      label: '目录ID',
       rules: 'selectRequired',
-      componentProps: { options: dirIDOptions, placeholder: '请选择ç›®å½•ID', allowClear: true, class: 'w-full' },
+      componentProps: { options: dirIDOptions, placeholder: '请选择目录ID', allowClear: true, class: 'w-full' },
     },
     {
       component: 'Select',
       fieldName: 'category',
-      label: 'ç±»åˆ«',
-      componentProps: { options: categoryOptions, placeholder: '请选择ç±»åˆ«', allowClear: true, class: 'w-full' },
+      label: '类别',
+      componentProps: { options: categoryOptions, placeholder: '请选择类别', allowClear: true, class: 'w-full' },
     },
     {
       component: 'Input',
       fieldName: 'savePath',
-      label: 'ä¿å­˜ç›®å½•',
-      componentProps: { placeholder: '请输入ä¿å­˜ç›®å½•', maxlength: 500 },
+      label: '保存目录',
+      componentProps: { placeholder: '请输入保存目录', maxlength: 500 },
     },
     {
       component: 'Switch',
       fieldName: 'status',
-      label: 'çŠ¶æ€',
+      label: '状态',
       componentProps: { checkedValue: 1, unCheckedValue: 0 },
       defaultValue: 1,
     },
@@ -81,12 +79,11 @@ const [Modal, modalApi] = useVbenModal({
   },
   async onOpenChange(isOpen: boolean) {
     if (isOpen) {
-      await loadDirOptions();
       const data = modalApi.getData<{ id?: string } | null>();
       if (data?.id) {
         isEdit.value = true;
         editId.value = data.id;
-        modalApi.setState({ title: '编辑æ–‡ä»¶ç›®å½•è§„åˆ™' });
+        modalApi.setState({ title: '编辑文件目录规则' });
         try {
           const detail = await getDirRuleDetail(data.id);
           if (detail) {
@@ -98,7 +95,7 @@ const [Modal, modalApi] = useVbenModal({
       } else {
         isEdit.value = false;
         editId.value = '';
-        modalApi.setState({ title: '新建æ–‡ä»¶ç›®å½•è§„åˆ™' });
+        modalApi.setState({ title: '新建文件目录规则' });
         formApi.resetForm();
       }
     }

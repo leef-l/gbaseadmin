@@ -10,7 +10,7 @@ import type {
 /** API 前缀 */
 const PREFIX = '/upload/config';
 
-/** 获取ä¸Šä¼ é…ç½®列表 */
+/** 获取上传配置列表 */
 export function getConfigList(params: ConfigListParams) {
   return requestClient.get<{ list: ConfigItem[]; total: number }>(
     `${PREFIX}/list`,
@@ -18,24 +18,24 @@ export function getConfigList(params: ConfigListParams) {
   );
 }
 
-/** 获取ä¸Šä¼ é…ç½®详情 */
+/** 获取上传配置详情 */
 export function getConfigDetail(id: string) {
   return requestClient.get<ConfigItem>(`${PREFIX}/detail`, {
     params: { id },
   });
 }
 
-/** 创建ä¸Šä¼ é…ç½® */
+/** 创建上传配置 */
 export function createConfig(data: ConfigCreateParams) {
   return requestClient.post(`${PREFIX}/create`, data);
 }
 
-/** 更新ä¸Šä¼ é…ç½® */
+/** 更新上传配置 */
 export function updateConfig(data: ConfigUpdateParams) {
   return requestClient.put(`${PREFIX}/update`, data);
 }
 
-/** 删除ä¸Šä¼ é…ç½® */
+/** 删除上传配置 */
 export function deleteConfig(id: string) {
   return requestClient.delete(`${PREFIX}/delete`, { data: { id } });
 }

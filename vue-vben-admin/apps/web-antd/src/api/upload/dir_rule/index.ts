@@ -10,7 +10,7 @@ import type {
 /** API 前缀 */
 const PREFIX = '/upload/dir_rule';
 
-/** 获取æ–‡ä»¶ç›®å½•è§„åˆ™列表 */
+/** 获取文件目录规则列表 */
 export function getDirRuleList(params: DirRuleListParams) {
   return requestClient.get<{ list: DirRuleItem[]; total: number }>(
     `${PREFIX}/list`,
@@ -18,24 +18,24 @@ export function getDirRuleList(params: DirRuleListParams) {
   );
 }
 
-/** 获取æ–‡ä»¶ç›®å½•è§„åˆ™详情 */
+/** 获取文件目录规则详情 */
 export function getDirRuleDetail(id: string) {
   return requestClient.get<DirRuleItem>(`${PREFIX}/detail`, {
     params: { id },
   });
 }
 
-/** 创建æ–‡ä»¶ç›®å½•è§„åˆ™ */
+/** 创建文件目录规则 */
 export function createDirRule(data: DirRuleCreateParams) {
   return requestClient.post(`${PREFIX}/create`, data);
 }
 
-/** 更新æ–‡ä»¶ç›®å½•è§„åˆ™ */
+/** 更新文件目录规则 */
 export function updateDirRule(data: DirRuleUpdateParams) {
   return requestClient.put(`${PREFIX}/update`, data);
 }
 
-/** 删除æ–‡ä»¶ç›®å½•è§„åˆ™ */
+/** 删除文件目录规则 */
 export function deleteDirRule(id: string) {
   return requestClient.delete(`${PREFIX}/delete`, { data: { id } });
 }

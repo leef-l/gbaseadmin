@@ -8,20 +8,18 @@ import {
   createFile,
   updateFile,
 } from '#/api/upload/file';
-import { getDirTree } from '#/api/upload/dir';
-import type { DirItem } from '#/api/upload/dir/types';
 
-/** å­˜å‚¨ç±»åž‹选项 */
+/** 存储类型选项 */
 const storageOptions = [
-  { label: 'æœ¬åœ°', value: 1 },
-  { label: 'é˜¿é‡Œäº‘OSS', value: 2 },
-  { label: 'è…¾è®¯äº‘COS', value: 3 },
+  { label: '本地', value: 1 },
+  { label: '阿里云OSS', value: 2 },
+  { label: '腾讯云COS', value: 3 },
 ];
 
-/** æ˜¯å¦å›¾ç‰‡选项 */
+/** 是否图片选项 */
 const isImageOptions = [
-  { label: 'å¦', value: 0 },
-  { label: 'æ˜¯', value: 1 },
+  { label: '否', value: 0 },
+  { label: '是', value: 1 },
 ];
 
 const emit = defineEmits<{ success: [] }>();
@@ -35,52 +33,52 @@ const [Form, formApi] = useVbenForm({
     {
       component: 'Select',
       fieldName: 'dirID',
-      label: 'æ‰€å±žç›®å½•',
-      componentProps: { options: dirIDOptions, placeholder: '请选择æ‰€å±žç›®å½•', allowClear: true, class: 'w-full' },
+      label: '所属目录',
+      componentProps: { options: dirIDOptions, placeholder: '请选择所属目录', allowClear: true, class: 'w-full' },
     },
     {
       component: 'Input',
       fieldName: 'name',
-      label: 'æ–‡ä»¶åç§°',
+      label: '文件名称',
       rules: 'required',
-      componentProps: { placeholder: '请输入æ–‡ä»¶åç§°', maxlength: 255 },
+      componentProps: { placeholder: '请输入文件名称', maxlength: 255 },
     },
     {
       component: 'Input',
       fieldName: 'url',
-      label: 'æ–‡ä»¶åœ°å€',
+      label: '文件地址',
       rules: 'required',
-      componentProps: { placeholder: '请输入æ–‡ä»¶åœ°å€', maxlength: 500 },
+      componentProps: { placeholder: '请输入文件地址', maxlength: 500 },
     },
     {
       component: 'Input',
       fieldName: 'ext',
-      label: 'æ–‡ä»¶æ‰©å±•å',
-      componentProps: { placeholder: '请输入æ–‡ä»¶æ‰©å±•å', maxlength: 20 },
+      label: '文件扩展名',
+      componentProps: { placeholder: '请输入文件扩展名', maxlength: 20 },
     },
     {
       component: 'Input',
       fieldName: 'size',
-      label: 'æ–‡ä»¶å¤§å°',
-      componentProps: { placeholder: '请输入æ–‡ä»¶å¤§å°' },
+      label: '文件大小',
+      componentProps: { placeholder: '请输入文件大小' },
     },
     {
       component: 'Input',
       fieldName: 'mime',
-      label: 'MIMEç±»åž‹',
-      componentProps: { placeholder: '请输入MIMEç±»åž‹', maxlength: 100 },
+      label: 'MIME类型',
+      componentProps: { placeholder: '请输入MIME类型', maxlength: 100 },
     },
     {
       component: 'Select',
       fieldName: 'storage',
-      label: 'å­˜å‚¨ç±»åž‹',
-      componentProps: { options: storageOptions, placeholder: '请选择å­˜å‚¨ç±»åž‹', allowClear: true, class: 'w-full' },
+      label: '存储类型',
+      componentProps: { options: storageOptions, placeholder: '请选择存储类型', allowClear: true, class: 'w-full' },
     },
     {
-      component: 'Select',
+      component: 'ImageUpload',
       fieldName: 'isImage',
-      label: 'æ˜¯å¦å›¾ç‰‡',
-      componentProps: { options: isImageOptions, placeholder: '请选择是否图片', allowClear: true, class: 'w-full' },
+      label: '是否图片',
+      componentProps: { maxCount: 1 },
     },
   ],
 });
@@ -111,12 +109,11 @@ const [Modal, modalApi] = useVbenModal({
   },
   async onOpenChange(isOpen: boolean) {
     if (isOpen) {
-      await loadDirOptions();
       const data = modalApi.getData<{ id?: string } | null>();
       if (data?.id) {
         isEdit.value = true;
         editId.value = data.id;
-        modalApi.setState({ title: '编辑æ–‡ä»¶è®°å½•' });
+        modalApi.setState({ title: '编辑文件记录' });
         try {
           const detail = await getFileDetail(data.id);
           if (detail) {
@@ -128,7 +125,7 @@ const [Modal, modalApi] = useVbenModal({
       } else {
         isEdit.value = false;
         editId.value = '';
-        modalApi.setState({ title: '新建æ–‡ä»¶è®°å½•' });
+        modalApi.setState({ title: '新建文件记录' });
         formApi.resetForm();
       }
     }

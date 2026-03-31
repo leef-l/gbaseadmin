@@ -24,11 +24,11 @@ const [Form, formApi] = useVbenForm({
     {
       component: 'TreeSelect',
       fieldName: 'parentID',
-      label: 'ä¸Šçº§ç›®å½•',
+      label: '上级目录',
       componentProps: {
         treeData: treeData.value,
         fieldNames: { label: 'name', value: 'id', children: 'children' },
-        placeholder: '请选择ä¸Šçº§ç›®å½•',
+        placeholder: '请选择上级目录',
         allowClear: true,
         treeDefaultExpandAll: true,
         class: 'w-full',
@@ -37,27 +37,27 @@ const [Form, formApi] = useVbenForm({
     {
       component: 'Input',
       fieldName: 'name',
-      label: 'ç›®å½•åç§°',
+      label: '目录名称',
       rules: 'required',
-      componentProps: { placeholder: '请输入ç›®å½•åç§°', maxlength: 100 },
+      componentProps: { placeholder: '请输入目录名称', maxlength: 100 },
     },
     {
       component: 'Input',
       fieldName: 'path',
-      label: 'ç›®å½•è·¯å¾„',
+      label: '目录路径',
       rules: 'required',
-      componentProps: { placeholder: '请输入ç›®å½•è·¯å¾„', maxlength: 500 },
+      componentProps: { placeholder: '请输入目录路径', maxlength: 500 },
     },
     {
       component: 'InputNumber',
       fieldName: 'sort',
-      label: 'æŽ’åº',
-      componentProps: { placeholder: '请输入æŽ’åº', class: 'w-full' },
+      label: '排序',
+      componentProps: { placeholder: '请输入排序', class: 'w-full' },
     },
     {
       component: 'Switch',
       fieldName: 'status',
-      label: 'çŠ¶æ€',
+      label: '状态',
       componentProps: { checkedValue: 1, unCheckedValue: 0 },
       defaultValue: 1,
     },
@@ -109,7 +109,7 @@ const [Modal, modalApi] = useVbenModal({
       if (data?.id) {
         isEdit.value = true;
         editId.value = data.id;
-        modalApi.setState({ title: '编辑æ–‡ä»¶ç›®å½•' });
+        modalApi.setState({ title: '编辑文件目录' });
         try {
           const detail = await getDirDetail(data.id);
           if (detail) {
@@ -121,7 +121,7 @@ const [Modal, modalApi] = useVbenModal({
       } else {
         isEdit.value = false;
         editId.value = '';
-        modalApi.setState({ title: '新建æ–‡ä»¶ç›®å½•' });
+        modalApi.setState({ title: '新建文件目录' });
         formApi.resetForm();
       }
     }
