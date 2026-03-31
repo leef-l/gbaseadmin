@@ -53,7 +53,7 @@ for i in "${!APPS[@]}"; do
   info "编译 $app ..."
   cd "app/$app"
   CGO_ENABLED=0 GOOS=linux go build -o "$DEPLOY_DIR/app/$app" .
-  chmod +x "$DEPLOY_DIR/$app/$app"
+  chmod +x "$DEPLOY_DIR/app/$app/$app"
   cd "$SCRIPT_DIR"
   info "$app 编译完成"
 done
@@ -110,9 +110,10 @@ else
   info "创建数据库并导入..."
   mysql -u root -p"$DB_PASS" -h"$DB_HOST" -P"$DB_PORT" -e "CREATE DATABASE IF NOT EXISTS $DB_NAME DEFAULT CHARSET utf8mb4 COLLATE utf8mb4_general_ci;"
   mysql -u root -p"$DB_PASS" -h"$DB_HOST" -P"$DB_PORT" -e "CREATE USER IF NOT EXISTS '$DB_USER'@'%' IDENTIFIED BY '$DB_PASS';"
-  mysql -u root -p"$DB_PASS" -h"$DB_HOST" -P"$DB_PORT" -e "GRANT ALL ON $DB_NAME.* TO '$DB_USER'@'%'; FLUSH PRIVILEGES;"
+  mysql -u root -p"$DB_PASS" -h"$DB_HOST" -P"$DB_PORT" -e "CREATE USER IF NOT EXISTS '$DB_USER'@'localhost' IDENTIFIED BY '$DB_PASS';"
+  mysql -u root -p"$DB_PASS" -h"$DB_HOST" -P"$DB_PORT" -e "GRANT ALL ON $DB_NAME.* TO '$DB_USER'@'%'; GRANT ALL ON $DB_NAME.* TO '$DB_USER'@'localhost'; FLUSH PRIVILEGES;"
   if [ -f "$SCRIPT_DIR/codegen/sql/init.sql" ]; then
-    mysql -u"$DB_USER" -p"$DB_PASS" -h"$DB_HOST" -P"$DB_PORT" "$DB_NAME" < "$SCRIPT_DIR/codegen/sql/init.sql"
+    mysql -u root -p"$DB_PASS" -h"$DB_HOST" -P"$DB_PORT" "$DB_NAME" < "$SCRIPT_DIR/codegen/sql/init.sql"
     info "数据库导入完成"
   else
     warn "init.sql 不存在，请手动导入数据库"
