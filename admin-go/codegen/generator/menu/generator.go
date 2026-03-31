@@ -16,12 +16,14 @@ import (
 var appTitleMap = map[string]string{
 	"play":   "陪玩管理",
 	"system": "系统管理",
+	"upload": "上传管理",
 }
 
 // 应用目录图标映射
 var appIconMap = map[string]string{
 	"play":   "game-icons:joystick",
 	"system": "SettingOutlined",
+	"upload": "CloudUploadOutlined",
 }
 
 // Config 菜单生成器配置
