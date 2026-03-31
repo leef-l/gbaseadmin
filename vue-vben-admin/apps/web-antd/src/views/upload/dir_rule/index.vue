@@ -13,40 +13,40 @@ import FormModal from './modules/form.vue';
 /** 标签颜色池 */
 const TAG_COLORS = ['green', 'red', 'blue', 'orange', 'cyan', 'purple', 'geekblue', 'magenta'];
 
-/** ç±»åˆ«选项 */
+/** 类别选项 */
 const categoryOptions = [
-  { label: 'é»˜è®¤', value: 1 },
-  { label: 'ç±»åž‹', value: 2 },
-  { label: 'æŽ¥å£', value: 3 },
+  { label: '默认', value: 1 },
+  { label: '类型', value: 2 },
+  { label: '接口', value: 3 },
 ];
 
-/** ç±»åˆ«映射 */
+/** 类别映射 */
 const categoryMap: Record<number, string> = {
-  1: 'é»˜è®¤',
-  2: 'ç±»åž‹',
-  3: 'æŽ¥å£',
+  1: '默认',
+  2: '类型',
+  3: '接口',
 };
 
-/** ç±»åˆ«颜色 */
+/** 类别颜色 */
 function getCategoryColor(val: number): string {
   const keys = [1, 2, 3];
   const idx = keys.indexOf(val);
   return TAG_COLORS[idx >= 0 ? idx % TAG_COLORS.length : 0] ?? 'default';
 }
 
-/** çŠ¶æ€选项 */
+/** 状态选项 */
 const statusOptions = [
-  { label: 'ç¦ç”¨', value: 0 },
-  { label: 'å¯ç”¨', value: 1 },
+  { label: '禁用', value: 0 },
+  { label: '启用', value: 1 },
 ];
 
-/** çŠ¶æ€映射 */
+/** 状态映射 */
 const statusMap: Record<number, string> = {
-  0: 'ç¦ç”¨',
-  1: 'å¯ç”¨',
+  0: '禁用',
+  1: '启用',
 };
 
-/** çŠ¶æ€颜色 */
+/** 状态颜色 */
 function getStatusColor(val: number): string {
   const keys = [0, 1];
   const idx = keys.indexOf(val);
@@ -71,22 +71,22 @@ const formOptions: VbenFormProps = {
       componentProps: {
         allowClear: true,
         options: categoryOptions,
-        placeholder: '请选择ç±»åˆ«',
+        placeholder: '请选择类别',
         class: 'w-full',
       },
       fieldName: 'category',
-      label: 'ç±»åˆ«',
+      label: '类别',
     },
     {
       component: 'Select',
       componentProps: {
         allowClear: true,
         options: statusOptions,
-        placeholder: '请选择çŠ¶æ€',
+        placeholder: '请选择状态',
         class: 'w-full',
       },
       fieldName: 'status',
-      label: 'çŠ¶æ€',
+      label: '状态',
     },
   ],
 };
@@ -95,10 +95,10 @@ const formOptions: VbenFormProps = {
 const gridOptions: VxeGridProps<DirRuleItem> = {
   columns: [
     { title: '序号', type: 'seq', width: 50 },
-    { field: 'dirName', title: 'ç›®å½•ID' },
-    { field: 'category', title: 'ç±»åˆ«', width: 120, slots: { default: 'category_cell' } },
-    { field: 'savePath', title: 'ä¿å­˜ç›®å½•' },
-    { field: 'status', title: 'çŠ¶æ€', width: 120, slots: { default: 'status_cell' } },
+    { field: 'dirName', title: '目录ID' },
+    { field: 'category', title: '类别', width: 120, slots: { default: 'category_cell' } },
+    { field: 'savePath', title: '保存目录' },
+    { field: 'status', title: '状态', width: 120, slots: { default: 'status_cell' } },
     { field: 'createdAt', title: '创建时间', width: 180, formatter: 'formatDateTime' },
     { title: '操作', width: 200, fixed: 'right', slots: { default: 'action' } },
   ],
@@ -142,7 +142,7 @@ function handleEdit(row: DirRuleItem) {
 function handleDelete(row: DirRuleItem) {
   Modal.confirm({
     title: '确认删除',
-    content: '确定要删除该æ–‡ä»¶ç›®å½•è§„åˆ™吗？',
+    content: '确定要删除该文件目录规则吗？',
     okType: 'danger',
     async onOk() {
       await deleteDirRule(row.id);

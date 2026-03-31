@@ -1,6 +1,6 @@
-/** æ–‡ä»¶ç›®å½•è§„åˆ™类型定义 */
+/** 文件目录规则类型定义 */
 
-/** æ–‡ä»¶ç›®å½•è§„åˆ™项 */
+/** 文件目录规则项 */
 export interface DirRuleItem {
   id: string;
   dirID: string;
@@ -12,7 +12,7 @@ export interface DirRuleItem {
   updatedAt?: string;
 }
 
-/** æ–‡ä»¶ç›®å½•è§„åˆ™列表查询参数 */
+/** 文件目录规则列表查询参数 */
 export interface DirRuleListParams {
   pageNum: number;
   pageSize: number;
@@ -20,7 +20,7 @@ export interface DirRuleListParams {
   status?: number;
 }
 
-/** æ–‡ä»¶ç›®å½•è§„åˆ™创建参数 */
+/** 文件目录规则创建参数 */
 export interface DirRuleCreateParams {
   dirID: string;
   category?: number;
@@ -28,7 +28,7 @@ export interface DirRuleCreateParams {
   status?: number;
 }
 
-/** æ–‡ä»¶ç›®å½•è§„åˆ™更新参数 */
+/** 文件目录规则更新参数 */
 export interface DirRuleUpdateParams {
   id: string;
   dirID: string;

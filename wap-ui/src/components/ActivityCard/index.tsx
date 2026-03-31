@@ -4,7 +4,7 @@ import './index.scss';
 const typeMap: Record<number, string> = { 1: '充值活动', 2: '下单活动', 3: '注册活动', 4: '图文步骤', 5: '自定义' };
 
 interface Props {
-  activityId?: string;
+  id?: string;
   title: string;
   type?: number;
   startTime?: string;

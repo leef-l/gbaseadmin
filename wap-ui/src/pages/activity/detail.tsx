@@ -30,9 +30,9 @@ export default function ActivityDetailPage() {
     if (!detail || joining || detail.joined) return;
     setJoining(true);
     try {
-      await joinActivity(detail.activityId);
+      await joinActivity(detail.id);
       Taro.showToast({ title: '参与成功', icon: 'success' });
-      fetchDetail(detail.activityId);
+      fetchDetail(detail.id);
     } catch {
       Taro.showToast({ title: '参与失败', icon: 'none' });
     } finally {
@@ -42,9 +42,9 @@ export default function ActivityDetailPage() {
 
   const handleCompleteStep = async (stepId: string) => {
     try {
-      await completeStep({ activityId: detail.activityId, stepId });
+      await completeStep({ id: detail.id, stepId });
       Taro.showToast({ title: '步骤完成', icon: 'success' });
-      fetchDetail(detail.activityId);
+      fetchDetail(detail.id);
     } catch {
       Taro.showToast({ title: '操作失败', icon: 'none' });
     }

@@ -1,6 +1,6 @@
-/** æ–‡ä»¶ç›®å½•类型定义 */
+/** 文件目录类型定义 */
 
-/** æ–‡ä»¶ç›®å½•项 */
+/** 文件目录项 */
 export interface DirItem {
   id: string;
   parentID?: string;
@@ -14,14 +14,14 @@ export interface DirItem {
   children?: DirItem[];
 }
 
-/** æ–‡ä»¶ç›®å½•列表查询参数 */
+/** 文件目录列表查询参数 */
 export interface DirListParams {
   pageNum: number;
   pageSize: number;
   status?: number;
 }
 
-/** æ–‡ä»¶ç›®å½•创建参数 */
+/** 文件目录创建参数 */
 export interface DirCreateParams {
   parentID?: string;
   name: string;
@@ -30,7 +30,7 @@ export interface DirCreateParams {
   status?: number;
 }
 
-/** æ–‡ä»¶ç›®å½•更新参数 */
+/** 文件目录更新参数 */
 export interface DirUpdateParams {
   id: string;
   parentID?: string;

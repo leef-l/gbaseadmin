@@ -1,9 +1,11 @@
 <script setup lang="ts">
+import { h } from 'vue';
 import type { VbenFormProps } from '#/adapter/form';
 import type { VxeGridProps } from '#/adapter/vxe-table';
 
 import { Page, useVbenModal } from '@vben/common-ui';
-import { Button, message, Modal, Tag } from 'ant-design-vue';
+import { Button, message, Modal, Tag, Tooltip } from 'ant-design-vue';
+import { QuestionCircleOutlined } from '@ant-design/icons-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getConfigList, deleteConfig } from '#/api/upload/config';
@@ -13,59 +15,59 @@ import FormModal from './modules/form.vue';
 /** 标签颜色池 */
 const TAG_COLORS = ['green', 'red', 'blue', 'orange', 'cyan', 'purple', 'geekblue', 'magenta'];
 
-/** å­˜å‚¨ç±»åž‹选项 */
+/** 存储类型选项 */
 const storageOptions = [
-  { label: 'æœ¬åœ°', value: 1 },
-  { label: 'é˜¿é‡Œäº‘OSS', value: 2 },
-  { label: 'è…¾è®¯äº‘COS', value: 3 },
+  { label: '本地', value: 1 },
+  { label: '阿里云OSS', value: 2 },
+  { label: '腾讯云COS', value: 3 },
 ];
 
-/** å­˜å‚¨ç±»åž‹映射 */
+/** 存储类型映射 */
 const storageMap: Record<number, string> = {
-  1: 'æœ¬åœ°',
-  2: 'é˜¿é‡Œäº‘OSS',
-  3: 'è…¾è®¯äº‘COS',
+  1: '本地',
+  2: '阿里云OSS',
+  3: '腾讯云COS',
 };
 
-/** å­˜å‚¨ç±»åž‹颜色 */
+/** 存储类型颜色 */
 function getStorageColor(val: number): string {
   const keys = [1, 2, 3];
   const idx = keys.indexOf(val);
   return TAG_COLORS[idx >= 0 ? idx % TAG_COLORS.length : 0] ?? 'default';
 }
 
-/** æ˜¯å¦é»˜è®¤选项 */
+/** 是否默认选项 */
 const isDefaultOptions = [
-  { label: 'å¦', value: 0 },
-  { label: 'æ˜¯', value: 1 },
+  { label: '否', value: 0 },
+  { label: '是', value: 1 },
 ];
 
-/** æ˜¯å¦é»˜è®¤映射 */
+/** 是否默认映射 */
 const isDefaultMap: Record<number, string> = {
-  0: 'å¦',
-  1: 'æ˜¯',
+  0: '否',
+  1: '是',
 };
 
-/** æ˜¯å¦é»˜è®¤颜色 */
+/** 是否默认颜色 */
 function getIsDefaultColor(val: number): string {
   const keys = [0, 1];
   const idx = keys.indexOf(val);
   return TAG_COLORS[idx >= 0 ? idx % TAG_COLORS.length : 0] ?? 'default';
 }
 
-/** çŠ¶æ€选项 */
+/** 状态选项 */
 const statusOptions = [
-  { label: 'ç¦ç”¨', value: 0 },
-  { label: 'å¯ç”¨', value: 1 },
+  { label: '禁用', value: 0 },
+  { label: '启用', value: 1 },
 ];
 
-/** çŠ¶æ€映射 */
+/** 状态映射 */
 const statusMap: Record<number, string> = {
-  0: 'ç¦ç”¨',
-  1: 'å¯ç”¨',
+  0: '禁用',
+  1: '启用',
 };
 
-/** çŠ¶æ€颜色 */
+/** 状态颜色 */
 function getStatusColor(val: number): string {
   const keys = [0, 1];
   const idx = keys.indexOf(val);
@@ -90,33 +92,33 @@ const formOptions: VbenFormProps = {
       componentProps: {
         allowClear: true,
         options: storageOptions,
-        placeholder: '请选择å­˜å‚¨ç±»åž‹',
+        placeholder: '请选择存储类型',
         class: 'w-full',
       },
       fieldName: 'storage',
-      label: 'å­˜å‚¨ç±»åž‹',
+      label: '存储类型',
     },
     {
       component: 'Select',
       componentProps: {
         allowClear: true,
         options: isDefaultOptions,
-        placeholder: '请选择æ˜¯å¦é»˜è®¤',
+        placeholder: '请选择是否默认',
         class: 'w-full',
       },
       fieldName: 'isDefault',
-      label: 'æ˜¯å¦é»˜è®¤',
+      label: '是否默认',
     },
     {
       component: 'Select',
       componentProps: {
         allowClear: true,
         options: statusOptions,
-        placeholder: '请选择çŠ¶æ€',
+        placeholder: '请选择状态',
         class: 'w-full',
       },
       fieldName: 'status',
-      label: 'çŠ¶æ€',
+      label: '状态',
     },
   ],
 };
@@ -125,10 +127,10 @@ const formOptions: VbenFormProps = {
 const gridOptions: VxeGridProps<ConfigItem> = {
   columns: [
     { title: '序号', type: 'seq', width: 50 },
-    { field: 'name', title: 'é…ç½®åç§°' },
-    { field: 'storage', title: 'å­˜å‚¨ç±»åž‹', width: 120, slots: { default: 'storage_cell' } },
-    { field: 'isDefault', title: 'æ˜¯å¦é»˜è®¤', width: 120, slots: { default: 'isDefault_cell' } },
-    { field: 'localPath', title: 'æœ¬åœ°å­˜å‚¨è·¯å¾„' },
+    { field: 'name', title: '配置名称' },
+    { field: 'storage', title: '存储类型', width: 120, slots: { default: 'storage_cell' } },
+    { field: 'isDefault', title: '是否默认', width: 120, slots: { default: 'isDefault_cell' } },
+    { field: 'localPath', title: '本地存储路径' },
     { field: 'ossEndpoint', title: 'OSS Endpoint' },
     { field: 'ossBucket', title: 'OSS Bucket' },
     { field: 'ossAccessKey', title: 'OSS AccessKey' },
@@ -137,8 +139,8 @@ const gridOptions: VxeGridProps<ConfigItem> = {
     { field: 'cosBucket', title: 'COS Bucket' },
     { field: 'cosSecretID', title: 'COS SecretId' },
     { field: 'cosSecretKey', title: 'COS SecretKey' },
-    { field: 'maxSize', title: 'æœ€å¤§æ–‡ä»¶å¤§å°(MB)' },
-    { field: 'status', title: 'çŠ¶æ€', width: 120, slots: { default: 'status_cell' } },
+    { field: 'maxSize', title: '最大文件大小', slots: { header: () => h('span', {}, ['最大文件大小 ', h(Tooltip, { title: 'MB' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]) } },
+    { field: 'status', title: '状态', width: 120, slots: { default: 'status_cell' } },
     { field: 'createdAt', title: '创建时间', width: 180, formatter: 'formatDateTime' },
     { title: '操作', width: 200, fixed: 'right', slots: { default: 'action' } },
   ],
@@ -182,7 +184,7 @@ function handleEdit(row: ConfigItem) {
 function handleDelete(row: ConfigItem) {
   Modal.confirm({
     title: '确认删除',
-    content: '确定要删除该ä¸Šä¼ é…ç½®吗？',
+    content: '确定要删除该上传配置吗？',
     okType: 'danger',
     async onOk() {
       await deleteConfig(row.id);
