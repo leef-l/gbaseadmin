@@ -88,7 +88,9 @@
       "Bash(do)",
       "Bash(echo \"\\(1000000000000000002, $mid\\),\")",
       "Bash(done)",
-      "Bash(__NEW_LINE_5bc4a86cb6a52dae__ python3 -c \":*)"
+      "Bash(__NEW_LINE_5bc4a86cb6a52dae__ python3 -c \":*)",
+      "Bash(xargs grep -l \"8002\\\\|8003\\\\|port\")",
+      "Bash(ls -la /c/project/gbaseadmin/admin-go/deploy/Dockerfile*)"
     ],
     "additionalDirectories": [
       "\\tmp"

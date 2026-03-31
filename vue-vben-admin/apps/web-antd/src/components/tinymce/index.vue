@@ -92,8 +92,8 @@ const initOptions = {
   promotion: false,
   menubar: 'file edit view insert format tools table',
   images_upload_handler: imagesUploadHandler,
-  skin_url: '/tinymce/skins/ui/oxide',
-  content_css: '/tinymce/skins/content/default/content.min.css',
+  skin_url: `${import.meta.env.BASE_URL}tinymce/skins/ui/oxide`,
+  content_css: `${import.meta.env.BASE_URL}tinymce/skins/content/default/content.min.css`,
 };
 </script>
 
