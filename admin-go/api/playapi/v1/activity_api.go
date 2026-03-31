@@ -55,6 +55,9 @@ type ActivityStepApiItem struct {
 	StepNo      int    `json:"stepNo" dc:"步骤序号"`
 	Title       string `json:"title" dc:"步骤标题"`
 	Description string `json:"description" dc:"步骤描述"`
+	StepType    int    `json:"stepType" dc:"步骤类型:1=文字,2=链接,3=图片"`
+	ExampleText string `json:"exampleText" dc:"示例文字或链接URL"`
+	StepImage   string `json:"stepImage" dc:"步骤示例图片"`
 }
 
 type ActivityRewardApiItem struct {

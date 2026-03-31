@@ -102,6 +102,9 @@ func (s *sActivity) Detail(ctx context.Context, activityID string) (out *v1.Acti
 		StepNum     int    `json:"step_num"`
 		Title       string `json:"title"`
 		DescContent string `json:"desc_content"`
+		StepType    int    `json:"step_type"`
+		ExampleText string `json:"example_text"`
+		StepImage   string `json:"step_image"`
 	}
 	err = dao.PlayActivityStep.Ctx(ctx).
 		Where(dao.PlayActivityStep.Columns().ActivityId, aid).
@@ -118,6 +121,9 @@ func (s *sActivity) Detail(ctx context.Context, activityID string) (out *v1.Acti
 			StepNo:      st.StepNum,
 			Title:       st.Title,
 			Description: st.DescContent,
+			StepType:    st.StepType,
+			ExampleText: st.ExampleText,
+			StepImage:   st.StepImage,
 		})
 	}
 	// 查询奖励
