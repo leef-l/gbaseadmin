@@ -63,6 +63,7 @@ type FieldMeta struct {
 	RefDisplayLower     string // 关联显示字段 camelCase，如 title
 	RefFieldName        string // 结构体字段名 = RefTableCamel + RefDisplayCamel，如 ArticleTitle
 	RefFieldJSON        string // json 名 = RefTableLower + RefDisplayCamel，如 articleTitle
+	RefIsTree           bool   // 关联表是否有 parent_id（树形结构）
 }
 
 // TableMeta 表元数据

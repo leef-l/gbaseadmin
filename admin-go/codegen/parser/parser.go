@@ -156,6 +156,8 @@ func (p *Parser) ParseTable(tableName string) (*TableMeta, error) {
 			f.RefDisplayLower = snakeToCamelLower(displayField)
 			f.RefFieldName = refFieldName
 			f.RefFieldJSON = snakeToCamelLower(refTable) + snakeToCamel(displayField)
+			// 检查关联表是否有 parent_id（树形结构）
+			f.RefIsTree = tableHasColumn(db, dbName, refTableDB, "parent_id")
 		}
 	}
 
@@ -166,16 +168,21 @@ func (p *Parser) ParseTable(tableName string) (*TableMeta, error) {
 func findDisplayField(db *sql.DB, dbName, tableName string) string {
 	priorities := []string{"title", "name", "username"}
 	for _, col := range priorities {
-		var count int
-		err := db.QueryRow(
-			"SELECT COUNT(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ? AND COLUMN_NAME = ?",
-			dbName, tableName, col,
-		).Scan(&count)
-		if err == nil && count > 0 {
+		if tableHasColumn(db, dbName, tableName, col) {
 			return col
 		}
 	}
 	return ""
+}
+
+// tableHasColumn 检查表是否存在指定列
+func tableHasColumn(db *sql.DB, dbName, tableName, columnName string) bool {
+	var count int
+	err := db.QueryRow(
+		"SELECT COUNT(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ? AND COLUMN_NAME = ?",
+		dbName, tableName, columnName,
+	).Scan(&count)
+	return err == nil && count > 0
 }
 
 // ParseTables 解析多张表

@@ -23,6 +23,15 @@ import type { {{.ModelName}}Item } from '#/api/{{.AppName}}/{{.ModuleName}}/type
 
 const treeData = ref<{{.ModelName}}Item[]>([]);
 {{- end}}
+{{- range .Fields}}
+{{- if and .IsForeignKey (not .IsHidden) .RefTable}}
+{{- if .RefIsTree}}
+import { get{{.RefTableCamel}}Tree } from '#/api/{{$.AppName}}/{{.RefTable}}';
+{{- else}}
+import { get{{.RefTableCamel}}List } from '#/api/{{$.AppName}}/{{.RefTable}}';
+{{- end}}
+{{- end}}
+{{- end}}
 {{range .Fields}}
 {{- if and (not .IsHidden) (not .IsID) (.IsEnum) (ne .Component "Switch")}}
 /** {{.Label}}选项 */
@@ -32,6 +41,11 @@ const {{.NameLower}}Options = [
 {{- end}}
 ];
 {{end}}
+{{- end}}
+{{- range .Fields}}
+{{- if and .IsForeignKey (not .IsHidden) .RefTable}}
+const {{.NameLower}}Options = ref<{ label: string; value: string }[]>([]);
+{{- end}}
 {{- end}}
 const emit = defineEmits<{ success: [] }>();
 const isEdit = ref(false);
@@ -92,6 +106,7 @@ const [Form, formApi] = useVbenForm({
       componentProps: { options: {{.NameLower}}Options },
     },
 {{- else if eq .Component "Select"}}
+{{- if .IsEnum}}
     {
       component: 'Select',
       fieldName: '{{.NameLower}}',
@@ -101,7 +116,48 @@ const [Form, formApi] = useVbenForm({
 {{- end}}
       componentProps: { options: {{.NameLower}}Options, placeholder: '请选择{{.Label}}', allowClear: true, class: 'w-full' },
     },
+{{- else if .IsForeignKey}}
+{{- if .RefIsTree}}
+    {
+      component: 'TreeSelect',
+      fieldName: '{{.NameLower}}',
+      label: {{if .TooltipText}}() => h('span', {}, ['{{.ShortLabel}} ', h(Tooltip, { title: '{{.TooltipText}}' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]){{else}}'{{.Label}}'{{end}},
+{{- if .IsRequired}}
+      rules: 'selectRequired',
+{{- end}}
+      componentProps: {
+        treeData: {{.NameLower}}Options.value,
+        fieldNames: { label: '{{if .RefDisplayField}}{{.RefDisplayLower}}{{else}}title{{end}}', value: 'id', children: 'children' },
+        placeholder: '请选择{{.Label}}',
+        allowClear: true,
+        treeDefaultExpandAll: true,
+        class: 'w-full',
+      },
+    },
+{{- else}}
+    {
+      component: 'Select',
+      fieldName: '{{.NameLower}}',
+      label: {{if .TooltipText}}() => h('span', {}, ['{{.ShortLabel}} ', h(Tooltip, { title: '{{.TooltipText}}' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]){{else}}'{{.Label}}'{{end}},
+{{- if .IsRequired}}
+      rules: 'selectRequired',
+{{- end}}
+      componentProps: { options: {{.NameLower}}Options, placeholder: '请选择{{.Label}}', allowClear: true, class: 'w-full' },
+    },
+{{- end}}
+{{- else}}
+    {
+      component: 'Input',
+      fieldName: '{{.NameLower}}',
+      label: {{if .TooltipText}}() => h('span', {}, ['{{.ShortLabel}} ', h(Tooltip, { title: '{{.TooltipText}}' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]){{else}}'{{.Label}}'{{end}},
+{{- if .IsRequired}}
+      rules: 'required',
+{{- end}}
+      componentProps: { placeholder: '请输入{{.Label}}' },
+    },
+{{- end}}
 {{- else if eq .Component "SelectMulti"}}
+{{- if .IsEnum}}
     {
       component: 'Select',
       fieldName: '{{.NameLower}}',
@@ -111,6 +167,17 @@ const [Form, formApi] = useVbenForm({
 {{- end}}
       componentProps: { options: {{.NameLower}}Options, placeholder: '请选择{{.Label}}', mode: 'multiple', allowClear: true, class: 'w-full' },
     },
+{{- else}}
+    {
+      component: 'Input',
+      fieldName: '{{.NameLower}}',
+      label: {{if .TooltipText}}() => h('span', {}, ['{{.ShortLabel}} ', h(Tooltip, { title: '{{.TooltipText}}' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]){{else}}'{{.Label}}'{{end}},
+{{- if .IsRequired}}
+      rules: 'required',
+{{- end}}
+      componentProps: { placeholder: '请输入{{.Label}}' },
+    },
+{{- end}}
 {{- else if eq .Component "TreeSelectSingle"}}
     {
       component: 'TreeSelect',
@@ -255,6 +322,36 @@ const [Modal, modalApi] = useVbenModal({
       } catch {
         // ignore
       }
+{{- end}}
+{{- range .Fields}}
+{{- if and .IsForeignKey (not .IsHidden) .RefTable}}
+{{- if .RefIsTree}}
+      // 加载{{.Label}}树形数据
+      try {
+        const {{.RefTableLower}}Res = await get{{.RefTableCamel}}Tree();
+        {{.NameLower}}Options.value = {{.RefTableLower}}Res ?? [];
+        formApi.updateSchema([
+          {
+            fieldName: '{{.NameLower}}',
+            componentProps: { treeData: {{.NameLower}}Options.value },
+          },
+        ]);
+      } catch {
+        // ignore
+      }
+{{- else}}
+      // 加载{{.Label}}选项
+      try {
+        const {{.RefTableLower}}Res = await get{{.RefTableCamel}}List({ pageNum: 1, pageSize: 1000 });
+        {{.NameLower}}Options.value = ({{.RefTableLower}}Res?.list ?? []).map((item: any) => ({
+          label: item.{{.RefDisplayLower}} || item.id,
+          value: item.id,
+        }));
+      } catch {
+        // ignore
+      }
+{{- end}}
+{{- end}}
 {{- end}}
       if (data?.id) {
         isEdit.value = true;
