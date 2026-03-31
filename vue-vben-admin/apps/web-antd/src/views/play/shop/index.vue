@@ -66,8 +66,8 @@ const gridOptions: VxeGridProps<ShopItem> = {
   columns: [
     { title: '序号', type: 'seq', width: 50 },
     { field: 'title', title: '店铺名称' },
-    { field: 'logoImage', title: '店铺LOGO' },
-    { field: 'coverImage', title: '封面图' },
+    { field: 'logoImage', title: '店铺LOGO', slots: { default: 'logoImage_cell' } },
+    { field: 'coverImage', title: '封面图', slots: { default: 'coverImage_cell' } },
     { field: 'contactName', title: '联系人姓名' },
     { field: 'contactPhone', title: '联系电话' },
     { field: 'intro', title: '店铺简介' },
@@ -135,6 +135,14 @@ function handleDelete(row: ShopItem) {
     <Grid>
       <template #toolbar-actions>
         <Button type="primary" @click="handleCreate">新建</Button>
+      </template>
+      <template #logoImage_cell="{ row }">
+        <img v-if="row.logoImage" :src="row.logoImage" style="height:40px;width:40px;object-fit:cover;border-radius:4px;" />
+        <span v-else>-</span>
+      </template>
+      <template #coverImage_cell="{ row }">
+        <img v-if="row.coverImage" :src="row.coverImage" style="height:40px;width:40px;object-fit:cover;border-radius:4px;" />
+        <span v-else>-</span>
       </template>
       <template #status_cell="{ row }">
         <Tag :color="getStatusColor(row.status)">

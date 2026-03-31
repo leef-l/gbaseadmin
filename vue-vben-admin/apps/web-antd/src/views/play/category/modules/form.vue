@@ -43,16 +43,16 @@ const [Form, formApi] = useVbenForm({
       componentProps: { placeholder: '请输入分类名称', maxlength: 50 },
     },
     {
-      component: 'Input',
+      component: 'ImageUpload',
       fieldName: 'icon',
       label: '分类图标',
-      componentProps: { placeholder: '请输入分类图标', maxlength: 100 },
+      componentProps: { maxCount: 1 },
     },
     {
-      component: 'Input',
+      component: 'ImageUpload',
       fieldName: 'coverImage',
       label: '分类封面图',
-      componentProps: { placeholder: '请输入分类封面图', maxlength: 500 },
+      componentProps: { maxCount: 1 },
     },
     {
       component: 'InputNumber',

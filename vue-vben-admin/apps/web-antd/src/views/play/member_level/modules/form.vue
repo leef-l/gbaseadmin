@@ -41,10 +41,10 @@ const [Form, formApi] = useVbenForm({
       componentProps: { options: levelOptions, placeholder: '请选择等级', allowClear: true, class: 'w-full' },
     },
     {
-      component: 'Input',
+      component: 'ImageUpload',
       fieldName: 'icon',
       label: '等级图标',
-      componentProps: { placeholder: '请输入等级图标', maxlength: 100 },
+      componentProps: { maxCount: 1 },
     },
     {
       component: 'Input',

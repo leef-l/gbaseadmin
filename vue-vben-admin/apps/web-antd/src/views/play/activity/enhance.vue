@@ -171,7 +171,7 @@ const gridOptions: VxeGridProps<ActivityItem> = {
   columns: [
     { title: '序号', type: 'seq', width: 50 },
     { field: 'title', title: '活动名称' },
-    { field: 'coverImage', title: '活动封面图' },
+    { field: 'coverImage', title: '活动封面图', width: 100, slots: { default: 'coverImage_cell' } },
     { field: 'descContent', title: '活动详情描述（富文本，支持图文混排）' },
     { field: 'type', title: '活动类型', width: 120, slots: { default: 'type_cell' } },
     { field: 'conditionType', title: '参与条件', width: 120, slots: { default: 'conditionType_cell' } },
@@ -258,6 +258,10 @@ function handleSteps(row: ActivityItem) {
     <Grid>
       <template #toolbar-actions>
         <Button type="primary" @click="handleCreate">新建</Button>
+      </template>
+      <template #coverImage_cell="{ row }">
+        <img v-if="row.coverImage" :src="row.coverImage" style="width:48px;height:48px;object-fit:cover;border-radius:4px;" />
+        <span v-else>-</span>
       </template>
       <template #type_cell="{ row }">
         <Tag :color="getTypeColor(row.type)">

@@ -40,16 +40,16 @@ const [Form, formApi] = useVbenForm({
       componentProps: { placeholder: '请输入商品名称', maxlength: 100 },
     },
     {
-      component: 'Input',
+      component: 'ImageUpload',
       fieldName: 'coverImage',
       label: '商品封面图',
-      componentProps: { placeholder: '请输入商品封面图', maxlength: 500 },
+      componentProps: { maxCount: 1 },
     },
     {
-      component: 'Input',
+      component: 'RichText',
       fieldName: 'descContent',
       label: '商品详情描述',
-      componentProps: { placeholder: '请输入商品详情描述', maxlength: 65535 },
+      formItemClass: 'col-span-full',
     },
     {
       component: 'InputNumber',

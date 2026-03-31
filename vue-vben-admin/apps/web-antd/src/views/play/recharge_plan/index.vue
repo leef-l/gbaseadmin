@@ -69,7 +69,7 @@ const gridOptions: VxeGridProps<RechargePlanItem> = {
     { field: 'title', title: '方案名称' },
     { field: 'amount', title: '充值金额', slots: { header: () => h('span', {}, ['充值金额 ', h(Tooltip, { title: '单位：分' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]) } },
     { field: 'giftAmount', title: '赠送金额', slots: { header: () => h('span', {}, ['赠送金额 ', h(Tooltip, { title: '单位：分' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]) } },
-    { field: 'coverImage', title: '方案封面图' },
+    { field: 'coverImage', title: '方案封面图', slots: { default: 'coverImage_cell' } },
     { field: 'sort', title: '排序', slots: { header: () => h('span', {}, ['排序 ', h(Tooltip, { title: '升序' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]) } },
     { field: 'status', title: '状态', width: 120, slots: { default: 'status_cell' } },
     { field: 'createdAt', title: '创建时间', width: 180, formatter: 'formatDateTime' },
@@ -132,6 +132,10 @@ function handleDelete(row: RechargePlanItem) {
     <Grid>
       <template #toolbar-actions>
         <Button type="primary" @click="handleCreate">新建</Button>
+      </template>
+      <template #coverImage_cell="{ row }">
+        <img v-if="row.coverImage" :src="row.coverImage" style="height:40px;width:40px;object-fit:cover;border-radius:4px;" />
+        <span v-else>-</span>
       </template>
       <template #status_cell="{ row }">
         <Tag :color="getStatusColor(row.status)">

@@ -39,7 +39,7 @@ const gridOptions: VxeGridProps<ActivityStepItem> = {
     { field: 'stepNum', title: '步骤序号' },
     { field: 'title', title: '步骤标题' },
     { field: 'descContent', title: '步骤说明', slots: { header: () => h('span', {}, ['步骤说明 ', h(Tooltip, { title: '富文本，支持图文' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]) } },
-    { field: 'stepImage', title: '步骤示例图片' },
+    { field: 'stepImage', title: '步骤示例图片', slots: { default: ({ row }) => row.stepImage ? h('img', { src: row.stepImage, style: 'height:40px;width:40px;object-fit:cover;border-radius:4px;' }) : '-' } },
     { field: 'sort', title: '排序', slots: { header: () => h('span', {}, ['排序 ', h(Tooltip, { title: '升序' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]) } },
     { field: 'createdAt', title: '创建时间', width: 180, formatter: 'formatDateTime' },
     { title: '操作', width: 200, fixed: 'right', slots: { default: 'action' } },

@@ -187,6 +187,25 @@ skip_fields:               # 跳过生成的公共字段
 | `*_at` | `DateTimePicker` | 日期时间选择器 |
 | `sort`、`order`、`*_num`、`*_price`、`*_amount`、`*_income`、`*_balance` | `InputNumber` | 数字输入框 |
 | `icon` | `IconPicker` | 图标选择器 |
+| `*_image`、`*_img`、`avatar`、`*_photo` | `ImageUpload` | 图片上传 |
+| `*_file`、`*_attachment` | `FileUpload` | 文件上传 |
+| `*_content`、`*_body`、`*_html` | `RichText` | 富文本编辑器 |
+| `*_json`、`*_config`、`*_settings` | `JsonEditor` | JSON 编辑器 |
+
+### 表单组件自动映射
+
+`parser/field_mapper.go` 中的 `MapComponent` 函数根据字段命名规则自动映射以下 4 种富组件：
+
+| 字段名规则 | 组件 | 说明 |
+|-----------|------|------|
+| `*_image`、`*_img`、`avatar`、`*_photo` | `ImageUpload` | 图片上传（文件管理器 `mode=image`） |
+| `*_file`、`*_attachment` | `FileUpload` | 文件上传（文件管理器 `mode=all`） |
+| `*_content`、`*_body`、`*_html` | `RichText` | TinyMCE 富文本编辑器 |
+| `*_json`、`*_config`、`*_settings` | `JsonEditor` | JSON 编辑器（tree + code 双模式） |
+
+这 4 个组件在 `adapter/component/index.ts` 中注册，上传类组件（`ImageUpload`、`FileUpload`）调用 upload 应用的接口 `/upload/uploader/upload`。
+
+> **注意**：使用 `ImageUpload` 或 `FileUpload` 组件的表单页面需要 `upload` 应用处于运行状态，否则文件管理 API 不可用。
 
 ### 按枚举数量匹配
 

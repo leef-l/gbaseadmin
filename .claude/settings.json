@@ -76,7 +76,10 @@
       "Bash(pnpm --filter @vben/web-antd run build)",
       "Bash(pnpm ls @ant-design/icons-vue --filter @vben/web-antd)",
       "Read(//c/project/node_modules/.pnpm/**)",
-      "Bash(pnpm --filter @vben/web-antd add @ant-design/icons-vue)"
+      "Bash(pnpm --filter @vben/web-antd add @ant-design/icons-vue)",
+      "Bash(ls -d c:/project/gbaseadmin/vue-vben-admin/apps/web-antd/src/views/play/*/)",
+      "Bash(grep -rn \"image\\\\|avatar\\\\|photo\\\\|_img\\\\|_file\\\\|attachment\\\\|_content\\\\|_body\\\\|_html\\\\|richtext\\\\|RichText\\\\|ImageUpload\\\\|FileUpload\\\\|Upload\\\\|Textarea.*content\\\\|icon\\\\|cover\\\\|logo\\\\|banner\\\\|thumb\" c:/project/gbaseadmin/vue-vben-admin/apps/web-antd/src/views/play/*/modules/form.vue --include=\"*.vue\" -l)",
+      "Bash(pnpm --filter @vben/web-antd build)"
     ]
   }
 }

@@ -39,10 +39,10 @@ const [Form, formApi] = useVbenForm({
       componentProps: { placeholder: '请输入赠送金额（分）', class: 'w-full' },
     },
     {
-      component: 'Input',
+      component: 'ImageUpload',
       fieldName: 'coverImage',
       label: '方案封面图',
-      componentProps: { placeholder: '请输入方案封面图', maxlength: 500 },
+      componentProps: { maxCount: 1 },
     },
     {
       component: 'InputNumber',

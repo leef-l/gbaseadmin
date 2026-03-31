@@ -105,7 +105,7 @@ const gridOptions: VxeGridProps<CoachLevelItem> = {
     { title: '序号', type: 'seq', width: 50 },
     { field: 'title', title: '等级名称' },
     { field: 'level', title: '等级', width: 120, slots: { default: 'level_cell' } },
-    { field: 'icon', title: '等级图标' },
+    { field: 'icon', title: '等级图标', width: 100, slots: { default: 'icon_cell' } },
     { field: 'minOrders', title: '所需最低接单数' },
     { field: 'minScore', title: '最低评分', slots: { header: () => h('span', {}, ['最低评分 ', h(Tooltip, { title: '乘100存储，如 450=4.50分' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]) } },
     { field: 'commissionRate', title: '抽成比例', slots: { header: () => h('span', {}, ['抽成比例 ', h(Tooltip, { title: '百分比，如 20 表示 20%' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]) } },
@@ -171,6 +171,10 @@ function handleDelete(row: CoachLevelItem) {
     <Grid>
       <template #toolbar-actions>
         <Button type="primary" @click="handleCreate">新建</Button>
+      </template>
+      <template #icon_cell="{ row }">
+        <img v-if="row.icon" :src="row.icon" style="height:32px;width:32px;object-fit:cover;border-radius:4px;" />
+        <span v-else>-</span>
       </template>
       <template #level_cell="{ row }">
         <Tag :color="getLevelColor(row.level)">

@@ -130,7 +130,7 @@ const gridOptions: VxeGridProps<MemberItem> = {
     { title: '序号', type: 'seq', width: 50 },
     { field: 'phone', title: '手机号' },
     { field: 'nickname', title: '昵称' },
-    { field: 'avatar', title: '头像' },
+    { field: 'avatar', title: '头像', width: 80, slots: { default: 'avatar_cell' } },
     { field: 'gender', title: '性别', width: 120, slots: { default: 'gender_cell' } },
     { field: 'memberLevelTitle', title: '会员等级ID' },
     { field: 'exp', title: '经验值' },
@@ -198,6 +198,10 @@ function handleDelete(row: MemberItem) {
     <Grid>
       <template #toolbar-actions>
         <Button type="primary" @click="handleCreate">新建</Button>
+      </template>
+      <template #avatar_cell="{ row }">
+        <img v-if="row.avatar" :src="row.avatar" style="width:40px;height:40px;object-fit:cover;border-radius:4px;" />
+        <span v-else>-</span>
       </template>
       <template #gender_cell="{ row }">
         <Tag :color="getGenderColor(row.gender)">

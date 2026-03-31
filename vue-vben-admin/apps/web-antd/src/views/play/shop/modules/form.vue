@@ -26,16 +26,16 @@ const [Form, formApi] = useVbenForm({
       componentProps: { placeholder: '请输入店铺名称', maxlength: 100 },
     },
     {
-      component: 'Input',
+      component: 'ImageUpload',
       fieldName: 'logoImage',
       label: '店铺LOGO',
-      componentProps: { placeholder: '请输入店铺LOGO', maxlength: 500 },
+      componentProps: { maxCount: 1 },
     },
     {
-      component: 'Input',
+      component: 'ImageUpload',
       fieldName: 'coverImage',
       label: '封面图',
-      componentProps: { placeholder: '请输入封面图', maxlength: 500 },
+      componentProps: { maxCount: 1 },
     },
     {
       component: 'Input',

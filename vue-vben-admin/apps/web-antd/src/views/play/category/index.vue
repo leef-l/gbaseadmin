@@ -67,8 +67,8 @@ const gridOptions: VxeGridProps<CategoryItem> = {
   columns: [
     { title: '序号', type: 'seq', width: 50 },
     { field: 'title', title: '分类名称', treeNode: true },
-    { field: 'icon', title: '分类图标' },
-    { field: 'coverImage', title: '分类封面图' },
+    { field: 'icon', title: '分类图标', slots: { default: 'icon_cell' } },
+    { field: 'coverImage', title: '分类封面图', slots: { default: 'coverImage_cell' } },
     { field: 'sort', title: '排序', slots: { header: () => h('span', {}, ['排序 ', h(Tooltip, { title: '升序' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]) } },
     { field: 'status', title: '状态', width: 120, slots: { default: 'status_cell' } },
     { field: 'createdAt', title: '创建时间', width: 180, formatter: 'formatDateTime' },
@@ -129,6 +129,14 @@ function handleDelete(row: CategoryItem) {
     <Grid>
       <template #toolbar-actions>
         <Button type="primary" @click="handleCreate">新建</Button>
+      </template>
+      <template #icon_cell="{ row }">
+        <img v-if="row.icon" :src="row.icon" style="height:40px;max-width:60px;object-fit:cover;border-radius:4px;" />
+        <span v-else>-</span>
+      </template>
+      <template #coverImage_cell="{ row }">
+        <img v-if="row.coverImage" :src="row.coverImage" style="height:40px;max-width:60px;object-fit:cover;border-radius:4px;" />
+        <span v-else>-</span>
       </template>
       <template #status_cell="{ row }">
         <Tag :color="getStatusColor(row.status)">

@@ -44,16 +44,16 @@ const [Form, formApi] = useVbenForm({
       componentProps: { placeholder: '请输入活动名称', maxlength: 100 },
     },
     {
-      component: 'Input',
+      component: 'ImageUpload',
       fieldName: 'coverImage',
       label: '活动封面图',
-      componentProps: { placeholder: '请输入活动封面图', maxlength: 500 },
+      componentProps: { maxCount: 1 },
     },
     {
-      component: 'Input',
+      component: 'RichText',
       fieldName: 'descContent',
       label: () => h('span', {}, ['活动详情描述 ', h(Tooltip, { title: '富文本，支持图文混排' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]),
-      componentProps: { placeholder: '请输入活动详情描述（富文本，支持图文混排）', maxlength: 65535 },
+      formItemClass: 'col-span-full',
     },
     {
       component: 'Select',
@@ -173,7 +173,7 @@ const [Modal, modalApi] = useVbenModal({
 </script>
 
 <template>
-  <Modal class="w-[600px]">
+  <Modal class="w-[860px]">
     <Form />
   </Modal>
 </template>

@@ -101,7 +101,7 @@ const gridOptions: VxeGridProps<CoachItem> = {
     { field: 'shopTitle', title: '所属店铺', slots: { header: () => h('span', {}, ['所属店铺 ', h(Tooltip, { title: '0表示无店铺' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]) } },
     { field: 'realName', title: '真实姓名' },
     { field: 'intro', title: '个人简介' },
-    { field: 'coverImage', title: '封面图' },
+    { field: 'coverImage', title: '封面图', width: 100, slots: { default: 'coverImage_cell' } },
     { field: 'totalOrders', title: '总接单数' },
     { field: 'totalScore', title: '总评分', slots: { header: () => h('span', {}, ['总评分 ', h(Tooltip, { title: '乘100，如 500=5.00' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]) } },
     { field: 'scoreNum', title: '评分人数' },
@@ -170,6 +170,10 @@ function handleDelete(row: CoachItem) {
     <Grid>
       <template #toolbar-actions>
         <Button type="primary" @click="handleCreate">新建</Button>
+      </template>
+      <template #coverImage_cell="{ row }">
+        <img v-if="row.coverImage" :src="row.coverImage" style="width:48px;height:48px;object-fit:cover;border-radius:4px;" />
+        <span v-else>-</span>
       </template>
       <template #isOnline_cell="{ row }">
         <Tag :color="getIsOnlineColor(row.isOnline)">

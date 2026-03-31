@@ -68,7 +68,7 @@ const gridOptions: VxeGridProps<OauthItem> = {
     { field: 'openID', title: '第三方OpenID' },
     { field: 'unionID', title: '第三方UnionID' },
     { field: 'nickname', title: '第三方昵称' },
-    { field: 'avatar', title: '第三方头像' },
+    { field: 'avatar', title: '第三方头像', slots: { default: 'avatar_cell' } },
     { field: 'accessToken', title: '访问令牌' },
     { field: 'refreshToken', title: '刷新令牌' },
     { field: 'expireAt', title: '令牌过期时间', width: 180, formatter: 'formatDateTime' },
@@ -132,6 +132,10 @@ function handleDelete(row: OauthItem) {
     <Grid>
       <template #toolbar-actions>
         <Button type="primary" @click="handleCreate">新建</Button>
+      </template>
+      <template #avatar_cell="{ row }">
+        <img v-if="row.avatar" :src="row.avatar" style="height:40px;width:40px;object-fit:cover;border-radius:4px;" />
+        <span v-else>-</span>
       </template>
       <template #provider_cell="{ row }">
         <Tag :color="getProviderColor(row.provider)">

@@ -91,6 +91,10 @@ const gridOptions: VxeGridProps<{{.ModelName}}Item> = {
     { field: '{{.RefFieldJSON}}', title: '{{.ShortLabel}}'{{if .TooltipText}}, slots: { header: () => h('span', {}, ['{{.ShortLabel}} ', h(Tooltip, { title: '{{.TooltipText}}' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]) }{{end}}{{if and $isTree $firstDataCol}}, treeNode: true{{end}} },
 {{- else if .IsEnum}}
     { field: '{{.NameLower}}', title: '{{.ShortLabel}}', width: 120, slots: { default: '{{.NameLower}}_cell' }{{if and $isTree $firstDataCol}}, treeNode: true{{end}} },
+{{- else if eq .Component "ImageUpload"}}
+    { field: '{{.NameLower}}', title: '{{.ShortLabel}}', width: 100, slots: { default: '{{.NameLower}}_cell' }{{if and $isTree $firstDataCol}}, treeNode: true{{end}} },
+{{- else if or (eq .Component "RichText") (eq .Component "JsonEditor")}}
+{{- /* 富文本和JSON字段不在列表中显示 */}}
 {{- else}}
     { field: '{{.NameLower}}', title: '{{.ShortLabel}}'{{if .TooltipText}}, slots: { header: () => h('span', {}, ['{{.ShortLabel}} ', h(Tooltip, { title: '{{.TooltipText}}' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]) }{{end}}{{if and $isTree $firstDataCol}}, treeNode: true{{end}} },
 {{- end}}
@@ -184,6 +188,11 @@ function handleDelete(row: {{.ModelName}}Item) {
         <Tag :color="get{{.NameCamel}}Color(row.{{.NameLower}})">
           {{"{{"}} {{.NameLower}}Map[row.{{.NameLower}}] || row.{{.NameLower}} {{"}}"}}
         </Tag>
+      </template>
+{{- else if eq .Component "ImageUpload"}}
+      <template #{{.NameLower}}_cell="{ row }">
+        <img v-if="row.{{.NameLower}}" :src="row.{{.NameLower}}" style="width: 48px; height: 48px; object-fit: cover; border-radius: 4px;" />
+        <span v-else>-</span>
       </template>
 {{- end}}
 {{- end}}

@@ -53,6 +53,7 @@ const stepColumns = [
   { title: '步骤标题', dataIndex: 'title', key: 'title' },
   { title: '步骤类型', dataIndex: 'stepType', key: 'stepType', width: 80, customRender: ({ text }: any) => stepTypeMap[text] || '文字' },
   { title: '示例内容', dataIndex: 'exampleText', key: 'exampleText', ellipsis: true },
+  { title: '步骤图片', dataIndex: 'stepImage', key: 'stepImage', width: 80 },
   { title: '步骤说明', dataIndex: 'descContent', key: 'descContent', ellipsis: true },
   { title: '排序', dataIndex: 'sort', key: 'sort', width: 80 },
   { title: '操作', key: 'action', width: 150 },
@@ -171,6 +172,10 @@ const [DrawerModal, modalApi] = useVbenModal({
         </div>
         <Table :columns="stepColumns" :data-source="steps" :loading="loading" :pagination="false" row-key="id" size="small">
           <template #bodyCell="{ column, record }">
+            <template v-if="column.key === 'stepImage'">
+              <img v-if="record.stepImage" :src="record.stepImage" style="width:40px;height:40px;object-fit:cover;border-radius:4px;" />
+              <span v-else>-</span>
+            </template>
             <template v-if="column.key === 'action'">
               <Button type="link" size="small" @click="handleEditStep(record)">编辑</Button>
               <Popconfirm title="确定删除？" @confirm="handleDeleteStep(record)">
@@ -219,9 +224,10 @@ const [DrawerModal, modalApi] = useVbenModal({
         </Form.Item>
         <Form.Item v-if="stepForm.stepType === 3" label="示例图片">
           <Input v-model:value="stepForm.stepImage" placeholder="请输入示例图片URL" />
+          <img v-if="stepForm.stepImage" :src="stepForm.stepImage" style="margin-top:8px;width:80px;height:80px;object-fit:cover;border-radius:4px;border:1px solid #d9d9d9;" />
         </Form.Item>
         <Form.Item label="步骤说明">
-          <Input.TextArea v-model:value="stepForm.descContent" placeholder="请输入步骤说明" :rows="3" />
+          <Input.TextArea v-model:value="stepForm.descContent" placeholder="请输入步骤说明" :rows="5" />
         </Form.Item>
         <Form.Item label="排序">
           <InputNumber v-model:value="stepForm.sort" :min="0" style="width: 100%" />

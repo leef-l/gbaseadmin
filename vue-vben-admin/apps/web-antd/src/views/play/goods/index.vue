@@ -69,7 +69,7 @@ const gridOptions: VxeGridProps<GoodsItem> = {
     { field: 'categoryTitle', title: '分类ID' },
     { field: 'coachID', title: '陪玩师ID' },
     { field: 'title', title: '商品名称' },
-    { field: 'coverImage', title: '商品封面图' },
+    { field: 'coverImage', title: '商品封面图', width: 100, slots: { default: 'coverImage_cell' } },
     { field: 'descContent', title: '商品详情描述' },
     { field: 'price', title: '单价', slots: { header: () => h('span', {}, ['单价 ', h(Tooltip, { title: '单位：分' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]) } },
     { field: 'unit', title: '计量单位（如' },
@@ -136,6 +136,10 @@ function handleDelete(row: GoodsItem) {
     <Grid>
       <template #toolbar-actions>
         <Button type="primary" @click="handleCreate">新建</Button>
+      </template>
+      <template #coverImage_cell="{ row }">
+        <img v-if="row.coverImage" :src="row.coverImage" style="width:48px;height:48px;object-fit:cover;border-radius:4px;" />
+        <span v-else>-</span>
       </template>
       <template #status_cell="{ row }">
         <Tag :color="getStatusColor(row.status)">

@@ -39,16 +39,16 @@ const [Form, formApi] = useVbenForm({
       componentProps: { placeholder: '请输入步骤标题', maxlength: 100 },
     },
     {
-      component: 'Input',
+      component: 'RichText',
       fieldName: 'descContent',
       label: () => h('span', {}, ['步骤说明 ', h(Tooltip, { title: '富文本，支持图文' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]),
-      componentProps: { placeholder: '请输入步骤说明（富文本，支持图文）', maxlength: 65535 },
+      formItemClass: 'col-span-full',
     },
     {
-      component: 'Input',
+      component: 'ImageUpload',
       fieldName: 'stepImage',
       label: '步骤示例图片',
-      componentProps: { placeholder: '请输入步骤示例图片', maxlength: 500 },
+      componentProps: { maxCount: 1 },
     },
     {
       component: 'InputNumber',

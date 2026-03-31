@@ -103,7 +103,7 @@ const gridOptions: VxeGridProps<MemberLevelItem> = {
     { title: '序号', type: 'seq', width: 50 },
     { field: 'title', title: '等级名称' },
     { field: 'level', title: '等级', width: 120, slots: { default: 'level_cell' } },
-    { field: 'icon', title: '等级图标' },
+    { field: 'icon', title: '等级图标', slots: { default: 'icon_cell' } },
     { field: 'minExp', title: '所需最低经验值' },
     { field: 'discount', title: '折扣', slots: { header: () => h('span', {}, ['折扣 ', h(Tooltip, { title: '百分比，如 90 表示九折' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]) } },
     { field: 'sort', title: '排序', slots: { header: () => h('span', {}, ['排序 ', h(Tooltip, { title: '升序' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]) } },
@@ -168,6 +168,10 @@ function handleDelete(row: MemberLevelItem) {
     <Grid>
       <template #toolbar-actions>
         <Button type="primary" @click="handleCreate">新建</Button>
+      </template>
+      <template #icon_cell="{ row }">
+        <img v-if="row.icon" :src="row.icon" style="height:32px;width:32px;object-fit:cover;border-radius:4px;" />
+        <span v-else>-</span>
       </template>
       <template #level_cell="{ row }">
         <Tag :color="getLevelColor(row.level)">

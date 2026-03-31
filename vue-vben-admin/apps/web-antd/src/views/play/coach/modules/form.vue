@@ -51,10 +51,10 @@ const [Form, formApi] = useVbenForm({
       componentProps: { placeholder: '请输入个人简介', maxlength: 500 },
     },
     {
-      component: 'Input',
+      component: 'ImageUpload',
       fieldName: 'coverImage',
       label: '封面图',
-      componentProps: { placeholder: '请输入封面图', maxlength: 500 },
+      componentProps: { maxCount: 1 },
     },
     {
       component: 'Input',

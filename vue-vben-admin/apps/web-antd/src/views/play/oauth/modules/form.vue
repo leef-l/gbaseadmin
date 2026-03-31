@@ -57,10 +57,10 @@ const [Form, formApi] = useVbenForm({
       componentProps: { placeholder: '请输入第三方昵称', maxlength: 50 },
     },
     {
-      component: 'Input',
+      component: 'ImageUpload',
       fieldName: 'avatar',
       label: '第三方头像',
-      componentProps: { placeholder: '请输入第三方头像', maxlength: 500 },
+      componentProps: { maxCount: 1 },
     },
     {
       component: 'Input',
