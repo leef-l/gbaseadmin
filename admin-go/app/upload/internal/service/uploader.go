@@ -1,9 +1,13 @@
 package service
 
-import "context"
+import (
+	"context"
+
+	"gbaseadmin/app/upload/internal/model"
+)
 
 type IUploader interface {
-	Upload(ctx context.Context) error
+	Upload(ctx context.Context) (*model.UploadOutput, error)
 }
 
 var localUploader IUploader

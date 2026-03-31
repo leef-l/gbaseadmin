@@ -22,15 +22,15 @@ type UploadDirRuleDao struct {
 // UploadDirRuleColumns defines and stores column names for the table upload_dir_rule.
 type UploadDirRuleColumns struct {
 	Id        string // ID
-	DirId     string // ç›®å½•ID
-	Category  string // ç±»åˆ«:1=é»˜è®¤,2=ç±»åž‹,3=æŽ¥å£
-	SavePath  string // ä¿å­˜ç›®å½•
-	Status    string // çŠ¶æ€:0=ç¦ç”¨,1=å¯ç”¨
-	CreatedAt string // åˆ›å»ºæ—¶é—´
-	UpdatedAt string // æ›´æ–°æ—¶é—´
-	DeletedAt string // åˆ é™¤æ—¶é—´
-	CreatedBy string // åˆ›å»ºäºº
-	DeptId    string // éƒ¨é—¨ID
+	DirId     string // 目录ID
+	Category  string // 类别:1=默认,2=类型,3=接口
+	SavePath  string // 保存目录
+	Status    string // 状态:0=禁用,1=启用
+	CreatedAt string // 创建时间
+	UpdatedAt string // 更新时间
+	DeletedAt string // 删除时间
+	CreatedBy string // 创建人
+	DeptId    string // 部门ID
 }
 
 // uploadDirRuleColumns holds the columns for the table upload_dir_rule.

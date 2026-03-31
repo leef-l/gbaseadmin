@@ -8,91 +8,90 @@ import (
 
 // Config DTO 模型
 
-// ConfigCreateInput 创建ä¸Šä¼ é…ç½®输入
+// ConfigCreateInput 创建上传配置输入
 type ConfigCreateInput struct {
-	Name string `json:"name"`
-	Storage int `json:"storage"`
-	IsDefault int `json:"isDefault"`
-	LocalPath string `json:"localPath"`
-	OssEndpoint string `json:"ossEndpoint"`
-	OssBucket string `json:"ossBucket"`
+	Name         string `json:"name"`
+	Storage      int    `json:"storage"`
+	IsDefault    int    `json:"isDefault"`
+	LocalPath    string `json:"localPath"`
+	OssEndpoint  string `json:"ossEndpoint"`
+	OssBucket    string `json:"ossBucket"`
 	OssAccessKey string `json:"ossAccessKey"`
 	OssSecretKey string `json:"ossSecretKey"`
-	CosRegion string `json:"cosRegion"`
-	CosBucket string `json:"cosBucket"`
-	CosSecretID snowflake.JsonInt64 `json:"cosSecretID"`
+	CosRegion    string `json:"cosRegion"`
+	CosBucket    string `json:"cosBucket"`
+	CosSecretID  string `json:"cosSecretID"`
 	CosSecretKey string `json:"cosSecretKey"`
-	MaxSize int `json:"maxSize"`
-	Status int `json:"status"`
+	MaxSize      int    `json:"maxSize"`
+	Status       int    `json:"status"`
 }
 
-// ConfigUpdateInput 更新ä¸Šä¼ é…ç½®输入
+// ConfigUpdateInput 更新上传配置输入
 type ConfigUpdateInput struct {
-	ID snowflake.JsonInt64 `json:"id"`
-	Name string `json:"name"`
-	Storage int `json:"storage"`
-	IsDefault int `json:"isDefault"`
-	LocalPath string `json:"localPath"`
-	OssEndpoint string `json:"ossEndpoint"`
-	OssBucket string `json:"ossBucket"`
-	OssAccessKey string `json:"ossAccessKey"`
-	OssSecretKey string `json:"ossSecretKey"`
-	CosRegion string `json:"cosRegion"`
-	CosBucket string `json:"cosBucket"`
-	CosSecretID snowflake.JsonInt64 `json:"cosSecretID"`
-	CosSecretKey string `json:"cosSecretKey"`
-	MaxSize int `json:"maxSize"`
-	Status int `json:"status"`
+	ID           snowflake.JsonInt64 `json:"id"`
+	Name         string              `json:"name"`
+	Storage      int                 `json:"storage"`
+	IsDefault    int                 `json:"isDefault"`
+	LocalPath    string              `json:"localPath"`
+	OssEndpoint  string              `json:"ossEndpoint"`
+	OssBucket    string              `json:"ossBucket"`
+	OssAccessKey string              `json:"ossAccessKey"`
+	OssSecretKey string              `json:"ossSecretKey"`
+	CosRegion    string              `json:"cosRegion"`
+	CosBucket    string              `json:"cosBucket"`
+	CosSecretID  string              `json:"cosSecretID"`
+	CosSecretKey string              `json:"cosSecretKey"`
+	MaxSize      int                 `json:"maxSize"`
+	Status       int                 `json:"status"`
 }
 
-// ConfigDetailOutput ä¸Šä¼ é…ç½®详情输出
+// ConfigDetailOutput 上传配置详情输出
 type ConfigDetailOutput struct {
-	ID snowflake.JsonInt64 `json:"id"`
-	Name string `json:"name"`
-	Storage int `json:"storage"`
-	IsDefault int `json:"isDefault"`
-	LocalPath string `json:"localPath"`
-	OssEndpoint string `json:"ossEndpoint"`
-	OssBucket string `json:"ossBucket"`
-	OssAccessKey string `json:"ossAccessKey"`
-	OssSecretKey string `json:"ossSecretKey"`
-	CosRegion string `json:"cosRegion"`
-	CosBucket string `json:"cosBucket"`
-	CosSecretID snowflake.JsonInt64 `json:"cosSecretID"`
-	CosSecretKey string `json:"cosSecretKey"`
-	MaxSize int `json:"maxSize"`
-	Status int `json:"status"`
-	CreatedAt *gtime.Time `json:"createdAt"`
-	UpdatedAt *gtime.Time `json:"updatedAt"`
+	ID           snowflake.JsonInt64 `json:"id"`
+	Name         string              `json:"name"`
+	Storage      int                 `json:"storage"`
+	IsDefault    int                 `json:"isDefault"`
+	LocalPath    string              `json:"localPath"`
+	OssEndpoint  string              `json:"ossEndpoint"`
+	OssBucket    string              `json:"ossBucket"`
+	OssAccessKey string              `json:"ossAccessKey"`
+	OssSecretKey string              `json:"ossSecretKey"`
+	CosRegion    string              `json:"cosRegion"`
+	CosBucket    string              `json:"cosBucket"`
+	CosSecretID  string              `json:"cosSecretID"`
+	CosSecretKey string              `json:"cosSecretKey"`
+	MaxSize      int                 `json:"maxSize"`
+	Status       int                 `json:"status"`
+	CreatedAt    *gtime.Time         `json:"createdAt"`
+	UpdatedAt    *gtime.Time         `json:"updatedAt"`
 }
 
-// ConfigListOutput ä¸Šä¼ é…ç½®列表输出
+// ConfigListOutput 上传配置列表输出
 type ConfigListOutput struct {
-	ID snowflake.JsonInt64 `json:"id"`
-	Name string `json:"name"`
-	Storage int `json:"storage"`
-	IsDefault int `json:"isDefault"`
-	LocalPath string `json:"localPath"`
-	OssEndpoint string `json:"ossEndpoint"`
-	OssBucket string `json:"ossBucket"`
-	OssAccessKey string `json:"ossAccessKey"`
-	OssSecretKey string `json:"ossSecretKey"`
-	CosRegion string `json:"cosRegion"`
-	CosBucket string `json:"cosBucket"`
-	CosSecretID snowflake.JsonInt64 `json:"cosSecretID"`
-	CosSecretKey string `json:"cosSecretKey"`
-	MaxSize int `json:"maxSize"`
-	Status int `json:"status"`
-	CreatedAt *gtime.Time `json:"createdAt"`
-	UpdatedAt *gtime.Time `json:"updatedAt"`
+	ID           snowflake.JsonInt64 `json:"id"`
+	Name         string              `json:"name"`
+	Storage      int                 `json:"storage"`
+	IsDefault    int                 `json:"isDefault"`
+	LocalPath    string              `json:"localPath"`
+	OssEndpoint  string              `json:"ossEndpoint"`
+	OssBucket    string              `json:"ossBucket"`
+	OssAccessKey string              `json:"ossAccessKey"`
+	OssSecretKey string              `json:"ossSecretKey"`
+	CosRegion    string              `json:"cosRegion"`
+	CosBucket    string              `json:"cosBucket"`
+	CosSecretID  string              `json:"cosSecretID"`
+	CosSecretKey string              `json:"cosSecretKey"`
+	MaxSize      int                 `json:"maxSize"`
+	Status       int                 `json:"status"`
+	CreatedAt    *gtime.Time         `json:"createdAt"`
+	UpdatedAt    *gtime.Time         `json:"updatedAt"`
 }
 
-// ConfigListInput ä¸Šä¼ é…ç½®列表查询输入
+// ConfigListInput 上传配置列表查询输入
 type ConfigListInput struct {
-	PageNum  int `json:"pageNum"`
-	PageSize int `json:"pageSize"`
-	Storage int `json:"storage"`
+	PageNum   int `json:"pageNum"`
+	PageSize  int `json:"pageSize"`
+	Storage   int `json:"storage"`
 	IsDefault int `json:"isDefault"`
-	Status int `json:"status"`
+	Status    int `json:"status"`
 }
-

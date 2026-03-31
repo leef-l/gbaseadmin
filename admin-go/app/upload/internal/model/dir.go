@@ -8,7 +8,7 @@ import (
 
 // Dir DTO 模型
 
-// DirCreateInput 创建æ–‡ä»¶ç›®å½•输入
+// DirCreateInput 创建文件目录输入
 type DirCreateInput struct {
 	ParentID snowflake.JsonInt64 `json:"parentID"`
 	Name string `json:"name"`
@@ -17,7 +17,7 @@ type DirCreateInput struct {
 	Status int `json:"status"`
 }
 
-// DirUpdateInput 更新æ–‡ä»¶ç›®å½•输入
+// DirUpdateInput 更新文件目录输入
 type DirUpdateInput struct {
 	ID snowflake.JsonInt64 `json:"id"`
 	ParentID snowflake.JsonInt64 `json:"parentID"`
@@ -27,7 +27,7 @@ type DirUpdateInput struct {
 	Status int `json:"status"`
 }
 
-// DirDetailOutput æ–‡ä»¶ç›®å½•详情输出
+// DirDetailOutput 文件目录详情输出
 type DirDetailOutput struct {
 	ID snowflake.JsonInt64 `json:"id"`
 	ParentID snowflake.JsonInt64 `json:"parentID"`
@@ -40,7 +40,7 @@ type DirDetailOutput struct {
 	UpdatedAt *gtime.Time `json:"updatedAt"`
 }
 
-// DirListOutput æ–‡ä»¶ç›®å½•列表输出
+// DirListOutput 文件目录列表输出
 type DirListOutput struct {
 	ID snowflake.JsonInt64 `json:"id"`
 	ParentID snowflake.JsonInt64 `json:"parentID"`
@@ -53,14 +53,14 @@ type DirListOutput struct {
 	UpdatedAt *gtime.Time `json:"updatedAt"`
 }
 
-// DirListInput æ–‡ä»¶ç›®å½•列表查询输入
+// DirListInput 文件目录列表查询输入
 type DirListInput struct {
 	PageNum  int `json:"pageNum"`
 	PageSize int `json:"pageSize"`
 	Status int `json:"status"`
 }
 
-// DirTreeOutput æ–‡ä»¶ç›®å½•树形输出
+// DirTreeOutput 文件目录树形输出
 type DirTreeOutput struct {
 	ID snowflake.JsonInt64 `json:"id"`
 	ParentID snowflake.JsonInt64 `json:"parentID"`

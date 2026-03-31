@@ -22,7 +22,7 @@ func New() *sConfig {
 
 type sConfig struct{}
 
-// Create 创建ä¸Šä¼ é…ç½®
+// Create 创建上传配置
 func (s *sConfig) Create(ctx context.Context, in *model.ConfigCreateInput) error {
 	id := snowflake.Generate()
 	_, err := dao.UploadConfig.Ctx(ctx).Data(g.Map{
@@ -47,7 +47,7 @@ func (s *sConfig) Create(ctx context.Context, in *model.ConfigCreateInput) error
 	return err
 }
 
-// Update 更新ä¸Šä¼ é…ç½®
+// Update 更新上传配置
 func (s *sConfig) Update(ctx context.Context, in *model.ConfigUpdateInput) error {
 	data := g.Map{
 		dao.UploadConfig.Columns().Name: in.Name,
@@ -70,7 +70,7 @@ func (s *sConfig) Update(ctx context.Context, in *model.ConfigUpdateInput) error
 	return err
 }
 
-// Delete 软删除ä¸Šä¼ é…ç½®
+// Delete 软删除上传配置
 func (s *sConfig) Delete(ctx context.Context, id snowflake.JsonInt64) error {
 	_, err := dao.UploadConfig.Ctx(ctx).Where(dao.UploadConfig.Columns().Id, id).Data(g.Map{
 		dao.UploadConfig.Columns().DeletedAt: gtime.Now(),
@@ -78,7 +78,7 @@ func (s *sConfig) Delete(ctx context.Context, id snowflake.JsonInt64) error {
 	return err
 }
 
-// Detail 获取ä¸Šä¼ é…ç½®详情
+// Detail 获取上传配置详情
 func (s *sConfig) Detail(ctx context.Context, id snowflake.JsonInt64) (out *model.ConfigDetailOutput, err error) {
 	out = &model.ConfigDetailOutput{}
 	err = dao.UploadConfig.Ctx(ctx).Where(dao.UploadConfig.Columns().Id, id).Where(dao.UploadConfig.Columns().DeletedAt, nil).Scan(out)
@@ -88,7 +88,7 @@ func (s *sConfig) Detail(ctx context.Context, id snowflake.JsonInt64) (out *mode
 	return
 }
 
-// List 获取ä¸Šä¼ é…ç½®列表
+// List 获取上传配置列表
 func (s *sConfig) List(ctx context.Context, in *model.ConfigListInput) (list []*model.ConfigListOutput, total int, err error) {
 	m := dao.UploadConfig.Ctx(ctx).Where(dao.UploadConfig.Columns().DeletedAt, nil)
 	if in.Storage > 0 {

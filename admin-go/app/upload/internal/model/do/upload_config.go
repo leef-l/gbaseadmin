@@ -13,10 +13,10 @@ import (
 type UploadConfig struct {
 	g.Meta       `orm:"table:upload_config, do:true"`
 	Id           any         // ID
-	Name         any         // é…ç½®åç§°
-	Storage      any         // å­˜å‚¨ç±»åž‹:1=æœ¬åœ°,2=é˜¿é‡Œäº‘OSS,3=è…¾è®¯äº‘COS
-	IsDefault    any         // æ˜¯å¦é»˜è®¤:0=å¦,1=æ˜¯
-	LocalPath    any         // æœ¬åœ°å­˜å‚¨è·¯å¾„
+	Name         any         // 配置名称
+	Storage      any         // 存储类型:1=本地,2=阿里云OSS,3=腾讯云COS
+	IsDefault    any         // 是否默认:0=否,1=是
+	LocalPath    any         // 本地存储路径
 	OssEndpoint  any         // OSS Endpoint
 	OssBucket    any         // OSS Bucket
 	OssAccessKey any         // OSS AccessKey
@@ -25,11 +25,11 @@ type UploadConfig struct {
 	CosBucket    any         // COS Bucket
 	CosSecretId  any         // COS SecretId
 	CosSecretKey any         // COS SecretKey
-	MaxSize      any         // æœ€å¤§æ–‡ä»¶å¤§å°(MB)
-	Status       any         // çŠ¶æ€:0=ç¦ç”¨,1=å¯ç”¨
-	CreatedAt    *gtime.Time // åˆ›å»ºæ—¶é—´
-	UpdatedAt    *gtime.Time // æ›´æ–°æ—¶é—´
-	DeletedAt    *gtime.Time // åˆ é™¤æ—¶é—´
-	CreatedBy    any         // åˆ›å»ºäºº
-	DeptId       any         // éƒ¨é—¨ID
+	MaxSize      any         // 最大文件大小(MB)
+	Status       any         // 状态:0=禁用,1=启用
+	CreatedAt    *gtime.Time // 创建时间
+	UpdatedAt    *gtime.Time // 更新时间
+	DeletedAt    *gtime.Time // 删除时间
+	CreatedBy    any         // 创建人
+	DeptId       any         // 部门ID
 }

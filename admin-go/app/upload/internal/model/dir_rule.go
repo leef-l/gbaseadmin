@@ -8,7 +8,7 @@ import (
 
 // DirRule DTO 模型
 
-// DirRuleCreateInput 创建æ–‡ä»¶ç›®å½•è§„åˆ™输入
+// DirRuleCreateInput 创建文件目录规则输入
 type DirRuleCreateInput struct {
 	DirID snowflake.JsonInt64 `json:"dirID"`
 	Category int `json:"category"`
@@ -16,7 +16,7 @@ type DirRuleCreateInput struct {
 	Status int `json:"status"`
 }
 
-// DirRuleUpdateInput 更新æ–‡ä»¶ç›®å½•è§„åˆ™输入
+// DirRuleUpdateInput 更新文件目录规则输入
 type DirRuleUpdateInput struct {
 	ID snowflake.JsonInt64 `json:"id"`
 	DirID snowflake.JsonInt64 `json:"dirID"`
@@ -25,7 +25,7 @@ type DirRuleUpdateInput struct {
 	Status int `json:"status"`
 }
 
-// DirRuleDetailOutput æ–‡ä»¶ç›®å½•è§„åˆ™详情输出
+// DirRuleDetailOutput 文件目录规则详情输出
 type DirRuleDetailOutput struct {
 	ID snowflake.JsonInt64 `json:"id"`
 	DirID snowflake.JsonInt64 `json:"dirID"`
@@ -37,7 +37,7 @@ type DirRuleDetailOutput struct {
 	UpdatedAt *gtime.Time `json:"updatedAt"`
 }
 
-// DirRuleListOutput æ–‡ä»¶ç›®å½•è§„åˆ™列表输出
+// DirRuleListOutput 文件目录规则列表输出
 type DirRuleListOutput struct {
 	ID snowflake.JsonInt64 `json:"id"`
 	DirID snowflake.JsonInt64 `json:"dirID"`
@@ -49,7 +49,7 @@ type DirRuleListOutput struct {
 	UpdatedAt *gtime.Time `json:"updatedAt"`
 }
 
-// DirRuleListInput æ–‡ä»¶ç›®å½•è§„åˆ™列表查询输入
+// DirRuleListInput 文件目录规则列表查询输入
 type DirRuleListInput struct {
 	PageNum  int `json:"pageNum"`
 	PageSize int `json:"pageSize"`

@@ -36,7 +36,6 @@ var (
 					)
 				})
 			})
-			s.AddStaticPath("/upload", "resource/upload")
 			s.Run()
 			return nil
 		},

@@ -1,21 +1,21 @@
 package consts
 
-// ConfigStorage å­˜å‚¨ç±»åž‹
+// ConfigStorage 存储类型
 const (
-	ConfigStorage1 = 1 // æœ¬åœ°
-	ConfigStorage2 = 2 // é˜¿é‡Œäº‘OSS
-	ConfigStorage3 = 3 // è…¾è®¯äº‘COS
+	ConfigStorage1 = 1 // 本地
+	ConfigStorage2 = 2 // 阿里云OSS
+	ConfigStorage3 = 3 // 腾讯云COS
 )
 
-// ConfigIsDefault æ˜¯å¦é»˜è®¤
+// ConfigIsDefault 是否默认
 const (
-	ConfigIsDefault0 = 0 // å¦
-	ConfigIsDefault1 = 1 // æ˜¯
+	ConfigIsDefault0 = 0 // 否
+	ConfigIsDefault1 = 1 // 是
 )
 
-// ConfigStatus çŠ¶æ€
+// ConfigStatus 状态
 const (
-	ConfigStatus0 = 0 // ç¦ç”¨
-	ConfigStatus1 = 1 // å¯ç”¨
+	ConfigStatus0 = 0 // 禁用
+	ConfigStatus1 = 1 // 启用
 )
 

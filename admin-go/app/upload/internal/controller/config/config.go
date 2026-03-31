@@ -12,7 +12,7 @@ var Config = cConfig{}
 
 type cConfig struct{}
 
-// Create 创建ä¸Šä¼ é…ç½®
+// Create 创建上传配置
 func (c *cConfig) Create(ctx context.Context, req *v1.ConfigCreateReq) (res *v1.ConfigCreateRes, err error) {
 	err = service.Config().Create(ctx, &model.ConfigCreateInput{
 		Name: req.Name,
@@ -33,7 +33,7 @@ func (c *cConfig) Create(ctx context.Context, req *v1.ConfigCreateReq) (res *v1.
 	return
 }
 
-// Update 更新ä¸Šä¼ é…ç½®
+// Update 更新上传配置
 func (c *cConfig) Update(ctx context.Context, req *v1.ConfigUpdateReq) (res *v1.ConfigUpdateRes, err error) {
 	err = service.Config().Update(ctx, &model.ConfigUpdateInput{
 		ID: req.ID,
@@ -55,20 +55,20 @@ func (c *cConfig) Update(ctx context.Context, req *v1.ConfigUpdateReq) (res *v1.
 	return
 }
 
-// Delete 删除ä¸Šä¼ é…ç½®
+// Delete 删除上传配置
 func (c *cConfig) Delete(ctx context.Context, req *v1.ConfigDeleteReq) (res *v1.ConfigDeleteRes, err error) {
 	err = service.Config().Delete(ctx, req.ID)
 	return
 }
 
-// Detail 获取ä¸Šä¼ é…ç½®详情
+// Detail 获取上传配置详情
 func (c *cConfig) Detail(ctx context.Context, req *v1.ConfigDetailReq) (res *v1.ConfigDetailRes, err error) {
 	res = &v1.ConfigDetailRes{}
 	res.ConfigDetailOutput, err = service.Config().Detail(ctx, req.ID)
 	return
 }
 
-// List 获取ä¸Šä¼ é…ç½®列表
+// List 获取上传配置列表
 func (c *cConfig) List(ctx context.Context, req *v1.ConfigListReq) (res *v1.ConfigListRes, err error) {
 	res = &v1.ConfigListRes{}
 	res.List, res.Total, err = service.Config().List(ctx, &model.ConfigListInput{

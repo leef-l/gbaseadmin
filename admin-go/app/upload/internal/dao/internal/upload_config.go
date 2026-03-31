@@ -22,10 +22,10 @@ type UploadConfigDao struct {
 // UploadConfigColumns defines and stores column names for the table upload_config.
 type UploadConfigColumns struct {
 	Id           string // ID
-	Name         string // é…ç½®åç§°
-	Storage      string // å­˜å‚¨ç±»åž‹:1=æœ¬åœ°,2=é˜¿é‡Œäº‘OSS,3=è…¾è®¯äº‘COS
-	IsDefault    string // æ˜¯å¦é»˜è®¤:0=å¦,1=æ˜¯
-	LocalPath    string // æœ¬åœ°å­˜å‚¨è·¯å¾„
+	Name         string // 配置名称
+	Storage      string // 存储类型:1=本地,2=阿里云OSS,3=腾讯云COS
+	IsDefault    string // 是否默认:0=否,1=是
+	LocalPath    string // 本地存储路径
 	OssEndpoint  string // OSS Endpoint
 	OssBucket    string // OSS Bucket
 	OssAccessKey string // OSS AccessKey
@@ -34,13 +34,13 @@ type UploadConfigColumns struct {
 	CosBucket    string // COS Bucket
 	CosSecretId  string // COS SecretId
 	CosSecretKey string // COS SecretKey
-	MaxSize      string // æœ€å¤§æ–‡ä»¶å¤§å°(MB)
-	Status       string // çŠ¶æ€:0=ç¦ç”¨,1=å¯ç”¨
-	CreatedAt    string // åˆ›å»ºæ—¶é—´
-	UpdatedAt    string // æ›´æ–°æ—¶é—´
-	DeletedAt    string // åˆ é™¤æ—¶é—´
-	CreatedBy    string // åˆ›å»ºäºº
-	DeptId       string // éƒ¨é—¨ID
+	MaxSize      string // 最大文件大小(MB)
+	Status       string // 状态:0=禁用,1=启用
+	CreatedAt    string // 创建时间
+	UpdatedAt    string // 更新时间
+	DeletedAt    string // 删除时间
+	CreatedBy    string // 创建人
+	DeptId       string // 部门ID
 }
 
 // uploadConfigColumns holds the columns for the table upload_config.

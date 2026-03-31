@@ -1,8 +1,8 @@
 package consts
 
-// DirStatus çŠ¶æ€
+// DirStatus 状态
 const (
-	DirStatus0 = 0 // ç¦ç”¨
-	DirStatus1 = 1 // å¯ç”¨
+	DirStatus0 = 0 // 禁用
+	DirStatus1 = 1 // 启用
 )
 

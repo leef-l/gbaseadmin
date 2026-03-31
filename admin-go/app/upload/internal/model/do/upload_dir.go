@@ -13,14 +13,14 @@ import (
 type UploadDir struct {
 	g.Meta    `orm:"table:upload_dir, do:true"`
 	Id        any         // ID
-	ParentId  any         // ä¸Šçº§ç›®å½•
-	Name      any         // ç›®å½•åç§°
-	Path      any         // ç›®å½•è·¯å¾„
-	Sort      any         // æŽ’åº
-	Status    any         // çŠ¶æ€:0=ç¦ç”¨,1=å¯ç”¨
-	CreatedAt *gtime.Time // åˆ›å»ºæ—¶é—´
-	UpdatedAt *gtime.Time // æ›´æ–°æ—¶é—´
-	DeletedAt *gtime.Time // åˆ é™¤æ—¶é—´
-	CreatedBy any         // åˆ›å»ºäºº
-	DeptId    any         // éƒ¨é—¨ID
+	ParentId  any         // 上级目录
+	Name      any         // 目录名称
+	Path      any         // 目录路径
+	Sort      any         // 排序
+	Status    any         // 状态:0=禁用,1=启用
+	CreatedAt *gtime.Time // 创建时间
+	UpdatedAt *gtime.Time // 更新时间
+	DeletedAt *gtime.Time // 删除时间
+	CreatedBy any         // 创建人
+	DeptId    any         // 部门ID
 }

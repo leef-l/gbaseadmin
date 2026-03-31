@@ -13,6 +13,7 @@ import (
 	"github.com/gogf/gf/v2/os/gtime"
 
 	"gbaseadmin/app/upload/internal/dao"
+	"gbaseadmin/app/upload/internal/model"
 	"gbaseadmin/app/upload/internal/service"
 	"gbaseadmin/utility/snowflake"
 )
@@ -28,13 +29,13 @@ var imageExts = map[string]bool{
 	"webp": true, "svg": true, "bmp": true,
 }
 
-func (s *sUploader) Upload(ctx context.Context) error {
+func (s *sUploader) Upload(ctx context.Context) (*model.UploadOutput, error) {
 	r := g.RequestFromCtx(ctx)
 
 	// 获取上传文件
 	file := r.GetUploadFile("file")
 	if file == nil {
-		return fmt.Errorf("请选择要上传的文件")
+		return nil, fmt.Errorf("请选择要上传的文件")
 	}
 
 	// 读取默认上传配置
@@ -68,7 +69,7 @@ func (s *sUploader) Upload(ctx context.Context) error {
 
 	// 验证文件大小
 	if file.Size > maxSize {
-		return fmt.Errorf("文件大小超过限制（最大 %dMB）", maxSize/1024/1024)
+		return nil, fmt.Errorf("文件大小超过限制（最大 %dMB）", maxSize/1024/1024)
 	}
 
 	// 解析文件信息
@@ -92,18 +93,19 @@ func (s *sUploader) Upload(ctx context.Context) error {
 	// 本地存储
 	savePath := filepath.Join(localPath, dateDir)
 	if err := os.MkdirAll(savePath, 0755); err != nil {
-		return fmt.Errorf("创建目录失败: %v", err)
+		return nil, fmt.Errorf("创建目录失败: %v", err)
 	}
 
 	file.Filename = uniqueName
 	fullPath := filepath.Join(savePath, uniqueName)
 	_, err = file.Save(savePath)
 	if err != nil {
-		return fmt.Errorf("保存文件失败: %v", err)
+		return nil, fmt.Errorf("保存文件失败: %v", err)
 	}
 
-	// URL 路径
-	url := "/" + strings.ReplaceAll(fullPath, "\\", "/")
+	// URL 路径：静态路由 /upload -> resource/upload，所以 URL 需要去掉 localPath 前缀
+	relativePath := filepath.Join(dateDir, uniqueName)
+	url := "/upload/" + strings.ReplaceAll(relativePath, "\\", "/")
 
 	// 生成ID并写入数据库
 	id := snowflake.Generate()
@@ -121,23 +123,17 @@ func (s *sUploader) Upload(ctx context.Context) error {
 		"updated_at": gtime.Now(),
 	}).Insert()
 	if err != nil {
-		// 删除已保存的文件
 		os.Remove(fullPath)
-		return fmt.Errorf("保存文件记录失败: %v", err)
+		return nil, fmt.Errorf("保存文件记录失败: %v", err)
 	}
 
-	// 返回结果
-	r.Response.WriteJson(g.Map{
-		"code": 0,
-		"data": g.Map{
-			"id":      id,
-			"url":     url,
-			"name":    file.Filename,
-			"size":    file.Size,
-			"ext":     ext,
-			"mime":    file.FileHeader.Header.Get("Content-Type"),
-			"isImage": isImage,
-		},
-	})
-	return nil
+	return &model.UploadOutput{
+		ID:      snowflake.JsonInt64(id),
+		URL:     url,
+		Name:    file.Filename,
+		Size:    file.Size,
+		Ext:     ext,
+		Mime:    file.FileHeader.Header.Get("Content-Type"),
+		IsImage: isImage,
+	}, nil
 }

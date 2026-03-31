@@ -22,16 +22,16 @@ type UploadDirDao struct {
 // UploadDirColumns defines and stores column names for the table upload_dir.
 type UploadDirColumns struct {
 	Id        string // ID
-	ParentId  string // ä¸Šçº§ç›®å½•
-	Name      string // ç›®å½•åç§°
-	Path      string // ç›®å½•è·¯å¾„
-	Sort      string // æŽ’åº
-	Status    string // çŠ¶æ€:0=ç¦ç”¨,1=å¯ç”¨
-	CreatedAt string // åˆ›å»ºæ—¶é—´
-	UpdatedAt string // æ›´æ–°æ—¶é—´
-	DeletedAt string // åˆ é™¤æ—¶é—´
-	CreatedBy string // åˆ›å»ºäºº
-	DeptId    string // éƒ¨é—¨ID
+	ParentId  string // 上级目录
+	Name      string // 目录名称
+	Path      string // 目录路径
+	Sort      string // 排序
+	Status    string // 状态:0=禁用,1=启用
+	CreatedAt string // 创建时间
+	UpdatedAt string // 更新时间
+	DeletedAt string // 删除时间
+	CreatedBy string // 创建人
+	DeptId    string // 部门ID
 }
 
 // uploadDirColumns holds the columns for the table upload_dir.

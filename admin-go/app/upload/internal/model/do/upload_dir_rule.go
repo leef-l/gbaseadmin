@@ -13,13 +13,13 @@ import (
 type UploadDirRule struct {
 	g.Meta    `orm:"table:upload_dir_rule, do:true"`
 	Id        any         // ID
-	DirId     any         // ç›®å½•ID
-	Category  any         // ç±»åˆ«:1=é»˜è®¤,2=ç±»åž‹,3=æŽ¥å£
-	SavePath  any         // ä¿å­˜ç›®å½•
-	Status    any         // çŠ¶æ€:0=ç¦ç”¨,1=å¯ç”¨
-	CreatedAt *gtime.Time // åˆ›å»ºæ—¶é—´
-	UpdatedAt *gtime.Time // æ›´æ–°æ—¶é—´
-	DeletedAt *gtime.Time // åˆ é™¤æ—¶é—´
-	CreatedBy any         // åˆ›å»ºäºº
-	DeptId    any         // éƒ¨é—¨ID
+	DirId     any         // 目录ID
+	Category  any         // 类别:1=默认,2=类型,3=接口
+	SavePath  any         // 保存目录
+	Status    any         // 状态:0=禁用,1=启用
+	CreatedAt *gtime.Time // 创建时间
+	UpdatedAt *gtime.Time // 更新时间
+	DeletedAt *gtime.Time // 删除时间
+	CreatedBy any         // 创建人
+	DeptId    any         // 部门ID
 }

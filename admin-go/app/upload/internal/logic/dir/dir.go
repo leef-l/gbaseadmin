@@ -22,7 +22,7 @@ func New() *sDir {
 
 type sDir struct{}
 
-// Create 创建æ–‡ä»¶ç›®å½•
+// Create 创建文件目录
 func (s *sDir) Create(ctx context.Context, in *model.DirCreateInput) error {
 	id := snowflake.Generate()
 	_, err := dao.UploadDir.Ctx(ctx).Data(g.Map{
@@ -38,7 +38,7 @@ func (s *sDir) Create(ctx context.Context, in *model.DirCreateInput) error {
 	return err
 }
 
-// Update 更新æ–‡ä»¶ç›®å½•
+// Update 更新文件目录
 func (s *sDir) Update(ctx context.Context, in *model.DirUpdateInput) error {
 	data := g.Map{
 		dao.UploadDir.Columns().ParentId: in.ParentID,
@@ -52,7 +52,7 @@ func (s *sDir) Update(ctx context.Context, in *model.DirUpdateInput) error {
 	return err
 }
 
-// Delete 软删除æ–‡ä»¶ç›®å½•
+// Delete 软删除文件目录
 func (s *sDir) Delete(ctx context.Context, id snowflake.JsonInt64) error {
 	_, err := dao.UploadDir.Ctx(ctx).Where(dao.UploadDir.Columns().Id, id).Data(g.Map{
 		dao.UploadDir.Columns().DeletedAt: gtime.Now(),
@@ -60,14 +60,14 @@ func (s *sDir) Delete(ctx context.Context, id snowflake.JsonInt64) error {
 	return err
 }
 
-// Detail 获取æ–‡ä»¶ç›®å½•详情
+// Detail 获取文件目录详情
 func (s *sDir) Detail(ctx context.Context, id snowflake.JsonInt64) (out *model.DirDetailOutput, err error) {
 	out = &model.DirDetailOutput{}
 	err = dao.UploadDir.Ctx(ctx).Where(dao.UploadDir.Columns().Id, id).Where(dao.UploadDir.Columns().DeletedAt, nil).Scan(out)
 	if err != nil {
 		return nil, err
 	}
-	// 查询ä¸Šçº§ç›®å½•关联显示
+	// 查询上级目录关联显示
 	if out.ParentID != 0 {
 		val, err := g.DB().Ctx(ctx).Model("upload_dir").Where("id", out.ParentID).Where("deleted_at", nil).Value("name")
 		if err == nil {
@@ -77,7 +77,7 @@ func (s *sDir) Detail(ctx context.Context, id snowflake.JsonInt64) (out *model.D
 	return
 }
 
-// List 获取æ–‡ä»¶ç›®å½•列表
+// List 获取文件目录列表
 func (s *sDir) List(ctx context.Context, in *model.DirListInput) (list []*model.DirListOutput, total int, err error) {
 	m := dao.UploadDir.Ctx(ctx).Where(dao.UploadDir.Columns().DeletedAt, nil)
 	if in.Status > 0 {
@@ -103,7 +103,7 @@ func (s *sDir) List(ctx context.Context, in *model.DirListInput) (list []*model.
 	return
 }
 
-// Tree 获取æ–‡ä»¶ç›®å½•树形结构
+// Tree 获取文件目录树形结构
 func (s *sDir) Tree(ctx context.Context) (tree []*model.DirTreeOutput, err error) {
 	var list []*model.DirTreeOutput
 	err = dao.UploadDir.Ctx(ctx).Where(dao.UploadDir.Columns().DeletedAt, nil).OrderAsc(dao.UploadDir.Columns().Sort).Scan(&list)

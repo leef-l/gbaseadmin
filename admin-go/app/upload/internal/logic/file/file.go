@@ -3,7 +3,6 @@ package file
 import (
 	"context"
 	"os"
-	"strings"
 
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/os/gtime"
@@ -24,36 +23,36 @@ func New() *sFile {
 
 type sFile struct{}
 
-// Create 创建æ–‡ä»¶è®°å½•
+// Create 创建文件记录
 func (s *sFile) Create(ctx context.Context, in *model.FileCreateInput) error {
 	id := snowflake.Generate()
 	_, err := dao.UploadFile.Ctx(ctx).Data(g.Map{
 		dao.UploadFile.Columns().Id:        id,
-		dao.UploadFile.Columns().DirId: in.DirID,
-		dao.UploadFile.Columns().Name: in.Name,
-		dao.UploadFile.Columns().Url: in.URL,
-		dao.UploadFile.Columns().Ext: in.Ext,
-		dao.UploadFile.Columns().Size: in.Size,
-		dao.UploadFile.Columns().Mime: in.Mime,
-		dao.UploadFile.Columns().Storage: in.Storage,
-		dao.UploadFile.Columns().IsImage: in.IsImage,
+		dao.UploadFile.Columns().DirId:     in.DirID,
+		dao.UploadFile.Columns().Name:      in.Name,
+		dao.UploadFile.Columns().Url:       in.URL,
+		dao.UploadFile.Columns().Ext:       in.Ext,
+		dao.UploadFile.Columns().Size:      in.Size,
+		dao.UploadFile.Columns().Mime:      in.Mime,
+		dao.UploadFile.Columns().Storage:   in.Storage,
+		dao.UploadFile.Columns().IsImage:   in.IsImage,
 		dao.UploadFile.Columns().CreatedAt: gtime.Now(),
 		dao.UploadFile.Columns().UpdatedAt: gtime.Now(),
 	}).Insert()
 	return err
 }
 
-// Update 更新æ–‡ä»¶è®°å½•
+// Update 更新文件记录
 func (s *sFile) Update(ctx context.Context, in *model.FileUpdateInput) error {
 	data := g.Map{
-		dao.UploadFile.Columns().DirId: in.DirID,
-		dao.UploadFile.Columns().Name: in.Name,
-		dao.UploadFile.Columns().Url: in.URL,
-		dao.UploadFile.Columns().Ext: in.Ext,
-		dao.UploadFile.Columns().Size: in.Size,
-		dao.UploadFile.Columns().Mime: in.Mime,
-		dao.UploadFile.Columns().Storage: in.Storage,
-		dao.UploadFile.Columns().IsImage: in.IsImage,
+		dao.UploadFile.Columns().DirId:     in.DirID,
+		dao.UploadFile.Columns().Name:      in.Name,
+		dao.UploadFile.Columns().Url:       in.URL,
+		dao.UploadFile.Columns().Ext:       in.Ext,
+		dao.UploadFile.Columns().Size:      in.Size,
+		dao.UploadFile.Columns().Mime:      in.Mime,
+		dao.UploadFile.Columns().Storage:   in.Storage,
+		dao.UploadFile.Columns().IsImage:   in.IsImage,
 		dao.UploadFile.Columns().UpdatedAt: gtime.Now(),
 	}
 	_, err := dao.UploadFile.Ctx(ctx).Where(dao.UploadFile.Columns().Id, in.ID).Data(data).Update()
@@ -84,8 +83,8 @@ func (s *sFile) Delete(ctx context.Context, id snowflake.JsonInt64) error {
 	// 物理删除文件
 	if fileInfo.Url != "" {
 		switch fileInfo.Storage {
-		case 1: // 本地存储
-			localPath := strings.TrimPrefix(fileInfo.Url, "/")
+		case 1: // 本地存储: URL /upload/xxx -> 物理路径 resource/upload/xxx
+			localPath := "resource" + fileInfo.Url
 			_ = os.Remove(localPath)
 		case 2: // 阿里云OSS — TODO
 		case 3: // 腾讯云COS — TODO
@@ -94,14 +93,14 @@ func (s *sFile) Delete(ctx context.Context, id snowflake.JsonInt64) error {
 	return nil
 }
 
-// Detail 获取æ–‡ä»¶è®°å½•详情
+// Detail 获取文件记录详情
 func (s *sFile) Detail(ctx context.Context, id snowflake.JsonInt64) (out *model.FileDetailOutput, err error) {
 	out = &model.FileDetailOutput{}
 	err = dao.UploadFile.Ctx(ctx).Where(dao.UploadFile.Columns().Id, id).Where(dao.UploadFile.Columns().DeletedAt, nil).Scan(out)
 	if err != nil {
 		return nil, err
 	}
-	// 查询æ‰€å±žç›®å½•关联显示
+	// 查询所属目录关联显示
 	if out.DirID != 0 {
 		val, err := g.DB().Ctx(ctx).Model("upload_dir").Where("id", out.DirID).Where("deleted_at", nil).Value("name")
 		if err == nil {
@@ -111,9 +110,15 @@ func (s *sFile) Detail(ctx context.Context, id snowflake.JsonInt64) (out *model.
 	return
 }
 
-// List 获取æ–‡ä»¶è®°å½•列表
+// List 获取文件记录列表
 func (s *sFile) List(ctx context.Context, in *model.FileListInput) (list []*model.FileListOutput, total int, err error) {
 	m := dao.UploadFile.Ctx(ctx).Where(dao.UploadFile.Columns().DeletedAt, nil)
+	if in.DirID > 0 {
+		m = m.Where(dao.UploadFile.Columns().DirId, in.DirID)
+	}
+	if in.Name != "" {
+		m = m.WhereLike(dao.UploadFile.Columns().Name, "%"+in.Name+"%")
+	}
 	if in.Storage > 0 {
 		m = m.Where(dao.UploadFile.Columns().Storage, in.Storage)
 	}
@@ -124,7 +129,7 @@ func (s *sFile) List(ctx context.Context, in *model.FileListInput) (list []*mode
 	if err != nil {
 		return
 	}
-	err = m.Page(in.PageNum, in.PageSize).OrderAsc(dao.UploadFile.Columns().Id).Scan(&list)
+	err = m.Page(in.PageNum, in.PageSize).OrderDesc(dao.UploadFile.Columns().Id).Scan(&list)
 	if err != nil {
 		return
 	}
@@ -139,4 +144,3 @@ func (s *sFile) List(ctx context.Context, in *model.FileListInput) (list []*mode
 	}
 	return
 }
-

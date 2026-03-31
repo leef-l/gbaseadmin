@@ -1,15 +1,15 @@
 package consts
 
-// FileStorage å­˜å‚¨ç±»åž‹
+// FileStorage 存储类型
 const (
-	FileStorage1 = 1 // æœ¬åœ°
-	FileStorage2 = 2 // é˜¿é‡Œäº‘OSS
-	FileStorage3 = 3 // è…¾è®¯äº‘COS
+	FileStorage1 = 1 // 本地
+	FileStorage2 = 2 // 阿里云OSS
+	FileStorage3 = 3 // 腾讯云COS
 )
 
-// FileIsImage æ˜¯å¦å›¾ç‰‡
+// FileIsImage 是否图片
 const (
-	FileIsImage0 = 0 // å¦
-	FileIsImage1 = 1 // æ˜¯
+	FileIsImage0 = 0 // 否
+	FileIsImage1 = 1 // 是
 )
 

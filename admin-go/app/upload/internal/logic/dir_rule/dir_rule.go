@@ -22,7 +22,7 @@ func New() *sDirRule {
 
 type sDirRule struct{}
 
-// Create 创建æ–‡ä»¶ç›®å½•è§„åˆ™
+// Create 创建文件目录规则
 func (s *sDirRule) Create(ctx context.Context, in *model.DirRuleCreateInput) error {
 	id := snowflake.Generate()
 	_, err := dao.UploadDirRule.Ctx(ctx).Data(g.Map{
@@ -37,7 +37,7 @@ func (s *sDirRule) Create(ctx context.Context, in *model.DirRuleCreateInput) err
 	return err
 }
 
-// Update 更新æ–‡ä»¶ç›®å½•è§„åˆ™
+// Update 更新文件目录规则
 func (s *sDirRule) Update(ctx context.Context, in *model.DirRuleUpdateInput) error {
 	data := g.Map{
 		dao.UploadDirRule.Columns().DirId: in.DirID,
@@ -50,7 +50,7 @@ func (s *sDirRule) Update(ctx context.Context, in *model.DirRuleUpdateInput) err
 	return err
 }
 
-// Delete 软删除æ–‡ä»¶ç›®å½•è§„åˆ™
+// Delete 软删除文件目录规则
 func (s *sDirRule) Delete(ctx context.Context, id snowflake.JsonInt64) error {
 	_, err := dao.UploadDirRule.Ctx(ctx).Where(dao.UploadDirRule.Columns().Id, id).Data(g.Map{
 		dao.UploadDirRule.Columns().DeletedAt: gtime.Now(),
@@ -58,14 +58,14 @@ func (s *sDirRule) Delete(ctx context.Context, id snowflake.JsonInt64) error {
 	return err
 }
 
-// Detail 获取æ–‡ä»¶ç›®å½•è§„åˆ™详情
+// Detail 获取文件目录规则详情
 func (s *sDirRule) Detail(ctx context.Context, id snowflake.JsonInt64) (out *model.DirRuleDetailOutput, err error) {
 	out = &model.DirRuleDetailOutput{}
 	err = dao.UploadDirRule.Ctx(ctx).Where(dao.UploadDirRule.Columns().Id, id).Where(dao.UploadDirRule.Columns().DeletedAt, nil).Scan(out)
 	if err != nil {
 		return nil, err
 	}
-	// 查询ç›®å½•ID关联显示
+	// 查询目录ID关联显示
 	if out.DirID != 0 {
 		val, err := g.DB().Ctx(ctx).Model("upload_dir").Where("id", out.DirID).Where("deleted_at", nil).Value("name")
 		if err == nil {
@@ -75,7 +75,7 @@ func (s *sDirRule) Detail(ctx context.Context, id snowflake.JsonInt64) (out *mod
 	return
 }
 
-// List 获取æ–‡ä»¶ç›®å½•è§„åˆ™列表
+// List 获取文件目录规则列表
 func (s *sDirRule) List(ctx context.Context, in *model.DirRuleListInput) (list []*model.DirRuleListOutput, total int, err error) {
 	m := dao.UploadDirRule.Ctx(ctx).Where(dao.UploadDirRule.Columns().DeletedAt, nil)
 	if in.Category > 0 {

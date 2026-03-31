@@ -1,15 +1,15 @@
 package consts
 
-// DirRuleCategory ç±»åˆ«
+// DirRuleCategory 类别
 const (
-	DirRuleCategory1 = 1 // é»˜è®¤
-	DirRuleCategory2 = 2 // ç±»åž‹
-	DirRuleCategory3 = 3 // æŽ¥å£
+	DirRuleCategory1 = 1 // 默认
+	DirRuleCategory2 = 2 // 类型
+	DirRuleCategory3 = 3 // 接口
 )
 
-// DirRuleStatus çŠ¶æ€
+// DirRuleStatus 状态
 const (
-	DirRuleStatus0 = 0 // ç¦ç”¨
-	DirRuleStatus1 = 1 // å¯ç”¨
+	DirRuleStatus0 = 0 // 禁用
+	DirRuleStatus1 = 1 // 启用
 )
 

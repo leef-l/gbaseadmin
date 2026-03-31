@@ -22,19 +22,19 @@ type UploadFileDao struct {
 // UploadFileColumns defines and stores column names for the table upload_file.
 type UploadFileColumns struct {
 	Id        string // ID
-	DirId     string // æ‰€å±žç›®å½•
-	Name      string // æ–‡ä»¶åç§°
-	Url       string // æ–‡ä»¶åœ°å€
-	Ext       string // æ–‡ä»¶æ‰©å±•å
-	Size      string // æ–‡ä»¶å¤§å°
-	Mime      string // MIMEç±»åž‹
-	Storage   string // å­˜å‚¨ç±»åž‹:1=æœ¬åœ°,2=é˜¿é‡Œäº‘OSS,3=è…¾è®¯äº‘COS
-	IsImage   string // æ˜¯å¦å›¾ç‰‡:0=å¦,1=æ˜¯
-	CreatedAt string // åˆ›å»ºæ—¶é—´
-	UpdatedAt string // æ›´æ–°æ—¶é—´
-	DeletedAt string // åˆ é™¤æ—¶é—´
-	CreatedBy string // åˆ›å»ºäºº
-	DeptId    string // éƒ¨é—¨ID
+	DirId     string // 所属目录
+	Name      string // 文件名称
+	Url       string // 文件地址
+	Ext       string // 文件扩展名
+	Size      string // 文件大小
+	Mime      string // MIME类型
+	Storage   string // 存储类型:1=本地,2=阿里云OSS,3=腾讯云COS
+	IsImage   string // 是否图片:0=否,1=是
+	CreatedAt string // 创建时间
+	UpdatedAt string // 更新时间
+	DeletedAt string // 删除时间
+	CreatedBy string // 创建人
+	DeptId    string // 部门ID
 }
 
 // uploadFileColumns holds the columns for the table upload_file.

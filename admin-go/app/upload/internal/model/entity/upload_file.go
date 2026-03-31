@@ -10,18 +10,18 @@ import (
 
 // UploadFile is the golang structure for table upload_file.
 type UploadFile struct {
-	Id        uint64      `orm:"id"         description:"ID"`                                                  // ID
-	DirId     uint64      `orm:"dir_id"     description:"æ‰€å±žç›®å½•"`                                        // æ‰€å±žç›®å½•
-	Name      string      `orm:"name"       description:"æ–‡ä»¶åç§°"`                                        // æ–‡ä»¶åç§°
-	Url       string      `orm:"url"        description:"æ–‡ä»¶åœ°å€"`                                        // æ–‡ä»¶åœ°å€
-	Ext       string      `orm:"ext"        description:"æ–‡ä»¶æ‰©å±•å"`                                     // æ–‡ä»¶æ‰©å±•å
-	Size      uint64      `orm:"size"       description:"æ–‡ä»¶å¤§å°"`                                        // æ–‡ä»¶å¤§å°
-	Mime      string      `orm:"mime"       description:"MIMEç±»åž‹"`                                          // MIMEç±»åž‹
-	Storage   int         `orm:"storage"    description:"å­˜å‚¨ç±»åž‹:1=æœ¬åœ°,2=é˜¿é‡Œäº‘OSS,3=è…¾è®¯äº‘COS"` // å­˜å‚¨ç±»åž‹:1=æœ¬åœ°,2=é˜¿é‡Œäº‘OSS,3=è…¾è®¯äº‘COS
-	IsImage   int         `orm:"is_image"   description:"æ˜¯å¦å›¾ç‰‡:0=å¦,1=æ˜¯"`                            // æ˜¯å¦å›¾ç‰‡:0=å¦,1=æ˜¯
-	CreatedAt *gtime.Time `orm:"created_at" description:"åˆ›å»ºæ—¶é—´"`                                        // åˆ›å»ºæ—¶é—´
-	UpdatedAt *gtime.Time `orm:"updated_at" description:"æ›´æ–°æ—¶é—´"`                                        // æ›´æ–°æ—¶é—´
-	DeletedAt *gtime.Time `orm:"deleted_at" description:"åˆ é™¤æ—¶é—´"`                                        // åˆ é™¤æ—¶é—´
-	CreatedBy uint64      `orm:"created_by" description:"åˆ›å»ºäºº"`                                           // åˆ›å»ºäºº
-	DeptId    uint64      `orm:"dept_id"    description:"éƒ¨é—¨ID"`                                            // éƒ¨é—¨ID
+	Id        uint64      `orm:"id"         description:"ID"`                          // ID
+	DirId     uint64      `orm:"dir_id"     description:"所属目录"`                        // 所属目录
+	Name      string      `orm:"name"       description:"文件名称"`                        // 文件名称
+	Url       string      `orm:"url"        description:"文件地址"`                        // 文件地址
+	Ext       string      `orm:"ext"        description:"文件扩展名"`                       // 文件扩展名
+	Size      uint64      `orm:"size"       description:"文件大小"`                        // 文件大小
+	Mime      string      `orm:"mime"       description:"MIME类型"`                      // MIME类型
+	Storage   int         `orm:"storage"    description:"存储类型:1=本地,2=阿里云OSS,3=腾讯云COS"` // 存储类型:1=本地,2=阿里云OSS,3=腾讯云COS
+	IsImage   int         `orm:"is_image"   description:"是否图片:0=否,1=是"`                // 是否图片:0=否,1=是
+	CreatedAt *gtime.Time `orm:"created_at" description:"创建时间"`                        // 创建时间
+	UpdatedAt *gtime.Time `orm:"updated_at" description:"更新时间"`                        // 更新时间
+	DeletedAt *gtime.Time `orm:"deleted_at" description:"删除时间"`                        // 删除时间
+	CreatedBy uint64      `orm:"created_by" description:"创建人"`                         // 创建人
+	DeptId    uint64      `orm:"dept_id"    description:"部门ID"`                        // 部门ID
 }
