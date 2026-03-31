@@ -79,7 +79,8 @@
       "Bash(pnpm --filter @vben/web-antd add @ant-design/icons-vue)",
       "Bash(ls -d c:/project/gbaseadmin/vue-vben-admin/apps/web-antd/src/views/play/*/)",
       "Bash(grep -rn \"image\\\\|avatar\\\\|photo\\\\|_img\\\\|_file\\\\|attachment\\\\|_content\\\\|_body\\\\|_html\\\\|richtext\\\\|RichText\\\\|ImageUpload\\\\|FileUpload\\\\|Upload\\\\|Textarea.*content\\\\|icon\\\\|cover\\\\|logo\\\\|banner\\\\|thumb\" c:/project/gbaseadmin/vue-vben-admin/apps/web-antd/src/views/play/*/modules/form.vue --include=\"*.vue\" -l)",
-      "Bash(pnpm --filter @vben/web-antd build)"
+      "Bash(pnpm --filter @vben/web-antd build)",
+      "Bash(go run . --table upload_dir,upload_file,upload_config,upload_dir_rule --only menu)"
     ]
   }
 }
