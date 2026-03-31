@@ -9,7 +9,7 @@ export default defineConfig(async () => {
           '/api': {
             changeOrigin: true,
             // 后端 GoFrame 服务地址，不 rewrite，直接转发
-            target: 'http://localhost:9000',
+            target: 'https://pw.easytestdev.online',
             ws: true,
           },
         },
