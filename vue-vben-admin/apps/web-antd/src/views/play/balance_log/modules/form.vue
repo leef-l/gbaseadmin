@@ -9,6 +9,7 @@ import {
   createBalanceLog,
   updateBalanceLog,
 } from '#/api/play/balance_log';
+import { getMemberList } from '#/api/play/member';
 
 /** 业务类型选项 */
 const bizTypeOptions = [
@@ -18,6 +19,8 @@ const bizTypeOptions = [
   { label: '活动赠送', value: 4 },
   { label: '提现', value: 5 },
 ];
+
+const memberIDOptions = ref<{ label: string; value: string }[]>([]);
 
 const emit = defineEmits<{ success: [] }>();
 const isEdit = ref(false);
@@ -42,10 +45,10 @@ const [Form, formApi] = useVbenForm({
       componentProps: { options: bizTypeOptions, placeholder: '请选择业务类型', allowClear: true, class: 'w-full' },
     },
     {
-      component: 'Select',
+      component: 'Input',
       fieldName: 'bizID',
       label: () => h('span', {}, ['关联业务ID ', h(Tooltip, { title: '订单ID/充值订单ID/活动ID' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]),
-      componentProps: { options: bizIDOptions, placeholder: '请选择关联业务ID（订单ID/充值订单ID/活动ID）', allowClear: true, class: 'w-full' },
+      componentProps: { placeholder: '请输入业务ID' },
     },
     {
       component: 'InputNumber',
@@ -104,6 +107,16 @@ const [Modal, modalApi] = useVbenModal({
   async onOpenChange(isOpen: boolean) {
     if (isOpen) {
       const data = modalApi.getData<{ id?: string } | null>();
+      // 加载会员选项
+      try {
+        const memberRes = await getMemberList({ pageNum: 1, pageSize: 1000 });
+        memberIDOptions.value = (memberRes?.list ?? []).map((item: any) => ({
+          label: item.nickname || item.id,
+          value: item.id,
+        }));
+      } catch {
+        // ignore
+      }
       if (data?.id) {
         isEdit.value = true;
         editId.value = data.id;

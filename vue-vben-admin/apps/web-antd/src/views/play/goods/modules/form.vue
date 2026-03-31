@@ -9,6 +9,11 @@ import {
   createGoods,
   updateGoods,
 } from '#/api/play/goods';
+import { getCategoryTree } from '#/api/play/category';
+import { getCoachList } from '#/api/play/coach';
+
+const categoryIDOptions = ref<any[]>([]);
+const coachIDOptions = ref<{ label: string; value: string }[]>([]);
 
 const emit = defineEmits<{ success: [] }>();
 const isEdit = ref(false);
@@ -19,18 +24,25 @@ const [Form, formApi] = useVbenForm({
   showDefaultActions: false,
   schema: [
     {
-      component: 'Select',
+      component: 'TreeSelect',
       fieldName: 'categoryID',
       label: '分类ID',
       rules: 'selectRequired',
-      componentProps: { options: categoryIDOptions, placeholder: '请选择分类ID', allowClear: true, class: 'w-full' },
+      componentProps: {
+        treeData: categoryIDOptions.value,
+        fieldNames: { label: 'title', value: 'id', children: 'children' },
+        placeholder: '请选择分类',
+        allowClear: true,
+        treeDefaultExpandAll: true,
+        class: 'w-full',
+      },
     },
     {
       component: 'Select',
       fieldName: 'coachID',
       label: '陪玩师ID',
       rules: 'selectRequired',
-      componentProps: { options: coachIDOptions, placeholder: '请选择陪玩师ID', allowClear: true, class: 'w-full' },
+      componentProps: { options: coachIDOptions, placeholder: '请选择陪玩师', allowClear: true, class: 'w-full' },
     },
     {
       component: 'Input',
@@ -112,6 +124,29 @@ const [Modal, modalApi] = useVbenModal({
   async onOpenChange(isOpen: boolean) {
     if (isOpen) {
       const data = modalApi.getData<{ id?: string } | null>();
+      // 加载分类树形数据
+      try {
+        const categoryRes = await getCategoryTree();
+        categoryIDOptions.value = categoryRes ?? [];
+        formApi.updateSchema([
+          {
+            fieldName: 'categoryID',
+            componentProps: { treeData: categoryIDOptions.value },
+          },
+        ]);
+      } catch {
+        // ignore
+      }
+      // 加载陪玩师选项
+      try {
+        const coachRes = await getCoachList({ pageNum: 1, pageSize: 1000 });
+        coachIDOptions.value = (coachRes?.list ?? []).map((item: any) => ({
+          label: item.realName || item.id,
+          value: item.id,
+        }));
+      } catch {
+        // ignore
+      }
       if (data?.id) {
         isEdit.value = true;
         editId.value = data.id;

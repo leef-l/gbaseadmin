@@ -8,12 +8,15 @@ import {
   createOauth,
   updateOauth,
 } from '#/api/play/oauth';
+import { getMemberList } from '#/api/play/member';
 
 /** 第三方平台选项 */
 const providerOptions = [
   { label: '微信', value: 1 },
   { label: '支付宝', value: 2 },
 ];
+
+const memberIDOptions = ref<{ label: string; value: string }[]>([]);
 
 const emit = defineEmits<{ success: [] }>();
 const isEdit = ref(false);
@@ -28,7 +31,7 @@ const [Form, formApi] = useVbenForm({
       fieldName: 'memberID',
       label: '会员ID',
       rules: 'selectRequired',
-      componentProps: { options: memberIDOptions, placeholder: '请选择会员ID', allowClear: true, class: 'w-full' },
+      componentProps: () => ({ options: memberIDOptions.value, placeholder: '请选择会员ID', allowClear: true, class: 'w-full' }),
     },
     {
       component: 'Select',
@@ -38,17 +41,17 @@ const [Form, formApi] = useVbenForm({
       componentProps: { options: providerOptions, placeholder: '请选择第三方平台', allowClear: true, class: 'w-full' },
     },
     {
-      component: 'Select',
+      component: 'Input',
       fieldName: 'openID',
       label: '第三方OpenID',
-      rules: 'selectRequired',
-      componentProps: { options: openIDOptions, placeholder: '请选择第三方OpenID', allowClear: true, class: 'w-full' },
+      rules: 'required',
+      componentProps: { placeholder: '请输入OpenID' },
     },
     {
-      component: 'Select',
+      component: 'Input',
       fieldName: 'unionID',
       label: '第三方UnionID',
-      componentProps: { options: unionIDOptions, placeholder: '请选择第三方UnionID', allowClear: true, class: 'w-full' },
+      componentProps: { placeholder: '请输入UnionID' },
     },
     {
       component: 'Input',
@@ -110,6 +113,16 @@ const [Modal, modalApi] = useVbenModal({
   async onOpenChange(isOpen: boolean) {
     if (isOpen) {
       const data = modalApi.getData<{ id?: string } | null>();
+      // 加载会员选项
+      try {
+        const memberRes = await getMemberList({ pageNum: 1, pageSize: 1000 });
+        memberIDOptions.value = (memberRes?.list ?? []).map((item: any) => ({
+          label: item.nickname || item.id,
+          value: item.id,
+        }));
+      } catch {
+        // ignore
+      }
       if (data?.id) {
         isEdit.value = true;
         editId.value = data.id;

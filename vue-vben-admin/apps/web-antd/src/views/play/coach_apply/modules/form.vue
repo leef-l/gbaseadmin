@@ -8,6 +8,7 @@ import {
   createCoachApply,
   updateCoachApply,
 } from '#/api/play/coach_apply';
+import { getMemberList } from '#/api/play/member';
 
 /** 审核状态选项 */
 const auditStatusOptions = [
@@ -15,6 +16,8 @@ const auditStatusOptions = [
   { label: '通过', value: 1 },
   { label: '拒绝', value: 2 },
 ];
+
+const memberIDOptions = ref<{ label: string; value: string }[]>([]);
 
 const emit = defineEmits<{ success: [] }>();
 const isEdit = ref(false);
@@ -112,6 +115,17 @@ const [Modal, modalApi] = useVbenModal({
   },
   async onOpenChange(isOpen: boolean) {
     if (isOpen) {
+      // 加载会员选项
+      try {
+        const memberRes = await getMemberList({ pageNum: 1, pageSize: 1000 });
+        memberIDOptions.value = (memberRes?.list ?? []).map((item: any) => ({
+          label: item.nickname || item.id,
+          value: item.id,
+        }));
+      } catch {
+        // ignore
+      }
+
       const data = modalApi.getData<{ id?: string } | null>();
       if (data?.id) {
         isEdit.value = true;

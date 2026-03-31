@@ -9,6 +9,7 @@ import {
   createActivityReward,
   updateActivityReward,
 } from '#/api/play/activity_reward';
+import { getActivityList } from '#/api/play/activity';
 
 /** 奖励类型选项 */
 const rewardTypeOptions = [
@@ -17,6 +18,8 @@ const rewardTypeOptions = [
   { label: '经验值', value: 3 },
   { label: '会员等级天数', value: 4 },
 ];
+
+const activityIDOptions = ref<{ label: string; value: string }[]>([]);
 
 const emit = defineEmits<{ success: [] }>();
 const isEdit = ref(false);
@@ -87,6 +90,17 @@ const [Modal, modalApi] = useVbenModal({
   },
   async onOpenChange(isOpen: boolean) {
     if (isOpen) {
+      // 加载活动选项
+      try {
+        const activityRes = await getActivityList({ pageNum: 1, pageSize: 1000 });
+        activityIDOptions.value = (activityRes?.list ?? []).map((item: any) => ({
+          label: item.title || item.id,
+          value: item.id,
+        }));
+      } catch {
+        // ignore
+      }
+
       const data = modalApi.getData<{ id?: string } | null>();
       if (data?.id) {
         isEdit.value = true;

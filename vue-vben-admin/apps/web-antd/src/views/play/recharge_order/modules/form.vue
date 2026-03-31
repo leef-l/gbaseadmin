@@ -9,6 +9,8 @@ import {
   createRechargeOrder,
   updateRechargeOrder,
 } from '#/api/play/recharge_order';
+import { getMemberList } from '#/api/play/member';
+import { getRechargePlanList } from '#/api/play/recharge_plan';
 
 /** 支付方式选项 */
 const payTypeOptions = [
@@ -22,6 +24,9 @@ const payStatusOptions = [
   { label: '支付成功', value: 1 },
   { label: '支付失败', value: 2 },
 ];
+
+const memberIDOptions = ref<{ label: string; value: string }[]>([]);
+const rechargePlanIDOptions = ref<{ label: string; value: string }[]>([]);
 
 const emit = defineEmits<{ success: [] }>();
 const isEdit = ref(false);
@@ -119,6 +124,26 @@ const [Modal, modalApi] = useVbenModal({
   async onOpenChange(isOpen: boolean) {
     if (isOpen) {
       const data = modalApi.getData<{ id?: string } | null>();
+      // 加载会员选项
+      try {
+        const memberRes = await getMemberList({ pageNum: 1, pageSize: 1000 });
+        memberIDOptions.value = (memberRes?.list ?? []).map((item: any) => ({
+          label: item.nickname || item.id,
+          value: item.id,
+        }));
+      } catch {
+        // ignore
+      }
+      // 加载充值方案选项
+      try {
+        const rechargePlanRes = await getRechargePlanList({ pageNum: 1, pageSize: 1000 });
+        rechargePlanIDOptions.value = (rechargePlanRes?.list ?? []).map((item: any) => ({
+          label: item.title || item.id,
+          value: item.id,
+        }));
+      } catch {
+        // ignore
+      }
       if (data?.id) {
         isEdit.value = true;
         editId.value = data.id;

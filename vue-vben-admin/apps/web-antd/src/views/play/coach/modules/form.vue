@@ -9,6 +9,13 @@ import {
   createCoach,
   updateCoach,
 } from '#/api/play/coach';
+import { getMemberList } from '#/api/play/member';
+import { getCoachLevelList } from '#/api/play/coach_level';
+import { getShopList } from '#/api/play/shop';
+
+const memberIDOptions = ref<{ label: string; value: string }[]>([]);
+const coachLevelIDOptions = ref<{ label: string; value: string }[]>([]);
+const shopIDOptions = ref<{ label: string; value: string }[]>([]);
 
 const emit = defineEmits<{ success: [] }>();
 const isEdit = ref(false);
@@ -136,6 +143,36 @@ const [Modal, modalApi] = useVbenModal({
   async onOpenChange(isOpen: boolean) {
     if (isOpen) {
       const data = modalApi.getData<{ id?: string } | null>();
+      // 加载会员选项
+      try {
+        const memberRes = await getMemberList({ pageNum: 1, pageSize: 1000 });
+        memberIDOptions.value = (memberRes?.list ?? []).map((item: any) => ({
+          label: item.nickname || item.id,
+          value: item.id,
+        }));
+      } catch {
+        // ignore
+      }
+      // 加载陪玩师等级选项
+      try {
+        const coachLevelRes = await getCoachLevelList({ pageNum: 1, pageSize: 1000 });
+        coachLevelIDOptions.value = (coachLevelRes?.list ?? []).map((item: any) => ({
+          label: item.title || item.id,
+          value: item.id,
+        }));
+      } catch {
+        // ignore
+      }
+      // 加载店铺选项
+      try {
+        const shopRes = await getShopList({ pageNum: 1, pageSize: 1000 });
+        shopIDOptions.value = (shopRes?.list ?? []).map((item: any) => ({
+          label: item.title || item.id,
+          value: item.id,
+        }));
+      } catch {
+        // ignore
+      }
       if (data?.id) {
         isEdit.value = true;
         editId.value = data.id;

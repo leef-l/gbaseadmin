@@ -9,6 +9,9 @@ import {
   createCouponMember,
   updateCouponMember,
 } from '#/api/play/coupon_member';
+import { getCouponList } from '#/api/play/coupon';
+import { getMemberList } from '#/api/play/member';
+import { getOrderList } from '#/api/play/order';
 
 /** 使用状态选项 */
 const useStatusOptions = [
@@ -16,6 +19,10 @@ const useStatusOptions = [
   { label: '已使用', value: 1 },
   { label: '已过期', value: 2 },
 ];
+
+const couponIDOptions = ref<{ label: string; value: string }[]>([]);
+const memberIDOptions = ref<{ label: string; value: string }[]>([]);
+const orderIDOptions = ref<{ label: string; value: string }[]>([]);
 
 const emit = defineEmits<{ success: [] }>();
 const isEdit = ref(false);
@@ -99,6 +106,36 @@ const [Modal, modalApi] = useVbenModal({
   async onOpenChange(isOpen: boolean) {
     if (isOpen) {
       const data = modalApi.getData<{ id?: string } | null>();
+      // 加载优惠券选项
+      try {
+        const couponRes = await getCouponList({ pageNum: 1, pageSize: 1000 });
+        couponIDOptions.value = (couponRes?.list ?? []).map((item: any) => ({
+          label: item.title || item.id,
+          value: item.id,
+        }));
+      } catch {
+        // ignore
+      }
+      // 加载会员选项
+      try {
+        const memberRes = await getMemberList({ pageNum: 1, pageSize: 1000 });
+        memberIDOptions.value = (memberRes?.list ?? []).map((item: any) => ({
+          label: item.nickname || item.id,
+          value: item.id,
+        }));
+      } catch {
+        // ignore
+      }
+      // 加载订单选项
+      try {
+        const orderRes = await getOrderList({ pageNum: 1, pageSize: 1000 });
+        orderIDOptions.value = (orderRes?.list ?? []).map((item: any) => ({
+          label: item.orderNo || item.id,
+          value: item.id,
+        }));
+      } catch {
+        // ignore
+      }
       if (data?.id) {
         isEdit.value = true;
         editId.value = data.id;

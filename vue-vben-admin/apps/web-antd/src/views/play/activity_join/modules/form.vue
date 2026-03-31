@@ -9,6 +9,8 @@ import {
   createActivityJoin,
   updateActivityJoin,
 } from '#/api/play/activity_join';
+import { getActivityList } from '#/api/play/activity';
+import { getMemberList } from '#/api/play/member';
 
 /** 参与状态选项 */
 const joinStatusOptions = [
@@ -17,6 +19,9 @@ const joinStatusOptions = [
   { label: '已完成', value: 2 },
   { label: '已领奖', value: 3 },
 ];
+
+const activityIDOptions = ref<{ label: string; value: string }[]>([]);
+const memberIDOptions = ref<{ label: string; value: string }[]>([]);
 
 const emit = defineEmits<{ success: [] }>();
 const isEdit = ref(false);
@@ -100,6 +105,26 @@ const [Modal, modalApi] = useVbenModal({
   async onOpenChange(isOpen: boolean) {
     if (isOpen) {
       const data = modalApi.getData<{ id?: string } | null>();
+      // 加载活动选项
+      try {
+        const activityRes = await getActivityList({ pageNum: 1, pageSize: 1000 });
+        activityIDOptions.value = (activityRes?.list ?? []).map((item: any) => ({
+          label: item.title || item.id,
+          value: item.id,
+        }));
+      } catch {
+        // ignore
+      }
+      // 加载会员选项
+      try {
+        const memberRes = await getMemberList({ pageNum: 1, pageSize: 1000 });
+        memberIDOptions.value = (memberRes?.list ?? []).map((item: any) => ({
+          label: item.nickname || item.id,
+          value: item.id,
+        }));
+      } catch {
+        // ignore
+      }
       if (data?.id) {
         isEdit.value = true;
         editId.value = data.id;

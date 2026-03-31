@@ -9,6 +9,8 @@ import {
   createPayment,
   updatePayment,
 } from '#/api/play/payment';
+import { getOrderList } from '#/api/play/order';
+import { getMemberList } from '#/api/play/member';
 
 /** 支付方式选项 */
 const payTypeOptions = [
@@ -24,6 +26,9 @@ const payStatusOptions = [
   { label: '支付失败', value: 2 },
   { label: '已退款', value: 3 },
 ];
+
+const orderIDOptions = ref<{ label: string; value: string }[]>([]);
+const memberIDOptions = ref<{ label: string; value: string }[]>([]);
 
 const emit = defineEmits<{ success: [] }>();
 const isEdit = ref(false);
@@ -131,6 +136,26 @@ const [Modal, modalApi] = useVbenModal({
   },
   async onOpenChange(isOpen: boolean) {
     if (isOpen) {
+      // 加载订单选项
+      try {
+        const orderRes = await getOrderList({ pageNum: 1, pageSize: 1000 });
+        orderIDOptions.value = (orderRes?.list ?? []).map((item: any) => ({
+          label: item.orderNo || item.id,
+          value: item.id,
+        }));
+      } catch {
+        // ignore
+      }
+      // 加载会员选项
+      try {
+        const memberRes = await getMemberList({ pageNum: 1, pageSize: 1000 });
+        memberIDOptions.value = (memberRes?.list ?? []).map((item: any) => ({
+          label: item.nickname || item.id,
+          value: item.id,
+        }));
+      } catch {
+        // ignore
+      }
       const data = modalApi.getData<{ id?: string } | null>();
       if (data?.id) {
         isEdit.value = true;

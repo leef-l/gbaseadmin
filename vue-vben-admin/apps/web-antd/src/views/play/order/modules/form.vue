@@ -9,6 +9,11 @@ import {
   createOrder,
   updateOrder,
 } from '#/api/play/order';
+import { getMemberList } from '#/api/play/member';
+import { getCoachList } from '#/api/play/coach';
+import { getShopList } from '#/api/play/shop';
+import { getGoodsList } from '#/api/play/goods';
+import { getCouponMemberList } from '#/api/play/coupon_member';
 
 /** 支付方式选项 */
 const payTypeOptions = [
@@ -28,6 +33,12 @@ const orderStatusOptions = [
   { label: '退款中', value: 5 },
   { label: '已退款', value: 6 },
 ];
+
+const memberIDOptions = ref<{ label: string; value: string }[]>([]);
+const coachIDOptions = ref<{ label: string; value: string }[]>([]);
+const shopIDOptions = ref<{ label: string; value: string }[]>([]);
+const goodsIDOptions = ref<{ label: string; value: string }[]>([]);
+const couponMemberIDOptions = ref<{ label: string; value: string }[]>([]);
 
 const emit = defineEmits<{ success: [] }>();
 const isEdit = ref(false);
@@ -199,6 +210,56 @@ const [Modal, modalApi] = useVbenModal({
   async onOpenChange(isOpen: boolean) {
     if (isOpen) {
       const data = modalApi.getData<{ id?: string } | null>();
+      // 加载会员选项
+      try {
+        const memberRes = await getMemberList({ pageNum: 1, pageSize: 1000 });
+        memberIDOptions.value = (memberRes?.list ?? []).map((item: any) => ({
+          label: item.nickname || item.id,
+          value: item.id,
+        }));
+      } catch {
+        // ignore
+      }
+      // 加载陪玩师选项
+      try {
+        const coachRes = await getCoachList({ pageNum: 1, pageSize: 1000 });
+        coachIDOptions.value = (coachRes?.list ?? []).map((item: any) => ({
+          label: item.realName || item.id,
+          value: item.id,
+        }));
+      } catch {
+        // ignore
+      }
+      // 加载店铺选项
+      try {
+        const shopRes = await getShopList({ pageNum: 1, pageSize: 1000 });
+        shopIDOptions.value = (shopRes?.list ?? []).map((item: any) => ({
+          label: item.title || item.id,
+          value: item.id,
+        }));
+      } catch {
+        // ignore
+      }
+      // 加载商品选项
+      try {
+        const goodsRes = await getGoodsList({ pageNum: 1, pageSize: 1000 });
+        goodsIDOptions.value = (goodsRes?.list ?? []).map((item: any) => ({
+          label: item.title || item.id,
+          value: item.id,
+        }));
+      } catch {
+        // ignore
+      }
+      // 加载会员优惠券选项
+      try {
+        const couponMemberRes = await getCouponMemberList({ pageNum: 1, pageSize: 1000 });
+        couponMemberIDOptions.value = (couponMemberRes?.list ?? []).map((item: any) => ({
+          label: item.couponTitle || item.id,
+          value: item.id,
+        }));
+      } catch {
+        // ignore
+      }
       if (data?.id) {
         isEdit.value = true;
         editId.value = data.id;

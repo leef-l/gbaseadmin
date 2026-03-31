@@ -9,12 +9,19 @@ import {
   createProfitLog,
   updateProfitLog,
 } from '#/api/play/profit_log';
+import { getOrderList } from '#/api/play/order';
+import { getCoachList } from '#/api/play/coach';
+import { getShopList } from '#/api/play/shop';
 
 /** 结算状态选项 */
 const settleStatusOptions = [
   { label: '待结算', value: 0 },
   { label: '已结算', value: 1 },
 ];
+
+const orderIDOptions = ref<{ label: string; value: string }[]>([]);
+const coachIDOptions = ref<{ label: string; value: string }[]>([]);
+const shopIDOptions = ref<{ label: string; value: string }[]>([]);
 
 const emit = defineEmits<{ success: [] }>();
 const isEdit = ref(false);
@@ -128,6 +135,36 @@ const [Modal, modalApi] = useVbenModal({
   },
   async onOpenChange(isOpen: boolean) {
     if (isOpen) {
+      // 加载订单选项
+      try {
+        const orderRes = await getOrderList({ pageNum: 1, pageSize: 1000 });
+        orderIDOptions.value = (orderRes?.list ?? []).map((item: any) => ({
+          label: item.orderNo || item.id,
+          value: item.id,
+        }));
+      } catch {
+        // ignore
+      }
+      // 加载陪玩师选项
+      try {
+        const coachRes = await getCoachList({ pageNum: 1, pageSize: 1000 });
+        coachIDOptions.value = (coachRes?.list ?? []).map((item: any) => ({
+          label: item.realName || item.id,
+          value: item.id,
+        }));
+      } catch {
+        // ignore
+      }
+      // 加载店铺选项
+      try {
+        const shopRes = await getShopList({ pageNum: 1, pageSize: 1000 });
+        shopIDOptions.value = (shopRes?.list ?? []).map((item: any) => ({
+          label: item.title || item.id,
+          value: item.id,
+        }));
+      } catch {
+        // ignore
+      }
       const data = modalApi.getData<{ id?: string } | null>();
       if (data?.id) {
         isEdit.value = true;

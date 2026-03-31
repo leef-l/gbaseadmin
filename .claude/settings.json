@@ -90,7 +90,8 @@
       "Bash(done)",
       "Bash(__NEW_LINE_5bc4a86cb6a52dae__ python3 -c \":*)",
       "Bash(xargs grep -l \"8002\\\\|8003\\\\|port\")",
-      "Bash(ls -la /c/project/gbaseadmin/admin-go/deploy/Dockerfile*)"
+      "Bash(ls -la /c/project/gbaseadmin/admin-go/deploy/Dockerfile*)",
+      "Bash(go run . -table play_activity_join,play_activity_reward,play_activity_step,play_balance_log,play_coach,play_coach_apply,play_coupon_member,play_goods,play_oauth,play_order,play_payment,play_profit_log,play_recharge_order,play_review -only frontend -force -dry-run)"
     ],
     "additionalDirectories": [
       "\\tmp"
