@@ -53,11 +53,39 @@
 
 | 组件 | 路径 | 说明 |
 |------|------|------|
-| ImageUpload | `components/upload/image-upload.vue` | 图片上传（picture-card 样式） |
-| FileUpload | `components/upload/file-upload.vue` | 文件上传 |
-| RichText | `components/tinymce/index.vue` | TinyMCE v8 富文本编辑器 |
+| FileManager | `components/file-manager/` | 通用文件管理器（目录树 + 文件网格 + 上传 + 勾选） |
+| ImageUpload | `components/upload/image-upload.vue` | 图片上传（调用 FileManager，mode=image） |
+| FileUpload | `components/upload/file-upload.vue` | 文件上传（调用 FileManager，mode=all） |
+| RichText | `components/tinymce/index.vue` | TinyMCE v8 富文本编辑器（图片上传走 upload API） |
 | JsonEditor | `components/json-editor/index.vue` | JSON 编辑器（tree + code 双模式） |
-| ImagePicker | `components/image-picker/` | 图片选择器（目录树 + 图片网格 + 勾选） |
+
+### FileManager 文件管理器
+
+核心组件，支持三种模式：
+
+| mode | 说明 | 使用场景 |
+|------|------|---------|
+| `image` | 只显示图片文件 | ImageUpload 选择图片 |
+| `file` | 只显示非图片文件 | 选择文档/附件 |
+| `all` | 显示所有文件 | FileUpload 选择任意文件 |
+
+Props: `mode`, `multiple`, `maxCount`, `accept`, `maxSize`
+
+功能：左侧目录树筛选、右侧文件网格、勾选多选、搜索、分页、上传文件
+
+调用方式：
+
+```typescript
+// 方式1: 通过 composable
+import { useFileManager } from '#/components/file-manager/use-file-manager';
+const { ModalComp, open } = useFileManager();
+open({ mode: 'image', multiple: true, maxCount: 5 });
+
+// 方式2: 通过 useVbenModal
+import FileManagerModal from '#/components/file-manager/modal.vue';
+```
+
+### 表单组件注册
 
 这些组件已注册到 `adapter/component/index.ts`，可在 vben-form 中直接使用：
 
@@ -67,6 +95,18 @@
 { component: 'RichText', fieldName: 'content', label: '内容', formItemClass: 'col-span-full' }
 { component: 'JsonEditor', fieldName: 'config', label: '配置', formItemClass: 'col-span-full' }
 ```
+
+### 前端 API
+
+所有 API 通过 `requestClient`（baseURL = `/api`）调用：
+
+| API 文件 | 前缀 | 说明 |
+|---------|------|------|
+| `api/upload/uploader/index.ts` | `/upload/uploader/upload` | 文件上传 |
+| `api/upload/file/index.ts` | `/upload/file/` | 文件记录 CRUD |
+| `api/upload/dir/index.ts` | `/upload/dir/` | 目录 CRUD + tree |
+| `api/upload/config/index.ts` | `/upload/config/` | 配置 CRUD |
+| `api/upload/dir_rule/index.ts` | `/upload/dir_rule/` | 目录规则 CRUD |
 
 ## 前端页面
 

@@ -16,7 +16,7 @@ export function uploadFile(file: File, dirId?: string) {
   if (dirId) {
     formData.append('dirId', dirId);
   }
-  return requestClient.post<UploadResult>('/api/upload/uploader/upload', formData, {
+  return requestClient.post<UploadResult>('/upload/uploader/upload', formData, {
     headers: { 'Content-Type': 'multipart/form-data' },
   });
 }
