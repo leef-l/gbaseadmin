@@ -46,7 +46,7 @@ const [Form, formApi] = useVbenForm({
       componentProps: { maxCount: 1 },
     },
     {
-      component: 'RichText',
+      component: 'JsonEditor',
       fieldName: 'descContent',
       label: '商品详情描述',
       formItemClass: 'col-span-full',

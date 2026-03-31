@@ -39,9 +39,9 @@ const [Form, formApi] = useVbenForm({
       componentProps: { placeholder: '请输入步骤标题', maxlength: 100 },
     },
     {
-      component: 'RichText',
+      component: 'JsonEditor',
       fieldName: 'descContent',
-      label: () => h('span', {}, ['步骤说明 ', h(Tooltip, { title: '富文本，支持图文' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]),
+      label: '步骤说明',
       formItemClass: 'col-span-full',
     },
     {

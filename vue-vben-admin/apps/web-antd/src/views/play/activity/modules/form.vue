@@ -50,9 +50,9 @@ const [Form, formApi] = useVbenForm({
       componentProps: { maxCount: 1 },
     },
     {
-      component: 'RichText',
+      component: 'JsonEditor',
       fieldName: 'descContent',
-      label: () => h('span', {}, ['活动详情描述 ', h(Tooltip, { title: '富文本，支持图文混排' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]),
+      label: '活动详情描述',
       formItemClass: 'col-span-full',
     },
     {

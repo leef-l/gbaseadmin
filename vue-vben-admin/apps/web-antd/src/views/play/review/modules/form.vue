@@ -52,10 +52,10 @@ const [Form, formApi] = useVbenForm({
       componentProps: { placeholder: '请输入评价内容', maxlength: 65535 },
     },
     {
-      component: 'Input',
+      component: 'ImageUpload',
       fieldName: 'reviewImage',
-      label: () => h('span', {}, ['评价图片 ', h(Tooltip, { title: '多张逗号分隔' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]),
-      componentProps: { placeholder: '请输入评价图片（多张逗号分隔）', maxlength: 2000 },
+      label: '评价图片',
+      componentProps: { maxCount: 9 },
     },
     {
       component: 'Input',

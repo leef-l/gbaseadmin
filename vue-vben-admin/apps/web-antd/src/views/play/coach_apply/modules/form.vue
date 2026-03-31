@@ -46,18 +46,18 @@ const [Form, formApi] = useVbenForm({
       componentProps: { placeholder: '请输入身份证号', maxlength: 30 },
     },
     {
-      component: 'Input',
+      component: 'ImageUpload',
       fieldName: 'idCardFrontImage',
       label: '身份证正面照',
       rules: 'required',
-      componentProps: { placeholder: '请输入身份证正面照', maxlength: 500 },
+      componentProps: { maxCount: 1 },
     },
     {
-      component: 'Input',
+      component: 'ImageUpload',
       fieldName: 'idCardBackImage',
       label: '身份证反面照',
       rules: 'required',
-      componentProps: { placeholder: '请输入身份证反面照', maxlength: 500 },
+      componentProps: { maxCount: 1 },
     },
     {
       component: 'Textarea',

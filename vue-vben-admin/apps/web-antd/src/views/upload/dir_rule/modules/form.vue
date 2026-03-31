@@ -22,6 +22,35 @@ const emit = defineEmits<{ success: [] }>();
 const isEdit = ref(false);
 const editId = ref('');
 
+/** 目录下拉选项 */
+const dirIDOptions = ref<{ label: string; value: string }[]>([]);
+
+/** 将树形目录打平为选项 */
+function flattenDirTree(
+  items: DirItem[],
+  prefix = '',
+): { label: string; value: string }[] {
+  const result: { label: string; value: string }[] = [];
+  for (const item of items) {
+    const label = prefix ? `${prefix} / ${item.name}` : item.name;
+    result.push({ label, value: item.id });
+    if (item.children?.length) {
+      result.push(...flattenDirTree(item.children, label));
+    }
+  }
+  return result;
+}
+
+/** 加载目录选项 */
+async function loadDirOptions() {
+  try {
+    const list = await getDirTree();
+    dirIDOptions.value = flattenDirTree(list);
+  } catch {
+    dirIDOptions.value = [];
+  }
+}
+
 /** 表单配置 */
 const [Form, formApi] = useVbenForm({
   showDefaultActions: false,
