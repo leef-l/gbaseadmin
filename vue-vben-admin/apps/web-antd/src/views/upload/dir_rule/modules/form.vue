@@ -8,6 +8,8 @@ import {
   createDirRule,
   updateDirRule,
 } from '#/api/upload/dir_rule';
+import { getDirTree } from '#/api/upload/dir';
+import type { DirItem } from '#/api/upload/dir/types';
 
 /** ç±»åˆ«选项 */
 const categoryOptions = [
@@ -79,6 +81,7 @@ const [Modal, modalApi] = useVbenModal({
   },
   async onOpenChange(isOpen: boolean) {
     if (isOpen) {
+      await loadDirOptions();
       const data = modalApi.getData<{ id?: string } | null>();
       if (data?.id) {
         isEdit.value = true;

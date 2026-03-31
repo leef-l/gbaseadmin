@@ -8,6 +8,8 @@ import {
   createFile,
   updateFile,
 } from '#/api/upload/file';
+import { getDirTree } from '#/api/upload/dir';
+import type { DirItem } from '#/api/upload/dir/types';
 
 /** å­˜å‚¨ç±»åž‹选项 */
 const storageOptions = [
@@ -75,10 +77,10 @@ const [Form, formApi] = useVbenForm({
       componentProps: { options: storageOptions, placeholder: '请选择å­˜å‚¨ç±»åž‹', allowClear: true, class: 'w-full' },
     },
     {
-      component: 'Input',
+      component: 'Select',
       fieldName: 'isImage',
       label: 'æ˜¯å¦å›¾ç‰‡',
-      componentProps: { placeholder: '请输入æ˜¯å¦å›¾ç‰‡' },
+      componentProps: { options: isImageOptions, placeholder: '请选择是否图片', allowClear: true, class: 'w-full' },
     },
   ],
 });
@@ -109,6 +111,7 @@ const [Modal, modalApi] = useVbenModal({
   },
   async onOpenChange(isOpen: boolean) {
     if (isOpen) {
+      await loadDirOptions();
       const data = modalApi.getData<{ id?: string } | null>();
       if (data?.id) {
         isEdit.value = true;

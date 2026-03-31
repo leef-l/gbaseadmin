@@ -80,7 +80,18 @@
       "Bash(ls -d c:/project/gbaseadmin/vue-vben-admin/apps/web-antd/src/views/play/*/)",
       "Bash(grep -rn \"image\\\\|avatar\\\\|photo\\\\|_img\\\\|_file\\\\|attachment\\\\|_content\\\\|_body\\\\|_html\\\\|richtext\\\\|RichText\\\\|ImageUpload\\\\|FileUpload\\\\|Upload\\\\|Textarea.*content\\\\|icon\\\\|cover\\\\|logo\\\\|banner\\\\|thumb\" c:/project/gbaseadmin/vue-vben-admin/apps/web-antd/src/views/play/*/modules/form.vue --include=\"*.vue\" -l)",
       "Bash(pnpm --filter @vben/web-antd build)",
-      "Bash(go run . --table upload_dir,upload_file,upload_config,upload_dir_rule --only menu)"
+      "Bash(go run . --table upload_dir,upload_file,upload_config,upload_dir_rule --only menu)",
+      "Read(//c/project//**)",
+      "Bash(go run . --table play_member_level,play_member,play_coach_level,play_coach_apply,play_coach,play_shop,play_category,play_goods,play_order,play_payment,play_recharge_plan,play_recharge_order,play_balance_log,play_activity,play_activity_reward,play_activity_step,play_activity_join,play_coupon,play_coupon_member,play_oauth,play_review,play_profit_log --only menu)",
+      "Bash(docker ps --format \"table {{.Names}}\\\\t{{.Ports}}\\\\t{{.Status}}\")",
+      "Bash(while read mid)",
+      "Bash(do)",
+      "Bash(echo \"\\(1000000000000000002, $mid\\),\")",
+      "Bash(done)",
+      "Bash(__NEW_LINE_5bc4a86cb6a52dae__ python3 -c \":*)"
+    ],
+    "additionalDirectories": [
+      "\\tmp"
     ]
   }
 }
