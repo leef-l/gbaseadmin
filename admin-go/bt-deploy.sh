@@ -22,6 +22,12 @@ PORTS=("8000" "8001" "8002")
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
+# 加载 Go 环境（sudo 下 PATH 可能丢失）
+export PATH=$PATH:/usr/local/go/bin:$HOME/go/bin
+if ! command -v go &>/dev/null; then
+  echo "错误: 找不到 go 命令，请确认 Go 已安装" && exit 1
+fi
+
 # ---------- 颜色 ----------
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
