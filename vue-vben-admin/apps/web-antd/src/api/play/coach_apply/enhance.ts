@@ -8,5 +8,5 @@ export function auditCoachApply(data: {
   auditStatus: number;
   auditRemark?: string;
 }) {
-  return requestClient.post(`${PREFIX}/audit`, data);
+  return requestClient.put(`${PREFIX}/audit`, data);
 }
