@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { View, Text } from '@tarojs/components';
 import Taro, { useLoad, useRouter } from '@tarojs/taro';
-import { getOrderDetail, cancelOrder } from '../../api/order';
+import { getOrderDetail, cancelOrder, refundOrder } from '../../api/order';
 import './detail.scss';
 
 const statusConfig: Record<number, { text: string; bg: string; desc: string }> = {
@@ -33,6 +33,24 @@ export default function OrderDetailPage() {
       Taro.showToast({ title: '已取消', icon: 'success' });
       setOrder({ ...order, orderStatus: 4 });
     } catch {}
+  };
+
+  const handleRefund = () => {
+    Taro.showModal({
+      title: '申请退款',
+      content: '确认申请退款吗？退款将在1-3个工作日内处理。',
+      confirmText: '确认退款',
+      cancelText: '取消',
+      success: async ({ confirm }) => {
+        if (!confirm) return;
+        try {
+          await refundOrder(order.orderId, '用户申请退款');
+          Taro.showToast({ title: '退款申请已提交', icon: 'success' });
+          const data = await getOrderDetail(params.id || '');
+          setOrder(data);
+        } catch {}
+      },
+    });
   };
 
   if (!order) return <View />;
@@ -73,8 +91,13 @@ export default function OrderDetailPage() {
           <View style={{ border: '1px solid var(--border)', borderRadius: '20px', padding: '8px 20px', fontSize: '13px', marginRight: '8px' }} onClick={handleCancel}>取消订单</View>
           <View className="btn-primary" onClick={() => Taro.navigateTo({ url: `/pages/order/pay?orderId=${order.orderId}` })}>去支付</View>
         </>}
+        {order.orderStatus === 2 && <>
+          <View style={{ flex: 1 }} />
+          <View style={{ border: '1px solid var(--border)', borderRadius: '20px', padding: '8px 20px', fontSize: '13px', marginRight: '8px' }} onClick={handleRefund}>申请退款</View>
+        </>}
         {order.orderStatus === 3 && <>
           <View style={{ flex: 1 }} />
+          <View style={{ border: '1px solid var(--border)', borderRadius: '20px', padding: '8px 20px', fontSize: '13px', marginRight: '8px' }} onClick={() => order.goodsId && Taro.navigateTo({ url: `/pages/goods/detail?id=${order.goodsId}` })}>再来一单</View>
           <View className="btn-primary" onClick={() => Taro.navigateTo({ url: `/pages/order/review?orderId=${order.orderId}` })}>去评价</View>
         </>}
       </View>

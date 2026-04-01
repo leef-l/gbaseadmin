@@ -15,7 +15,7 @@ const menuItems = [
   { text: '领券中心', url: '/pages/coupon/center' },
   { text: '我的优惠券', url: '/pages/coupon/list' },
   { text: '余额明细', url: '/pages/mine/balance' },
-  { text: '我的评价', url: '' },
+  { text: '我的订单', url: '/pages/order/list' },
 ];
 
 export default function MinePage() {

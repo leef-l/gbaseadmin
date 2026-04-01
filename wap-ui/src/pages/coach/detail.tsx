@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { View, Text } from '@tarojs/components';
+import { View, Text, Image } from '@tarojs/components';
 import Taro, { useLoad, useRouter } from '@tarojs/taro';
 import { getCoachDetail } from '../../api/coach';
 import { getGoodsList } from '../../api/goods';
@@ -35,6 +35,9 @@ export default function CoachDetailPage() {
   return (
     <View className="coach-detail">
       <View className="coach-detail__cover">
+        {detail.avatar && (
+          <Image src={detail.avatar} className="coach-detail__cover-img" mode="aspectFill" />
+        )}
         <View className="coach-detail__cover-mask" />
         <View className="coach-detail__back" onClick={() => Taro.navigateBack()}>←</View>
         <View className="coach-detail__cover-info">

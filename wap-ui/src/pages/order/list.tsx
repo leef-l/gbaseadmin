@@ -69,7 +69,7 @@ export default function OrderListPage() {
         { label: '去支付', type: 'primary' as const, onClick: () => Taro.navigateTo({ url: `/pages/order/pay?orderId=${id}` }) },
       ];
       case 3: return [
-        { label: '再来一单', onClick: () => {} },
+        { label: '再来一单', onClick: () => Taro.navigateTo({ url: `/pages/order/detail?id=${id}` }) },
         { label: '去评价', type: 'primary' as const, onClick: () => Taro.navigateTo({ url: `/pages/order/review?orderId=${id}` }) },
       ];
       default: return [];

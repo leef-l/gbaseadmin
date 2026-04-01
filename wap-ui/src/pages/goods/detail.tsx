@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { View, Text } from '@tarojs/components';
+import { View, Text, Image } from '@tarojs/components';
 import Taro, { useLoad, useRouter } from '@tarojs/taro';
 import { getGoodsDetail } from '../../api/goods';
 import { getReviewList } from '../../api/review';
@@ -42,7 +42,9 @@ export default function GoodsDetailPage() {
 
   return (
     <View className="goods-detail">
-      <View className="goods-detail__cover" />
+      <View className="goods-detail__cover">
+        {detail.coverImage && <Image src={detail.coverImage} className="goods-detail__cover-img" mode="aspectFill" />}
+      </View>
       <View className="goods-detail__info">
         <Text className="goods-detail__price">¥{(detail.price / 100).toFixed(2)}<Text className="goods-detail__unit"> /{detail.unit}</Text></Text>
         <Text className="goods-detail__name">{detail.title}</Text>

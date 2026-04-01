@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { View, Text } from '@tarojs/components';
+import { View, Text, Image } from '@tarojs/components';
 import Taro, { useLoad } from '@tarojs/taro';
 import { getCategoryList, getGoodsList } from '../../api/goods';
 import './index.scss';
@@ -50,7 +50,9 @@ export default function CategoryPage() {
         <View className="category__grid">
           {goods.map((g) => (
             <View key={g.id} className="category__goods" onClick={() => Taro.navigateTo({ url: `/pages/goods/detail?id=${g.id}` })}>
-              <View className="category__cover" />
+              <View className="category__cover">
+                {g.coverImage && <Image src={g.coverImage} className="category__cover-img" mode="aspectFill" />}
+              </View>
               <View className="category__info">
                 <Text className="category__title">{g.title}</Text>
                 <Text className="price">¥{(g.price / 100).toFixed(2)}</Text>
