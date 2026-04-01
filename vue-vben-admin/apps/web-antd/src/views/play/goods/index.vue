@@ -66,13 +66,13 @@ const formOptions: VbenFormProps = {
 const gridOptions: VxeGridProps<GoodsItem> = {
   columns: [
     { title: '序号', type: 'seq', width: 50 },
-    { field: 'categoryTitle', title: '分类ID' },
+    { field: 'categoryTitle', title: '分类' },
     { field: 'coachID', title: '陪玩师ID' },
     { field: 'title', title: '商品名称' },
     { field: 'coverImage', title: '商品封面图', width: 100, slots: { default: 'coverImage_cell' } },
     { field: 'descContent', title: '商品详情描述' },
     { field: 'price', title: '单价', slots: { header: () => h('span', {}, ['单价 ', h(Tooltip, { title: '单位：分' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]) } },
-    { field: 'unit', title: '计量单位（如' },
+    { field: 'unit', title: '计量单位' },
     { field: 'salesNum', title: '销量' },
     { field: 'sort', title: '排序', slots: { header: () => h('span', {}, ['排序 ', h(Tooltip, { title: '升序' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]) } },
     { field: 'status', title: '状态', width: 120, slots: { default: 'status_cell' } },

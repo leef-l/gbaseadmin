@@ -101,7 +101,7 @@ const gridOptions: VxeGridProps<ReviewItem> = {
     { field: 'coachID', title: '被评陪玩师ID' },
     { field: 'score', title: '评分', slots: { header: () => h('span', {}, ['评分 ', h(Tooltip, { title: '乘100，如 500=5.00分' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]) } },
     { field: 'reviewContent', title: '评价内容' },
-    { field: 'reviewImage', title: '评价图片', slots: { header: () => h('span', {}, ['评价图片 ', h(Tooltip, { title: '多张逗号分隔' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]) } },
+    { field: 'reviewImage', title: '评价图片', width: 120, slots: { default: 'reviewImage_cell', header: () => h('span', {}, ['评价图片 ', h(Tooltip, { title: '多张逗号分隔' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]) } },
     { field: 'replyContent', title: '陪玩师回复内容' },
     { field: 'isAnonymous', title: '是否匿名', width: 120, slots: { default: 'isAnonymous_cell' } },
     { field: 'status', title: '状态', width: 120, slots: { default: 'status_cell' } },
@@ -166,6 +166,12 @@ function handleDelete(row: ReviewItem) {
     <Grid>
       <template #toolbar-actions>
         <Button type="primary" @click="handleCreate">新建</Button>
+      </template>
+      <template #reviewImage_cell="{ row }">
+        <div v-if="row.reviewImage" style="display: flex; gap: 4px; flex-wrap: wrap;">
+          <img v-for="(img, idx) in row.reviewImage.split(',')" :key="idx" :src="img.trim()" style="width:40px;height:40px;object-fit:cover;border-radius:4px;" />
+        </div>
+        <span v-else>-</span>
       </template>
       <template #isAnonymous_cell="{ row }">
         <Tag :color="getIsAnonymousColor(row.isAnonymous)">

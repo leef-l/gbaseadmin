@@ -97,7 +97,7 @@ const gridOptions: VxeGridProps<CoachItem> = {
   columns: [
     { title: '序号', type: 'seq', width: 50 },
     { field: 'memberID', title: '关联会员ID' },
-    { field: 'coachLevelTitle', title: '陪玩师等级ID' },
+    { field: 'coachLevelTitle', title: '陪玩师等级' },
     { field: 'shopTitle', title: '所属店铺', slots: { header: () => h('span', {}, ['所属店铺 ', h(Tooltip, { title: '0表示无店铺' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]) } },
     { field: 'realName', title: '真实姓名' },
     { field: 'intro', title: '个人简介' },

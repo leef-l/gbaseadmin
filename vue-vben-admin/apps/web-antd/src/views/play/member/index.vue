@@ -132,7 +132,7 @@ const gridOptions: VxeGridProps<MemberItem> = {
     { field: 'nickname', title: '昵称' },
     { field: 'avatar', title: '头像', width: 80, slots: { default: 'avatar_cell' } },
     { field: 'gender', title: '性别', width: 120, slots: { default: 'gender_cell' } },
-    { field: 'memberLevelTitle', title: '会员等级ID' },
+    { field: 'memberLevelTitle', title: '会员等级' },
     { field: 'exp', title: '经验值' },
     { field: 'balance', title: '余额', slots: { header: () => h('span', {}, ['余额 ', h(Tooltip, { title: '单位：分' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]) } },
     { field: 'isCoach', title: '是否陪玩师', width: 120, slots: { default: 'isCoach_cell' } },

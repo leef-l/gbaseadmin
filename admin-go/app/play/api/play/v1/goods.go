@@ -22,7 +22,7 @@ type GoodsCreateReq struct {
 	CoverImage string `json:"coverImage"  dc:"商品封面图"`
 	DescContent string `json:"descContent"  dc:"商品详情描述"`
 	Price int64 `json:"price"  dc:"单价（分）"`
-	Unit string `json:"unit"  dc:"计量单位（如"`
+	Unit string `json:"unit"  dc:"计量单位（如：局/小时/次）"`
 	SalesNum int `json:"salesNum"  dc:"销量"`
 	Sort int `json:"sort"  dc:"排序（升序）"`
 	Status int `json:"status"  dc:"状态"`
@@ -43,7 +43,7 @@ type GoodsUpdateReq struct {
 	CoverImage string `json:"coverImage" dc:"商品封面图"`
 	DescContent string `json:"descContent" dc:"商品详情描述"`
 	Price int64 `json:"price" dc:"单价（分）"`
-	Unit string `json:"unit" dc:"计量单位（如"`
+	Unit string `json:"unit" dc:"计量单位（如：局/小时/次）"`
 	SalesNum int `json:"salesNum" dc:"销量"`
 	Sort int `json:"sort" dc:"排序（升序）"`
 	Status int `json:"status" dc:"状态"`

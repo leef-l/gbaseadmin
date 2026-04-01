@@ -70,8 +70,8 @@ const gridOptions: VxeGridProps<CoachApplyItem> = {
     { field: 'memberID', title: '会员ID' },
     { field: 'realName', title: '真实姓名' },
     { field: 'idCard', title: '身份证号' },
-    { field: 'idCardFrontImage', title: '身份证正面照' },
-    { field: 'idCardBackImage', title: '身份证反面照' },
+    { field: 'idCardFrontImage', title: '身份证正面照', width: 100, slots: { default: 'idCardFrontImage_cell' } },
+    { field: 'idCardBackImage', title: '身份证反面照', width: 100, slots: { default: 'idCardBackImage_cell' } },
     { field: 'skillDesc', title: '技能描述' },
     { field: 'auditStatus', title: '审核状态', width: 120, slots: { default: 'auditStatus_cell' } },
     { field: 'auditRemark', title: '审核备注' },
@@ -175,6 +175,14 @@ function handleReject(row: CoachApplyItem) {
     <Grid>
       <template #toolbar-actions>
         <Button type="primary" @click="handleCreate">新建</Button>
+      </template>
+      <template #idCardFrontImage_cell="{ row }">
+        <img v-if="row.idCardFrontImage" :src="row.idCardFrontImage" style="width:80px;height:50px;object-fit:cover;border-radius:4px;" />
+        <span v-else>-</span>
+      </template>
+      <template #idCardBackImage_cell="{ row }">
+        <img v-if="row.idCardBackImage" :src="row.idCardBackImage" style="width:80px;height:50px;object-fit:cover;border-radius:4px;" />
+        <span v-else>-</span>
       </template>
       <template #auditStatus_cell="{ row }">
         <Tag :color="getAuditStatusColor(row.auditStatus)">
