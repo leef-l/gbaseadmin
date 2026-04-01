@@ -85,12 +85,12 @@ func (s *sUploader) Upload(ctx context.Context) (*model.UploadOutput, error) {
 	// 获取目录ID
 	dirId := r.Get("dirId").Int64()
 
-	// 生成唯一文件名
+	// 生成唯一文件名和对象路径
 	now := time.Now()
 	dateDir := now.Format("2006-01-02")
 	uniqueName := fmt.Sprintf("%d%d%04d.%s", now.UnixMilli(), now.UnixNano()%1000, rand.Intn(10000), ext)
 
-	// 本地存储
+	// 始终先保存到本地临时目录，云存储场景下上传后再清理
 	savePath := filepath.Join(localPath, dateDir)
 	if err := os.MkdirAll(savePath, 0755); err != nil {
 		return nil, fmt.Errorf("创建目录失败: %v", err)
@@ -103,9 +103,46 @@ func (s *sUploader) Upload(ctx context.Context) (*model.UploadOutput, error) {
 		return nil, fmt.Errorf("保存文件失败: %v", err)
 	}
 
-	// URL 路径：静态路由 /upload -> resource/upload，所以 URL 需要去掉 localPath 前缀
-	relativePath := filepath.Join(dateDir, uniqueName)
-	url := "/upload/" + strings.ReplaceAll(relativePath, "\\", "/")
+	// objectKey：云存储对象路径，本地存储时复用为相对路径
+	objectKey := dateDir + "/" + uniqueName
+	var fileURL string
+
+	switch storageType {
+	case 2: // 阿里云OSS
+		cfg := ossConfig{
+			Endpoint:  getString(configRecord, "oss_endpoint"),
+			Bucket:    getString(configRecord, "oss_bucket"),
+			AccessKey: getString(configRecord, "oss_access_key"),
+			SecretKey: getString(configRecord, "oss_secret_key"),
+		}
+		fileURL, err = uploadToOSS(cfg, fullPath, objectKey)
+		if err != nil {
+			_ = os.Remove(fullPath)
+			return nil, fmt.Errorf("上传至OSS失败: %v", err)
+		}
+		// 上传成功后删除本地临时文件
+		_ = os.Remove(fullPath)
+
+	case 3: // 腾讯云COS
+		cfg := cosConfig{
+			Region:    getString(configRecord, "cos_region"),
+			Bucket:    getString(configRecord, "cos_bucket"),
+			SecretId:  getString(configRecord, "cos_secret_id"),
+			SecretKey: getString(configRecord, "cos_secret_key"),
+		}
+		fileURL, err = uploadToCOS(cfg, fullPath, objectKey)
+		if err != nil {
+			_ = os.Remove(fullPath)
+			return nil, fmt.Errorf("上传至COS失败: %v", err)
+		}
+		// 上传成功后删除本地临时文件
+		_ = os.Remove(fullPath)
+
+	default: // case 1: 本地存储
+		// URL 路径：静态路由 /upload -> resource/upload，所以 URL 需要去掉 localPath 前缀
+		relativePath := filepath.Join(dateDir, uniqueName)
+		fileURL = "/upload/" + strings.ReplaceAll(relativePath, "\\", "/")
+	}
 
 	// 生成ID并写入数据库
 	id := snowflake.Generate()
@@ -113,7 +150,7 @@ func (s *sUploader) Upload(ctx context.Context) (*model.UploadOutput, error) {
 		"id":         id,
 		"dir_id":     dirId,
 		"name":       file.Filename,
-		"url":        url,
+		"url":        fileURL,
 		"ext":        ext,
 		"size":       file.Size,
 		"mime":       file.FileHeader.Header.Get("Content-Type"),
@@ -123,17 +160,33 @@ func (s *sUploader) Upload(ctx context.Context) (*model.UploadOutput, error) {
 		"updated_at": gtime.Now(),
 	}).Insert()
 	if err != nil {
-		os.Remove(fullPath)
+		// 本地存储时回滚物理文件
+		if storageType == 1 {
+			os.Remove(fullPath)
+		}
 		return nil, fmt.Errorf("保存文件记录失败: %v", err)
 	}
 
 	return &model.UploadOutput{
 		ID:      snowflake.JsonInt64(id),
-		URL:     url,
+		URL:     fileURL,
 		Name:    file.Filename,
 		Size:    file.Size,
 		Ext:     ext,
 		Mime:    file.FileHeader.Header.Get("Content-Type"),
 		IsImage: isImage,
 	}, nil
+}
+
+// getString 安全地从 map[string]interface{} 中取字符串值
+func getString(m map[string]interface{}, key string) string {
+	if m == nil {
+		return ""
+	}
+	v, ok := m[key]
+	if !ok {
+		return ""
+	}
+	s, _ := v.(string)
+	return s
 }
