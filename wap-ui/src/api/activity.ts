@@ -12,8 +12,12 @@ export function joinActivity(activityId: string) {
   return post('/api/playapi/activity/join', { activityId });
 }
 
-export function completeStep(data: { activityId: string; stepId: string }) {
+export function completeStep(data: { activityId: string; stepId: string; imageUrl?: string }) {
   return post('/api/playapi/activity/complete_step', data);
+}
+
+export function quitActivity(activityId: string) {
+  return post('/api/playapi/activity/quit', { activityId });
 }
 
 export function claimReward(activityId: string, rewardId: string) {

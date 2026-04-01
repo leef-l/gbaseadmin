@@ -117,6 +117,13 @@
     &--disabled {
       opacity: 0.6;
     }
+
+    &--outline {
+      background: #fff;
+      color: #6C5CE7;
+      border: 1px solid #6C5CE7;
+      margin-right: 12px;
+    }
   }
 }
 // 奖励卡片

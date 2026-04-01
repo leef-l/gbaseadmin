@@ -1,7 +1,7 @@
 import { useState, useCallback } from 'react';
 import { View, Text, Image, RichText } from '@tarojs/components';
 import Taro, { useLoad, useRouter } from '@tarojs/taro';
-import { getActivityDetail, joinActivity, completeStep } from '../../api/activity';
+import { getActivityDetail, joinActivity, quitActivity, completeStep } from '../../api/activity';
 import { useAuthStore } from '../../store/auth';
 import './detail.scss';
 
@@ -39,6 +39,7 @@ export default function ActivityDetailPage() {
   const router = useRouter();
   const [detail, setDetail] = useState<any>(null);
   const [joining, setJoining] = useState(false);
+  const [quitting, setQuitting] = useState(false);
   // 每个步骤的用户上传图片，key 为 stepId
   const [stepImages, setStepImages] = useState<Record<string, string>>({});
   const [uploadingStepId, setUploadingStepId] = useState<string | null>(null);
@@ -71,9 +72,36 @@ export default function ActivityDetailPage() {
     }
   };
 
+  const handleQuit = async () => {
+    if (!detail || quitting) return;
+    Taro.showModal({
+      title: '取消报名',
+      content: '确定要取消报名吗？',
+      success: async (res) => {
+        if (!res.confirm) return;
+        setQuitting(true);
+        try {
+          await quitActivity(detail.activityId);
+          Taro.showToast({ title: '已取消报名', icon: 'success' });
+          fetchDetail(detail.activityId);
+        } catch {
+          Taro.showToast({ title: '取消失败', icon: 'none' });
+        } finally {
+          setQuitting(false);
+        }
+      },
+    });
+  };
+
   const handleCompleteStep = async (stepId: string) => {
+    const step = detail.steps?.find((s: any) => s.stepId === stepId);
+    const imageUrl = (step?.stepType === 3 && step?.isRequired === 1) ? stepImages[stepId] : undefined;
+    if (step?.stepType === 3 && step?.isRequired === 1 && !imageUrl) {
+      Taro.showToast({ title: '请先上传图片', icon: 'none' });
+      return;
+    }
     try {
-      await completeStep({ activityId: detail.activityId, stepId });
+      await completeStep({ activityId: detail.activityId, stepId, imageUrl });
       Taro.showToast({ title: '步骤完成', icon: 'success' });
       fetchDetail(detail.activityId);
     } catch {
@@ -306,6 +334,14 @@ export default function ActivityDetailPage() {
       )}
 
       <View className="activity-detail__bottom safe-bottom">
+        {detail.joined && (
+          <View
+            className={`activity-detail__btn activity-detail__btn--outline ${quitting ? 'activity-detail__btn--disabled' : ''}`}
+            onClick={handleQuit}
+          >
+            {quitting ? '处理中...' : '取消报名'}
+          </View>
+        )}
         <View
           className={`activity-detail__btn ${detail.joined || joining ? 'activity-detail__btn--disabled' : ''}`}
           onClick={handleJoin}
