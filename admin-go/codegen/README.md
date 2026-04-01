@@ -98,24 +98,48 @@ go run . --table system_dept --menu
 ```yaml
 database:
   host: 127.0.0.1
-  port: 9306
+  port: 3306
   user: root
-  password: "gbaseadmin123"
+  password: "gbaseadmin123"   # 支持环境变量：password: "${DB_PASSWORD}"
   dbname: gbaseadmin
 
 backend:
-  output: ../app/          # 后端输出根目录
+  output: ../app/             # 后端输出根目录
 
 frontend:
   output: ../../vue-vben-admin/apps/web-antd/src/
 
-skip_fields:               # 跳过生成的公共字段
+skip_fields:                  # 这些字段在表单中隐藏，不生成前端组件
   - created_at
   - updated_at
   - deleted_at
   - created_by
   - dept_id
+
+menu_apps:                    # 菜单应用目录配置（新增应用在此添加即可）
+  system:
+    title: 系统管理
+    icon: SettingOutlined
+  upload:
+    title: 上传管理
+    icon: CloudUploadOutlined
+  play:
+    title: 陪玩管理
+    icon: "game-icons:joystick"
 ```
+
+### 环境变量支持
+
+数据库密码支持 `${ENV_VAR}` 语法，避免明文存储：
+
+```yaml
+database:
+  password: "${DB_PASSWORD}"   # 从环境变量 DB_PASSWORD 读取
+```
+
+### 菜单应用配置
+
+`menu_apps` 定义了菜单生成器为每个应用创建目录时使用的标题和图标。新增应用只需在此添加一条配置，无需修改生成器源码。未配置的应用默认使用 `{应用名}管理` 和 `AppstoreOutlined` 图标。
 
 ## 数据库表设计规范
 
@@ -274,13 +298,15 @@ skip_fields:               # 跳过生成的公共字段
 - `created_by` — 创建人，自动填充
 - `dept_id` — 部门 ID，自动填充
 
+此外，`codegen.yaml` 中的 `skip_fields` 配置项可自定义额外需要隐藏的字段。
+
 ## 智能特性检测
 
 | 特性 | 触发条件 | 生成效果 |
 |------|---------|---------|
 | 树形结构 | 表中存在 `parent_id` 字段 | 后端生成树形查询接口，前端生成树形表格 |
 | 密码加密 | 字段名为 `password`/`*_password`/`*_pwd` | 后端自动 bcrypt 加密 |
-| 外键关联 | 字段名为 `*_id`（排除 `id`、`dept_id`） | 自动查询关联表，填充显示字段（title/name/username） |
+| 外键关联 | 字段名为 `*_id`（排除 `id`、`dept_id`） | 自动批量查询关联表（`WHERE id IN (...)`），填充显示字段（title/name/username） |
 | 多选外键 | 字段名为 `*_ids` | 前端多选组件，后端数组处理 |
 | Snowflake ID | 所有 `BIGINT` 主键/外键 | 使用 `JsonInt64` 防止 JS 精度丢失 |
 | 软删除 | 存在 `deleted_at` 字段 | 查询自动过滤已删除记录 |

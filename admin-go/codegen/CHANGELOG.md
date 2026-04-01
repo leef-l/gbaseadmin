@@ -1,5 +1,36 @@
 # Codegen 更新日志
 
+## v1.4.0 — 2026-04-01
+
+### BUG 修复
+
+- **修复树形表格 `treeNode` 不生效** — `list.tpl` 中 `$firstDataCol` 在 RichText/JsonEditor 字段（不渲染列）时被错误消耗，导致树形表格首列永远不会标记 `treeNode: true`，展开功能失效
+- **修复 `form.tpl` TreeSelect `fieldNames.label` 不一致** — `TreeSelectSingle`/`TreeSelectMulti`（parent_id）统一使用 `RefDisplayLower`（camelCase），与外键 TreeSelect 行为一致
+
+### 性能优化
+
+- **List 外键关联改为批量查询** — 原来每条记录每个外键字段逐条发 SQL（N+1 问题），改为先收集所有外键 ID，批量 `WHERE id IN (...)` 查询后 map 回填，性能从 O(n×k) 降至 O(k)
+
+### 模板完善
+
+- **`form.tpl` 补充 `IconPicker` 和 `InputUrl` 组件分支** — 之前 `field_mapper.go` 映射了这两个组件类型，但 `form.tpl` 缺少对应渲染分支，静默回退为普通 Input。现在 `IconPicker` 渲染图标选择器，`InputUrl` 渲染带 `https://` 前缀的输入框
+- **`skip_fields` 配置生效** — `codegen.yaml` 中的 `skip_fields` 之前加载了但从未使用，现在会将配置中列出的字段标记为隐藏（不生成前端组件）
+- **Go 包名去下划线** — 多段模块名（如 `user_role`）生成的 Go 包名自动去除下划线（`userrole`），避免 `go vet` 警告
+
+### 代码整洁
+
+- **提取 `replacePlaceholders` 到 `generator/util` 公共包** — 消除 `backend/generator.go` 和 `frontend/generator.go` 中的重复函数
+- **合并 `renderTemplate` 和 `renderTemplateWithFuncs`** — 统一为一个内置 `ModuleCamel` 模板函数的渲染函数
+- **删除 `snakeToCamelLocal`** — 改用 `parser.SnakeToCamelSimple` 导出函数
+- **删除 `router.tpl` 死文件** — 该模板从未被任何 generator 使用（路由注册通过 `cmd.tpl` 完成）
+
+### 可配置性增强
+
+- **菜单应用目录配置化** — 应用名到标题/图标的映射从 `menu/generator.go` 硬编码移到 `codegen.yaml` 的 `menu_apps` 配置项，新增应用无需修改源码
+- **数据库密码支持环境变量** — `codegen.yaml` 中 `password` 字段支持 `${ENV_VAR}` 语法，从环境变量读取，避免明文存储
+
+---
+
 ## v1.3.0 — 2026-03-31
 
 ### Tooltip 括号语法
