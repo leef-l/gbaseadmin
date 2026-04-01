@@ -155,11 +155,23 @@ func (s *sActivity) Detail(ctx context.Context, activityID string, memberID int6
 
 	// 查询当前用户报名状态及进度
 	if memberID > 0 {
+		// 优先取未完成的报名（进行中），没有则取最近一条
 		join, e := dao.PlayActivityJoin.Ctx(ctx).
 			Where(dao.PlayActivityJoin.Columns().ActivityId, aid).
 			Where(dao.PlayActivityJoin.Columns().MemberId, memberID).
 			Where(dao.PlayActivityJoin.Columns().DeletedAt, nil).
+			WhereLT(dao.PlayActivityJoin.Columns().JoinStatus, 2).
+			OrderDesc(dao.PlayActivityJoin.Columns().CreatedAt).
 			One()
+		if e == nil && join.IsEmpty() {
+			// 没有进行中的，取最近完成的
+			join, e = dao.PlayActivityJoin.Ctx(ctx).
+				Where(dao.PlayActivityJoin.Columns().ActivityId, aid).
+				Where(dao.PlayActivityJoin.Columns().MemberId, memberID).
+				Where(dao.PlayActivityJoin.Columns().DeletedAt, nil).
+				OrderDesc(dao.PlayActivityJoin.Columns().CreatedAt).
+				One()
+		}
 		if e == nil && !join.IsEmpty() {
 			out.HasJoined = true
 			joinStatus := join[dao.PlayActivityJoin.Columns().JoinStatus].Int()
@@ -199,17 +211,18 @@ func (s *sActivity) Join(ctx context.Context, memberID int64, activityID string)
 	if act[dao.PlayActivity.Columns().EndAt].GTime() != nil && now.After(act[dao.PlayActivity.Columns().EndAt].GTime()) {
 		return gerror.New("活动已结束")
 	}
-	// 检查是否已参与
+	// 检查是否有未完成的报名（join_status < 2）
 	cnt, err := dao.PlayActivityJoin.Ctx(ctx).
 		Where(dao.PlayActivityJoin.Columns().ActivityId, aid).
 		Where(dao.PlayActivityJoin.Columns().MemberId, memberID).
 		Where(dao.PlayActivityJoin.Columns().DeletedAt, nil).
+		WhereLT(dao.PlayActivityJoin.Columns().JoinStatus, 2).
 		Count()
 	if err != nil {
 		return err
 	}
 	if cnt > 0 {
-		return gerror.New("您已参与该活动")
+		return gerror.New("您有未完成的报名，请先完成或取消后再报名")
 	}
 	return dao.PlayActivityJoin.Transaction(ctx, func(ctx context.Context, tx gdb.TX) error {
 		id := snowflake.Generate()
