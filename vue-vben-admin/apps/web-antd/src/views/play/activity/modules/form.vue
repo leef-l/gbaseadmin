@@ -50,7 +50,7 @@ const [Form, formApi] = useVbenForm({
       componentProps: { maxCount: 1 },
     },
     {
-      component: 'JsonEditor',
+      component: 'RichText',
       fieldName: 'descContent',
       label: '活动详情描述',
       formItemClass: 'col-span-full',
