@@ -94,11 +94,13 @@ const gridOptions: VxeGridProps<{{.ModelName}}Item> = {
 {{- else if eq .Component "ImageUpload"}}
     { field: '{{.NameLower}}', title: '{{.ShortLabel}}', width: 100, slots: { default: '{{.NameLower}}_cell' }{{if and $isTree $firstDataCol}}, treeNode: true{{end}} },
 {{- else if or (eq .Component "RichText") (eq .Component "JsonEditor")}}
-{{- /* 富文本和JSON字段不在列表中显示 */}}
+{{- /* 富文本和JSON字段不在列表中显示，不消耗 firstDataCol */}}
 {{- else}}
     { field: '{{.NameLower}}', title: '{{.ShortLabel}}'{{if .TooltipText}}, slots: { header: () => h('span', {}, ['{{.ShortLabel}} ', h(Tooltip, { title: '{{.TooltipText}}' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]) }{{end}}{{if and $isTree $firstDataCol}}, treeNode: true{{end}} },
 {{- end}}
+{{- if not (or (eq .Component "RichText") (eq .Component "JsonEditor"))}}
 {{- $firstDataCol = false}}
+{{- end}}
 {{- end}}
 {{- end}}
 {{- range .Fields}}

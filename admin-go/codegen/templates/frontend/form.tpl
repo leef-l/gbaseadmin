@@ -188,7 +188,7 @@ const [Form, formApi] = useVbenForm({
 {{- end}}
       componentProps: {
         treeData: treeData.value,
-        fieldNames: { label: '{{if .RefDisplayField}}{{.RefDisplayField}}{{else}}title{{end}}', value: 'id', children: 'children' },
+        fieldNames: { label: '{{if .RefDisplayLower}}{{.RefDisplayLower}}{{else}}title{{end}}', value: 'id', children: 'children' },
         placeholder: '请选择{{.Label}}',
         allowClear: true,
         treeDefaultExpandAll: true,
@@ -205,7 +205,7 @@ const [Form, formApi] = useVbenForm({
 {{- end}}
       componentProps: {
         treeData: treeData.value,
-        fieldNames: { label: '{{if .RefDisplayField}}{{.RefDisplayField}}{{else}}title{{end}}', value: 'id', children: 'children' },
+        fieldNames: { label: '{{if .RefDisplayLower}}{{.RefDisplayLower}}{{else}}title{{end}}', value: 'id', children: 'children' },
         placeholder: '请选择{{.Label}}',
         allowClear: true,
         treeCheckable: true,
@@ -262,6 +262,26 @@ const [Form, formApi] = useVbenForm({
       rules: 'required',
 {{- end}}
       formItemClass: 'col-span-full',
+    },
+{{- else if eq .Component "IconPicker"}}
+    {
+      component: 'IconPicker',
+      fieldName: '{{.NameLower}}',
+      label: {{if .TooltipText}}() => h('span', {}, ['{{.ShortLabel}} ', h(Tooltip, { title: '{{.TooltipText}}' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]){{else}}'{{.Label}}'{{end}},
+{{- if .IsRequired}}
+      rules: 'required',
+{{- end}}
+      componentProps: { placeholder: '请选择图标' },
+    },
+{{- else if eq .Component "InputUrl"}}
+    {
+      component: 'Input',
+      fieldName: '{{.NameLower}}',
+      label: {{if .TooltipText}}() => h('span', {}, ['{{.ShortLabel}} ', h(Tooltip, { title: '{{.TooltipText}}' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]){{else}}'{{.Label}}'{{end}},
+{{- if .IsRequired}}
+      rules: 'required',
+{{- end}}
+      componentProps: { placeholder: '请输入URL地址'{{if gt .MaxLength 0}}, maxlength: {{.MaxLength}}{{end}}, addonBefore: 'https://' },
     },
 {{- else}}
     {

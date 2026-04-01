@@ -1,4 +1,4 @@
-package {{.ModuleName}}
+package {{.PackageName}}
 
 import (
 	"context"
@@ -132,19 +132,41 @@ func (s *s{{.ModelName}}) List(ctx context.Context, in *model.{{.ModelName}}List
 {{- end}}
 {{- end}}
 {{- if $hasRef}}
-	// 填充关联显示字段
-	for _, item := range list {
+	// 批量填充关联显示字段（避免 N+1 查询）
 {{- range .Fields}}
 {{- if and .RefFieldName (not .IsHidden)}}
-		if item.{{.NameCamel}} != 0 {
-			val, err := g.DB().Ctx(ctx).Model("{{.RefTableDB}}").Where("id", item.{{.NameCamel}}).Where("deleted_at", nil).Value("{{.RefDisplayField}}")
-			if err == nil {
-				item.{{.RefFieldName}} = val.String()
+	{
+		idSet := make(map[int64]struct{})
+		for _, item := range list {
+			if item.{{.NameCamel}} != 0 {
+				idSet[int64(item.{{.NameCamel}})] = struct{}{}
 			}
 		}
-{{- end}}
-{{- end}}
+		if len(idSet) > 0 {
+			ids := make([]int64, 0, len(idSet))
+			for id := range idSet {
+				ids = append(ids, id)
+			}
+			rows, err := g.DB().Ctx(ctx).Model("{{.RefTableDB}}").
+				Fields("id", "{{.RefDisplayField}}").
+				Where("deleted_at", nil).
+				WhereIn("id", ids).
+				All()
+			if err == nil {
+				refMap := make(map[int64]string, len(rows))
+				for _, row := range rows {
+					refMap[row["id"].Int64()] = row["{{.RefDisplayField}}"].String()
+				}
+				for _, item := range list {
+					if val, ok := refMap[int64(item.{{.NameCamel}})]; ok {
+						item.{{.RefFieldName}} = val
+					}
+				}
+			}
+		}
 	}
+{{- end}}
+{{- end}}
 {{- end}}
 	return
 }

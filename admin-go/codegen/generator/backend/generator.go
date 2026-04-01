@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
-	"strings"
 	"text/template"
 
+	"gbaseadmin/codegen/generator/util"
 	"gbaseadmin/codegen/parser"
 )
 
@@ -57,7 +57,7 @@ func (g *Generator) Generate(meta *parser.TableMeta) ([]string, error) {
 		}
 
 		// 构建输出路径：将 {app} 和 {module} 替换为实际名称
-		relPath := replacePlaceholders(m.OutputPath, meta.AppName, meta.ModuleName)
+		relPath := util.ReplacePlaceholders(m.OutputPath, meta.AppName, meta.ModuleName)
 		outPath := filepath.Join(g.config.OutputDir, relPath)
 
 		// 文件已存在且不强制覆盖，跳过
@@ -92,9 +92,3 @@ func (g *Generator) Generate(meta *parser.TableMeta) ([]string, error) {
 	return generated, nil
 }
 
-// replacePlaceholders 将路径中的 {app} 和 {module} 占位符替换为实际名称
-func replacePlaceholders(path, app, module string) string {
-	result := strings.ReplaceAll(path, "{app}", app)
-	result = strings.ReplaceAll(result, "{module}", module)
-	return result
-}

@@ -12,25 +12,18 @@ import (
 	"gbaseadmin/codegen/parser"
 )
 
-// 应用目录标题映射
-var appTitleMap = map[string]string{
-	"play":   "陪玩管理",
-	"system": "系统管理",
-	"upload": "上传管理",
-}
-
-// 应用目录图标映射
-var appIconMap = map[string]string{
-	"play":   "game-icons:joystick",
-	"system": "SettingOutlined",
-	"upload": "CloudUploadOutlined",
+// MenuAppConfig 应用目录的标题和图标配置
+type MenuAppConfig struct {
+	Title string
+	Icon  string
 }
 
 // Config 菜单生成器配置
 type Config struct {
-	DSN    string
-	Force  bool
-	DryRun bool
+	DSN      string
+	Force    bool
+	DryRun   bool
+	MenuApps map[string]MenuAppConfig // 从 codegen.yaml 加载的应用目录配置
 }
 
 // Generator 菜单生成器
@@ -119,13 +112,15 @@ func (g *Generator) ensureDirectory(db *sql.DB, appName, path string) (int64, er
 
 	// 创建目录
 	id = generateID()
-	title := appTitleMap[appName]
-	if title == "" {
-		title = appName + "管理"
-	}
-	icon := appIconMap[appName]
-	if icon == "" {
-		icon = "AppstoreOutlined"
+	title := appName + "管理"
+	icon := "AppstoreOutlined"
+	if cfg, ok := g.config.MenuApps[appName]; ok {
+		if cfg.Title != "" {
+			title = cfg.Title
+		}
+		if cfg.Icon != "" {
+			icon = cfg.Icon
+		}
 	}
 
 	if g.config.DryRun {

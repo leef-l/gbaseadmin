@@ -1,4 +1,4 @@
-package {{.ModuleName}}
+package {{.PackageName}}
 
 import (
 	"context"

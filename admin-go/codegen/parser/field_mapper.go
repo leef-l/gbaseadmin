@@ -23,6 +23,13 @@ func snakeToCamel(s string) string {
 	return b.String()
 }
 
+// SnakeToCamelSimple 将 snake_case 转为 CamelCase（不做特殊缩写处理，每段仅首字母大写）
+// 例：parent_id → ParentId, link_url → LinkUrl, user_role → UserRole
+// 供 cmd.tpl 的 ModuleCamel 模板函数和 DAO 风格字段名使用
+func SnakeToCamelSimple(s string) string {
+	return snakeToCamelDao(s)
+}
+
 // snakeToCamelDao 将 snake_case 转为 GoFrame DAO 风格 CamelCase
 // 不做特殊缩写处理，每段仅首字母大写
 // 例：parent_id → ParentId, link_url → LinkUrl, data_scope → DataScope

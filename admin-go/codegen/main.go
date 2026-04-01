@@ -11,7 +11,6 @@ import (
 	"strings"
 	"text/template"
 	"time"
-	"unicode"
 
 	"gbaseadmin/codegen/generator/backend"
 	"gbaseadmin/codegen/generator/frontend"
@@ -52,7 +51,7 @@ func main() {
 	}
 
 	// 创建解析器
-	p := parser.New(cfg.Database.DSN())
+	p := parser.New(cfg.Database.DSN(), cfg.SkipFields)
 
 	// 解析表名列表
 	tableNames := strings.Split(table, ",")
@@ -166,10 +165,15 @@ func main() {
 
 		// 生成菜单数据
 		if only == "menu" || withMenu {
+			menuApps := make(map[string]menu.MenuAppConfig, len(cfg.MenuApps))
+			for k, v := range cfg.MenuApps {
+				menuApps[k] = menu.MenuAppConfig{Title: v.Title, Icon: v.Icon}
+			}
 			menuGen := menu.New(menu.Config{
-				DSN:    cfg.Database.DSN(),
-				Force:  force,
-				DryRun: dryRun,
+				DSN:      cfg.Database.DSN(),
+				Force:    force,
+				DryRun:   dryRun,
+				MenuApps: menuApps,
 			})
 			menuCount, err := menuGen.Generate(meta)
 			if err != nil {
@@ -256,7 +260,7 @@ func main() {
 					"AppName": appName,
 					"Modules": allModules,
 				}
-				if err := renderTemplateWithFuncs(
+				if err := renderTemplate(
 					filepath.Join(templateDir, "backend", "cmd.tpl"),
 					cmdFile,
 					cmdData,
@@ -406,6 +410,7 @@ func scanExistingTables(appDir string, appName string, newTables []string) []str
 }
 
 // renderTemplate 渲染模板到文件，overwrite 控制是否覆盖已有文件
+// 内置 ModuleCamel 模板函数供所有模板使用
 func renderTemplate(tplPath, outPath string, data interface{}, overwrite bool) error {
 	if !overwrite {
 		if _, err := os.Stat(outPath); err == nil {
@@ -413,30 +418,8 @@ func renderTemplate(tplPath, outPath string, data interface{}, overwrite bool) e
 			return nil
 		}
 	}
-	tpl, err := template.ParseFiles(tplPath)
-	if err != nil {
-		return fmt.Errorf("解析模板 %s 失败: %v", tplPath, err)
-	}
-	var buf bytes.Buffer
-	if err := tpl.Execute(&buf, data); err != nil {
-		return fmt.Errorf("渲染模板失败: %v", err)
-	}
-	if err := os.MkdirAll(filepath.Dir(outPath), 0755); err != nil {
-		return fmt.Errorf("创建目录失败: %v", err)
-	}
-	return os.WriteFile(outPath, buf.Bytes(), 0644)
-}
-
-// renderTemplateWithFuncs 渲染模板到文件，支持自定义模板函数
-func renderTemplateWithFuncs(tplPath, outPath string, data interface{}, overwrite bool) error {
-	if !overwrite {
-		if _, err := os.Stat(outPath); err == nil {
-			fmt.Printf("  跳过（已存在）: %s\n", outPath)
-			return nil
-		}
-	}
 	funcMap := template.FuncMap{
-		"ModuleCamel": snakeToCamelLocal,
+		"ModuleCamel": parser.SnakeToCamelSimple,
 	}
 	tpl, err := template.New(filepath.Base(tplPath)).Funcs(funcMap).ParseFiles(tplPath)
 	if err != nil {
@@ -450,18 +433,4 @@ func renderTemplateWithFuncs(tplPath, outPath string, data interface{}, overwrit
 		return fmt.Errorf("创建目录失败: %v", err)
 	}
 	return os.WriteFile(outPath, buf.Bytes(), 0644)
-}
-
-// snakeToCamelLocal 将 snake_case 转为 CamelCase（本地版本，不依赖 parser 包）
-func snakeToCamelLocal(s string) string {
-	parts := strings.Split(s, "_")
-	for i, p := range parts {
-		if p == "" {
-			continue
-		}
-		runes := []rune(p)
-		runes[0] = unicode.ToUpper(runes[0])
-		parts[i] = string(runes)
-	}
-	return strings.Join(parts, "")
 }

@@ -23,12 +23,17 @@ type columnInfo struct {
 
 // Parser 数据库表结构解析器
 type Parser struct {
-	DSN string // "user:pass@tcp(host:port)/dbname"
+	DSN        string   // "user:pass@tcp(host:port)/dbname"
+	SkipFields []string // 额外隐藏的字段列表（从 codegen.yaml skip_fields 加载）
 }
 
 // New 创建解析器实例
-func New(dsn string) *Parser {
-	return &Parser{DSN: dsn}
+func New(dsn string, skipFields ...[]string) *Parser {
+	p := &Parser{DSN: dsn}
+	if len(skipFields) > 0 {
+		p.SkipFields = skipFields[0]
+	}
+	return p
 }
 
 // ParseTable 解析单张表
@@ -82,12 +87,22 @@ func (p *Parser) ParseTable(tableName string) (*TableMeta, error) {
 		ModelName:    snakeToCamel(moduleName),
 		DaoName:      snakeToCamel(tableName),
 		ModuleName:   strings.ToLower(moduleName),
-		PackageName:  strings.ToLower(moduleName),
+		PackageName:  strings.ReplaceAll(strings.ToLower(moduleName), "_", ""),
 		Comment:      tableComment,
+	}
+
+	// 构建额外隐藏字段集合
+	extraHidden := make(map[string]bool, len(p.SkipFields))
+	for _, f := range p.SkipFields {
+		extraHidden[f] = true
 	}
 
 	for _, col := range columns {
 		field := buildFieldMeta(col)
+		// 应用 skip_fields 配置中的额外隐藏字段
+		if extraHidden[field.Name] {
+			field.IsHidden = true
+		}
 		meta.Fields = append(meta.Fields, field)
 
 		if field.Name == "parent_id" {

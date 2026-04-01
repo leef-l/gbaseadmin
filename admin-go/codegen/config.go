@@ -23,11 +23,18 @@ type FrontendConfig struct {
 	Output string `yaml:"output"`
 }
 
+// MenuAppConfig 菜单应用目录配置
+type MenuAppConfig struct {
+	Title string `yaml:"title"`
+	Icon  string `yaml:"icon"`
+}
+
 type Config struct {
-	Database   DatabaseConfig `yaml:"database"`
-	Backend    BackendConfig  `yaml:"backend"`
-	Frontend   FrontendConfig `yaml:"frontend"`
-	SkipFields []string       `yaml:"skip_fields"`
+	Database   DatabaseConfig           `yaml:"database"`
+	Backend    BackendConfig            `yaml:"backend"`
+	Frontend   FrontendConfig           `yaml:"frontend"`
+	SkipFields []string                 `yaml:"skip_fields"`
+	MenuApps   map[string]MenuAppConfig `yaml:"menu_apps"`
 }
 
 func LoadConfig(path string) (*Config, error) {
@@ -39,7 +46,20 @@ func LoadConfig(path string) (*Config, error) {
 	if err := yaml.Unmarshal(data, &cfg); err != nil {
 		return nil, fmt.Errorf("解析配置文件失败: %w", err)
 	}
+	// 支持环境变量语法 ${ENV_VAR}，用于避免密码明文存储
+	cfg.Database.Password = expandEnvVar(cfg.Database.Password)
 	return &cfg, nil
+}
+
+// expandEnvVar 如果值形如 ${VAR_NAME}，则从环境变量读取替换
+func expandEnvVar(val string) string {
+	if len(val) > 3 && val[:2] == "${" && val[len(val)-1] == '}' {
+		envName := val[2 : len(val)-1]
+		if envVal := os.Getenv(envName); envVal != "" {
+			return envVal
+		}
+	}
+	return val
 }
 
 // DSN 生成数据库连接字符串
