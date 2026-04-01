@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/base64"
 	"fmt"
-	"math/rand"
 	"strconv"
 
 	"github.com/gogf/gf/v2/frame/g"
@@ -141,8 +140,8 @@ func (s *sAuth) SendCode(ctx context.Context, req *v1.AuthSendCodeReq) (*v1.Auth
 		return nil, fmt.Errorf("发送过于频繁，请稍后再试")
 	}
 
-	// 生成6位随机验证码
-	code := fmt.Sprintf("%06d", rand.Intn(1000000))
+	// 开发阶段：固定验证码 123456
+	code := "123456"
 
 	// 存入 Redis，5分钟过期
 	redisKey := fmt.Sprintf("sms:%s:%s", req.Scene, req.Phone)
