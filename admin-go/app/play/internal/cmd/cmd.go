@@ -74,7 +74,8 @@ var (
 				})
 				// C端API路由组
 				group.Group("/api/playapi", func(group *ghttp.RouterGroup) {
-					// 公开接口（无需登录）
+					// 公开接口（无需登录，但有 token 时解析用户信息）
+					group.Middleware(middleware.MemberAuthOptional)
 					group.Bind(
 						playapi.Auth,
 						playapi.GoodsPublic,

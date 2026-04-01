@@ -40,6 +40,22 @@ func MemberAuth(r *ghttp.Request) {
 	r.Middleware.Next()
 }
 
+// MemberAuthOptional 可选会员鉴权，有 token 就解析写入 ctx，没有或无效则跳过（不返回 401）
+func MemberAuthOptional(r *ghttp.Request) {
+	tokenStr := strings.TrimSpace(strings.TrimPrefix(r.GetHeader("Authorization"), "Bearer "))
+	if tokenStr != "" {
+		if claims, err := jwt.ParseMemberToken(tokenStr); err == nil {
+			r.SetCtxVar("jwt_member_id", claims.MemberID)
+			r.SetCtxVar("jwt_phone", claims.Phone)
+			r.SetCtxVar("jwt_is_coach", claims.IsCoach)
+			r.SetCtxVar("jwt_coach_id", claims.CoachID)
+			r.SetCtxVar("jwt_current_role", claims.CurrentRole)
+			r.SetCtxVar("jwt_member_claims", claims)
+		}
+	}
+	r.Middleware.Next()
+}
+
 // CoachOnly 陪玩师身份校验中间件（需嵌套在MemberAuth之后）
 func CoachOnly(r *ghttp.Request) {
 	isCoach := r.GetCtxVar("jwt_is_coach").Int()

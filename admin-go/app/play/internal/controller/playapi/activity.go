@@ -2,13 +2,11 @@ package playapi
 
 import (
 	"context"
-	"strings"
 
 	"github.com/gogf/gf/v2/frame/g"
 
 	v1 "gbaseadmin/app/play/api/playapi/v1"
 	"gbaseadmin/app/play/internal/service"
-	"gbaseadmin/utility/jwt"
 )
 
 var Activity = &cActivity{}
@@ -65,15 +63,7 @@ func (c *cActivityPublic) List(ctx context.Context, req *v1.ActivityListApiReq) 
 
 // Detail 活动详情
 func (c *cActivityPublic) Detail(ctx context.Context, req *v1.ActivityDetailApiReq) (res *v1.ActivityDetailApiRes, err error) {
-	// 公开接口，尝试从 Authorization header 解析会员ID（未登录为 0）
-	var memberID int64
-	r := g.RequestFromCtx(ctx)
-	tokenStr := strings.TrimSpace(strings.TrimPrefix(r.GetHeader("Authorization"), "Bearer "))
-	if tokenStr != "" {
-		if claims, e := jwt.ParseMemberToken(tokenStr); e == nil {
-			memberID = claims.MemberID
-		}
-	}
+	memberID := g.RequestFromCtx(ctx).GetCtxVar("jwt_member_id").Int64()
 	res, err = service.PlayapiActivity().Detail(ctx, req.ActivityID, memberID)
 	return
 }
