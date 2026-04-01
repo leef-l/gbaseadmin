@@ -1,17 +1,18 @@
 @echo off
 chcp 65001 >nul
-title GBaseAdmin Deploy
+title GBaseAdmin Deploy (rsync + sequential)
 
 echo.
 echo   ==========================================
-echo     GBaseAdmin Deploy
+echo     GBaseAdmin Deploy (rsync + sequential)
+echo     Optimized for 2C4G low-resource servers
 echo   ==========================================
 echo.
 echo     [1] Deploy ALL (backend + frontend + wap)
 echo     [2] Deploy backend only
 echo     [3] Deploy frontend only
 echo     [4] Deploy wap only
-echo     [5] Pack only (no upload)
+echo     [5] Build only (no upload)
 echo     [0] Exit
 echo.
 set /p choice=  Select:

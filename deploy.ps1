@@ -1,6 +1,10 @@
 # ============================================
-# GBaseAdmin Windows Deploy Script
+# GBaseAdmin Windows Deploy Script (rsync + sequential)
 # Usage: .\deploy.ps1 [-Only backend|frontend|wap|all] [-SkipBuild] [-SkipUpload]
+#
+# Optimized for low-resource servers (2C4G):
+#   - rsync incremental transfer (no tar/unpack on server)
+#   - sequential service restart (one at a time, wait for stable)
 # ============================================
 
 param(
@@ -12,6 +16,7 @@ param(
 
 # ---------- Config ----------
 $SERVER     = "root@pw.easytestdev.online"
+$SERVER_HOST = "pw.easytestdev.online"
 $DEPLOY_DIR = "/www/wwwroot/pw.easytestdev.online"
 $APPS       = @("system", "play", "upload")
 $PORTS      = @("8000", "8001", "8002")
@@ -47,7 +52,7 @@ function Check-Command($cmd) {
 # ---------- Pre-checks ----------
 Check-Command "go"
 Check-Command "ssh"
-Check-Command "scp"
+Check-Command "rsync"
 
 # ---------- Clean/create dist dir ----------
 if (Test-Path $DIST_DIR) { Remove-Item $DIST_DIR -Recurse -Force }
@@ -135,129 +140,119 @@ function Build-Wap {
 }
 
 # ============================================
-# 4. Pack all into tar.gz
+# 4. Deploy backend: rsync + sequential restart (one by one)
 # ============================================
-function Pack-All {
-    Info "===== Packing deploy files ====="
+function Deploy-Backend {
+    Info "===== Deploying backend services (sequential) ====="
 
-    $packTimestamp = Get-Date -Format "yyyyMMdd_HHmm"
-    $tarName = "gbaseadmin_$packTimestamp.tar.gz"
-    $script:TarFile = Join-Path $PROJECT_DIR $tarName
+    foreach ($app in $APPS) {
+        $localAppDir = Join-Path $DIST_DIR "backend\$app"
+        if (-not (Test-Path "$localAppDir\$app")) {
+            Warn "$app binary not found, skipping"
+            continue
+        }
 
-    Push-Location $DIST_DIR
-    try {
-        tar -czf $script:TarFile *
-        if ($LASTEXITCODE -ne 0) { Fail "Pack failed" }
+        Info "--- Deploying $app ---"
 
-        $sizeMB = [math]::Round((Get-Item $script:TarFile).Length / 1MB, 2)
-        Info "Packed: $tarName ($sizeMB MB)"
-    } finally {
-        Pop-Location
+        # Step 1: rsync binary to staging area on server (avoid overwriting running binary)
+        Info "[$app] Uploading via rsync ..."
+        ssh $SERVER "mkdir -p /tmp/gba_stage/$app"
+        rsync -az --compress-level=1 --progress -e ssh "$localAppDir/" "${SERVER}:/tmp/gba_stage/$app/"
+        if ($LASTEXITCODE -ne 0) { Fail "[$app] rsync upload failed" }
+        Info "[$app] Upload OK"
+
+        # Step 2: stop service, wait, replace, start (all on server)
+        Info "[$app] Stopping, replacing, starting ..."
+        $remoteCmd = @"
+set -e
+echo '[$app] Stopping service...'
+systemctl stop gba-$app 2>/dev/null || true
+for i in `$(seq 1 10); do
+    if ! pgrep -x "$app" >/dev/null 2>&1; then break; fi
+    sleep 1
+done
+
+echo '[$app] Replacing binary...'
+mkdir -p $DEPLOY_DIR/$app
+cp /tmp/gba_stage/$app/$app $DEPLOY_DIR/$app/$app
+chmod +x $DEPLOY_DIR/$app/$app
+
+if [ ! -f $DEPLOY_DIR/$app/manifest/config/config.yaml ]; then
+    echo '[$app] Copying manifest (first deploy)...'
+    cp -r /tmp/gba_stage/$app/manifest $DEPLOY_DIR/$app/
+fi
+
+echo '[$app] Starting service...'
+systemctl start gba-$app
+
+# Wait for service to become active (up to 8s)
+for i in `$(seq 1 8); do
+    status=`$(systemctl is-active gba-$app 2>/dev/null || echo 'unknown')
+    if [ "`$status" = "active" ]; then break; fi
+    sleep 1
+done
+
+status=`$(systemctl is-active gba-$app 2>/dev/null || echo 'unknown')
+echo "[$app] Service status: `$status"
+
+rm -rf /tmp/gba_stage/$app
+echo '[$app] Done'
+"@
+        $output = ssh $SERVER $remoteCmd 2>&1
+        $output | ForEach-Object {
+            Write-Host "  $_"
+            Log "  $_"
+        }
+        if ($LASTEXITCODE -ne 0) { Fail "[$app] Remote deploy failed" }
+        Info "[$app] Deploy completed"
+
+        # Brief pause between services to let server stabilize
+        if ($app -ne $APPS[-1]) {
+            Info "Waiting 3s before next service ..."
+            Start-Sleep -Seconds 3
+        }
     }
 }
 
 # ============================================
-# 5. Upload to server and deploy via SSH
+# 5. Deploy frontend: rsync directly to target (no service restart needed)
 # ============================================
-function Deploy-ToServer {
-    Info "===== Uploading to server ====="
-
-    scp $script:TarFile "${SERVER}:/tmp/gbaseadmin_deploy.tar.gz"
-    if ($LASTEXITCODE -ne 0) { Fail "Upload failed" }
-    Info "Upload OK"
-
-    $remoteShell = Join-Path $env:TEMP "gba_remote_deploy.sh"
-    $shellContent = @'
-#!/bin/bash
-set -e
-
-DEPLOY_DIR="__DEPLOY_DIR__"
-
-echo '[INFO] Extracting deploy files...'
-cd /tmp
-rm -rf gbaseadmin_deploy && mkdir gbaseadmin_deploy
-tar -xzf gbaseadmin_deploy.tar.gz -C gbaseadmin_deploy
-
-# ---- Deploy backend ----
-if [ -d /tmp/gbaseadmin_deploy/backend ]; then
-    echo '[INFO] Deploying backend services...'
-    for app in system play upload; do
-        if [ -f /tmp/gbaseadmin_deploy/backend/$app/$app ]; then
-            echo "[INFO] Stopping gba-$app ..."
-            systemctl stop gba-$app 2>/dev/null || true
-            # Wait until process fully exits (up to 10s)
-            for i in $(seq 1 10); do
-                if ! pgrep -x "$app" >/dev/null 2>&1; then break; fi
-                sleep 1
-            done
-
-            cp /tmp/gbaseadmin_deploy/backend/$app/$app $DEPLOY_DIR/$app/$app
-            chmod +x $DEPLOY_DIR/$app/$app
-
-            if [ ! -f $DEPLOY_DIR/$app/manifest/config/config.yaml ]; then
-                cp -r /tmp/gbaseadmin_deploy/backend/$app/manifest $DEPLOY_DIR/$app/
-            fi
-
-            systemctl start gba-$app
-            echo "[INFO] gba-$app restarted"
-        fi
-    done
-fi
-
-# ---- Deploy admin frontend ----
-if [ -d /tmp/gbaseadmin_deploy/frontend ]; then
-    echo '[INFO] Deploying admin frontend...'
-    rm -rf $DEPLOY_DIR/admin/*
-    mkdir -p $DEPLOY_DIR/admin
-    cp -rf /tmp/gbaseadmin_deploy/frontend/* $DEPLOY_DIR/admin/
-    echo '[INFO] Admin frontend deployed'
-fi
-
-# ---- Deploy WAP ----
-if [ -d /tmp/gbaseadmin_deploy/wap ]; then
-    echo '[INFO] Deploying WAP...'
-    rm -rf $DEPLOY_DIR/wap/*
-    mkdir -p $DEPLOY_DIR/wap
-    cp -rf /tmp/gbaseadmin_deploy/wap/* $DEPLOY_DIR/wap/
-    echo '[INFO] WAP deployed'
-fi
-
-# ---- Cleanup ----
-rm -rf /tmp/gbaseadmin_deploy /tmp/gbaseadmin_deploy.tar.gz
-
-echo '[INFO] ========================================='
-echo '[INFO] Deploy completed!'
-echo '[INFO] ========================================='
-
-# ---- Service status ----
-for app in system play upload; do
-    status=$(systemctl is-active gba-$app 2>/dev/null || echo "unknown")
-    echo "[INFO] gba-$app: $status"
-done
-'@
-    $shellContent = $shellContent.Replace("__DEPLOY_DIR__", $DEPLOY_DIR)
-    # Write with LF line endings and NO BOM (Linux bash chokes on UTF-8 BOM)
-    $utf8NoBom = New-Object System.Text.UTF8Encoding($false)
-    $shellContent = $shellContent.Replace("`r`n", "`n")
-    [System.IO.File]::WriteAllText($remoteShell, $shellContent, $utf8NoBom)
-
-    scp $remoteShell "${SERVER}:/tmp/gba_deploy.sh"
-    if ($LASTEXITCODE -ne 0) { Fail "Upload deploy script failed" }
-
-    $remoteOutput = ssh $SERVER "bash /tmp/gba_deploy.sh && rm -f /tmp/gba_deploy.sh" 2>&1
-    $remoteOutput | ForEach-Object {
-        Write-Host $_
-        Log $_
+function Deploy-Frontend {
+    $localFrontendDir = Join-Path $DIST_DIR "frontend"
+    if (-not (Test-Path $localFrontendDir)) {
+        Warn "Frontend dist not found, skipping"
+        return
     }
-    Remove-Item $remoteShell -Force -ErrorAction SilentlyContinue
-    if ($LASTEXITCODE -ne 0) { Fail "Remote deploy failed" }
+
+    Info "===== Deploying admin frontend (rsync) ====="
+    ssh $SERVER "mkdir -p $DEPLOY_DIR/admin"
+    rsync -az --delete --compress-level=1 --progress -e ssh "$localFrontendDir/" "${SERVER}:$DEPLOY_DIR/admin/"
+    if ($LASTEXITCODE -ne 0) { Fail "Frontend rsync failed" }
+    Info "Admin frontend deployed"
+}
+
+# ============================================
+# 6. Deploy WAP: rsync directly to target (no service restart needed)
+# ============================================
+function Deploy-Wap {
+    $localWapDir = Join-Path $DIST_DIR "wap"
+    if (-not (Test-Path $localWapDir)) {
+        Warn "WAP dist not found, skipping"
+        return
+    }
+
+    Info "===== Deploying WAP (rsync) ====="
+    ssh $SERVER "mkdir -p $DEPLOY_DIR/wap"
+    rsync -az --delete --compress-level=1 --progress -e ssh "$localWapDir/" "${SERVER}:$DEPLOY_DIR/wap/"
+    if ($LASTEXITCODE -ne 0) { Fail "WAP rsync failed" }
+    Info "WAP deployed"
 }
 
 # ============================================
 # Main flow
 # ============================================
 $startTime = Get-Date
-Info "GBaseAdmin deploy started"
+Info "GBaseAdmin deploy started (rsync + sequential mode)"
 Info "Target: $Only"
 Info "Log file: $LOG_FILE"
 
@@ -273,19 +268,36 @@ if (-not $SkipBuild) {
     Warn "Skipping build"
 }
 
-# Step 2: Pack
-Pack-All
-
-# Step 3: Upload & Deploy
+# Step 2: Upload & Deploy (sequential, resource-friendly)
 if (-not $SkipUpload) {
-    Deploy-ToServer
+    switch ($Only) {
+        "backend"  { Deploy-Backend }
+        "frontend" { Deploy-Frontend }
+        "wap"      { Deploy-Wap }
+        "all"      {
+            # Deploy backend first (sequential, one service at a time)
+            Deploy-Backend
+            # Then static files (low resource usage)
+            Deploy-Frontend
+            Deploy-Wap
+        }
+    }
 } else {
-    Warn "Skipping upload, packed file: $($script:TarFile)"
+    Warn "Skipping upload"
 }
 
-# Step 4: Cleanup
+# Step 3: Cleanup local dist
 Remove-Item $DIST_DIR -Recurse -Force -ErrorAction SilentlyContinue
-Remove-Item $script:TarFile -Force -ErrorAction SilentlyContinue
+
+# Step 4: Final status check
+if (-not $SkipUpload -and ($Only -eq "all" -or $Only -eq "backend")) {
+    Info "===== Final service status ====="
+    $statusOutput = ssh $SERVER "for app in system play upload; do echo `"gba-`$app: `$(systemctl is-active gba-`$app 2>/dev/null || echo unknown)`"; done" 2>&1
+    $statusOutput | ForEach-Object {
+        Write-Host "  $_" -ForegroundColor Cyan
+        Log "  $_"
+    }
+}
 
 # Done
 $elapsed = [math]::Round(((Get-Date) - $startTime).TotalSeconds)
