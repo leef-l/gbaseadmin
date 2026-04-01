@@ -9,6 +9,9 @@ import {
   createMember,
   updateMember,
 } from '#/api/play/member';
+import { getMemberLevelList } from '#/api/play/member_level';
+
+const memberLevelIDOptions = ref<{ label: string; value: string }[]>([]);
 
 /** 性别选项 */
 const genderOptions = [
@@ -125,6 +128,16 @@ const [Modal, modalApi] = useVbenModal({
   async onOpenChange(isOpen: boolean) {
     if (isOpen) {
       const data = modalApi.getData<{ id?: string } | null>();
+      // 加载会员等级选项
+      try {
+        const memberLevelRes = await getMemberLevelList({ pageNum: 1, pageSize: 1000 });
+        memberLevelIDOptions.value = (memberLevelRes?.list ?? []).map((item) => ({
+          label: item.title || item.id,
+          value: item.id,
+        }));
+      } catch {
+        // ignore
+      }
       if (data?.id) {
         isEdit.value = true;
         editId.value = data.id;
