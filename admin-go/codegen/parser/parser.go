@@ -133,32 +133,41 @@ func (p *Parser) ParseTable(tableName string) (*TableMeta, error) {
 		if displayField == "" {
 			displayField = findDisplayField(db, dbName, refTable)
 		}
-		if displayField != "" {
-			refFieldName := snakeToCamel(refTable) + snakeToCamel(displayField)
-			// 检查 RefFieldName 是否与已有字段的 CamelCase 名冲突
-			collision := false
-			for _, other := range meta.Fields {
-				if other.NameCamel == refFieldName || other.RefFieldName == refFieldName {
-					collision = true
-					break
-				}
+		// 关联表不存在或没有可用的显示字段 → 报错终止
+		if displayField == "" {
+			candidateTables := refTable
+			if appName != "" {
+				candidateTables = appName + "_" + refTable + " 或 " + refTable
 			}
-			if collision {
-				// 表本身已有同名字段，跳过关联字段生成
-				continue
-			}
-			f.RefTable = refTable
-			f.RefTableDB = refTableDB
-			f.RefTableCamel = snakeToCamel(refTable)
-			f.RefTableLower = snakeToCamelLower(refTable)
-			f.RefDisplayField = displayField
-			f.RefDisplayCamel = snakeToCamel(displayField)
-			f.RefDisplayLower = snakeToCamelLower(displayField)
-			f.RefFieldName = refFieldName
-			f.RefFieldJSON = snakeToCamelLower(refTable) + snakeToCamel(displayField)
-			// 检查关联表是否有 parent_id（树形结构）
-			f.RefIsTree = tableHasColumn(db, dbName, refTableDB, "parent_id")
+			return nil, fmt.Errorf(
+				"字段 %s 是外键，但找不到关联表（尝试了 %s）。\n  请先创建关联表，或将字段名改为非 _id 后缀",
+				f.Name, candidateTables,
+			)
 		}
+		refFieldName := snakeToCamel(refTable) + snakeToCamel(displayField)
+		// 检查 RefFieldName 是否与已有字段的 CamelCase 名冲突
+		collision := false
+		for _, other := range meta.Fields {
+			if other.NameCamel == refFieldName || other.RefFieldName == refFieldName {
+				collision = true
+				break
+			}
+		}
+		if collision {
+			// 表本身已有同名字段，跳过关联字段生成
+			continue
+		}
+		f.RefTable = refTable
+		f.RefTableDB = refTableDB
+		f.RefTableCamel = snakeToCamel(refTable)
+		f.RefTableLower = snakeToCamelLower(refTable)
+		f.RefDisplayField = displayField
+		f.RefDisplayCamel = snakeToCamel(displayField)
+		f.RefDisplayLower = snakeToCamelLower(displayField)
+		f.RefFieldName = refFieldName
+		f.RefFieldJSON = snakeToCamelLower(refTable) + snakeToCamel(displayField)
+		// 检查关联表是否有 parent_id（树形结构）
+		f.RefIsTree = tableHasColumn(db, dbName, refTableDB, "parent_id")
 	}
 
 	return meta, nil

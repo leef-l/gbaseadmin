@@ -74,7 +74,7 @@ type {{.ModelName}}ListReq struct {
 	PageSize int `json:"pageSize" d:"10" dc:"每页数量"`
 {{- range .Fields}}
 {{- if and (not .IsHidden) (not .IsID) (.IsEnum)}}
-	{{.NameCamel}} int `json:"{{.NameLower}}" dc:"{{.Label}}"`
+	{{.NameCamel}} *int `json:"{{.NameLower}}" dc:"{{.Label}}"`
 {{- end}}
 {{- end}}
 }
@@ -91,7 +91,7 @@ type {{.ModelName}}TreeReq struct {
 	g.Meta `path:"/{{.ModuleName}}/tree" method:"get" tags:"{{.Comment}}" summary:"获取{{.Comment}}树形结构"`
 {{- range .Fields}}
 {{- if and (not .IsHidden) (not .IsID) (not .IsParentID) (.IsEnum)}}
-	{{.NameCamel}} int `json:"{{.NameLower}}" dc:"{{.Label}}"`
+	{{.NameCamel}} *int `json:"{{.NameLower}}" dc:"{{.Label}}"`
 {{- end}}
 {{- end}}
 }

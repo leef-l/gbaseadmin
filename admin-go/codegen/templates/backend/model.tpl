@@ -63,7 +63,7 @@ type {{.ModelName}}ListInput struct {
 	PageSize int `json:"pageSize"`
 {{- range .Fields}}
 {{- if and (not .IsHidden) (not .IsID) (.IsEnum)}}
-	{{.NameCamel}} int `json:"{{.NameLower}}"`
+	{{.NameCamel}} *int `json:"{{.NameLower}}"`
 {{- end}}
 {{- end}}
 }
