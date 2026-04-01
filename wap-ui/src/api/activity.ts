@@ -4,20 +4,20 @@ export function getActivityList(params?: { page?: number; pageSize?: number }) {
   return get('/api/playapi/activity/list', params);
 }
 
-export function getActivityDetail(id: string) {
-  return get('/api/playapi/activity/detail', { id });
+export function getActivityDetail(activityId: string) {
+  return get('/api/playapi/activity/detail', { activityId });
 }
 
-export function joinActivity(id: string) {
-  return post('/api/playapi/activity/join', { id });
+export function joinActivity(activityId: string) {
+  return post('/api/playapi/activity/join', { activityId });
 }
 
-export function completeStep(data: { id: string; stepId: string }) {
+export function completeStep(data: { activityId: string; stepId: string }) {
   return post('/api/playapi/activity/complete_step', data);
 }
 
-export function claimReward(id: string, rewardId: string) {
-  return post('/api/playapi/activity/claim_reward', { id, rewardId });
+export function claimReward(activityId: string, rewardId: string) {
+  return post('/api/playapi/activity/claim_reward', { activityId, rewardId });
 }
 
 export function getMyActivities(params?: { page?: number; pageSize?: number }) {

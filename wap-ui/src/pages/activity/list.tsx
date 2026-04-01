@@ -62,7 +62,7 @@ export default function ActivityListPage() {
       </View>
       <View className="activity-list__list">
         {list.length === 0 ? <EmptyState text="暂无活动" /> : list.map((a) => (
-          <ActivityCard key={a.id} {...a} onClick={() => Taro.navigateTo({ url: `/pages/activity/detail?id=${a.id}` })} />
+          <ActivityCard key={a.activityId} {...a} onClick={() => Taro.navigateTo({ url: `/pages/activity/detail?activityId=${a.activityId}` })} />
         ))}
       </View>
       {list.length > 0 && <LoadMore hasMore={hasMore} />}

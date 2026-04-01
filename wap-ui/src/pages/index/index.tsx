@@ -103,7 +103,7 @@ export default function IndexPage() {
         </View>
         <View className="scroll-wrap">
           {activities.map((a) => (
-            <ActivityCard key={a.id} {...a} onClick={() => Taro.navigateTo({ url: `/pages/activity/detail?id=${a.id}` })} />
+            <ActivityCard key={a.activityId} {...a} onClick={() => Taro.navigateTo({ url: `/pages/activity/detail?activityId=${a.activityId}` })} />
           ))}
         </View>
       </View>

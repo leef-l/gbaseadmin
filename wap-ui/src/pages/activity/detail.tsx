@@ -22,17 +22,17 @@ export default function ActivityDetailPage() {
   }, []);
 
   useLoad(() => {
-    const id = router.params.id;
-    if (id) fetchDetail(id);
+    const activityId = router.params.activityId;
+    if (activityId) fetchDetail(activityId);
   });
 
   const handleJoin = async () => {
     if (!detail || joining || detail.joined) return;
     setJoining(true);
     try {
-      await joinActivity(detail.id);
+      await joinActivity(detail.activityId);
       Taro.showToast({ title: '参与成功', icon: 'success' });
-      fetchDetail(detail.id);
+      fetchDetail(detail.activityId);
     } catch {
       Taro.showToast({ title: '参与失败', icon: 'none' });
     } finally {
@@ -42,9 +42,9 @@ export default function ActivityDetailPage() {
 
   const handleCompleteStep = async (stepId: string) => {
     try {
-      await completeStep({ id: detail.id, stepId });
+      await completeStep({ activityId: detail.activityId, stepId });
       Taro.showToast({ title: '步骤完成', icon: 'success' });
-      fetchDetail(detail.id);
+      fetchDetail(detail.activityId);
     } catch {
       Taro.showToast({ title: '操作失败', icon: 'none' });
     }
