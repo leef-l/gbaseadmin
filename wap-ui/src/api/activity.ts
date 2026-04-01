@@ -12,7 +12,7 @@ export function joinActivity(activityId: string) {
   return post('/api/playapi/activity/join', { activityId });
 }
 
-export function completeStep(data: { activityId: string; stepId: string; imageUrl?: string }) {
+export function completeStep(data: { activityId: string; stepId: string; imageUrl?: string; submitText?: string }) {
   return post('/api/playapi/activity/complete_step', data);
 }
 

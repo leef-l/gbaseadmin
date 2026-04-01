@@ -43,6 +43,8 @@ export default function ActivityDetailPage() {
   // 每个步骤的用户上传图片，key 为 stepId
   const [stepImages, setStepImages] = useState<Record<string, string>>({});
   const [uploadingStepId, setUploadingStepId] = useState<string | null>(null);
+  // 每个步骤的用户输入文字，key 为 stepId
+  const [stepInputs, setStepInputs] = useState<Record<string, string>>({});
 
   const fetchDetail = useCallback(async (id: string) => {
     try {
@@ -107,13 +109,19 @@ export default function ActivityDetailPage() {
 
   const handleCompleteStep = async (stepId: string) => {
     const step = detail.steps?.find((s: any) => s.stepId === stepId);
-    const imageUrl = (step?.stepType === 3 && step?.isRequired === 1) ? stepImages[stepId] : undefined;
-    if (step?.stepType === 3 && step?.isRequired === 1 && !imageUrl) {
+    const needFill = step?.isRequired === 1;
+    const imageUrl = (step?.stepType === 3 && needFill) ? stepImages[stepId] : undefined;
+    const submitText = (step?.stepType !== 3 && needFill) ? stepInputs[stepId] : undefined;
+    if (step?.stepType === 3 && needFill && !imageUrl) {
       Taro.showToast({ title: '请先上传图片', icon: 'none' });
       return;
     }
+    if (step?.stepType !== 3 && needFill && !submitText?.trim()) {
+      Taro.showToast({ title: '请先填写内容', icon: 'none' });
+      return;
+    }
     try {
-      await completeStep({ activityId: detail.activityId, stepId, imageUrl });
+      await completeStep({ activityId: detail.activityId, stepId, imageUrl, submitText });
       Taro.showToast({ title: '步骤完成', icon: 'success' });
       fetchDetail(detail.activityId);
     } catch {
@@ -164,76 +172,106 @@ export default function ActivityDetailPage() {
 
   const renderStepBody = (s: any, active: boolean) => {
     const t = s.stepType || 1;
-
     const needFill = s.isRequired === 1;
 
-    // 文字步骤：展示示例文字 + 立即复制按钮
+    // 文字步骤
     if (t === 1) {
       return (
         <View className="step-body">
-          {s.exampleText && (
-            <>
-              <Text className="step-body__label">示例参考</Text>
-              <Text className="step-body__text">{s.exampleText}</Text>
-            </>
-          )}
-          {active && s.exampleText && !needFill && (
-            <View className="step-body__actions">
-              <View className="step-body__action step-body__action--primary" onClick={() => handleCopy(s.exampleText)}>
-                立即复制
-              </View>
+          {/* 需要填写：显示输入框 */}
+          {needFill && active && (
+            <View className="step-body__input-wrap">
+              <input
+                className="step-body__input"
+                placeholder={s.exampleText || '请输入内容'}
+                value={stepInputs[s.stepId] || ''}
+                onChange={(e: any) => setStepInputs(prev => ({ ...prev, [s.stepId]: e.target.value }))}
+              />
             </View>
+          )}
+          {/* 不需要填写：显示示例 + 立即复制 */}
+          {!needFill && (
+            <>
+              {s.exampleText && (
+                <>
+                  <Text className="step-body__label">示例参考</Text>
+                  <Text className="step-body__text">{s.exampleText}</Text>
+                </>
+              )}
+              {active && s.exampleText && (
+                <View className="step-body__actions">
+                  <View className="step-body__action step-body__action--primary" onClick={() => handleCopy(s.exampleText)}>
+                    立即复制
+                  </View>
+                </View>
+              )}
+            </>
           )}
         </View>
       );
     }
 
-    // 链接步骤：展示链接 + 立即前往按钮
+    // 链接步骤
     if (t === 2) {
       return (
         <View className="step-body">
-          {s.exampleText && (
-            <>
-              <Text className="step-body__label">目标链接</Text>
-              <Text className="step-body__text step-body__text--link">{s.exampleText}</Text>
-            </>
-          )}
-          {active && s.exampleText && !needFill && (
-            <View className="step-body__actions">
-              <View className="step-body__action" onClick={() => handleCopy(s.exampleText)}>
-                复制链接
-              </View>
-              <View className="step-body__action step-body__action--primary" onClick={() => handleOpenLink(s.exampleText)}>
-                立即前往
-              </View>
+          {/* 需要填写：显示输入框 */}
+          {needFill && active && (
+            <View className="step-body__input-wrap">
+              <input
+                className="step-body__input"
+                placeholder={s.exampleText || '请输入链接'}
+                value={stepInputs[s.stepId] || ''}
+                onChange={(e: any) => setStepInputs(prev => ({ ...prev, [s.stepId]: e.target.value }))}
+              />
             </View>
+          )}
+          {/* 不需要填写：显示链接 + 复制/跳转按钮 */}
+          {!needFill && (
+            <>
+              {s.exampleText && (
+                <>
+                  <Text className="step-body__label">目标链接</Text>
+                  <Text className="step-body__text step-body__text--link">{s.exampleText}</Text>
+                </>
+              )}
+              {active && s.exampleText && (
+                <View className="step-body__actions">
+                  <View className="step-body__action" onClick={() => handleCopy(s.exampleText)}>
+                    复制链接
+                  </View>
+                  <View className="step-body__action step-body__action--primary" onClick={() => handleOpenLink(s.exampleText)}>
+                    立即前往
+                  </View>
+                </View>
+              )}
+            </>
           )}
         </View>
       );
     }
 
-    // 图片步骤：左边示例图片（右上角"示例"角标），右边用户上传区（仅 isRequired=1 时显示上传区）
+    // 图片步骤
     if (t === 3) {
       const userImg = stepImages[s.stepId];
       const isUploading = uploadingStepId === s.stepId;
       return (
         <View className="step-body">
-          <View className={needFill ? 'step-body__img-row' : ''}>
-            {/* 示例图片 */}
-            <View className="step-body__img-wrap">
-              {s.stepImage ? (
-                <>
-                  <Image className="step-body__img" src={s.stepImage} mode="aspectFill" />
-                  <Text className="step-body__img-badge">示例</Text>
-                </>
-              ) : (
-                <View className="step-body__img step-body__img--placeholder">
-                  <Text className="step-body__img-placeholder-text">暂无示例</Text>
-                </View>
-              )}
-            </View>
-            {/* 右：用户上传区（仅需要填写时显示） */}
-            {needFill && (
+          {needFill ? (
+            // 需要填写：左边示例图，右边上传区
+            <View className="step-body__img-row">
+              <View className="step-body__img-wrap">
+                {s.stepImage ? (
+                  <>
+                    <Image className="step-body__img" src={s.stepImage} mode="aspectFill" />
+                    <Text className="step-body__img-badge">示例</Text>
+                  </>
+                ) : (
+                  <View className="step-body__img step-body__img--placeholder">
+                    <Text className="step-body__img-placeholder-text">暂无示例</Text>
+                  </View>
+                )}
+              </View>
               <View
                 className={`step-body__img-wrap step-body__img-wrap--upload ${!active ? 'step-body__img-wrap--disabled' : ''}`}
                 onClick={() => active && handleChooseImage(s.stepId)}
@@ -252,8 +290,16 @@ export default function ActivityDetailPage() {
                   </View>
                 )}
               </View>
-            )}
-          </View>
+            </View>
+          ) : (
+            // 不需要填写：只显示示例图
+            s.stepImage && (
+              <View className="step-body__img-wrap">
+                <Image className="step-body__img" src={s.stepImage} mode="aspectFill" />
+                <Text className="step-body__img-badge">示例</Text>
+              </View>
+            )
+          )}
         </View>
       );
     }
@@ -328,10 +374,10 @@ export default function ActivityDetailPage() {
 
                   {detail.hasJoined && !done && active && (
                     <View className="step-card__complete" onClick={() => handleCompleteStep(s.stepId)}>
-                      完成此步骤
+                      我已完成
                     </View>
                   )}
-                  {!active && !done && (
+                  {!done && !active && (
                     <View className="step-card__locked">
                       {!detail.hasJoined ? '请先报名' : '请先完成上一步骤'}
                     </View>

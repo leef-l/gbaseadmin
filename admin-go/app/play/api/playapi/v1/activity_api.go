@@ -87,7 +87,8 @@ type ActivityStepApiReq struct {
 	g.Meta     `path:"/activity/complete_step" method:"post" tags:"C端活动" summary:"完成活动步骤"`
 	ActivityID string `json:"activityId" v:"required#活动ID不能为空" dc:"活动ID"`
 	StepID     string `json:"stepId" v:"required#步骤ID不能为空" dc:"步骤ID"`
-	ImageUrl   string `json:"imageUrl" dc:"用户上传的图片URL（图片步骤时传入）"`
+	ImageUrl   string `json:"imageUrl"   dc:"用户上传的图片URL（图片步骤时传入）"`
+	SubmitText string `json:"submitText" dc:"用户填写的文字或链接（文字/链接步骤时传入）"`
 }
 
 type ActivityStepApiRes struct {

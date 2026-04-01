@@ -246,7 +246,7 @@ func (s *sActivity) Join(ctx context.Context, memberID int64, activityID string)
 }
 
 // CompleteStep 完成活动步骤
-func (s *sActivity) CompleteStep(ctx context.Context, memberID int64, activityID, stepID, imageUrl string) (currentStep int, isCompleted bool, err error) {
+func (s *sActivity) CompleteStep(ctx context.Context, memberID int64, activityID, stepID, imageUrl, submitText string) (currentStep int, isCompleted bool, err error) {
 	aid, _ := strconv.ParseUint(activityID, 10, 64)
 	sid, _ := strconv.ParseUint(stepID, 10, 64)
 	// 查询参与记录
@@ -323,6 +323,7 @@ func (s *sActivity) CompleteStep(ctx context.Context, memberID int64, activityID
 			dao.PlayActivityStepLog.Columns().MemberId:    memberID,
 			dao.PlayActivityStepLog.Columns().StepType:    step[dao.PlayActivityStep.Columns().StepType].Int(),
 			dao.PlayActivityStepLog.Columns().SubmitImage: imageUrl,
+			dao.PlayActivityStepLog.Columns().SubmitText:  submitText,
 			dao.PlayActivityStepLog.Columns().AuditStatus: 0,
 			dao.PlayActivityStepLog.Columns().CreatedAt:   gtime.Now(),
 			dao.PlayActivityStepLog.Columns().UpdatedAt:   gtime.Now(),
