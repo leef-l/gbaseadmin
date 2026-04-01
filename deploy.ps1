@@ -1,9 +1,9 @@
 # ============================================
-# GBaseAdmin Windows Deploy Script (rsync + sequential)
+# GBaseAdmin Windows Deploy Script (WSL rsync + sequential)
 # Usage: .\deploy.ps1 [-Only backend|frontend|wap|all] [-SkipBuild] [-SkipUpload]
 #
 # Optimized for low-resource servers (2C4G):
-#   - rsync incremental transfer (no tar/unpack on server)
+#   - rsync via WSL (incremental transfer, no tar/unpack on server)
 #   - sequential service restart (one at a time, wait for stable)
 # ============================================
 
@@ -16,7 +16,6 @@ param(
 
 # ---------- Config ----------
 $SERVER     = "root@pw.easytestdev.online"
-$SERVER_HOST = "pw.easytestdev.online"
 $DEPLOY_DIR = "/www/wwwroot/pw.easytestdev.online"
 $APPS       = @("system", "play", "upload")
 $PORTS      = @("8000", "8001", "8002")
@@ -49,10 +48,35 @@ function Check-Command($cmd) {
     }
 }
 
+# Convert Windows path to WSL path: C:\foo\bar -> /mnt/c/foo/bar
+function To-WslPath($winPath) {
+    $full = [System.IO.Path]::GetFullPath($winPath)
+    $drive = $full.Substring(0, 1).ToLower()
+    $rest = $full.Substring(2).Replace('\', '/')
+    return "/mnt/$drive$rest"
+}
+
+# Wrapper: call rsync via WSL
+function Wsl-Rsync {
+    param([string[]]$Args)
+    $output = wsl rsync @Args 2>&1
+    $output | ForEach-Object {
+        Write-Host "  $_"
+        Log "  $_"
+    }
+    return $LASTEXITCODE
+}
+
 # ---------- Pre-checks ----------
 Check-Command "go"
 Check-Command "ssh"
-Check-Command "rsync"
+Check-Command "wsl"
+
+# Verify WSL has rsync
+$wslRsyncCheck = wsl which rsync 2>&1
+if ($LASTEXITCODE -ne 0) {
+    Fail "rsync not found in WSL, run: wsl sudo apt install rsync"
+}
 
 # ---------- Clean/create dist dir ----------
 if (Test-Path $DIST_DIR) { Remove-Item $DIST_DIR -Recurse -Force }
@@ -140,10 +164,11 @@ function Build-Wap {
 }
 
 # ============================================
-# 4. Deploy backend: rsync + sequential restart (one by one)
+# 4. Deploy backend: WSL rsync + sequential restart (one by one)
+#    Key: deploy one service at a time to avoid OOM on 2C4G server
 # ============================================
 function Deploy-Backend {
-    Info "===== Deploying backend services (sequential) ====="
+    Info "===== Deploying backend services (one by one) ====="
 
     foreach ($app in $APPS) {
         $localAppDir = Join-Path $DIST_DIR "backend\$app"
@@ -152,16 +177,17 @@ function Deploy-Backend {
             continue
         }
 
-        Info "--- Deploying $app ---"
+        Info "--- [$app] Start ---"
 
-        # Step 1: rsync binary to staging area on server (avoid overwriting running binary)
+        # Step 1: rsync via WSL to staging area on server
         Info "[$app] Uploading via rsync ..."
+        $wslSrc = "$(To-WslPath $localAppDir)/"
         ssh $SERVER "mkdir -p /tmp/gba_stage/$app"
-        rsync -az --compress-level=1 --progress -e ssh "$localAppDir/" "${SERVER}:/tmp/gba_stage/$app/"
-        if ($LASTEXITCODE -ne 0) { Fail "[$app] rsync upload failed" }
+        $exitCode = Wsl-Rsync @("-az", "--compress-level=1", "--progress", "-e", "ssh", $wslSrc, "${SERVER}:/tmp/gba_stage/$app/")
+        if ($exitCode -ne 0) { Fail "[$app] rsync upload failed" }
         Info "[$app] Upload OK"
 
-        # Step 2: stop service, wait, replace, start (all on server)
+        # Step 2: stop -> replace -> start (on server)
         Info "[$app] Stopping, replacing, starting ..."
         $remoteCmd = @"
 set -e
@@ -193,10 +219,9 @@ for i in `$(seq 1 8); do
 done
 
 status=`$(systemctl is-active gba-$app 2>/dev/null || echo 'unknown')
-echo "[$app] Service status: `$status"
+echo "[$app] Status: `$status"
 
 rm -rf /tmp/gba_stage/$app
-echo '[$app] Done'
 "@
         $output = ssh $SERVER $remoteCmd 2>&1
         $output | ForEach-Object {
@@ -204,9 +229,9 @@ echo '[$app] Done'
             Log "  $_"
         }
         if ($LASTEXITCODE -ne 0) { Fail "[$app] Remote deploy failed" }
-        Info "[$app] Deploy completed"
+        Info "[$app] Done"
 
-        # Brief pause between services to let server stabilize
+        # Pause between services to let server stabilize
         if ($app -ne $APPS[-1]) {
             Info "Waiting 3s before next service ..."
             Start-Sleep -Seconds 3
@@ -215,7 +240,7 @@ echo '[$app] Done'
 }
 
 # ============================================
-# 5. Deploy frontend: rsync directly to target (no service restart needed)
+# 5. Deploy frontend: rsync via WSL directly to target
 # ============================================
 function Deploy-Frontend {
     $localFrontendDir = Join-Path $DIST_DIR "frontend"
@@ -225,14 +250,15 @@ function Deploy-Frontend {
     }
 
     Info "===== Deploying admin frontend (rsync) ====="
+    $wslSrc = "$(To-WslPath $localFrontendDir)/"
     ssh $SERVER "mkdir -p $DEPLOY_DIR/admin"
-    rsync -az --delete --compress-level=1 --progress -e ssh "$localFrontendDir/" "${SERVER}:$DEPLOY_DIR/admin/"
-    if ($LASTEXITCODE -ne 0) { Fail "Frontend rsync failed" }
+    $exitCode = Wsl-Rsync @("-az", "--delete", "--compress-level=1", "--progress", "-e", "ssh", $wslSrc, "${SERVER}:$DEPLOY_DIR/admin/")
+    if ($exitCode -ne 0) { Fail "Frontend rsync failed" }
     Info "Admin frontend deployed"
 }
 
 # ============================================
-# 6. Deploy WAP: rsync directly to target (no service restart needed)
+# 6. Deploy WAP: rsync via WSL directly to target
 # ============================================
 function Deploy-Wap {
     $localWapDir = Join-Path $DIST_DIR "wap"
@@ -242,9 +268,10 @@ function Deploy-Wap {
     }
 
     Info "===== Deploying WAP (rsync) ====="
+    $wslSrc = "$(To-WslPath $localWapDir)/"
     ssh $SERVER "mkdir -p $DEPLOY_DIR/wap"
-    rsync -az --delete --compress-level=1 --progress -e ssh "$localWapDir/" "${SERVER}:$DEPLOY_DIR/wap/"
-    if ($LASTEXITCODE -ne 0) { Fail "WAP rsync failed" }
+    $exitCode = Wsl-Rsync @("-az", "--delete", "--compress-level=1", "--progress", "-e", "ssh", $wslSrc, "${SERVER}:$DEPLOY_DIR/wap/")
+    if ($exitCode -ne 0) { Fail "WAP rsync failed" }
     Info "WAP deployed"
 }
 
@@ -252,7 +279,7 @@ function Deploy-Wap {
 # Main flow
 # ============================================
 $startTime = Get-Date
-Info "GBaseAdmin deploy started (rsync + sequential mode)"
+Info "GBaseAdmin deploy started (WSL rsync + sequential mode)"
 Info "Target: $Only"
 Info "Log file: $LOG_FILE"
 
@@ -275,7 +302,7 @@ if (-not $SkipUpload) {
         "frontend" { Deploy-Frontend }
         "wap"      { Deploy-Wap }
         "all"      {
-            # Deploy backend first (sequential, one service at a time)
+            # Deploy backend first (one service at a time)
             Deploy-Backend
             # Then static files (low resource usage)
             Deploy-Frontend
