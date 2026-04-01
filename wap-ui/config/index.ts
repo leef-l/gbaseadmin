@@ -47,6 +47,10 @@ const config = {
           target: 'https://pw.easytestdev.online',
           changeOrigin: true,
         },
+        '/api/upload': {
+          target: 'https://pw.easytestdev.online',
+          changeOrigin: true,
+        },
       },
     },
   },
