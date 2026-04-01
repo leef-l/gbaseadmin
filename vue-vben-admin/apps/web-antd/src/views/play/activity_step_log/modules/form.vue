@@ -1,27 +1,32 @@
 <script setup lang="ts">
-import { h, ref } from 'vue';
+import { ref } from 'vue';
 import { useVbenModal } from '@vben/common-ui';
 import { useVbenForm } from '#/adapter/form';
-import { message, Tooltip } from 'ant-design-vue';
-import { QuestionCircleOutlined } from '@ant-design/icons-vue';
+import { message } from 'ant-design-vue';
 import {
   getActivityStepLogDetail,
   createActivityStepLog,
   updateActivityStepLog,
 } from '#/api/play/activity_step_log';
 import { getActivityList } from '#/api/play/activity';
+import { getActivityStepList } from '#/api/play/activity_step';
+import { getActivityJoinList } from '#/api/play/activity_join';
+import { getMemberList } from '#/api/play/member';
 
 /** 步骤类型选项 */
 const stepTypeOptions = [
-  { label: '文字 2=链接 3=图片', value: ��1 },
+  { label: '文字 2=链接 3=图片', value: 1 },
 ];
 
 /** 审核状态选项 */
 const auditStatusOptions = [
-  { label: '待审核 1=通过 2=驳回', value: ��0 },
+  { label: '待审核 1=通过 2=驳回', value: 0 },
 ];
 
 const activityIDOptions = ref<{ label: string; value: string }[]>([]);
+const stepIDOptions = ref<{ label: string; value: string }[]>([]);
+const joinIDOptions = ref<{ label: string; value: string }[]>([]);
+const memberIDOptions = ref<{ label: string; value: string }[]>([]);
 const emit = defineEmits<{ success: [] }>();
 const isEdit = ref(false);
 const editId = ref('');
@@ -125,17 +130,35 @@ const [Modal, modalApi] = useVbenModal({
   },
   async onOpenChange(isOpen: boolean) {
     if (isOpen) {
-      const data = modalApi.getData<{ id?: string } | null>();
-      // 加载活动ID选项
+      const data = modalApi.getData<{ id?: string }>();
       try {
-        const activityRes = await getActivityList({ pageNum: 1, pageSize: 1000 });
+        const [activityRes, stepRes, joinRes, memberRes] = await Promise.all([
+          getActivityList({ pageNum: 1, pageSize: 1000 }),
+          getActivityStepList({ pageNum: 1, pageSize: 1000 }),
+          getActivityJoinList({ pageNum: 1, pageSize: 1000 }),
+          getMemberList({ pageNum: 1, pageSize: 1000 }),
+        ]);
+
         activityIDOptions.value = (activityRes?.list ?? []).map((item: any) => ({
           label: item.title || item.id,
           value: item.id,
         }));
+        stepIDOptions.value = (stepRes?.list ?? []).map((item: any) => ({
+          label: item.stepTitle || item.id,
+          value: item.id,
+        }));
+        joinIDOptions.value = (joinRes?.list ?? []).map((item: any) => ({
+          label: item.id,
+          value: item.id,
+        }));
+        memberIDOptions.value = (memberRes?.list ?? []).map((item: any) => ({
+          label: item.nickname || item.id,
+          value: item.id,
+        }));
       } catch {
-        // ignore
+        message.error('加载关联选项失败');
       }
+
       if (data?.id) {
         isEdit.value = true;
         editId.value = data.id;

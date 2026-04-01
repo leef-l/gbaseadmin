@@ -1,11 +1,9 @@
 <script setup lang="ts">
-import { h } from 'vue';
 import type { VbenFormProps } from '#/adapter/form';
 import type { VxeGridProps } from '#/adapter/vxe-table';
 
 import { Page, useVbenModal } from '@vben/common-ui';
-import { Button, message, Modal, Tag, Tooltip } from 'ant-design-vue';
-import { QuestionCircleOutlined } from '@ant-design/icons-vue';
+import { Button, message, Modal, Tag } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getActivityStepLogList, deleteActivityStepLog } from '#/api/play/activity_step_log';
@@ -17,34 +15,40 @@ const TAG_COLORS = ['green', 'red', 'blue', 'orange', 'cyan', 'purple', 'geekblu
 
 /** 步骤类型选项 */
 const stepTypeOptions = [
-  { label: '文字 2=链接 3=图片', value: ��1 },
+  { label: '文字 2=链接 3=图片', value: 1 },
 ];
 
 /** 步骤类型映射 */
 const stepTypeMap: Record<number, string> = {
-  ��1: '文字 2=链接 3=图片',
+  1: '文字 2=链接 3=图片',
 };
 
 /** 步骤类型颜色 */
-function getStepTypeColor(val: number): string {
-  const keys = [��1];
+function getStepTypeColor(val?: number): string {
+  if (val == null) {
+    return 'default';
+  }
+  const keys = [1];
   const idx = keys.indexOf(val);
   return TAG_COLORS[idx >= 0 ? idx % TAG_COLORS.length : 0] ?? 'default';
 }
 
 /** 审核状态选项 */
 const auditStatusOptions = [
-  { label: '待审核 1=通过 2=驳回', value: ��0 },
+  { label: '待审核 1=通过 2=驳回', value: 0 },
 ];
 
 /** 审核状态映射 */
 const auditStatusMap: Record<number, string> = {
-  ��0: '待审核 1=通过 2=驳回',
+  0: '待审核 1=通过 2=驳回',
 };
 
 /** 审核状态颜色 */
-function getAuditStatusColor(val: number): string {
-  const keys = [��0];
+function getAuditStatusColor(val?: number): string {
+  if (val == null) {
+    return 'default';
+  }
+  const keys = [0];
   const idx = keys.indexOf(val);
   return TAG_COLORS[idx >= 0 ? idx % TAG_COLORS.length : 0] ?? 'default';
 }
@@ -122,7 +126,6 @@ const gridOptions: VxeGridProps<ActivityStepLogItem> = {
   toolbarConfig: {
     custom: true,
     refresh: true,
-    search: true,
   },
 };
 
@@ -165,7 +168,7 @@ function handleDelete(row: ActivityStepLogItem) {
       </template>
       <template #stepType_cell="{ row }">
         <Tag :color="getStepTypeColor(row.stepType)">
-          {{ stepTypeMap[row.stepType] || row.stepType }}
+          {{ row.stepType == null ? '-' : (stepTypeMap[row.stepType] ?? row.stepType) }}
         </Tag>
       </template>
       <template #submitImage_cell="{ row }">
@@ -174,7 +177,7 @@ function handleDelete(row: ActivityStepLogItem) {
       </template>
       <template #auditStatus_cell="{ row }">
         <Tag :color="getAuditStatusColor(row.auditStatus)">
-          {{ auditStatusMap[row.auditStatus] || row.auditStatus }}
+          {{ row.auditStatus == null ? '-' : (auditStatusMap[row.auditStatus] ?? row.auditStatus) }}
         </Tag>
       </template>
       <template #action="{ row }">
