@@ -18,7 +18,6 @@ param(
 $SERVER     = "root@pw.easytestdev.online"
 $DEPLOY_DIR = "/www/wwwroot/pw.easytestdev.online"
 $APPS       = @("system", "play", "upload")
-$PORTS      = @("8000", "8001", "8002")
 
 # Project paths
 $PROJECT_DIR  = Split-Path -Parent $MyInvocation.MyCommand.Path
@@ -34,7 +33,7 @@ $logTimestamp = Get-Date -Format "yyyyMMdd_HHmmss"
 $LOG_FILE = Join-Path $LOG_DIR "deploy_${logTimestamp}.log"
 
 # ---------- Encoding for shell scripts ----------
-$utf8NoBom = New-Object System.Text.UTF8Encoding($false)
+$script:utf8NoBom = New-Object System.Text.UTF8Encoding($false)
 
 # ---------- Helper functions ----------
 function Log($msg) {
@@ -59,20 +58,27 @@ function To-WslPath($winPath) {
     return "/mnt/$drive$rest"
 }
 
+# Write a LF-encoded temp file, return its path
+function Write-LfTempFile {
+    param([string]$Name, [string]$Content)
+    $path = Join-Path $env:TEMP "gba_${Name}.sh"
+    $lfContent = $Content -replace "`r`n", "`n" -replace "`r", "`n"
+    [System.IO.File]::WriteAllText($path, $lfContent, $script:utf8NoBom)
+    return $path
+}
+
 # Write a shell script with LF endings, scp to server, execute, cleanup
 function Run-RemoteScript {
     param([string]$Name, [string]$Script)
-    $localFile = Join-Path $env:TEMP "gba_$Name.sh"
-    [System.IO.File]::WriteAllText($localFile, $Script.Replace("`r`n", "`n"), $utf8NoBom)
+    $localFile = Write-LfTempFile -Name $Name -Content $Script
 
-    scp -q $localFile "${SERVER}:/tmp/gba_$Name.sh"
-    if ($LASTEXITCODE -ne 0) {
-        Remove-Item $localFile -Force -ErrorAction SilentlyContinue
-        Fail "[$Name] Upload script failed"
-    }
+    scp -q $localFile "${SERVER}:/tmp/gba_${Name}.sh"
+    $scpExit = $LASTEXITCODE
     Remove-Item $localFile -Force -ErrorAction SilentlyContinue
+    if ($scpExit -ne 0) { Fail "[$Name] Upload script failed" }
 
-    $output = ssh $SERVER "bash /tmp/gba_$Name.sh; exitcode=`$?; rm -f /tmp/gba_$Name.sh; exit `$exitcode" 2>&1
+    # Use simple ssh command — the script file itself is already LF-clean
+    $output = ssh $SERVER "bash /tmp/gba_${Name}.sh; ret=`$?; rm -f /tmp/gba_${Name}.sh; exit `$ret" 2>&1
     $output | ForEach-Object {
         Write-Host "  $_"
         Log "  $_"
@@ -80,32 +86,20 @@ function Run-RemoteScript {
     if ($LASTEXITCODE -ne 0) { Fail "[$Name] Remote script failed" }
 }
 
-# rsync via WSL: write a temp script in WSL to avoid PowerShell arg mangling
+# rsync via WSL: write temp script to avoid PowerShell arg mangling
 function Wsl-Rsync {
-    param([string]$Src, [string]$Dest)
-    # Write rsync command to a temp script inside WSL, then execute it
-    $wslScript = "#!/bin/bash`nrsync -az --compress-level=1 --progress -e ssh '$Src' '$Dest'"
-    $localFile = Join-Path $env:TEMP "gba_rsync_tmp.sh"
-    [System.IO.File]::WriteAllText($localFile, $wslScript.Replace("`r`n", "`n"), $utf8NoBom)
-    $wslScriptPath = To-WslPath $localFile
+    param(
+        [string]$Src,
+        [string]$Dest,
+        [switch]$Delete
+    )
+    $deleteFlag = ""
+    if ($Delete) { $deleteFlag = " --delete" }
 
-    $output = wsl bash $wslScriptPath 2>&1
-    $rsyncExit = $LASTEXITCODE
-    Remove-Item $localFile -Force -ErrorAction SilentlyContinue
-
-    $output | ForEach-Object {
-        Write-Host "  $_"
-        Log "  $_"
-    }
-    return $rsyncExit
-}
-
-# rsync with --delete via WSL
-function Wsl-Rsync-Delete {
-    param([string]$Src, [string]$Dest)
-    $wslScript = "#!/bin/bash`nrsync -az --delete --compress-level=1 --progress -e ssh '$Src' '$Dest'"
-    $localFile = Join-Path $env:TEMP "gba_rsync_tmp.sh"
-    [System.IO.File]::WriteAllText($localFile, $wslScript.Replace("`r`n", "`n"), $utf8NoBom)
+    $scriptBody = "#!/bin/bash" + "`n" + "rsync -az${deleteFlag} --compress-level=1 --progress -e ssh '${Src}' '${Dest}'"
+    # Use unique temp file name to avoid conflicts
+    $uniqueName = "rsync_" + [System.IO.Path]::GetRandomFileName().Replace(".", "")
+    $localFile = Write-LfTempFile -Name $uniqueName -Content $scriptBody
     $wslScriptPath = To-WslPath $localFile
 
     $output = wsl bash $wslScriptPath 2>&1
@@ -129,6 +123,22 @@ Check-Command "wsl"
 $wslRsyncCheck = wsl which rsync 2>&1
 if ($LASTEXITCODE -ne 0) {
     Fail "rsync not found in WSL, run: wsl sudo apt install rsync"
+}
+
+# Verify SSH connectivity before spending time on builds
+if (-not $SkipUpload) {
+    Info "Checking server connectivity ..."
+    # Test Windows SSH (used for scp and remote scripts)
+    ssh -o ConnectTimeout=5 -o BatchMode=yes $SERVER "echo ok" >$null 2>&1
+    if ($LASTEXITCODE -ne 0) { Fail "Cannot connect to $SERVER via SSH. Check your SSH key and network." }
+    # Test WSL SSH (used for rsync)
+    $wslSshTest = Write-LfTempFile -Name "ssh_test" -Content "#!/bin/bash`nssh -o ConnectTimeout=5 -o BatchMode=yes ${SERVER} 'echo ok'"
+    $wslSshTestPath = To-WslPath $wslSshTest
+    wsl bash $wslSshTestPath >$null 2>&1
+    $wslSshExit = $LASTEXITCODE
+    Remove-Item $wslSshTest -Force -ErrorAction SilentlyContinue
+    if ($wslSshExit -ne 0) { Fail "Cannot connect to $SERVER via WSL SSH. Run: wsl ssh $SERVER 'echo ok' to diagnose." }
+    Info "Server connectivity OK"
 }
 
 # ---------- Clean/create dist dir ----------
@@ -241,8 +251,8 @@ function Deploy-Backend {
         Info "[$app] Upload OK"
 
         # Step 2: stop -> replace -> start (on server via temp script)
-        Info "[$app] Stopping, replacing, starting ..."
         # Use single-quoted here-string to prevent PowerShell variable expansion
+        Info "[$app] Stopping, replacing, starting ..."
         $shellBody = @'
 #!/bin/bash
 set -e
@@ -281,7 +291,6 @@ echo "[$APP] Status: $status"
 
 rm -rf /tmp/gba_stage/$APP
 '@
-        # Replace placeholders with actual values
         $shellBody = $shellBody.Replace("__APP__", $app).Replace("__DEPLOY_DIR__", $DEPLOY_DIR)
         Run-RemoteScript -Name "deploy_$app" -Script $shellBody
 
@@ -308,7 +317,7 @@ function Deploy-Frontend {
     Info "===== Deploying admin frontend (rsync) ====="
     $wslSrc = "$(To-WslPath $localFrontendDir)/"
     ssh $SERVER "mkdir -p $DEPLOY_DIR/admin"
-    $exitCode = Wsl-Rsync-Delete -Src $wslSrc -Dest "${SERVER}:$DEPLOY_DIR/admin/"
+    $exitCode = Wsl-Rsync -Src $wslSrc -Dest "${SERVER}:$DEPLOY_DIR/admin/" -Delete
     if ($exitCode -ne 0) { Fail "Frontend rsync failed" }
     Info "Admin frontend deployed"
 }
@@ -326,7 +335,7 @@ function Deploy-Wap {
     Info "===== Deploying WAP (rsync) ====="
     $wslSrc = "$(To-WslPath $localWapDir)/"
     ssh $SERVER "mkdir -p $DEPLOY_DIR/wap"
-    $exitCode = Wsl-Rsync-Delete -Src $wslSrc -Dest "${SERVER}:$DEPLOY_DIR/wap/"
+    $exitCode = Wsl-Rsync -Src $wslSrc -Dest "${SERVER}:$DEPLOY_DIR/wap/" -Delete
     if ($exitCode -ne 0) { Fail "WAP rsync failed" }
     Info "WAP deployed"
 }
@@ -358,9 +367,7 @@ if (-not $SkipUpload) {
         "frontend" { Deploy-Frontend }
         "wap"      { Deploy-Wap }
         "all"      {
-            # Deploy backend first (one service at a time)
             Deploy-Backend
-            # Then static files (low resource usage)
             Deploy-Frontend
             Deploy-Wap
         }
@@ -375,7 +382,6 @@ Remove-Item $DIST_DIR -Recurse -Force -ErrorAction SilentlyContinue
 # Step 4: Final status check
 if (-not $SkipUpload -and ($Only -eq "all" -or $Only -eq "backend")) {
     Info "===== Final service status ====="
-    # Use temp script to avoid inline bash \r\n issues
     $statusScript = @'
 #!/bin/bash
 for app in system play upload; do
