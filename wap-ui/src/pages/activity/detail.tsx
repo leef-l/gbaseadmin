@@ -96,10 +96,8 @@ export default function ActivityDetailPage() {
   };
 
   const handleClaimReward = async () => {
-    if (!detail.rewards?.length) return;
-    const reward = detail.rewards[0];
     try {
-      await claimReward(detail.activityId, reward.rewardId);
+      await claimReward(detail.activityId);
       Taro.showToast({ title: '领取成功', icon: 'success' });
       fetchDetail(detail.activityId);
     } catch {
@@ -238,10 +236,10 @@ export default function ActivityDetailPage() {
               {active && s.exampleText && (
                 <View className="step-body__actions">
                   <View className="step-body__action" onClick={() => handleCopy(s.exampleText)}>
-                    复制链接
+                    立即复制
                   </View>
                   <View className="step-body__action step-body__action--primary" onClick={() => handleOpenLink(s.exampleText)}>
-                    立即前往
+                    立即跳转
                   </View>
                 </View>
               )}
@@ -292,11 +290,10 @@ export default function ActivityDetailPage() {
               </View>
             </View>
           ) : (
-            // 不需要填写：只显示示例图
+            // 不需要填写：只显示示例图（占满宽度）
             s.stepImage && (
-              <View className="step-body__img-wrap">
-                <Image className="step-body__img" src={s.stepImage} mode="aspectFill" />
-                <Text className="step-body__img-badge">示例</Text>
+              <View className="step-body__img-wrap step-body__img-wrap--full">
+                <Image className="step-body__img" src={s.stepImage} mode="widthFix" />
               </View>
             )
           )}

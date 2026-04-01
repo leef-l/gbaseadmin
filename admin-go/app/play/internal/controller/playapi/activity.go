@@ -31,7 +31,7 @@ func (c *cActivity) CompleteStep(ctx context.Context, req *v1.ActivityStepApiReq
 // ClaimReward 领取奖励
 func (c *cActivity) ClaimReward(ctx context.Context, req *v1.ActivityClaimApiReq) (res *v1.ActivityClaimApiRes, err error) {
 	memberID := g.RequestFromCtx(ctx).GetCtxVar("jwt_member_id").Int64()
-	err = service.PlayapiActivity().ClaimReward(ctx, memberID, req.ActivityID, req.RewardID)
+	err = service.PlayapiActivity().ClaimReward(ctx, memberID, req.ActivityID)
 	return
 }
 

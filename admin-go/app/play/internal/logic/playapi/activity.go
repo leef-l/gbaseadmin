@@ -333,10 +333,9 @@ func (s *sActivity) CompleteStep(ctx context.Context, memberID int64, activityID
 	return
 }
 
-// ClaimReward 领取奖励
-func (s *sActivity) ClaimReward(ctx context.Context, memberID int64, activityID, rewardID string) error {
+// ClaimReward 领取奖励（一次性发放该活动的所有奖励）
+func (s *sActivity) ClaimReward(ctx context.Context, memberID int64, activityID string) error {
 	aid, _ := strconv.ParseUint(activityID, 10, 64)
-	rid, _ := strconv.ParseUint(rewardID, 10, 64)
 	// 查询参与记录
 	join, err := dao.PlayActivityJoin.Ctx(ctx).
 		Where(dao.PlayActivityJoin.Columns().ActivityId, aid).
@@ -355,62 +354,70 @@ func (s *sActivity) ClaimReward(ctx context.Context, memberID int64, activityID,
 	if join[dao.PlayActivityJoin.Columns().JoinStatus].Int() == 3 {
 		return gerror.New("您已领取过奖励")
 	}
-	// 查询奖励
-	reward, err := dao.PlayActivityReward.Ctx(ctx).
-		Where(dao.PlayActivityReward.Columns().Id, rid).
+	// 查询该活动所有奖励
+	var rewards []struct {
+		Id          uint64 `json:"id"`
+		RewardType  int    `json:"reward_type"`
+		RewardValue int64  `json:"reward_value"`
+		RewardName  string `json:"reward_name"`
+	}
+	err = dao.PlayActivityReward.Ctx(ctx).
 		Where(dao.PlayActivityReward.Columns().ActivityId, aid).
 		Where(dao.PlayActivityReward.Columns().DeletedAt, nil).
-		One()
+		Scan(&rewards)
 	if err != nil {
 		return err
 	}
-	if reward.IsEmpty() {
-		return gerror.New("奖励不存在")
+	if len(rewards) == 0 {
+		return gerror.New("该活动暂无奖励")
 	}
+
 	joinID := join[dao.PlayActivityJoin.Columns().Id].Uint64()
-	rewardType := reward[dao.PlayActivityReward.Columns().RewardType].Int()
-	rewardValue := reward[dao.PlayActivityReward.Columns().RewardValue].Int64()
 
 	return dao.PlayActivityJoin.Transaction(ctx, func(ctx context.Context, tx gdb.TX) error {
-		// 根据奖励类型发放
-		switch rewardType {
-		case 1: // 余额
-			err := service.BalanceLogEnhance().AddLog(ctx, &model.AddBalanceLogInput{
-				MemberID:     snowflake.JsonInt64(memberID),
-				BizType:      4, // 活动赠送
-				BizID:        snowflake.JsonInt64(rid),
-				ChangeAmount: rewardValue,
-				Remark:       "活动奖励-余额",
-			})
-			if err != nil {
-				return err
-			}
-		case 2: // 优惠券 - rewardValue 为优惠券ID
-			couponID := uint64(rewardValue)
-			coupon, e := dao.PlayCoupon.Ctx(ctx).Where(dao.PlayCoupon.Columns().Id, couponID).One()
-			if e != nil || coupon.IsEmpty() {
-				return gerror.New("奖励优惠券不存在")
-			}
-			cmID := snowflake.Generate()
-			_, err := dao.PlayCouponMember.Ctx(ctx).Data(g.Map{
-				dao.PlayCouponMember.Columns().Id:        cmID,
-				dao.PlayCouponMember.Columns().CouponId:  couponID,
-				dao.PlayCouponMember.Columns().MemberId:  memberID,
-				dao.PlayCouponMember.Columns().UseStatus: 0,
-				dao.PlayCouponMember.Columns().ClaimAt:   gtime.Now(),
-				dao.PlayCouponMember.Columns().ExpireAt:  coupon[dao.PlayCoupon.Columns().ValidEndAt].GTime(),
-				dao.PlayCouponMember.Columns().CreatedAt: gtime.Now(),
-				dao.PlayCouponMember.Columns().UpdatedAt: gtime.Now(),
-			}).Insert()
-			if err != nil {
-				return err
-			}
-		case 3: // 经验值
-			_, err := dao.PlayMember.Ctx(ctx).
-				Where(dao.PlayMember.Columns().Id, memberID).
-				Increment(dao.PlayMember.Columns().Exp, rewardValue)
-			if err != nil {
-				return err
+		for _, rw := range rewards {
+			switch rw.RewardType {
+			case 1: // 余额
+				err := service.BalanceLogEnhance().AddLog(ctx, &model.AddBalanceLogInput{
+					MemberID:     snowflake.JsonInt64(memberID),
+					BizType:      4, // 活动赠送
+					BizID:        snowflake.JsonInt64(rw.Id),
+					ChangeAmount: rw.RewardValue,
+					Remark:       "活动奖励-" + rw.RewardName,
+				})
+				if err != nil {
+					return err
+				}
+			case 2: // 优惠券 - rewardValue 为优惠券ID
+				couponID := uint64(rw.RewardValue)
+				coupon, e := dao.PlayCoupon.Ctx(ctx).Where(dao.PlayCoupon.Columns().Id, couponID).One()
+				if e != nil || coupon.IsEmpty() {
+					g.Log().Warningf(ctx, "活动奖励优惠券不存在: couponID=%d, rewardID=%d", couponID, rw.Id)
+					continue
+				}
+				cmID := snowflake.Generate()
+				_, err := dao.PlayCouponMember.Ctx(ctx).Data(g.Map{
+					dao.PlayCouponMember.Columns().Id:        cmID,
+					dao.PlayCouponMember.Columns().CouponId:  couponID,
+					dao.PlayCouponMember.Columns().MemberId:  memberID,
+					dao.PlayCouponMember.Columns().UseStatus: 0,
+					dao.PlayCouponMember.Columns().ClaimAt:   gtime.Now(),
+					dao.PlayCouponMember.Columns().ExpireAt:  coupon[dao.PlayCoupon.Columns().ValidEndAt].GTime(),
+					dao.PlayCouponMember.Columns().CreatedAt: gtime.Now(),
+					dao.PlayCouponMember.Columns().UpdatedAt: gtime.Now(),
+				}).Insert()
+				if err != nil {
+					return err
+				}
+			case 3: // 经验值
+				_, err := dao.PlayMember.Ctx(ctx).
+					Where(dao.PlayMember.Columns().Id, memberID).
+					Increment(dao.PlayMember.Columns().Exp, rw.RewardValue)
+				if err != nil {
+					return err
+				}
+			case 4: // 会员天数（暂不支持，记录日志跳过）
+				g.Log().Infof(ctx, "活动奖励-会员天数暂未实现: memberID=%d, rewardValue=%d天", memberID, rw.RewardValue)
 			}
 		}
 		// 更新参与记录为已领奖

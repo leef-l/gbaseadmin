@@ -11,7 +11,7 @@ type IPlayapiActivity interface {
 	Detail(ctx context.Context, activityID string, memberID int64) (out *v1.ActivityDetailApiRes, err error)
 	Join(ctx context.Context, memberID int64, activityID string) error
 	CompleteStep(ctx context.Context, memberID int64, activityID, stepID, imageUrl, submitText string) (currentStep int, isCompleted bool, err error)
-	ClaimReward(ctx context.Context, memberID int64, activityID, rewardID string) error
+	ClaimReward(ctx context.Context, memberID int64, activityID string) error
 	MyJoins(ctx context.Context, memberID int64, page, pageSize int) (list []v1.ActivityMyJoinsItem, total int, err error)
 	Quit(ctx context.Context, memberID int64, activityID string) error
 }

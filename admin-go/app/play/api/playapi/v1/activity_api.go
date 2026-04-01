@@ -113,7 +113,6 @@ type ActivityQuitApiRes struct {
 type ActivityClaimApiReq struct {
 	g.Meta     `path:"/activity/claim_reward" method:"post" tags:"C端活动" summary:"领取奖励"`
 	ActivityID string `json:"activityId" v:"required#活动ID不能为空" dc:"活动ID"`
-	RewardID   string `json:"rewardId" v:"required#奖励ID不能为空" dc:"奖励ID"`
 }
 
 type ActivityClaimApiRes struct {

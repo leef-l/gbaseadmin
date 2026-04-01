@@ -20,8 +20,8 @@ export function quitActivity(activityId: string) {
   return post('/api/playapi/activity/quit', { activityId });
 }
 
-export function claimReward(activityId: string, rewardId: string) {
-  return post('/api/playapi/activity/claim_reward', { activityId, rewardId });
+export function claimReward(activityId: string) {
+  return post('/api/playapi/activity/claim_reward', { activityId });
 }
 
 export function getMyActivities(params?: { page?: number; pageSize?: number }) {
