@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref } from 'vue';
 import type { VbenFormProps } from '#/adapter/form';
 import type { VxeGridProps } from '#/adapter/vxe-table';
 
@@ -11,26 +11,20 @@ import { getProfitLogList, deleteProfitLog } from '#/api/play/profit_log';
 import type { ProfitLogItem } from '#/api/play/profit_log/types';
 import FormModal from './modules/form.vue';
 
-/** 统计数据 */
+/** 统计数据（当前页） */
 const stats = ref({ total: 0, platform: 0, shop: 0, coach: 0 });
 
-async function loadStats() {
-  try {
-    const res = await getProfitLogList({ pageNum: 1, pageSize: 9999 });
-    const list = res?.list ?? [];
-    let total = 0, platform = 0, shop = 0, coach = 0;
-    for (const item of list) {
-      const pay = Number(item.payAmount) || 0;
-      total += pay;
-      platform += Number(item.platformAmount) || 0;
-      shop += Number(item.shopAmount) || 0;
-      coach += Number(item.coachAmount) || 0;
-    }
-    stats.value = { total, platform, shop, coach };
-  } catch { /* ignore */ }
+/** 从 vxe-table 当前页数据计算统计 */
+function calcStats(list: ProfitLogItem[]) {
+  let total = 0, platform = 0, shop = 0, coach = 0;
+  for (const item of list) {
+    total += Number(item.payAmount) || 0;
+    platform += Number(item.platformAmount) || 0;
+    shop += Number(item.shopAmount) || 0;
+    coach += Number(item.coachAmount) || 0;
+  }
+  stats.value = { total, platform, shop, coach };
 }
-
-onMounted(loadStats);
 
 /** 标签颜色池 */
 const TAG_COLORS = ['green', 'red', 'blue', 'orange', 'cyan', 'purple', 'geekblue', 'magenta'];
@@ -110,7 +104,9 @@ const gridOptions: VxeGridProps<ProfitLogItem> = {
           pageSize: page.pageSize,
           ...formValues,
         });
-        return { items: res?.list ?? [], total: res?.total ?? 0 };
+        const list = res?.list ?? [];
+        calcStats(list);
+        return { items: list, total: res?.total ?? 0 };
       },
     },
   },
@@ -155,26 +151,26 @@ function handleDelete(row: ProfitLogItem) {
     <Row :gutter="16" style="margin-bottom: 16px">
       <Col :span="6">
         <Card>
-          <Statistic title="总利润（元）" :value="(stats.total / 100).toFixed(2)" :value-style="{ color: '#1890ff' }" />
+          <Statistic title="总利润（元）(当前页)" :value="(stats.total / 100).toFixed(2)" :value-style="{ color: '#1890ff' }" />
         </Card>
       </Col>
       <Col :span="6">
         <Card>
-          <Statistic title="平台收入（元）" :value="(stats.platform / 100).toFixed(2)" :value-style="{ color: '#7c3aed' }" />
+          <Statistic title="平台收入（元）(当前页)" :value="(stats.platform / 100).toFixed(2)" :value-style="{ color: '#7c3aed' }" />
         </Card>
       </Col>
       <Col :span="6">
         <Card>
-          <Statistic title="店铺收入（元）" :value="(stats.shop / 100).toFixed(2)" :value-style="{ color: '#f59e0b' }" />
+          <Statistic title="店铺收入（元）(当前页)" :value="(stats.shop / 100).toFixed(2)" :value-style="{ color: '#f59e0b' }" />
         </Card>
       </Col>
       <Col :span="6">
         <Card>
-          <Statistic title="陪玩师收入（元）" :value="(stats.coach / 100).toFixed(2)" :value-style="{ color: '#10b981' }" />
+          <Statistic title="陪玩师收入（元）(当前页)" :value="(stats.coach / 100).toFixed(2)" :value-style="{ color: '#10b981' }" />
         </Card>
       </Col>
     </Row>
-    <FormModalComp @success="() => { gridApi.reload(); loadStats(); }" />
+    <FormModalComp @success="() => gridApi.reload()" />
     <Grid>
       <template #toolbar-actions>
         <Button type="primary" @click="handleCreate">新建</Button>
