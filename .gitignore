@@ -28,3 +28,4 @@ vendor/
 vue-vben-admin/.pnpm-store/
 admin-go/codegen/codegen
 deploy-logs/
+.deploy-cache/
