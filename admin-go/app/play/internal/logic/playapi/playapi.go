@@ -15,4 +15,5 @@ func init() {
 	service.RegisterPlayapiActivity(&sActivity{})
 	service.RegisterPlayapiSearch(&sSearch{})
 	service.RegisterPlayapiMessage(&sMessage{})
+	service.RegisterPlayapiBanner(&sPlayapiBanner{})
 }
