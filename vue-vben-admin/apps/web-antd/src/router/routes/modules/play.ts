@@ -61,7 +61,7 @@ const routes: RouteRecordRaw[] = [
       {
         path: '/play/order',
         name: 'PlayOrder',
-        component: () => import('#/views/play/order/index.vue'),
+        component: () => import('#/views/play/order/enhance.vue'),
         meta: { title: '订单列表' },
       },
       {
@@ -91,7 +91,7 @@ const routes: RouteRecordRaw[] = [
       {
         path: '/play/activity',
         name: 'PlayActivity',
-        component: () => import('#/views/play/activity/index.vue'),
+        component: () => import('#/views/play/activity/enhance.vue'),
         meta: { title: '活动列表' },
       },
       {
@@ -133,7 +133,7 @@ const routes: RouteRecordRaw[] = [
       {
         path: '/play/profit-log',
         name: 'PlayProfitLog',
-        component: () => import('#/views/play/profit_log/index.vue'),
+        component: () => import('#/views/play/profit_log/enhance.vue'),
         meta: { title: '利润流水' },
       },
       {
