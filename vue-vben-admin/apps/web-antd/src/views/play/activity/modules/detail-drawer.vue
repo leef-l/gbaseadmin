@@ -226,7 +226,7 @@ const [DrawerModal, modalApi] = useVbenModal({
 </script>
 
 <template>
-  <DrawerModal :title="`活动管理 - ${activityTitle}`" :footer="null" width="70%">
+  <DrawerModal :title="`活动管理 - ${activityTitle}`" :footer="null" class="w-[70%]">
     <Tabs v-model:activeKey="activeTab">
 
       <!-- ====== 奖励管理 ====== -->
