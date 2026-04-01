@@ -101,8 +101,8 @@
 <!-- 无括号：普通文字 -->
 label: '部门名称'
 
-<!-- 有括号：Tooltip 渲染 -->
-label: () => h('span', {}, ['排序 ', h(Tooltip, { title: '升序' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })])
+<!-- 有括号：Tooltip 渲染（v1.6.0+ 使用 helper 函数） -->
+label: tooltipLabel('排序', '升序')
 ```
 
 ---

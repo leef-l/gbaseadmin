@@ -212,23 +212,24 @@ database:
 | `*_at` | `DateTimePicker` | 日期时间选择器 |
 | `sort`、`order`、`*_num`、`*_price`、`*_amount`、`*_income`、`*_balance` | `InputNumber` | 数字输入框 |
 | `icon` | `IconPicker` | 图标选择器 |
-| `*_image`、`*_img`、`avatar`、`*_photo` | `ImageUpload` | 图片上传 |
+| `avatar`、`cover`、`logo`、`banner`、`thumbnail`、`poster` | `ImageUpload` | 图片上传（精确名匹配） |
+| `*_image`、`*_img`、`*_photo`、`*_pic`、`*_cover`、`*_banner`、`*_logo`、`*_thumbnail`、`*_poster` | `ImageUpload` | 图片上传（后缀匹配） |
 | `*_file`、`*_attachment` | `FileUpload` | 文件上传 |
 | `*_content`、`*_body`、`*_html` | `RichText` | 富文本编辑器 |
 | `*_json`、`*_config`、`*_settings` | `JsonEditor` | JSON 编辑器 |
 
-### 表单组件自动映射
+### 富组件自动映射
 
-`parser/field_mapper.go` 中的 `MapComponent` 函数根据字段命名规则自动映射以下 4 种富组件：
+`parser/field_mapper.go` 中的 `MapComponent` 函数根据字段命名规则自动映射富组件：
 
 | 字段名规则 | 组件 | 说明 |
 |-----------|------|------|
-| `*_image`、`*_img`、`avatar`、`*_photo` | `ImageUpload` | 图片上传（文件管理器 `mode=image`） |
+| `avatar`、`cover`、`logo`、`banner`、`thumbnail`、`poster`、`*_image`、`*_img`、`*_photo`、`*_pic`、`*_cover` 等 | `ImageUpload` | 图片上传（文件管理器 `mode=image`） |
 | `*_file`、`*_attachment` | `FileUpload` | 文件上传（文件管理器 `mode=all`） |
 | `*_content`、`*_body`、`*_html` | `RichText` | TinyMCE 富文本编辑器 |
 | `*_json`、`*_config`、`*_settings` | `JsonEditor` | JSON 编辑器（tree + code 双模式） |
 
-这 4 个组件在 `adapter/component/index.ts` 中注册，上传类组件（`ImageUpload`、`FileUpload`）调用 upload 应用的接口 `/upload/uploader/upload`。
+这些组件在 `adapter/component/index.ts` 中注册，上传类组件调用 `/upload/uploader/upload` 接口。
 
 > **注意**：使用 `ImageUpload` 或 `FileUpload` 组件的表单页面需要 `upload` 应用处于运行状态，否则文件管理 API 不可用。
 
@@ -307,7 +308,7 @@ database:
 |------|---------|---------|
 | 树形结构 | 表中存在 `parent_id` 字段 | 后端生成树形查询接口，前端生成树形表格 |
 | 密码加密 | 字段名为 `password`/`*_password`/`*_pwd` | 后端自动 bcrypt 加密 |
-| 外键关联 | 字段名为 `*_id`（排除 `id`、`dept_id`） | 自动批量查询关联表（`WHERE id IN (...)`），填充显示字段（title/name/username） |
+| 外键关联 | 字段名为 `*_id`（排除 `id`、`dept_id`） | 自动批量查询关联表（`WHERE id IN (...)`），填充显示字段（title/name/username/nickname/real_name/label/phone/mobile） |
 | 多选外键 | 字段名为 `*_ids` | 前端多选组件，后端数组处理 |
 | Snowflake ID | 所有 `BIGINT` 主键/外键 | 使用 `JsonInt64` 防止 JS 精度丢失 |
 | 软删除 | 存在 `deleted_at` 字段 | 查询自动过滤已删除记录 |
@@ -322,17 +323,59 @@ database:
 | 时间范围筛选 | 所有表 | 前端 RangePicker + 后端 `created_at` 区间查询 |
 | 列表排序 | 所有表 | 前端列头排序 + 后端动态 `OrderBy`/`OrderDir` |
 
+## 生成的 CRUD 功能清单
+
+每张表自动生成以下完整功能：
+
+### 后端接口
+
+| 接口 | 方法 | 路径 | 说明 |
+|------|------|------|------|
+| 创建 | POST | `/{module}/create` | 新增记录 |
+| 更新 | PUT | `/{module}/update` | 修改记录 |
+| 删除 | DELETE | `/{module}/delete` | 软删除单条 |
+| 批量删除 | DELETE | `/{module}/batch-delete` | 软删除多条 |
+| 详情 | GET | `/{module}/detail` | 获取单条详情（含关联字段） |
+| 列表 | GET | `/{module}/list` | 分页列表（支持搜索、筛选、排序、时间范围） |
+| 导出 | GET | `/{module}/export` | CSV 导出（最多 10000 条，支持筛选条件） |
+| 树形 | GET | `/{module}/tree` | 仅 `parent_id` 表，返回树形结构 |
+
+### 前端页面
+
+| 组件 | 功能 |
+|------|------|
+| 列表页 | VxeTable 表格 + 搜索表单 + 时间范围筛选 + 列头排序 + 枚举 Tag + 金额格式化 |
+| 表单弹窗 | 新建/编辑表单，自动组件映射，密码字段编辑时可选填 |
+| 详情抽屉 | 只读详情展示（Descriptions），枚举 Tag、图片预览、富文本/JSON 渲染 |
+| 工具栏 | 新建按钮 + 批量删除按钮（非树形）+ 导出按钮 |
+
+### 枚举常量语义化
+
+枚举字段自动生成语义化 Go 常量，覆盖 30+ 常见中文标签映射：
+
+```go
+// 改前（数字兜底）
+const UserStatusV0 = 0 // 禁用
+const UserStatusV1 = 1 // 启用
+
+// 改后（语义化）
+const UserStatusDisabled = 0 // 禁用
+const UserStatusEnabled = 1  // 启用
+```
+
+支持的映射包括：启用/禁用、开启/关闭、是/否、男/女、显示/隐藏、待处理/进行中/已完成、待审核/已通过/已拒绝、待支付/已支付/已退款、草稿/已发布/已下架、成功/失败、充值/消费/提现等。未匹配的标签使用 `V{数值}` 兜底。
+
 ## 菜单生成
 
 使用 `--menu` 或 `--only menu` 可将菜单数据写入 `system_menu` 表。
 
-每个模块生成 3 条菜单记录：
+每个模块生成以下菜单记录：
 
 | 菜单 | 类型 | 说明 |
 |------|------|------|
 | `{模块名}管理` | 目录 | 一级菜单，挂载到对应应用目录下 |
 | `{模块名}列表` | 页面 | 列表页面，路由指向生成的 `index.vue` |
-| 按钮权限 | 按钮 | 包含 新增、编辑、删除 三个操作按钮 |
+| 按钮权限 | 按钮 | 包含 新增、修改、删除、查看、导出 五个操作按钮 |
 
 菜单写入前会检查是否已存在，避免重复插入。
 
