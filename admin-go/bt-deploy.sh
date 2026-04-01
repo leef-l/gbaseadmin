@@ -9,7 +9,7 @@ set -e
 # ---------- 配置区 ----------
 DOMAIN="pw.easytestdev.online"          # 替换为你的域名
 DEPLOY_DIR="/www/wwwroot/${DOMAIN}"
-FRONTEND_DIR="/www/wwwroot/${DOMAIN}/frontend"
+FRONTEND_DIR="/www/wwwroot/${DOMAIN}"
 DB_NAME="gbaseadmin"
 DB_USER="gbaseadmin"
 DB_PASS="gbaseadmin123"
