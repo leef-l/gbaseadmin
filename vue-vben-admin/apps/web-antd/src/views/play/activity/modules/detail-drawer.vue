@@ -1,9 +1,11 @@
 <script setup lang="ts">
-import { ref, reactive } from 'vue';
+import { ref, reactive, computed } from 'vue';
 import { useVbenModal } from '@vben/common-ui';
 import { Tabs, Table, Button, Modal, Form, Input, InputNumber, Select, message, Popconfirm, Tag } from 'ant-design-vue';
 import { getActivityRewardList, createActivityReward, updateActivityReward, deleteActivityReward } from '#/api/play/activity_reward';
 import { getActivityStepList, createActivityStep, updateActivityStep, deleteActivityStep } from '#/api/play/activity_step';
+import { getCouponList } from '#/api/play/coupon';
+import { getMemberLevelList } from '#/api/play/member_level';
 import type { ActivityRewardItem } from '#/api/play/activity_reward/types';
 import type { ActivityStepItem } from '#/api/play/activity_step/types';
 import ImageUpload from '#/components/upload/image-upload.vue';
@@ -18,8 +20,35 @@ const activeTab = ref('rewards');
 
 /** 奖励编辑状态 */
 const rewardModalVisible = ref(false);
-const rewardForm = reactive({ id: '', rewardName: '', rewardType: 1, rewardValue: '', sort: 0 });
+const rewardForm = reactive({ id: '', rewardName: '', rewardType: 1, rewardValue: '', rewardLevelId: '', rewardDays: 1, sort: 0 });
 const rewardSaving = ref(false);
+
+/** 优惠券下拉选项 */
+const couponOptions = ref<{ label: string; value: string }[]>([]);
+const couponSearching = ref(false);
+async function handleCouponSearch(keyword: string) {
+  couponSearching.value = true;
+  try {
+    const res = await getCouponList({ pageNum: 1, pageSize: 50, title: keyword } as any);
+    couponOptions.value = (res?.list ?? []).map((c: any) => ({ label: `${c.title}（面值${c.faceValue}分）`, value: String(c.id) }));
+  } finally { couponSearching.value = false; }
+}
+
+/** 会员等级下拉选项 */
+const levelOptions = ref<{ label: string; value: string }[]>([]);
+async function loadLevelOptions() {
+  const res = await getMemberLevelList({ pageNum: 1, pageSize: 50 } as any);
+  levelOptions.value = (res?.list ?? []).map((l: any) => ({ label: l.title, value: String(l.id) }));
+}
+
+/** 奖励数值的计算（会员等级天数时 = levelId:days） */
+const rewardValueLabel = computed(() => {
+  if (rewardForm.rewardType === 1) return '余额（单位：分）';
+  if (rewardForm.rewardType === 2) return '选择优惠券';
+  if (rewardForm.rewardType === 3) return '经验值';
+  if (rewardForm.rewardType === 4) return '会员等级天数';
+  return '奖励数值';
+});
 
 /** 步骤编辑状态 */
 const stepModalVisible = ref(false);
@@ -71,6 +100,8 @@ async function loadData(id: string) {
     ]);
     rewards.value = rewardRes?.list ?? [];
     steps.value = stepRes?.list ?? [];
+    // 加载会员等级选项
+    loadLevelOptions();
   } finally {
     loading.value = false;
   }
@@ -78,18 +109,39 @@ async function loadData(id: string) {
 
 /** 奖励 CRUD */
 function handleAddReward() {
-  Object.assign(rewardForm, { id: '', rewardName: '', rewardType: 1, rewardValue: '', sort: 0 });
+  Object.assign(rewardForm, { id: '', rewardName: '', rewardType: 1, rewardValue: '', rewardLevelId: '', rewardDays: 1, sort: 0 });
   rewardModalVisible.value = true;
 }
 function handleEditReward(row: ActivityRewardItem) {
-  Object.assign(rewardForm, { id: row.id, rewardName: row.rewardName, rewardType: row.rewardType ?? 1, rewardValue: row.rewardValue ?? '', sort: row.sort ?? 0 });
+  let levelId = '', days = 1;
+  if (row.rewardType === 4 && row.rewardValue) {
+    const parts = String(row.rewardValue).split(':');
+    levelId = parts[0] || '';
+    days = parseInt(parts[1] || '1', 10);
+  }
+  Object.assign(rewardForm, {
+    id: row.id,
+    rewardName: row.rewardName,
+    rewardType: row.rewardType ?? 1,
+    rewardValue: row.rewardType === 4 ? '' : (row.rewardValue ?? ''),
+    rewardLevelId: levelId,
+    rewardDays: days,
+    sort: row.sort ?? 0,
+  });
   rewardModalVisible.value = true;
 }
 async function handleSaveReward() {
   if (!rewardForm.rewardName.trim()) { message.warning('请输入奖励名称'); return; }
+  let finalValue = rewardForm.rewardValue;
+  if (rewardForm.rewardType === 4) {
+    if (!rewardForm.rewardLevelId) { message.warning('请选择会员等级'); return; }
+    finalValue = `${rewardForm.rewardLevelId}:${rewardForm.rewardDays}`;
+  } else if (rewardForm.rewardType === 2) {
+    if (!rewardForm.rewardValue) { message.warning('请选择优惠券'); return; }
+  }
   rewardSaving.value = true;
   try {
-    const payload = { activityID: activityId.value, rewardName: rewardForm.rewardName, rewardType: rewardForm.rewardType, rewardValue: rewardForm.rewardValue, sort: rewardForm.sort };
+    const payload = { activityID: activityId.value, rewardName: rewardForm.rewardName, rewardType: rewardForm.rewardType, rewardValue: finalValue, sort: rewardForm.sort };
     if (rewardForm.id) {
       await updateActivityReward({ id: rewardForm.id, ...payload });
     } else {
@@ -239,6 +291,7 @@ const [DrawerModal, modalApi] = useVbenModal({
       :title="rewardForm.id ? '编辑奖励' : '新增奖励'"
       :confirm-loading="rewardSaving"
       @ok="handleSaveReward"
+      width="50%"
     >
       <Form layout="vertical" style="margin-top: 16px;">
         <Form.Item label="奖励名称" required>
@@ -247,8 +300,36 @@ const [DrawerModal, modalApi] = useVbenModal({
         <Form.Item label="奖励类型" required>
           <Select v-model:value="rewardForm.rewardType" :options="rewardTypeOptions" style="width: 100%" />
         </Form.Item>
-        <Form.Item label="奖励数值" help="余额单位：分；优惠券填 coupon_id；经验值/天数填数字">
-          <Input v-model:value="rewardForm.rewardValue" placeholder="请输入奖励数值" />
+        <!-- 余额 / 经验值 -->
+        <Form.Item v-if="rewardForm.rewardType === 1 || rewardForm.rewardType === 3" :label="rewardValueLabel">
+          <InputNumber v-model:value="rewardForm.rewardValue" :min="0" style="width: 100%" :placeholder="rewardForm.rewardType === 1 ? '请输入金额（单位：分）' : '请输入经验值'" />
+        </Form.Item>
+
+        <!-- 优惠券：远程搜索下拉 -->
+        <Form.Item v-if="rewardForm.rewardType === 2" label="选择优惠券">
+          <Select
+            v-model:value="rewardForm.rewardValue"
+            show-search
+            :filter-option="false"
+            :options="couponOptions"
+            :loading="couponSearching"
+            placeholder="请输入优惠券名称搜索"
+            @search="handleCouponSearch"
+            style="width: 100%"
+          />
+        </Form.Item>
+
+        <!-- 会员等级天数：选等级 + 输入天数 -->
+        <Form.Item v-if="rewardForm.rewardType === 4" label="会员等级">
+          <Select
+            v-model:value="rewardForm.rewardLevelId"
+            :options="levelOptions"
+            placeholder="请选择会员等级"
+            style="width: 100%"
+          />
+        </Form.Item>
+        <Form.Item v-if="rewardForm.rewardType === 4" label="天数">
+          <InputNumber v-model:value="rewardForm.rewardDays" :min="1" style="width: 100%" placeholder="请输入天数" />
         </Form.Item>
         <Form.Item label="排序">
           <InputNumber v-model:value="rewardForm.sort" :min="0" style="width: 100%" />
@@ -262,7 +343,7 @@ const [DrawerModal, modalApi] = useVbenModal({
       :title="stepForm.id ? '编辑步骤' : '新增步骤'"
       :confirm-loading="stepSaving"
       @ok="handleSaveStep"
-      width="560"
+      width="50%"
     >
       <Form layout="vertical" style="margin-top: 16px;">
         <Form.Item label="步骤标题" required>
