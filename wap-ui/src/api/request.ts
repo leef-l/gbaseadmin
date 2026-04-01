@@ -8,12 +8,51 @@ interface RequestOptions {
   method?: 'GET' | 'POST' | 'PUT' | 'DELETE';
   data?: any;
   header?: Record<string, string>;
+  /** 内部标记：此次请求是刷新 token 本身，不再递归刷新 */
+  _isRefresh?: boolean;
 }
 
 interface ApiResponse<T = any> {
   code: number;
   message: string;
   data: T;
+}
+
+interface RefreshTokenResult {
+  token: string;
+  refreshToken: string;
+}
+
+/** 正在进行中的刷新 Promise，避免并发时多次刷新 */
+let refreshingPromise: Promise<string> | null = null;
+
+async function doRefreshToken(): Promise<string> {
+  const { refreshToken, setToken, setRefreshToken, logout } = useAuthStore.getState();
+  if (!refreshToken) {
+    logout();
+    Taro.navigateTo({ url: '/pages/login/index' });
+    return Promise.reject(new Error('无刷新凭证'));
+  }
+
+  const res = await Taro.request({
+    url: `${BASE_URL}/api/playapi/auth/refresh_token`,
+    method: 'POST',
+    data: { refreshToken },
+    header: { 'Content-Type': 'application/json' },
+  });
+
+  const body = res.data as ApiResponse<RefreshTokenResult>;
+  if (body.code !== 0 || !body.data?.token) {
+    logout();
+    Taro.navigateTo({ url: '/pages/login/index' });
+    return Promise.reject(new Error('刷新 token 失败'));
+  }
+
+  setToken(body.data.token);
+  if (body.data.refreshToken) {
+    setRefreshToken(body.data.refreshToken);
+  }
+  return body.data.token;
 }
 
 export async function request<T = any>(options: RequestOptions): Promise<T> {
@@ -36,9 +75,36 @@ export async function request<T = any>(options: RequestOptions): Promise<T> {
   const body = res.data as ApiResponse<T>;
 
   if (body.code === 401) {
-    useAuthStore.getState().logout();
-    Taro.navigateTo({ url: '/pages/login/index' });
-    return Promise.reject(new Error('未登录'));
+    // 刷新 token 请求本身 401，直接退出，不再递归
+    if (options._isRefresh) {
+      useAuthStore.getState().logout();
+      Taro.navigateTo({ url: '/pages/login/index' });
+      return Promise.reject(new Error('登录已过期'));
+    }
+
+    // 多个并发请求同时 401 时，复用同一个刷新 Promise
+    if (!refreshingPromise) {
+      refreshingPromise = doRefreshToken().finally(() => {
+        refreshingPromise = null;
+      });
+    }
+
+    let newToken: string;
+    try {
+      newToken = await refreshingPromise;
+    } catch {
+      return Promise.reject(new Error('登录已过期'));
+    }
+
+    // 用新 token 重试原请求（标记 _isRefresh 防止再次触发刷新）
+    return request<T>({
+      ...options,
+      header: {
+        ...options.header,
+        Authorization: `Bearer ${newToken}`,
+      },
+      _isRefresh: true,
+    });
   }
 
   if (body.code !== 0) {

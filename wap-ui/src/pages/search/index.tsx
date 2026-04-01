@@ -1,8 +1,7 @@
 import { useState, useCallback } from 'react';
 import { View, Text, Input } from '@tarojs/components';
 import Taro from '@tarojs/taro';
-import { getCoachList } from '../../api/coach';
-import { getGoodsList } from '../../api/goods';
+import { search } from '../../api/goods';
 import CoachCard from '../../components/CoachCard';
 import GoodsCard from '../../components/GoodsCard';
 import EmptyState from '../../components/EmptyState';
@@ -44,11 +43,11 @@ export default function SearchPage() {
     saveHistory(kw);
     try {
       const [coachRes, goodsRes] = await Promise.all([
-        getCoachList({ keyword: kw, page: 1, pageSize: 20 }),
-        getGoodsList({ keyword: kw, page: 1, pageSize: 20 }),
+        search({ keyword: kw, type: 'coach', page: 1, pageSize: 20 }),
+        search({ keyword: kw, type: 'goods', page: 1, pageSize: 20 }),
       ]);
-      setCoaches(coachRes?.list || []);
-      setGoods(goodsRes?.list || []);
+      setCoaches((coachRes as any)?.list || []);
+      setGoods((goodsRes as any)?.list || []);
     } catch {
       Taro.showToast({ title: '搜索失败', icon: 'none' });
     }
