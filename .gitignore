@@ -27,3 +27,4 @@ vendor/
 .claude/settings.local.json
 vue-vben-admin/.pnpm-store/
 admin-go/codegen/codegen
+deploy-logs/
