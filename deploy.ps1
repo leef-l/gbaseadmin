@@ -56,10 +56,10 @@ function To-WslPath($winPath) {
     return "/mnt/$drive$rest"
 }
 
-# Wrapper: call rsync via WSL
+# Wrapper: call rsync via WSL (pass full command as single string to avoid arg mangling)
 function Wsl-Rsync {
-    param([string[]]$Args)
-    $output = wsl rsync @Args 2>&1
+    param([string]$RsyncCmd)
+    $output = wsl bash -c $RsyncCmd 2>&1
     $output | ForEach-Object {
         Write-Host "  $_"
         Log "  $_"
@@ -183,7 +183,7 @@ function Deploy-Backend {
         Info "[$app] Uploading via rsync ..."
         $wslSrc = "$(To-WslPath $localAppDir)/"
         ssh $SERVER "mkdir -p /tmp/gba_stage/$app"
-        $exitCode = Wsl-Rsync @("-az", "--compress-level=1", "--progress", "-e", "ssh", $wslSrc, "${SERVER}:/tmp/gba_stage/$app/")
+        $exitCode = Wsl-Rsync "rsync -az --compress-level=1 --progress -e ssh '$wslSrc' '${SERVER}:/tmp/gba_stage/$app/'"
         if ($exitCode -ne 0) { Fail "[$app] rsync upload failed" }
         Info "[$app] Upload OK"
 
@@ -252,7 +252,7 @@ function Deploy-Frontend {
     Info "===== Deploying admin frontend (rsync) ====="
     $wslSrc = "$(To-WslPath $localFrontendDir)/"
     ssh $SERVER "mkdir -p $DEPLOY_DIR/admin"
-    $exitCode = Wsl-Rsync @("-az", "--delete", "--compress-level=1", "--progress", "-e", "ssh", $wslSrc, "${SERVER}:$DEPLOY_DIR/admin/")
+    $exitCode = Wsl-Rsync "rsync -az --delete --compress-level=1 --progress -e ssh '$wslSrc' '${SERVER}:$DEPLOY_DIR/admin/'"
     if ($exitCode -ne 0) { Fail "Frontend rsync failed" }
     Info "Admin frontend deployed"
 }
@@ -270,7 +270,7 @@ function Deploy-Wap {
     Info "===== Deploying WAP (rsync) ====="
     $wslSrc = "$(To-WslPath $localWapDir)/"
     ssh $SERVER "mkdir -p $DEPLOY_DIR/wap"
-    $exitCode = Wsl-Rsync @("-az", "--delete", "--compress-level=1", "--progress", "-e", "ssh", $wslSrc, "${SERVER}:$DEPLOY_DIR/wap/")
+    $exitCode = Wsl-Rsync "rsync -az --delete --compress-level=1 --progress -e ssh '$wslSrc' '${SERVER}:$DEPLOY_DIR/wap/'"
     if ($exitCode -ne 0) { Fail "WAP rsync failed" }
     Info "WAP deployed"
 }
