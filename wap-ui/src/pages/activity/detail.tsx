@@ -196,7 +196,7 @@ export default function ActivityDetailPage() {
                   <Text className="step-body__text">{s.exampleText}</Text>
                 </>
               )}
-              {active && s.exampleText && (
+              {s.exampleText && (
                 <View className="step-body__actions">
                   <View className="step-body__action step-body__action--primary" onClick={() => handleCopy(s.exampleText)}>
                     立即复制
@@ -233,7 +233,7 @@ export default function ActivityDetailPage() {
                   <Text className="step-body__text step-body__text--link">{s.exampleText}</Text>
                 </>
               )}
-              {active && s.exampleText && (
+              {s.exampleText && (
                 <View className="step-body__actions">
                   <View className="step-body__action" onClick={() => handleCopy(s.exampleText)}>
                     立即复制
