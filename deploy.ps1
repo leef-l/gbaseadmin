@@ -33,6 +33,9 @@ if (-not (Test-Path $LOG_DIR)) { New-Item -ItemType Directory -Path $LOG_DIR -Fo
 $logTimestamp = Get-Date -Format "yyyyMMdd_HHmmss"
 $LOG_FILE = Join-Path $LOG_DIR "deploy_${logTimestamp}.log"
 
+# ---------- Encoding for shell scripts ----------
+$utf8NoBom = New-Object System.Text.UTF8Encoding($false)
+
 # ---------- Helper functions ----------
 function Log($msg) {
     $ts = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
@@ -56,20 +59,70 @@ function To-WslPath($winPath) {
     return "/mnt/$drive$rest"
 }
 
-# Wrapper: call rsync via WSL (pass full command as single string to avoid arg mangling)
-function Wsl-Rsync {
-    param([string]$RsyncCmd)
-    $output = wsl bash -c $RsyncCmd 2>&1
+# Write a shell script with LF endings, scp to server, execute, cleanup
+function Run-RemoteScript {
+    param([string]$Name, [string]$Script)
+    $localFile = Join-Path $env:TEMP "gba_$Name.sh"
+    [System.IO.File]::WriteAllText($localFile, $Script.Replace("`r`n", "`n"), $utf8NoBom)
+
+    scp -q $localFile "${SERVER}:/tmp/gba_$Name.sh"
+    if ($LASTEXITCODE -ne 0) {
+        Remove-Item $localFile -Force -ErrorAction SilentlyContinue
+        Fail "[$Name] Upload script failed"
+    }
+    Remove-Item $localFile -Force -ErrorAction SilentlyContinue
+
+    $output = ssh $SERVER "bash /tmp/gba_$Name.sh; exitcode=`$?; rm -f /tmp/gba_$Name.sh; exit `$exitcode" 2>&1
     $output | ForEach-Object {
         Write-Host "  $_"
         Log "  $_"
     }
-    return $LASTEXITCODE
+    if ($LASTEXITCODE -ne 0) { Fail "[$Name] Remote script failed" }
+}
+
+# rsync via WSL: write a temp script in WSL to avoid PowerShell arg mangling
+function Wsl-Rsync {
+    param([string]$Src, [string]$Dest)
+    # Write rsync command to a temp script inside WSL, then execute it
+    $wslScript = "#!/bin/bash`nrsync -az --compress-level=1 --progress -e ssh '$Src' '$Dest'"
+    $localFile = Join-Path $env:TEMP "gba_rsync_tmp.sh"
+    [System.IO.File]::WriteAllText($localFile, $wslScript.Replace("`r`n", "`n"), $utf8NoBom)
+    $wslScriptPath = To-WslPath $localFile
+
+    $output = wsl bash $wslScriptPath 2>&1
+    $rsyncExit = $LASTEXITCODE
+    Remove-Item $localFile -Force -ErrorAction SilentlyContinue
+
+    $output | ForEach-Object {
+        Write-Host "  $_"
+        Log "  $_"
+    }
+    return $rsyncExit
+}
+
+# rsync with --delete via WSL
+function Wsl-Rsync-Delete {
+    param([string]$Src, [string]$Dest)
+    $wslScript = "#!/bin/bash`nrsync -az --delete --compress-level=1 --progress -e ssh '$Src' '$Dest'"
+    $localFile = Join-Path $env:TEMP "gba_rsync_tmp.sh"
+    [System.IO.File]::WriteAllText($localFile, $wslScript.Replace("`r`n", "`n"), $utf8NoBom)
+    $wslScriptPath = To-WslPath $localFile
+
+    $output = wsl bash $wslScriptPath 2>&1
+    $rsyncExit = $LASTEXITCODE
+    Remove-Item $localFile -Force -ErrorAction SilentlyContinue
+
+    $output | ForEach-Object {
+        Write-Host "  $_"
+        Log "  $_"
+    }
+    return $rsyncExit
 }
 
 # ---------- Pre-checks ----------
 Check-Command "go"
 Check-Command "ssh"
+Check-Command "scp"
 Check-Command "wsl"
 
 # Verify WSL has rsync
@@ -183,62 +236,55 @@ function Deploy-Backend {
         Info "[$app] Uploading via rsync ..."
         $wslSrc = "$(To-WslPath $localAppDir)/"
         ssh $SERVER "mkdir -p /tmp/gba_stage/$app"
-        $exitCode = Wsl-Rsync "rsync -az --compress-level=1 --progress -e ssh '$wslSrc' '${SERVER}:/tmp/gba_stage/$app/'"
+        $exitCode = Wsl-Rsync -Src $wslSrc -Dest "${SERVER}:/tmp/gba_stage/$app/"
         if ($exitCode -ne 0) { Fail "[$app] rsync upload failed" }
         Info "[$app] Upload OK"
 
-        # Step 2: stop -> replace -> start (on server)
-        # Write shell script with LF line endings to avoid \r\n issues
+        # Step 2: stop -> replace -> start (on server via temp script)
         Info "[$app] Stopping, replacing, starting ..."
-        $scriptContent = @"
+        # Use single-quoted here-string to prevent PowerShell variable expansion
+        $shellBody = @'
 #!/bin/bash
 set -e
-echo '[$app] Stopping service...'
-systemctl stop gba-$app 2>/dev/null || true
-for i in `$(seq 1 10); do
-    if ! pgrep -x "$app" >/dev/null 2>&1; then break; fi
+APP="__APP__"
+DEPLOY_DIR="__DEPLOY_DIR__"
+
+echo "[$APP] Stopping service..."
+systemctl stop gba-$APP 2>/dev/null || true
+for i in $(seq 1 10); do
+    if ! pgrep -x "$APP" >/dev/null 2>&1; then break; fi
     sleep 1
 done
 
-echo '[$app] Replacing binary...'
-mkdir -p $DEPLOY_DIR/$app
-cp /tmp/gba_stage/$app/$app $DEPLOY_DIR/$app/$app
-chmod +x $DEPLOY_DIR/$app/$app
+echo "[$APP] Replacing binary..."
+mkdir -p $DEPLOY_DIR/$APP
+cp /tmp/gba_stage/$APP/$APP $DEPLOY_DIR/$APP/$APP
+chmod +x $DEPLOY_DIR/$APP/$APP
 
-if [ ! -f $DEPLOY_DIR/$app/manifest/config/config.yaml ]; then
-    echo '[$app] Copying manifest (first deploy)...'
-    cp -r /tmp/gba_stage/$app/manifest $DEPLOY_DIR/$app/
+if [ ! -f $DEPLOY_DIR/$APP/manifest/config/config.yaml ]; then
+    echo "[$APP] Copying manifest (first deploy)..."
+    cp -r /tmp/gba_stage/$APP/manifest $DEPLOY_DIR/$APP/
 fi
 
-echo '[$app] Starting service...'
-systemctl start gba-$app
+echo "[$APP] Starting service..."
+systemctl start gba-$APP
 
 # Wait for service to become active (up to 8s)
-for i in `$(seq 1 8); do
-    status=`$(systemctl is-active gba-$app 2>/dev/null || echo 'unknown')
-    if [ "`$status" = "active" ]; then break; fi
+for i in $(seq 1 8); do
+    status=$(systemctl is-active gba-$APP 2>/dev/null || echo 'unknown')
+    if [ "$status" = "active" ]; then break; fi
     sleep 1
 done
 
-status=`$(systemctl is-active gba-$app 2>/dev/null || echo 'unknown')
-echo "[$app] Status: `$status"
+status=$(systemctl is-active gba-$APP 2>/dev/null || echo 'unknown')
+echo "[$APP] Status: $status"
 
-rm -rf /tmp/gba_stage/$app
-"@
-        $localScript = Join-Path $env:TEMP "gba_deploy_$app.sh"
-        $utf8NoBom = New-Object System.Text.UTF8Encoding($false)
-        [System.IO.File]::WriteAllText($localScript, $scriptContent.Replace("`r`n", "`n"), $utf8NoBom)
+rm -rf /tmp/gba_stage/$APP
+'@
+        # Replace placeholders with actual values
+        $shellBody = $shellBody.Replace("__APP__", $app).Replace("__DEPLOY_DIR__", $DEPLOY_DIR)
+        Run-RemoteScript -Name "deploy_$app" -Script $shellBody
 
-        scp -q $localScript "${SERVER}:/tmp/gba_deploy_$app.sh"
-        if ($LASTEXITCODE -ne 0) { Fail "[$app] Upload deploy script failed" }
-        Remove-Item $localScript -Force -ErrorAction SilentlyContinue
-
-        $output = ssh $SERVER "bash /tmp/gba_deploy_$app.sh && rm -f /tmp/gba_deploy_$app.sh" 2>&1
-        $output | ForEach-Object {
-            Write-Host "  $_"
-            Log "  $_"
-        }
-        if ($LASTEXITCODE -ne 0) { Fail "[$app] Remote deploy failed" }
         Info "[$app] Done"
 
         # Pause between services to let server stabilize
@@ -262,7 +308,7 @@ function Deploy-Frontend {
     Info "===== Deploying admin frontend (rsync) ====="
     $wslSrc = "$(To-WslPath $localFrontendDir)/"
     ssh $SERVER "mkdir -p $DEPLOY_DIR/admin"
-    $exitCode = Wsl-Rsync "rsync -az --delete --compress-level=1 --progress -e ssh '$wslSrc' '${SERVER}:$DEPLOY_DIR/admin/'"
+    $exitCode = Wsl-Rsync-Delete -Src $wslSrc -Dest "${SERVER}:$DEPLOY_DIR/admin/"
     if ($exitCode -ne 0) { Fail "Frontend rsync failed" }
     Info "Admin frontend deployed"
 }
@@ -280,7 +326,7 @@ function Deploy-Wap {
     Info "===== Deploying WAP (rsync) ====="
     $wslSrc = "$(To-WslPath $localWapDir)/"
     ssh $SERVER "mkdir -p $DEPLOY_DIR/wap"
-    $exitCode = Wsl-Rsync "rsync -az --delete --compress-level=1 --progress -e ssh '$wslSrc' '${SERVER}:$DEPLOY_DIR/wap/'"
+    $exitCode = Wsl-Rsync-Delete -Src $wslSrc -Dest "${SERVER}:$DEPLOY_DIR/wap/"
     if ($exitCode -ne 0) { Fail "WAP rsync failed" }
     Info "WAP deployed"
 }
@@ -329,11 +375,15 @@ Remove-Item $DIST_DIR -Recurse -Force -ErrorAction SilentlyContinue
 # Step 4: Final status check
 if (-not $SkipUpload -and ($Only -eq "all" -or $Only -eq "backend")) {
     Info "===== Final service status ====="
-    $statusOutput = ssh $SERVER "for app in system play upload; do echo `"gba-`$app: `$(systemctl is-active gba-`$app 2>/dev/null || echo unknown)`"; done" 2>&1
-    $statusOutput | ForEach-Object {
-        Write-Host "  $_" -ForegroundColor Cyan
-        Log "  $_"
-    }
+    # Use temp script to avoid inline bash \r\n issues
+    $statusScript = @'
+#!/bin/bash
+for app in system play upload; do
+    status=$(systemctl is-active gba-$app 2>/dev/null || echo "unknown")
+    echo "gba-$app: $status"
+done
+'@
+    Run-RemoteScript -Name "status_check" -Script $statusScript
 }
 
 # Done
