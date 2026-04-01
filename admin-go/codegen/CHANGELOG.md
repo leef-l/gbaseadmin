@@ -1,5 +1,32 @@
 # Codegen 更新日志
 
+## v1.6.0 — 2026-04-01
+
+### BUG 修复
+
+- **修复密码字段 dependencies 失效** — `triggerFields: ['id']` 但表单中无 `id` 字段导致 rules 永不更新，改为函数式 `rules: () => (isEdit.value ? undefined : 'required')` 动态判断
+- **修复树形表格 timeRange 参数未展开** — 树形 query 直接透传 `formValues` 导致 `timeRange` 数组传到后端，现在正确展开为 `startTime/endTime`
+- **修复 JsonEditor 详情用 v-html 渲染** — JSON 数据改用 `<pre>` + `JSON.stringify` 格式化展示，消除 XSS 风险
+- **修复 `_no` 后缀字段误用模糊搜索** — `order_no`/`_code`/`_sn` 等编号字段改为精确匹配（`Where` 而非 `WhereLike`）
+
+### 功能增强
+
+- **findDisplayField 扩展** — 关联表显示字段优先级扩展为：`title > name > username > nickname > real_name > label > phone > mobile`
+- **图片字段识别扩展** — 新增 `cover/logo/banner/thumbnail/poster/pic` 等常见图片字段名和后缀
+- **菜单权限按钮补全** — 新增"查看"（`:detail`）和"导出"（`:export`）权限按钮
+- **Export 加上限保护** — 导出接口加 `Limit(10000)` 防止百万记录 OOM
+- **consts 常量名语义化** — 枚举常量名从 `StatusV1` 改为 `StatusEnabled`，覆盖 30+ 常见中文标签映射
+- **导出 formValues 改用公开 API** — `gridApi.formApi.form.values` 改为 `gridApi.formApi.getValues()`
+
+### 代码优化
+
+- **Parser 复用数据库连接** — `New()` 时建立连接并缓存，多表生成不再重复 Open/Close
+- **提取 GenerateFiles 通用函数** — backend/frontend generator 重复代码提取到 `util.GenerateFiles()`
+- **Tooltip 渲染提取 helper** — `list.tpl` 提取 `tooltipHeader()`、`form.tpl` 提取 `tooltipLabel()`，消除 20+ 处内联重复
+- **树形表格去掉 checkbox 和批量删除** — 树形数据语义不适合批量删除，条件化生成
+
+---
+
 ## v1.5.0 — 2026-04-01
 
 ### 新增功能

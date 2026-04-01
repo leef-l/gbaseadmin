@@ -15,7 +15,7 @@ import { Button, message, Modal, Tag } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 {{- if .HasParentID}}
-import { get{{.ModelName}}Tree, delete{{.ModelName}}, batchDelete{{.ModelName}}, export{{.ModelName}} } from '#/api/{{.AppName}}/{{.ModuleName}}';
+import { get{{.ModelName}}Tree, delete{{.ModelName}}, export{{.ModelName}} } from '#/api/{{.AppName}}/{{.ModuleName}}';
 {{- else}}
 import { get{{.ModelName}}List, delete{{.ModelName}}, batchDelete{{.ModelName}}, export{{.ModelName}} } from '#/api/{{.AppName}}/{{.ModuleName}}';
 {{- end}}
@@ -49,6 +49,18 @@ function get{{.NameCamel}}Color(val: number): string {
 }
 {{end}}
 {{- end}}
+{{- if .HasTooltip}}
+/** 渲染带 Tooltip 的列标题 */
+function tooltipHeader(label: string, tip: string) {
+  return () => h('span', {}, [
+    label + ' ',
+    h(Tooltip, { title: tip }, {
+      default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }),
+    }),
+  ]);
+}
+{{- end}}
+
 /** 表单弹窗 */
 const [FormModalComp, formModalApi] = useVbenModal({
   connectedComponent: FormModal,
@@ -110,14 +122,16 @@ const formOptions: VbenFormProps = {
 /** 表格列配置 */
 const gridOptions: VxeGridProps<{{.ModelName}}Item> = {
   columns: [
+{{- if not .HasParentID}}
     { type: 'checkbox', width: 50 },
+{{- end}}
     { title: '序号', type: 'seq', width: 50 },
 {{- $isTree := .HasParentID}}
 {{- $firstDataCol := true}}
 {{- range .Fields}}
 {{- if and (not .IsHidden) (not .IsID) (not .IsParentID) (not .IsTimeField) (not .IsMultiFK) (not .IsPassword)}}
 {{- if .RefFieldJSON}}
-    { field: '{{.RefFieldJSON}}', title: '{{.ShortLabel}}'{{if .TooltipText}}, slots: { header: () => h('span', {}, ['{{.ShortLabel}} ', h(Tooltip, { title: '{{.TooltipText}}' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]) }{{end}}{{if and $isTree $firstDataCol}}, treeNode: true{{end}} },
+    { field: '{{.RefFieldJSON}}', title: '{{.ShortLabel}}'{{if .TooltipText}}, slots: { header: tooltipHeader('{{.ShortLabel}}', '{{.TooltipText}}') }{{end}}{{if and $isTree $firstDataCol}}, treeNode: true{{end}} },
 {{- else if .IsEnum}}
     { field: '{{.NameLower}}', title: '{{.ShortLabel}}', width: 120, slots: { default: '{{.NameLower}}_cell' }{{if and $isTree $firstDataCol}}, treeNode: true{{end}} },
 {{- else if eq .Component "ImageUpload"}}
@@ -125,9 +139,9 @@ const gridOptions: VxeGridProps<{{.ModelName}}Item> = {
 {{- else if or (eq .Component "RichText") (eq .Component "JsonEditor")}}
 {{- /* 富文本和JSON字段不在列表中显示，不消耗 firstDataCol */}}
 {{- else if .IsMoney}}
-    { field: '{{.NameLower}}', title: '{{.ShortLabel}}'{{if .TooltipText}}, slots: { header: () => h('span', {}, ['{{.ShortLabel}} ', h(Tooltip, { title: '{{.TooltipText}}' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]) }{{end}}, width: 120, formatter: ({ cellValue }: any) => cellValue != null ? (cellValue / 100).toFixed(2) : '-'{{if and $isTree $firstDataCol}}, treeNode: true{{end}} },
+    { field: '{{.NameLower}}', title: '{{.ShortLabel}}'{{if .TooltipText}}, slots: { header: tooltipHeader('{{.ShortLabel}}', '{{.TooltipText}}') }{{end}}, width: 120, formatter: ({ cellValue }: any) => cellValue != null ? (cellValue / 100).toFixed(2) : '-'{{if and $isTree $firstDataCol}}, treeNode: true{{end}} },
 {{- else}}
-    { field: '{{.NameLower}}', title: '{{.ShortLabel}}'{{if .TooltipText}}, slots: { header: () => h('span', {}, ['{{.ShortLabel}} ', h(Tooltip, { title: '{{.TooltipText}}' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]) }{{end}}{{if and $isTree $firstDataCol}}, treeNode: true{{end}} },
+    { field: '{{.NameLower}}', title: '{{.ShortLabel}}'{{if .TooltipText}}, slots: { header: tooltipHeader('{{.ShortLabel}}', '{{.TooltipText}}') }{{end}}{{if and $isTree $firstDataCol}}, treeNode: true{{end}} },
 {{- end}}
 {{- if not (or (eq .Component "RichText") (eq .Component "JsonEditor"))}}
 {{- $firstDataCol = false}}
@@ -136,7 +150,7 @@ const gridOptions: VxeGridProps<{{.ModelName}}Item> = {
 {{- end}}
 {{- range .Fields}}
 {{- if and (not .IsHidden) (.IsTimeField)}}
-    { field: '{{.NameLower}}', title: '{{.ShortLabel}}'{{if .TooltipText}}, slots: { header: () => h('span', {}, ['{{.ShortLabel}} ', h(Tooltip, { title: '{{.TooltipText}}' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]) }{{end}}, width: 180, formatter: 'formatDateTime' },
+    { field: '{{.NameLower}}', title: '{{.ShortLabel}}'{{if .TooltipText}}, slots: { header: tooltipHeader('{{.ShortLabel}}', '{{.TooltipText}}') }{{end}}, width: 180, formatter: 'formatDateTime' },
 {{- end}}
 {{- end}}
     { field: 'createdAt', title: '创建时间', width: 180, formatter: 'formatDateTime', sortable: true },
@@ -151,7 +165,13 @@ const gridOptions: VxeGridProps<{{.ModelName}}Item> = {
   proxyConfig: {
     ajax: {
       query: async (_params, formValues) => {
-        return await get{{.ModelName}}Tree(formValues) ?? [];
+        const { timeRange, ...rest } = formValues;
+        const params: Record<string, any> = { ...rest };
+        if (timeRange && timeRange.length === 2) {
+          params.startTime = timeRange[0];
+          params.endTime = timeRange[1];
+        }
+        return await get{{.ModelName}}Tree(params as any) ?? [];
       },
     },
   },
@@ -229,6 +249,7 @@ function handleDelete(row: {{.ModelName}}Item) {
   });
 }
 
+{{- if not .HasParentID}}
 /** 批量删除 */
 function handleBatchDelete() {
   const rows = gridApi.grid.getCheckboxRecords();
@@ -247,11 +268,12 @@ function handleBatchDelete() {
     },
   });
 }
+{{- end}}
 
 /** 导出 */
 async function handleExport() {
   try {
-    const formValues = gridApi.formApi.form.values;
+    const formValues = await gridApi.formApi.getValues();
     const params: Record<string, any> = { ...formValues };
     if (params.timeRange && params.timeRange.length === 2) {
       params.startTime = params.timeRange[0];
@@ -279,7 +301,9 @@ async function handleExport() {
     <Grid>
       <template #toolbar-actions>
         <Button type="primary" @click="handleCreate">新建</Button>
+{{- if not .HasParentID}}
         <Button danger class="ml-2" @click="handleBatchDelete">批量删除</Button>
+{{- end}}
         <Button class="ml-2" @click="handleExport">导出</Button>
       </template>
 {{- range .Fields}}

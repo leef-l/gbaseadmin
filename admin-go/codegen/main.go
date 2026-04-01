@@ -51,7 +51,12 @@ func main() {
 	}
 
 	// 创建解析器
-	p := parser.New(cfg.Database.DSN(), cfg.SkipFields)
+	p, err := parser.New(cfg.Database.DSN(), cfg.SkipFields)
+	if err != nil {
+		fmt.Printf("初始化解析器失败: %v\n", err)
+		os.Exit(1)
+	}
+	defer p.Close()
 
 	// 解析表名列表
 	tableNames := strings.Split(table, ",")

@@ -314,6 +314,7 @@ database:
 | 枚举常量 | 字段注释包含枚举定义 | 后端生成 Go 常量，前端生成 options |
 | Tooltip 提示 | 字段注释标签含 `（）` 或 `()` | 前端表单 label 和列头自动渲染 Tooltip 问号图标 |
 | 模糊搜索 | 字段名为 `title`/`name`/`phone`/`email` 等 | 后端 `WhereLike` 模糊查询，前端搜索栏自动添加 Input |
+| 精确搜索 | 字段名后缀 `_no`/`_code`/`_sn` | 编号类字段用精确匹配 `Where` 而非 `WhereLike` |
 | 金额格式化 | 字段名含 `price`/`amount`/`balance`/`fee`/`cost` | 列表自动"分→元"格式化显示（`/ 100`） |
 | 批量删除 | 所有表 | 前端勾选框 + 批量删除按钮，后端 `WhereIn` 批量软删除 |
 | CSV 导出 | 所有表 | 后端 CSV 流式输出，前端导出按钮（Blob 下载） |

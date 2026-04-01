@@ -128,7 +128,11 @@ func (s *s{{.ModelName}}) List(ctx context.Context, in *model.{{.ModelName}}List
 {{- range .Fields}}
 {{- if .IsSearchable}}
 	if in.{{.NameCamel}} != "" {
+{{- if .IsExactSearch}}
+		m = m.Where(dao.{{$.DaoName}}.Columns().{{.NameDao}}, in.{{.NameCamel}})
+{{- else}}
 		m = m.WhereLike(dao.{{$.DaoName}}.Columns().{{.NameDao}}, "%"+in.{{.NameCamel}}+"%")
+{{- end}}
 	}
 {{- end}}
 {{- end}}
@@ -215,7 +219,11 @@ func (s *s{{.ModelName}}) Export(ctx context.Context, in *model.{{.ModelName}}Li
 {{- range .Fields}}
 {{- if .IsSearchable}}
 	if in.{{.NameCamel}} != "" {
+{{- if .IsExactSearch}}
+		m = m.Where(dao.{{$.DaoName}}.Columns().{{.NameDao}}, in.{{.NameCamel}})
+{{- else}}
 		m = m.WhereLike(dao.{{$.DaoName}}.Columns().{{.NameDao}}, "%"+in.{{.NameCamel}}+"%")
+{{- end}}
 	}
 {{- end}}
 {{- end}}
@@ -225,7 +233,7 @@ func (s *s{{.ModelName}}) Export(ctx context.Context, in *model.{{.ModelName}}Li
 	if in.EndTime != "" {
 		m = m.WhereLTE(dao.{{.DaoName}}.Columns().CreatedAt, in.EndTime)
 	}
-	err = m.OrderAsc(dao.{{.DaoName}}.Columns().Id).Scan(&list)
+	err = m.OrderAsc(dao.{{.DaoName}}.Columns().Id).Limit(10000).Scan(&list)
 	return
 }
 

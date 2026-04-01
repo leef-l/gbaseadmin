@@ -184,9 +184,18 @@ func MapComponent(field FieldMeta) string {
 	}
 
 	// 图片上传
-	if strings.HasSuffix(name, "_image") || strings.HasSuffix(name, "_img") ||
-		name == "avatar" || strings.HasSuffix(name, "_photo") {
+	imageExact := map[string]bool{
+		"avatar": true, "cover": true, "logo": true,
+		"banner": true, "thumbnail": true, "poster": true,
+	}
+	if imageExact[name] {
 		return ComponentImageUpload
+	}
+	imageSuffixes := []string{"_image", "_img", "_photo", "_pic", "_cover", "_banner", "_logo", "_thumbnail", "_poster"}
+	for _, suffix := range imageSuffixes {
+		if strings.HasSuffix(name, suffix) {
+			return ComponentImageUpload
+		}
 	}
 
 	// 文件上传

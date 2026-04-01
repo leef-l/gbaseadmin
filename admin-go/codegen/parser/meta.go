@@ -23,8 +23,9 @@ const (
 
 // EnumValue 枚举值
 type EnumValue struct {
-	Value string
-	Label string
+	Value     string
+	Label     string
+	NameIdent string // 语义化标识符，如 "Enabled"/"Disabled"（为空则用 V+Value 兜底）
 }
 
 // FieldMeta 字段元数据
@@ -52,6 +53,7 @@ type FieldMeta struct {
 	IsEnum       bool // 是否有枚举值
 	IsPassword   bool // 是否是密码字段
 	IsSearchable bool // 是否可用于关键词搜索（title/name/nickname/phone/email/order_no 等文本字段）
+	IsExactSearch bool // 是否精确搜索（编号类字段 _no/_code/_sn，用 = 而非 LIKE）
 	IsMoney      bool // 是否是金额字段（*_price/*_amount/*_balance/*_income，单位：分）
 	MaxLength    int
 	DefaultValue string

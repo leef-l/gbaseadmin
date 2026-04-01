@@ -82,9 +82,35 @@ func ParseComment(comment string) (label string, shortLabel string, tooltipText 
 		val := strings.TrimSpace(pair[:eqIdx])
 		lab := strings.TrimSpace(pair[eqIdx+1:])
 		if val != "" && lab != "" {
-			enums = append(enums, EnumValue{Value: val, Label: lab})
+			enums = append(enums, EnumValue{Value: val, Label: lab, NameIdent: labelToIdent(lab)})
 		}
 	}
 
 	return label, shortLabel, tooltipText, enums
+}
+
+// labelToIdent 将中文枚举标签转为语义化 Go 标识符
+func labelToIdent(label string) string {
+	m := map[string]string{
+		"启用": "Enabled", "禁用": "Disabled",
+		"正常": "Normal", "异常": "Abnormal",
+		"有效": "Valid", "无效": "Invalid",
+		"是": "Yes", "否": "No",
+		"男": "Male", "女": "Female",
+		"开启": "On", "关闭": "Off",
+		"显示": "Show", "隐藏": "Hide",
+		"已完成": "Done", "进行中": "InProgress",
+		"待处理": "Pending", "已取消": "Cancelled",
+		"待审核": "PendingReview", "已通过": "Approved", "已拒绝": "Rejected",
+		"待支付": "Unpaid", "已支付": "Paid", "已退款": "Refunded",
+		"草稿": "Draft", "已发布": "Published", "已下架": "Offline",
+		"目录": "Dir", "菜单": "Menu", "按钮": "Button",
+		"普通": "Normal", "VIP": "VIP", "管理员": "Admin",
+		"成功": "Success", "失败": "Failed",
+		"充值": "Recharge", "消费": "Consume", "提现": "Withdraw",
+	}
+	if ident, ok := m[label]; ok {
+		return ident
+	}
+	return ""
 }

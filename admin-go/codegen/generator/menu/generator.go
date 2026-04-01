@@ -80,6 +80,8 @@ func (g *Generator) Generate(meta *parser.TableMeta) (int, error) {
 		{"新增", meta.AppName + ":" + meta.ModuleName + ":create", 1},
 		{"修改", meta.AppName + ":" + meta.ModuleName + ":update", 2},
 		{"删除", meta.AppName + ":" + meta.ModuleName + ":delete", 3},
+		{"查看", meta.AppName + ":" + meta.ModuleName + ":detail", 4},
+		{"导出", meta.AppName + ":" + meta.ModuleName + ":export", 5},
 	}
 
 	for _, btn := range buttons {

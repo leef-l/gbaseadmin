@@ -25,35 +25,45 @@ type columnInfo struct {
 type Parser struct {
 	DSN        string   // "user:pass@tcp(host:port)/dbname"
 	SkipFields []string // 额外隐藏的字段列表（从 codegen.yaml skip_fields 加载）
+	db         *sql.DB  // 复用数据库连接
+	dbName     string   // 缓存的数据库名
 }
 
 // New 创建解析器实例
-func New(dsn string, skipFields ...[]string) *Parser {
+func New(dsn string, skipFields ...[]string) (*Parser, error) {
 	p := &Parser{DSN: dsn}
 	if len(skipFields) > 0 {
 		p.SkipFields = skipFields[0]
 	}
-	return p
+	db, err := sql.Open("mysql", dsn)
+	if err != nil {
+		return nil, fmt.Errorf("连接数据库失败: %w", err)
+	}
+	if _, err := db.Exec("SET NAMES utf8mb4"); err != nil {
+		db.Close()
+		return nil, fmt.Errorf("设置字符集失败: %w", err)
+	}
+	dbName, err := extractDBName(dsn)
+	if err != nil {
+		db.Close()
+		return nil, err
+	}
+	p.db = db
+	p.dbName = dbName
+	return p, nil
+}
+
+// Close 释放数据库连接
+func (p *Parser) Close() {
+	if p.db != nil {
+		p.db.Close()
+	}
 }
 
 // ParseTable 解析单张表
 func (p *Parser) ParseTable(tableName string) (*TableMeta, error) {
-	db, err := sql.Open("mysql", p.DSN)
-	if err != nil {
-		return nil, fmt.Errorf("连接数据库失败: %w", err)
-	}
-	defer db.Close()
-
-	// 确保连接使用 UTF-8 编码
-	if _, err := db.Exec("SET NAMES utf8mb4"); err != nil {
-		return nil, fmt.Errorf("设置字符集失败: %w", err)
-	}
-
-	// 从 DSN 中提取数据库名
-	dbName, err := extractDBName(p.DSN)
-	if err != nil {
-		return nil, err
-	}
+	db := p.db
+	dbName := p.dbName
 
 	// 查询表注释
 	tableComment, err := queryTableComment(db, dbName, tableName)
@@ -197,9 +207,12 @@ func (p *Parser) ParseTable(tableName string) (*TableMeta, error) {
 	return meta, nil
 }
 
-// findDisplayField 在关联表中按优先级查找显示字段：title > name > username
+// findDisplayField 在关联表中按优先级查找显示字段
 func findDisplayField(db *sql.DB, dbName, tableName string) string {
-	priorities := []string{"title", "name", "username"}
+	priorities := []string{
+		"title", "name", "username", "nickname",
+		"real_name", "label", "phone", "mobile",
+	}
 	for _, col := range priorities {
 		if tableHasColumn(db, dbName, tableName, col) {
 			return col
@@ -342,6 +355,15 @@ func buildFieldMeta(col columnInfo) FieldMeta {
 	if searchableNames[name] || strings.HasSuffix(name, "_name") || strings.HasSuffix(name, "_title") || strings.HasSuffix(name, "_no") {
 		if goType == "string" && !isID && !isForeignKey && !isPassword {
 			field.IsSearchable = true
+		}
+	}
+
+	// 判断是否精确搜索字段（编号类，用 = 而非 LIKE）
+	exactSuffixes := []string{"_no", "_code", "_sn"}
+	for _, suffix := range exactSuffixes {
+		if strings.HasSuffix(name, suffix) {
+			field.IsExactSearch = true
+			break
 		}
 	}
 

@@ -56,9 +56,13 @@ const [Modal, modalApi] = useVbenModal({
         <img v-if="detail.{{.NameLower}}" :src="detail.{{.NameLower}}" style="max-width: 200px; max-height: 200px; object-fit: contain;" />
         <span v-else>-</span>
       </DescriptionsItem>
-{{- else if or (eq .Component "RichText") (eq .Component "JsonEditor")}}
+{{- else if eq .Component "RichText"}}
       <DescriptionsItem label="{{.ShortLabel}}">
         <div v-html="detail.{{.NameLower}}" style="max-height: 300px; overflow: auto;" />
+      </DescriptionsItem>
+{{- else if eq .Component "JsonEditor"}}
+      <DescriptionsItem label="{{.ShortLabel}}">
+        <pre style="max-height: 300px; overflow: auto; white-space: pre-wrap; word-break: break-all; margin: 0; font-size: 12px;">{{"{{"}} (() => { try { return JSON.stringify(JSON.parse(detail.{{.NameLower}}), null, 2) } catch { return detail.{{.NameLower}} } })() {{"}}"}}</pre>
       </DescriptionsItem>
 {{- else}}
       <DescriptionsItem label="{{.ShortLabel}}">{{"{{"}} detail.{{.NameLower}} || '-' {{"}}"}}</DescriptionsItem>
