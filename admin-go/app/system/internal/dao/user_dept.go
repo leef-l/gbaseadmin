@@ -19,4 +19,5 @@ var (
 	UserDept = userDeptDao{internal.NewUserDeptDao()}
 )
 
-// Add your custom methods and functionality below.
+// 注意：当前未使用，预留给用户-部门多对多关联功能。
+// 当需要支持一个用户同时归属多个部门时，可通过此 DAO 操作 user_dept 关联表。
