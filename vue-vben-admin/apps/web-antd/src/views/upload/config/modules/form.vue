@@ -21,20 +21,29 @@ const emit = defineEmits<{ success: [] }>();
 const isEdit = ref(false);
 const editId = ref('');
 
-/** 根据存储类型显示/隐藏字段 */
-function getStorageDependencies(storageVal: number) {
-  return {
-    localPath: storageVal === 1,
-    ossEndpoint: storageVal === 2,
-    ossBucket: storageVal === 2,
-    ossAccessKey: storageVal === 2,
-    ossSecretKey: storageVal === 2,
-    cosRegion: storageVal === 3,
-    cosBucket: storageVal === 3,
-    cosSecretID: storageVal === 3,
-    cosSecretKey: storageVal === 3,
-  };
-}
+/** 本地存储字段的 dependencies */
+const localDeps = {
+  triggerFields: ['storage'],
+  show(values: Record<string, any>) {
+    return values.storage === 1;
+  },
+};
+
+/** 阿里云OSS字段的 dependencies */
+const ossDeps = {
+  triggerFields: ['storage'],
+  show(values: Record<string, any>) {
+    return values.storage === 2;
+  },
+};
+
+/** 腾讯云COS字段的 dependencies */
+const cosDeps = {
+  triggerFields: ['storage'],
+  show(values: Record<string, any>) {
+    return values.storage === 3;
+  },
+};
 
 /** 表单配置 */
 const [Form, formApi] = useVbenForm({
@@ -57,15 +66,6 @@ const [Form, formApi] = useVbenForm({
         placeholder: '请选择存储类型',
         allowClear: true,
         class: 'w-full',
-        onChange: (val: number) => {
-          const vis = getStorageDependencies(val);
-          formApi.updateSchema(
-            Object.entries(vis).map(([fieldName, show]) => ({
-              fieldName,
-              dependencies: { show },
-            })),
-          );
-        },
       },
     },
     {
@@ -75,69 +75,73 @@ const [Form, formApi] = useVbenForm({
       componentProps: { checkedValue: 1, unCheckedValue: 0 },
       defaultValue: 0,
     },
+    // === 本地存储 ===
     {
       component: 'Input',
       fieldName: 'localPath',
       label: '本地存储路径',
-      dependencies: { show: false },
+      dependencies: localDeps,
       componentProps: { placeholder: '请输入本地存储路径', maxlength: 500 },
     },
+    // === 阿里云OSS ===
     {
       component: 'Input',
       fieldName: 'ossEndpoint',
       label: 'OSS Endpoint',
-      dependencies: { show: false },
+      dependencies: ossDeps,
       componentProps: { placeholder: '请输入OSS Endpoint', maxlength: 255 },
     },
     {
       component: 'Input',
       fieldName: 'ossBucket',
       label: 'OSS Bucket',
-      dependencies: { show: false },
+      dependencies: ossDeps,
       componentProps: { placeholder: '请输入OSS Bucket', maxlength: 255 },
     },
     {
       component: 'Input',
       fieldName: 'ossAccessKey',
       label: 'OSS AccessKey',
-      dependencies: { show: false },
+      dependencies: ossDeps,
       componentProps: { placeholder: '请输入OSS AccessKey', maxlength: 255 },
     },
     {
       component: 'Input',
       fieldName: 'ossSecretKey',
       label: 'OSS SecretKey',
-      dependencies: { show: false },
+      dependencies: ossDeps,
       componentProps: { placeholder: '请输入OSS SecretKey', maxlength: 255 },
     },
+    // === 腾讯云COS ===
     {
       component: 'Input',
       fieldName: 'cosRegion',
       label: 'COS Region',
-      dependencies: { show: false },
+      dependencies: cosDeps,
       componentProps: { placeholder: '请输入COS Region', maxlength: 100 },
     },
     {
       component: 'Input',
       fieldName: 'cosBucket',
       label: 'COS Bucket',
-      dependencies: { show: false },
+      dependencies: cosDeps,
       componentProps: { placeholder: '请输入COS Bucket', maxlength: 255 },
     },
     {
       component: 'Input',
       fieldName: 'cosSecretID',
       label: 'COS SecretId',
-      dependencies: { show: false },
+      dependencies: cosDeps,
       componentProps: { placeholder: '请输入COS SecretId', maxlength: 255 },
     },
     {
       component: 'Input',
       fieldName: 'cosSecretKey',
       label: 'COS SecretKey',
-      dependencies: { show: false },
+      dependencies: cosDeps,
       componentProps: { placeholder: '请输入COS SecretKey', maxlength: 255 },
     },
+    // === 公共字段 ===
     {
       component: 'InputNumber',
       fieldName: 'maxSize',
@@ -189,16 +193,6 @@ const [Modal, modalApi] = useVbenModal({
           const detail = await getConfigDetail(data.id);
           if (detail) {
             formApi.setValues(detail);
-            // 根据存储类型显示对应字段
-            if (detail.storage) {
-              const vis = getStorageDependencies(detail.storage);
-              formApi.updateSchema(
-                Object.entries(vis).map(([fieldName, show]) => ({
-                  fieldName,
-                  dependencies: { show },
-                })),
-              );
-            }
           }
         } catch {
           message.error('获取详情失败');
