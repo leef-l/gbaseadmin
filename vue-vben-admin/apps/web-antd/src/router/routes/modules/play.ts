@@ -11,12 +11,6 @@ const routes: RouteRecordRaw[] = [
     path: '/play',
     children: [
       {
-        path: '/play/banner',
-        name: 'PlayBanner',
-        component: () => import('#/views/play/banner/index.vue'),
-        meta: { title: 'Banner管理' },
-      },
-      {
         path: '/play/member-level',
         name: 'PlayMemberLevel',
         component: () => import('#/views/play/member_level/index.vue'),
