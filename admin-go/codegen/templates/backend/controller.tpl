@@ -106,14 +106,18 @@ func (c *c{{.ModelName}}) Export(ctx context.Context, req *v1.{{.ModelName}}Expo
 	r.Response.Header().Set("Content-Disposition", `attachment; filename="{{.ModuleName}}.csv"`)
 	r.Response.Write("\xEF\xBB\xBF") // UTF-8 BOM
 	// 表头
-	r.Response.Writeln("{{- $first := true}}{{- range .Fields}}{{- if and (not .IsHidden) (not .IsID) (not .IsPassword)}}{{if not $first}},{{end}}{{.ShortLabel}}{{$first = false}}{{- end}}{{- end}},创建时间")
+	r.Response.Writeln("{{- $first := true}}{{- range .Fields}}{{- if and (not .IsHidden) (not .IsID) (not .IsPassword)}}{{if not $first}},{{end}}{{if .RefFieldJSON}}{{.ShortLabel}}{{else}}{{.ShortLabel}}{{end}}{{$first = false}}{{- end}}{{- end}},创建时间")
 	// 数据行
 	for _, item := range list {
 		r.Response.Writefln("{{- $first := true}}{{- range .Fields}}{{- if and (not .IsHidden) (not .IsID) (not .IsPassword)}}{{if not $first}},{{end}}%v{{$first = false}}{{- end}}{{- end}},%v",
 {{- $firstArg := true}}
 {{- range .Fields}}
 {{- if and (not .IsHidden) (not .IsID) (not .IsPassword)}}
+{{- if .RefFieldJSON}}
+			{{if not $firstArg}} {{end}}item.{{.RefFieldName}},
+{{- else}}
 			{{if not $firstArg}} {{end}}item.{{.NameCamel}},
+{{- end}}
 {{- $firstArg = false}}
 {{- end}}
 {{- end}}
@@ -127,8 +131,15 @@ func (c *c{{.ModelName}}) Export(ctx context.Context, req *v1.{{.ModelName}}Expo
 func (c *c{{.ModelName}}) Tree(ctx context.Context, req *v1.{{.ModelName}}TreeReq) (res *v1.{{.ModelName}}TreeRes, err error) {
 	res = &v1.{{.ModelName}}TreeRes{}
 	res.List, err = service.{{.ModelName}}().Tree(ctx, &model.{{.ModelName}}TreeInput{
+		StartTime: req.StartTime,
+		EndTime:   req.EndTime,
 {{- range .Fields}}
 {{- if and (not .IsHidden) (not .IsID) (not .IsParentID) (.IsEnum)}}
+		{{.NameCamel}}: req.{{.NameCamel}},
+{{- end}}
+{{- end}}
+{{- range .Fields}}
+{{- if .IsSearchable}}
 		{{.NameCamel}}: req.{{.NameCamel}},
 {{- end}}
 {{- end}}

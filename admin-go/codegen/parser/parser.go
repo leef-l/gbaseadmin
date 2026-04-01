@@ -139,6 +139,9 @@ func (p *Parser) ParseTable(tableName string) (*TableMeta, error) {
 		if field.IsSearchable {
 			meta.HasSearchable = true
 		}
+		if field.Component == ComponentTreeSelectSingle || field.Component == ComponentTreeSelectMulti {
+			meta.HasTreeSelect = true
+		}
 	}
 
 	// 解析关联字段：对 *_id 外键和 parent_id 查找关联表的显示字段

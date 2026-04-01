@@ -1,5 +1,29 @@
 # Codegen 更新日志
 
+## v1.6.1 — 2026-04-01
+
+### BUG 修复
+
+- **修复 Export CSV 外键字段显示 ID** — Export 缺少 `fillRefFields` 批量填充，CSV 输出外键字段改用 `RefFieldName`（关联名称）而非原始 ID
+- **修复 labelToIdent 枚举常量名冲突** — "正常"和"普通"均映射为 `Normal`，同字段两个枚举值会导致编译报错；"普通"改为 `Regular`
+- **修复 detail-drawer 缺少更新时间** — 详情抽屉只显示 `createdAt`，现在补充 `updatedAt` 和业务时间字段（`_at` 后缀）
+- **修复 list.tpl ImageUpload slot 缺少隐藏判断** — `else if eq .Component "ImageUpload"` 分支缺少 `(not .IsHidden)` 等条件守卫
+- **修复 TreeSelectMulti treeData 未声明** — `parent_ids` 字段映射 `TreeSelectMulti` 但 `treeData` 仅在 `HasParentID` 时声明，新增 `HasTreeSelect` 标志位扩展声明条件
+- **修复非枚举 SelectMulti 渲染为 Input** — `_ids` 字段无枚举时 else 分支生成普通 Input，改为 `Select mode=tags` 支持多值输入
+
+### 功能增强
+
+- **Tree 接口支持时间范围和关键词搜索** — `TreeReq`/`TreeInput`/Tree logic 新增 `StartTime`/`EndTime` 和 searchable 字段过滤
+- **types.tpl ListParams 补全** — 新增 `orderBy`/`orderDir`/`startTime`/`endTime` 和 searchable 字段，消除 `as any` 类型强转
+- **types.tpl 新增 TreeParams** — 树形查询参数独立类型定义，`api.tpl` Tree 接口使用强类型参数
+- **菜单生成器新增批量删除按钮** — `batch-delete` 权限按钮（第 4 项），与前端批量删除功能匹配
+
+### 代码优化
+
+- **List/Export 过滤逻辑提取** — `logic.tpl` 中 List 和 Export 重复的筛选代码提取为 `applyListFilter()` 和 `fillRefFields()` 私有方法
+
+---
+
 ## v1.6.0 — 2026-04-01
 
 ### BUG 修复

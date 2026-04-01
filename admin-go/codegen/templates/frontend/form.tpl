@@ -18,7 +18,7 @@ import {
   update{{.ModelName}},{{if .HasParentID}}
   get{{.ModelName}}Tree,{{end}}
 } from '#/api/{{.AppName}}/{{.ModuleName}}';
-{{- if .HasParentID}}
+{{- if or .HasParentID .HasTreeSelect}}
 import type { {{.ModelName}}Item } from '#/api/{{.AppName}}/{{.ModuleName}}/types';
 
 const treeData = ref<{{.ModelName}}Item[]>([]);
@@ -184,13 +184,13 @@ const [Form, formApi] = useVbenForm({
     },
 {{- else}}
     {
-      component: 'Input',
+      component: 'Select',
       fieldName: '{{.NameLower}}',
       label: {{if .TooltipText}}tooltipLabel('{{.ShortLabel}}', '{{.TooltipText}}'){{else}}'{{.Label}}'{{end}},
 {{- if .IsRequired}}
-      rules: 'required',
+      rules: 'selectRequired',
 {{- end}}
-      componentProps: { placeholder: '请输入{{.Label}}' },
+      componentProps: { placeholder: '请输入{{.Label}}', mode: 'tags', allowClear: true, class: 'w-full' },
     },
 {{- end}}
 {{- else if eq .Component "TreeSelectSingle"}}

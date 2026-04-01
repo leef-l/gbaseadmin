@@ -69,7 +69,13 @@ const [Modal, modalApi] = useVbenModal({
 {{- end}}
 {{- end}}
 {{- end}}
+{{- range .Fields}}
+{{- if and (not .IsHidden) (not .IsID) (not .IsPassword) (.IsTimeField)}}
+      <DescriptionsItem label="{{.ShortLabel}}">{{"{{"}} detail.{{.NameLower}} || '-' {{"}}"}}</DescriptionsItem>
+{{- end}}
+{{- end}}
       <DescriptionsItem label="创建时间">{{"{{"}} detail.createdAt || '-' {{"}}"}}</DescriptionsItem>
+      <DescriptionsItem label="更新时间">{{"{{"}} detail.updatedAt || '-' {{"}}"}}</DescriptionsItem>
     </Descriptions>
   </Modal>
 </template>

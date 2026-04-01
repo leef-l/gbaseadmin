@@ -4,7 +4,8 @@ import type {
   {{.ModelName}}Item,
   {{.ModelName}}ListParams,
   {{.ModelName}}CreateParams,
-  {{.ModelName}}UpdateParams,
+  {{.ModelName}}UpdateParams,{{if .HasParentID}}
+  {{.ModelName}}TreeParams,{{end}}
 } from './types';
 
 /** API 前缀 */
@@ -55,7 +56,7 @@ export function export{{.ModelName}}(params?: Record<string, any>) {
 {{- if .HasParentID}}
 
 /** 获取{{.Comment}}树形结构 */
-export async function get{{.ModelName}}Tree(params?: Record<string, any>) {
+export async function get{{.ModelName}}Tree(params?: {{.ModelName}}TreeParams) {
   const res = await requestClient.get<{ list: {{.ModelName}}Item[] }>(`${PREFIX}/tree`, { params });
   return res?.list ?? [];
 }

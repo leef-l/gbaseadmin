@@ -22,12 +22,39 @@ export interface {{.ModelName}}Item {
 export interface {{.ModelName}}ListParams {
   pageNum: number;
   pageSize: number;
+  orderBy?: string;
+  orderDir?: string;
+  startTime?: string;
+  endTime?: string;
 {{- range .Fields}}
 {{- if and (not .IsHidden) (not .IsID) (.IsEnum)}}
   {{.NameLower}}?: {{.TSType}};
 {{- end}}
 {{- end}}
+{{- range .Fields}}
+{{- if .IsSearchable}}
+  {{.NameLower}}?: string;
+{{- end}}
+{{- end}}
 }
+
+{{- if .HasParentID}}
+/** {{.Comment}}树形查询参数 */
+export interface {{.ModelName}}TreeParams {
+  startTime?: string;
+  endTime?: string;
+{{- range .Fields}}
+{{- if and (not .IsHidden) (not .IsID) (not .IsParentID) (.IsEnum)}}
+  {{.NameLower}}?: {{.TSType}};
+{{- end}}
+{{- end}}
+{{- range .Fields}}
+{{- if .IsSearchable}}
+  {{.NameLower}}?: string;
+{{- end}}
+{{- end}}
+}
+{{- end}}
 
 /** {{.Comment}}创建参数 */
 export interface {{.ModelName}}CreateParams {

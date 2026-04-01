@@ -115,8 +115,8 @@ func (s *s{{.ModelName}}) Detail(ctx context.Context, id snowflake.JsonInt64) (o
 	return
 }
 
-// List 获取{{.Comment}}列表
-func (s *s{{.ModelName}}) List(ctx context.Context, in *model.{{.ModelName}}ListInput) (list []*model.{{.ModelName}}ListOutput, total int, err error) {
+// applyListFilter 应用列表通用过滤条件
+func (s *s{{.ModelName}}) applyListFilter(ctx context.Context, in *model.{{.ModelName}}ListInput) *g.Model {
 	m := dao.{{.DaoName}}.Ctx(ctx).Where(dao.{{.DaoName}}.Columns().DeletedAt, nil)
 {{- range .Fields}}
 {{- if and (not .IsHidden) (not .IsID) (.IsEnum)}}
@@ -136,31 +136,15 @@ func (s *s{{.ModelName}}) List(ctx context.Context, in *model.{{.ModelName}}List
 	}
 {{- end}}
 {{- end}}
-	// 时间范围筛选
 	if in.StartTime != "" {
 		m = m.WhereGTE(dao.{{.DaoName}}.Columns().CreatedAt, in.StartTime)
 	}
 	if in.EndTime != "" {
 		m = m.WhereLTE(dao.{{.DaoName}}.Columns().CreatedAt, in.EndTime)
 	}
-	total, err = m.Count()
-	if err != nil {
-		return
-	}
-	// 动态排序
-	if in.OrderBy != "" {
-		if in.OrderDir == "desc" {
-			m = m.OrderDesc(in.OrderBy)
-		} else {
-			m = m.OrderAsc(in.OrderBy)
-		}
-	} else {
-		m = m.OrderAsc(dao.{{.DaoName}}.Columns().Id)
-	}
-	err = m.Page(in.PageNum, in.PageSize).Scan(&list)
-	if err != nil {
-		return
-	}
+	return m
+}
+
 {{- $hasRef := false}}
 {{- range .Fields}}
 {{- if and .RefFieldName (not .IsHidden)}}
@@ -168,7 +152,9 @@ func (s *s{{.ModelName}}) List(ctx context.Context, in *model.{{.ModelName}}List
 {{- end}}
 {{- end}}
 {{- if $hasRef}}
-	// 批量填充关联显示字段（避免 N+1 查询）
+
+// fillRefFields 批量填充关联显示字段（避免 N+1 查询）
+func (s *s{{.ModelName}}) fillRefFields(ctx context.Context, list []*model.{{.ModelName}}ListOutput) {
 {{- range .Fields}}
 {{- if and .RefFieldName (not .IsHidden)}}
 	{
@@ -203,14 +189,55 @@ func (s *s{{.ModelName}}) List(ctx context.Context, in *model.{{.ModelName}}List
 	}
 {{- end}}
 {{- end}}
+}
+{{- end}}
+
+// List 获取{{.Comment}}列表
+func (s *s{{.ModelName}}) List(ctx context.Context, in *model.{{.ModelName}}ListInput) (list []*model.{{.ModelName}}ListOutput, total int, err error) {
+	m := s.applyListFilter(ctx, in)
+	total, err = m.Count()
+	if err != nil {
+		return
+	}
+	// 动态排序
+	if in.OrderBy != "" {
+		if in.OrderDir == "desc" {
+			m = m.OrderDesc(in.OrderBy)
+		} else {
+			m = m.OrderAsc(in.OrderBy)
+		}
+	} else {
+		m = m.OrderAsc(dao.{{.DaoName}}.Columns().Id)
+	}
+	err = m.Page(in.PageNum, in.PageSize).Scan(&list)
+	if err != nil {
+		return
+	}
+{{- if $hasRef}}
+	s.fillRefFields(ctx, list)
 {{- end}}
 	return
 }
 // Export 导出{{.Comment}}（不分页）
 func (s *s{{.ModelName}}) Export(ctx context.Context, in *model.{{.ModelName}}ListInput) (list []*model.{{.ModelName}}ListOutput, err error) {
+	m := s.applyListFilter(ctx, in)
+	err = m.OrderAsc(dao.{{.DaoName}}.Columns().Id).Limit(10000).Scan(&list)
+	if err != nil {
+		return
+	}
+{{- if $hasRef}}
+	s.fillRefFields(ctx, list)
+{{- end}}
+	return
+}
+
+{{if .HasParentID}}
+// Tree 获取{{.Comment}}树形结构
+func (s *s{{.ModelName}}) Tree(ctx context.Context, in *model.{{.ModelName}}TreeInput) (tree []*model.{{.ModelName}}TreeOutput, err error) {
+	var list []*model.{{.ModelName}}TreeOutput
 	m := dao.{{.DaoName}}.Ctx(ctx).Where(dao.{{.DaoName}}.Columns().DeletedAt, nil)
 {{- range .Fields}}
-{{- if and (not .IsHidden) (not .IsID) (.IsEnum)}}
+{{- if and (not .IsHidden) (not .IsID) (not .IsParentID) (.IsEnum)}}
 	if in.{{.NameCamel}} != nil {
 		m = m.Where(dao.{{$.DaoName}}.Columns().{{.NameDao}}, *in.{{.NameCamel}})
 	}
@@ -233,22 +260,6 @@ func (s *s{{.ModelName}}) Export(ctx context.Context, in *model.{{.ModelName}}Li
 	if in.EndTime != "" {
 		m = m.WhereLTE(dao.{{.DaoName}}.Columns().CreatedAt, in.EndTime)
 	}
-	err = m.OrderAsc(dao.{{.DaoName}}.Columns().Id).Limit(10000).Scan(&list)
-	return
-}
-
-{{if .HasParentID}}
-// Tree 获取{{.Comment}}树形结构
-func (s *s{{.ModelName}}) Tree(ctx context.Context, in *model.{{.ModelName}}TreeInput) (tree []*model.{{.ModelName}}TreeOutput, err error) {
-	var list []*model.{{.ModelName}}TreeOutput
-	m := dao.{{.DaoName}}.Ctx(ctx).Where(dao.{{.DaoName}}.Columns().DeletedAt, nil)
-{{- range .Fields}}
-{{- if and (not .IsHidden) (not .IsID) (not .IsParentID) (.IsEnum)}}
-	if in.{{.NameCamel}} != nil {
-		m = m.Where(dao.{{$.DaoName}}.Columns().{{.NameDao}}, *in.{{.NameCamel}})
-	}
-{{- end}}
-{{- end}}
 	err = m.{{if .HasSort}}OrderAsc(dao.{{.DaoName}}.Columns().Sort).{{end}}Scan(&list)
 	if err != nil {
 		return

@@ -105,7 +105,7 @@ func labelToIdent(label string) string {
 		"待支付": "Unpaid", "已支付": "Paid", "已退款": "Refunded",
 		"草稿": "Draft", "已发布": "Published", "已下架": "Offline",
 		"目录": "Dir", "菜单": "Menu", "按钮": "Button",
-		"普通": "Normal", "VIP": "VIP", "管理员": "Admin",
+		"普通": "Regular", "VIP": "VIP", "管理员": "Admin",
 		"成功": "Success", "失败": "Failed",
 		"充值": "Recharge", "消费": "Consume", "提现": "Withdraw",
 	}

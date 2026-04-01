@@ -89,4 +89,5 @@ type TableMeta struct {
 	HasRichText  bool // 有 RichText 或 JsonEditor 字段（用于弹窗加宽）
 	HasMoney     bool // 有金额字段（用于列表格式化）
 	HasSearchable bool // 有可搜索的文本字段
+	HasTreeSelect bool // 有 TreeSelectSingle/TreeSelectMulti 字段（不含外键 TreeSelect）
 }

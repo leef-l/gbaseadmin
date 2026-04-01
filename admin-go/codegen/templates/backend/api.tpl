@@ -130,10 +130,17 @@ type {{.ModelName}}ExportRes struct {
 {{if .HasParentID}}
 // {{.ModelName}}TreeReq 获取{{.Comment}}树形结构请求
 type {{.ModelName}}TreeReq struct {
-	g.Meta `path:"/{{.ModuleName}}/tree" method:"get" tags:"{{.Comment}}" summary:"获取{{.Comment}}树形结构"`
+	g.Meta    `path:"/{{.ModuleName}}/tree" method:"get" tags:"{{.Comment}}" summary:"获取{{.Comment}}树形结构"`
+	StartTime string `json:"startTime" dc:"开始时间"`
+	EndTime   string `json:"endTime" dc:"结束时间"`
 {{- range .Fields}}
 {{- if and (not .IsHidden) (not .IsID) (not .IsParentID) (.IsEnum)}}
 	{{.NameCamel}} *int `json:"{{.NameLower}}" dc:"{{.Label}}"`
+{{- end}}
+{{- end}}
+{{- range .Fields}}
+{{- if .IsSearchable}}
+	{{.NameCamel}} string `json:"{{.NameLower}}" dc:"{{.Label}}"`
 {{- end}}
 {{- end}}
 }

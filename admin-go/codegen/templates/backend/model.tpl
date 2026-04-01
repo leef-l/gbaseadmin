@@ -79,9 +79,16 @@ type {{.ModelName}}ListInput struct {
 {{if .HasParentID}}
 // {{.ModelName}}TreeInput {{.Comment}}树形查询输入
 type {{.ModelName}}TreeInput struct {
+	StartTime string `json:"startTime"`
+	EndTime   string `json:"endTime"`
 {{- range .Fields}}
 {{- if and (not .IsHidden) (not .IsID) (not .IsParentID) (.IsEnum)}}
 	{{.NameCamel}} *int `json:"{{.NameLower}}"`
+{{- end}}
+{{- end}}
+{{- range .Fields}}
+{{- if .IsSearchable}}
+	{{.NameCamel}} string `json:"{{.NameLower}}"`
 {{- end}}
 {{- end}}
 }
