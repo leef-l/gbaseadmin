@@ -15,12 +15,16 @@ const TAG_COLORS = ['green', 'red', 'blue', 'orange', 'cyan', 'purple', 'geekblu
 
 /** 步骤类型选项 */
 const stepTypeOptions = [
-  { label: '文字 2=链接 3=图片', value: 1 },
+  { label: '文字', value: 1 },
+  { label: '链接', value: 2 },
+  { label: '图片', value: 3 },
 ];
 
 /** 步骤类型映射 */
 const stepTypeMap: Record<number, string> = {
-  1: '文字 2=链接 3=图片',
+  1: '文字',
+  2: '链接',
+  3: '图片',
 };
 
 /** 步骤类型颜色 */
@@ -28,19 +32,23 @@ function getStepTypeColor(val?: number): string {
   if (val == null) {
     return 'default';
   }
-  const keys = [1];
+  const keys = [1, 2, 3];
   const idx = keys.indexOf(val);
   return TAG_COLORS[idx >= 0 ? idx % TAG_COLORS.length : 0] ?? 'default';
 }
 
 /** 审核状态选项 */
 const auditStatusOptions = [
-  { label: '待审核 1=通过 2=驳回', value: 0 },
+  { label: '待审核', value: 0 },
+  { label: '通过', value: 1 },
+  { label: '驳回', value: 2 },
 ];
 
 /** 审核状态映射 */
 const auditStatusMap: Record<number, string> = {
-  0: '待审核 1=通过 2=驳回',
+  0: '待审核',
+  1: '通过',
+  2: '驳回',
 };
 
 /** 审核状态颜色 */
@@ -48,7 +56,7 @@ function getAuditStatusColor(val?: number): string {
   if (val == null) {
     return 'default';
   }
-  const keys = [0];
+  const keys = [0, 1, 2];
   const idx = keys.indexOf(val);
   return TAG_COLORS[idx >= 0 ? idx % TAG_COLORS.length : 0] ?? 'default';
 }
