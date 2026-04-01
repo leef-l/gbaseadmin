@@ -14,6 +14,7 @@ import (
 	v1 "gbaseadmin/app/play/api/playapi/v1"
 	"gbaseadmin/app/play/internal/dao"
 	"gbaseadmin/utility/jwt"
+	"gbaseadmin/utility/sms"
 	"gbaseadmin/utility/snowflake"
 )
 
@@ -140,14 +141,17 @@ func (s *sAuth) SendCode(ctx context.Context, req *v1.AuthSendCodeReq) (*v1.Auth
 		return nil, fmt.Errorf("发送过于频繁，请稍后再试")
 	}
 
-	// 开发阶段：固定验证码 123456
-	code := "123456"
+	// 调用短信 SDK 发送验证码（devMode 下返回固定 123456，生产模式下真实发送）
+	code, err := sms.SendCode(ctx, req.Phone)
+	if err != nil {
+		return nil, fmt.Errorf("验证码发送失败: %v", err)
+	}
 
 	// 存入 Redis，5分钟过期
 	redisKey := fmt.Sprintf("sms:%s:%s", req.Scene, req.Phone)
-	_, err := g.Redis().Set(ctx, redisKey, code)
+	_, err = g.Redis().Set(ctx, redisKey, code)
 	if err != nil {
-		return nil, fmt.Errorf("验证码发送失败")
+		return nil, fmt.Errorf("验证码存储失败")
 	}
 	_, _ = g.Redis().Expire(ctx, redisKey, 5*60)
 
@@ -155,8 +159,7 @@ func (s *sAuth) SendCode(ctx context.Context, req *v1.AuthSendCodeReq) (*v1.Auth
 	_, _ = g.Redis().Set(ctx, limitKey, 1)
 	_, _ = g.Redis().Expire(ctx, limitKey, 60)
 
-	// 开发阶段：仅打印日志，不实际发送短信
-	glog.Infof(ctx, "发送验证码: phone=%s, scene=%s, code=%s", req.Phone, req.Scene, code)
+	glog.Infof(ctx, "验证码已处理: phone=%s, scene=%s", req.Phone, req.Scene)
 	return &v1.AuthSendCodeRes{}, nil
 }
 
