@@ -80,14 +80,13 @@ const rewardColumns = [
 ];
 
 const stepColumns = [
-  { title: '序号', dataIndex: 'stepNum', key: 'stepNum', width: 60 },
+  { title: '步骤序号', dataIndex: 'stepNum', key: 'stepNum', width: 80 },
   { title: '步骤标题', dataIndex: 'title', key: 'title' },
   { title: '类型', dataIndex: 'stepType', key: 'stepType', width: 80 },
   { title: '是否填写', dataIndex: 'isRequired', key: 'isRequired', width: 100 },
   { title: '示例内容', dataIndex: 'exampleText', key: 'exampleText', ellipsis: true },
   { title: '示例图片', dataIndex: 'stepImage', key: 'stepImage', width: 80 },
   { title: '步骤说明', dataIndex: 'descContent', key: 'descContent', ellipsis: true },
-  { title: '排序', dataIndex: 'sort', key: 'sort', width: 70 },
   { title: '操作', key: 'action', width: 120 },
 ];
 
