@@ -1,9 +1,10 @@
 import { useState, useCallback } from 'react';
-import { View, Text, Swiper, SwiperItem } from '@tarojs/components';
+import { View, Text, Swiper, SwiperItem, Image } from '@tarojs/components';
 import Taro, { useLoad, usePullDownRefresh, useReachBottom } from '@tarojs/taro';
 import { getActivityList } from '../../api/activity';
 import { getCoachList } from '../../api/coach';
 import { getGoodsList } from '../../api/goods';
+import { getBannerList, BannerItem } from '../../api/banner';
 import CoachCard from '../../components/CoachCard';
 import GoodsCard from '../../components/GoodsCard';
 import ActivityCard from '../../components/ActivityCard';
@@ -22,22 +23,58 @@ export default function IndexPage() {
   const [activities, setActivities] = useState<any[]>([]);
   const [coaches, setCoaches] = useState<any[]>([]);
   const [goods, setGoods] = useState<any[]>([]);
+  const [banners, setBanners] = useState<BannerItem[]>([]);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [loading, setLoading] = useState(false);
+
+  const handleBannerClick = (item: BannerItem) => {
+    switch (item.linkType) {
+      case 1: // 内页
+        Taro.navigateTo({ url: item.linkValue });
+        break;
+      case 2: // 外链
+        if (Taro.getEnv() === Taro.ENV_TYPE.WEB) {
+          window.location.href = item.linkValue;
+        } else {
+          // 小程序环境需要 webview 页面承载，暂用路由跳转（webview 页面需单独开发）
+          Taro.navigateTo({ url: `/pages/webview/index?url=${encodeURIComponent(item.linkValue)}` });
+        }
+        break;
+      case 3: // 活动页
+        Taro.navigateTo({ url: `/pages/activity/detail?activityId=${item.linkValue}` });
+        break;
+      case 4: // 商品页
+        Taro.navigateTo({ url: `/pages/goods/detail?id=${item.linkValue}` });
+        break;
+      case 5: // 陪玩师页
+        Taro.navigateTo({ url: `/pages/coach/detail?id=${item.linkValue}` });
+        break;
+      case 6: // 唤醒App
+        if (Taro.getEnv() === Taro.ENV_TYPE.WEB) {
+          window.location.href = item.linkValue;
+        } else {
+          // 小程序环境不支持唤醒外部 App
+          Taro.showToast({ title: '请在浏览器中打开', icon: 'none' });
+        }
+        break;
+    }
+  };
 
   const fetchData = useCallback(async (reset = false) => {
     const p = reset ? 1 : page;
     if (!reset && loading) return;
     setLoading(true);
     try {
-      const [actRes, coachRes, goodsRes] = await Promise.all([
+      const [actRes, coachRes, goodsRes, bannerRes] = await Promise.all([
         getActivityList({ page: 1, pageSize: 4 }),
         getCoachList({ page: 1, pageSize: 4 }),
         getGoodsList({ page: p, pageSize: 10 }),
+        getBannerList(),
       ]);
       setActivities(actRes?.list || []);
       setCoaches(coachRes?.list || []);
+      setBanners(bannerRes?.list || []);
       if (reset) {
         setGoods(goodsRes?.list || []);
         setPage(2);
@@ -78,11 +115,21 @@ export default function IndexPage() {
 
       {/* Banner */}
       <View className="home__banner">
-        <Swiper className="swiper" autoplay circular indicatorDots indicatorActiveColor="#fff">
-          <SwiperItem><View className="banner-item banner-1"><View><Text className="banner-text">新人专享</Text><Text className="banner-desc">首单立减20元</Text></View></View></SwiperItem>
-          <SwiperItem><View className="banner-item banner-2"><View><Text className="banner-text">邀请有礼</Text><Text className="banner-desc">邀请好友各得50元</Text></View></View></SwiperItem>
-          <SwiperItem><View className="banner-item banner-3"><View><Text className="banner-text">限时活动</Text><Text className="banner-desc">参与赢大奖</Text></View></View></SwiperItem>
-        </Swiper>
+        {banners.length > 0 ? (
+          <Swiper className="swiper" autoplay circular indicatorDots indicatorActiveColor="#fff">
+            {banners.map((item) => (
+              <SwiperItem key={item.bannerId} onClick={() => handleBannerClick(item)}>
+                <Image className="banner-img" src={item.image} mode="aspectFill" />
+              </SwiperItem>
+            ))}
+          </Swiper>
+        ) : (
+          <Swiper className="swiper" autoplay circular indicatorDots indicatorActiveColor="#fff">
+            <SwiperItem><View className="banner-item banner-1"><View><Text className="banner-text">新人专享</Text><Text className="banner-desc">首单立减20元</Text></View></View></SwiperItem>
+            <SwiperItem><View className="banner-item banner-2"><View><Text className="banner-text">邀请有礼</Text><Text className="banner-desc">邀请好友各得50元</Text></View></View></SwiperItem>
+            <SwiperItem><View className="banner-item banner-3"><View><Text className="banner-text">限时活动</Text><Text className="banner-desc">参与赢大奖</Text></View></View></SwiperItem>
+          </Swiper>
+        )}
       </View>
 
       {/* 快捷导航 */}

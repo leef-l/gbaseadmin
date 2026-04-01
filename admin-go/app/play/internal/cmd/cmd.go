@@ -13,6 +13,7 @@ import (
 	"gbaseadmin/app/play/internal/controller/activity_step"
 	"gbaseadmin/app/play/internal/controller/activity_step_log"
 	"gbaseadmin/app/play/internal/controller/balance_log"
+	"gbaseadmin/app/play/internal/controller/banner"
 	"gbaseadmin/app/play/internal/controller/category"
 	"gbaseadmin/app/play/internal/controller/coach"
 	"gbaseadmin/app/play/internal/controller/coach_apply"
@@ -60,6 +61,7 @@ var (
 						recharge_plan.RechargePlan,
 						recharge_order.RechargeOrder,
 						balance_log.BalanceLog,
+						banner.Banner,
 						activity.Activity,
 						activity_reward.ActivityReward,
 						activity_step.ActivityStep,
@@ -86,6 +88,7 @@ var (
 						playapi.SearchPublic,
 						playapi.PaymentNotify,
 						playapi.RechargeNotify,
+						playapi.BannerPublic,
 					)
 					// 需要会员登录
 					group.Group("/", func(group *ghttp.RouterGroup) {

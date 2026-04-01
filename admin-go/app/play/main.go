@@ -9,6 +9,7 @@ import (
 	_ "gbaseadmin/app/play/internal/logic/activity_step"
 	_ "gbaseadmin/app/play/internal/logic/activity_step_log"
 	_ "gbaseadmin/app/play/internal/logic/balance_log"
+	_ "gbaseadmin/app/play/internal/logic/banner"
 	_ "gbaseadmin/app/play/internal/logic/category"
 	_ "gbaseadmin/app/play/internal/logic/coach"
 	_ "gbaseadmin/app/play/internal/logic/coach_apply"
