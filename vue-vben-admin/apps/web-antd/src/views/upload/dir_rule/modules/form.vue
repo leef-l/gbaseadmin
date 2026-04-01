@@ -8,6 +8,8 @@ import {
   createDirRule,
   updateDirRule,
 } from '#/api/upload/dir_rule';
+import { getDirTree } from '#/api/upload/dir';
+import type { DirItem } from '#/api/upload/dir/types';
 
 /** 类别选项 */
 const categoryOptions = [
@@ -47,6 +49,12 @@ async function loadDirOptions() {
   } catch {
     dirIDOptions.value = [];
   }
+  formApi.updateSchema([
+    {
+      fieldName: 'dirID',
+      componentProps: { options: dirIDOptions.value },
+    },
+  ]);
 }
 
 /** 表单配置 */
@@ -56,9 +64,9 @@ const [Form, formApi] = useVbenForm({
     {
       component: 'Select',
       fieldName: 'dirID',
-      label: '目录ID',
+      label: '所属目录',
       rules: 'selectRequired',
-      componentProps: { options: dirIDOptions, placeholder: '请选择目录ID', allowClear: true, class: 'w-full' },
+      componentProps: { options: dirIDOptions, placeholder: '请选择所属目录', allowClear: true, class: 'w-full' },
     },
     {
       component: 'Select',
@@ -108,6 +116,7 @@ const [Modal, modalApi] = useVbenModal({
   },
   async onOpenChange(isOpen: boolean) {
     if (isOpen) {
+      await loadDirOptions();
       const data = modalApi.getData<{ id?: string } | null>();
       if (data?.id) {
         isEdit.value = true;

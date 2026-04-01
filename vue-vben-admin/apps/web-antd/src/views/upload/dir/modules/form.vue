@@ -95,7 +95,7 @@ const [Modal, modalApi] = useVbenModal({
       try {
         const res = await getDirTree();
         treeData.value = [
-          { id: '0', title: '顶级节点', children: res ?? [] } as DirItem,
+          { id: '0', name: '顶级节点', children: res ?? [] } as DirItem,
         ];
         formApi.updateSchema([
           {

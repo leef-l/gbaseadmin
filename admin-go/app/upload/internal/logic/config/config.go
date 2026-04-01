@@ -91,14 +91,14 @@ func (s *sConfig) Detail(ctx context.Context, id snowflake.JsonInt64) (out *mode
 // List 获取上传配置列表
 func (s *sConfig) List(ctx context.Context, in *model.ConfigListInput) (list []*model.ConfigListOutput, total int, err error) {
 	m := dao.UploadConfig.Ctx(ctx).Where(dao.UploadConfig.Columns().DeletedAt, nil)
-	if in.Storage > 0 {
-		m = m.Where(dao.UploadConfig.Columns().Storage, in.Storage)
+	if in.Storage != nil {
+		m = m.Where(dao.UploadConfig.Columns().Storage, *in.Storage)
 	}
-	if in.IsDefault > 0 {
-		m = m.Where(dao.UploadConfig.Columns().IsDefault, in.IsDefault)
+	if in.IsDefault != nil {
+		m = m.Where(dao.UploadConfig.Columns().IsDefault, *in.IsDefault)
 	}
-	if in.Status > 0 {
-		m = m.Where(dao.UploadConfig.Columns().Status, in.Status)
+	if in.Status != nil {
+		m = m.Where(dao.UploadConfig.Columns().Status, *in.Status)
 	}
 	total, err = m.Count()
 	if err != nil {

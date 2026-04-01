@@ -95,7 +95,7 @@ const formOptions: VbenFormProps = {
 const gridOptions: VxeGridProps<DirRuleItem> = {
   columns: [
     { title: '序号', type: 'seq', width: 50 },
-    { field: 'dirName', title: '目录ID' },
+    { field: 'dirName', title: '所属目录' },
     { field: 'category', title: '类别', width: 120, slots: { default: 'category_cell' } },
     { field: 'savePath', title: '保存目录' },
     { field: 'status', title: '状态', width: 120, slots: { default: 'status_cell' } },

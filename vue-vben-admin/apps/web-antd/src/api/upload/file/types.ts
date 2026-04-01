@@ -20,6 +20,8 @@ export interface FileItem {
 export interface FileListParams {
   pageNum: number;
   pageSize: number;
+  dirID?: string;
+  name?: string;
   storage?: number;
   isImage?: number;
 }

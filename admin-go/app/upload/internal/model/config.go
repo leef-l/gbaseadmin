@@ -89,9 +89,9 @@ type ConfigListOutput struct {
 
 // ConfigListInput 上传配置列表查询输入
 type ConfigListInput struct {
-	PageNum   int `json:"pageNum"`
-	PageSize  int `json:"pageSize"`
-	Storage   int `json:"storage"`
-	IsDefault int `json:"isDefault"`
-	Status    int `json:"status"`
+	PageNum   int  `json:"pageNum"`
+	PageSize  int  `json:"pageSize"`
+	Storage   *int `json:"storage"`
+	IsDefault *int `json:"isDefault"`
+	Status    *int `json:"status"`
 }

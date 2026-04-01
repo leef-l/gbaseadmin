@@ -8,6 +8,8 @@ import {
   createFile,
   updateFile,
 } from '#/api/upload/file';
+import { getDirTree } from '#/api/upload/dir';
+import type { DirItem } from '#/api/upload/dir/types';
 
 /** 存储类型选项 */
 const storageOptions = [
@@ -25,6 +27,41 @@ const isImageOptions = [
 const emit = defineEmits<{ success: [] }>();
 const isEdit = ref(false);
 const editId = ref('');
+
+/** 目录下拉选项 */
+const dirIDOptions = ref<{ label: string; value: string }[]>([]);
+
+/** 将树形目录打平为选项 */
+function flattenDirTree(
+  items: DirItem[],
+  prefix = '',
+): { label: string; value: string }[] {
+  const result: { label: string; value: string }[] = [];
+  for (const item of items) {
+    const label = prefix ? `${prefix} / ${item.name}` : item.name;
+    result.push({ label, value: item.id });
+    if (item.children?.length) {
+      result.push(...flattenDirTree(item.children, label));
+    }
+  }
+  return result;
+}
+
+/** 加载目录选项 */
+async function loadDirOptions() {
+  try {
+    const list = await getDirTree();
+    dirIDOptions.value = flattenDirTree(list);
+  } catch {
+    dirIDOptions.value = [];
+  }
+  formApi.updateSchema([
+    {
+      fieldName: 'dirID',
+      componentProps: { options: dirIDOptions.value },
+    },
+  ]);
+}
 
 /** 表单配置 */
 const [Form, formApi] = useVbenForm({
@@ -75,10 +112,11 @@ const [Form, formApi] = useVbenForm({
       componentProps: { options: storageOptions, placeholder: '请选择存储类型', allowClear: true, class: 'w-full' },
     },
     {
-      component: 'ImageUpload',
+      component: 'RadioGroup',
       fieldName: 'isImage',
       label: '是否图片',
-      componentProps: { maxCount: 1 },
+      componentProps: { options: isImageOptions },
+      defaultValue: 0,
     },
   ],
 });
@@ -109,6 +147,7 @@ const [Modal, modalApi] = useVbenModal({
   },
   async onOpenChange(isOpen: boolean) {
     if (isOpen) {
+      await loadDirOptions();
       const data = modalApi.getData<{ id?: string } | null>();
       if (data?.id) {
         isEdit.value = true;

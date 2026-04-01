@@ -1,11 +1,9 @@
 <script setup lang="ts">
-import { h } from 'vue';
 import type { VbenFormProps } from '#/adapter/form';
 import type { VxeGridProps } from '#/adapter/vxe-table';
 
 import { Page, useVbenModal } from '@vben/common-ui';
-import { Button, message, Modal, Tag, Tooltip } from 'ant-design-vue';
-import { QuestionCircleOutlined } from '@ant-design/icons-vue';
+import { Button, message, Modal, Tag } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getConfigList, deleteConfig } from '#/api/upload/config';
@@ -129,18 +127,9 @@ const gridOptions: VxeGridProps<ConfigItem> = {
     { title: '序号', type: 'seq', width: 50 },
     { field: 'name', title: '配置名称' },
     { field: 'storage', title: '存储类型', width: 120, slots: { default: 'storage_cell' } },
-    { field: 'isDefault', title: '是否默认', width: 120, slots: { default: 'isDefault_cell' } },
-    { field: 'localPath', title: '本地存储路径' },
-    { field: 'ossEndpoint', title: 'OSS Endpoint' },
-    { field: 'ossBucket', title: 'OSS Bucket' },
-    { field: 'ossAccessKey', title: 'OSS AccessKey' },
-    { field: 'ossSecretKey', title: 'OSS SecretKey' },
-    { field: 'cosRegion', title: 'COS Region' },
-    { field: 'cosBucket', title: 'COS Bucket' },
-    { field: 'cosSecretID', title: 'COS SecretId' },
-    { field: 'cosSecretKey', title: 'COS SecretKey' },
-    { field: 'maxSize', title: '最大文件大小', slots: { header: () => h('span', {}, ['最大文件大小 ', h(Tooltip, { title: 'MB' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]) } },
-    { field: 'status', title: '状态', width: 120, slots: { default: 'status_cell' } },
+    { field: 'isDefault', title: '是否默认', width: 100, slots: { default: 'isDefault_cell' } },
+    { field: 'maxSize', title: '大小限制(MB)', width: 120 },
+    { field: 'status', title: '状态', width: 100, slots: { default: 'status_cell' } },
     { field: 'createdAt', title: '创建时间', width: 180, formatter: 'formatDateTime' },
     { title: '操作', width: 200, fixed: 'right', slots: { default: 'action' } },
   ],

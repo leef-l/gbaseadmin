@@ -78,7 +78,8 @@ const gridOptions: VxeGridProps<DirItem> = {
   proxyConfig: {
     ajax: {
       query: async (_params, formValues) => {
-        return await getDirTree(formValues) ?? [];
+        const list = await getDirTree(formValues) ?? [];
+        return { items: list, total: list.length };
       },
     },
   },
