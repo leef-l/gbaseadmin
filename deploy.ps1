@@ -1,207 +1,189 @@
 # ============================================
-# GBaseAdmin Windows 一键部署脚本
-# 功能: 编译后端 + 构建前端 + 打包 + 上传 + 重启
-# 用法: .\deploy.ps1 [-Only backend|frontend|wap|all] [-SkipBuild] [-SkipUpload]
+# GBaseAdmin Windows Deploy Script
+# Usage: .\deploy.ps1 [-Only backend|frontend|wap|all] [-SkipBuild] [-SkipUpload]
 # ============================================
 
-# 定义脚本参数：-Only 选择部署内容，-SkipBuild 跳过编译，-SkipUpload 跳过上传
 param(
-    [ValidateSet("all", "backend", "frontend", "wap")]  # 限定 -Only 参数只能是这四个值
-    [string]$Only = "all",                               # 默认全量部署
-    [switch]$SkipBuild,                                  # 开关参数：是否跳过构建
-    [switch]$SkipUpload                                  # 开关参数：是否跳过上传
+    [ValidateSet("all", "backend", "frontend", "wap")]
+    [string]$Only = "all",
+    [switch]$SkipBuild,
+    [switch]$SkipUpload
 )
 
-# 强制 UTF-8 编码，解决中文乱码（必须放在 param 之后）
-[Console]::OutputEncoding = [System.Text.Encoding]::UTF8
-[Console]::InputEncoding  = [System.Text.Encoding]::UTF8
-$OutputEncoding = [System.Text.Encoding]::UTF8
+# ---------- Config ----------
+$SERVER     = "root@pw.easytestdev.online"
+$DEPLOY_DIR = "/www/wwwroot/pw.easytestdev.online"
+$APPS       = @("system", "play", "upload")
+$PORTS      = @("8000", "8001", "8002")
 
-# ---------- 配置区（按需修改） ----------
-$SERVER     = "root@pw.easytestdev.online"               # SSH 连接地址（用户名@服务器域名）
-$DEPLOY_DIR = "/www/wwwroot/pw.easytestdev.online"       # 服务器上的部署根目录
-$APPS       = @("system", "play", "upload")              # 三个后端服务名称
-$PORTS      = @("8000", "8001", "8002")                  # 对应的端口号（备用）
+# Project paths
+$PROJECT_DIR  = Split-Path -Parent $MyInvocation.MyCommand.Path
+$BACKEND_DIR  = Join-Path $PROJECT_DIR "admin-go"
+$FRONTEND_DIR = Join-Path $PROJECT_DIR "vue-vben-admin"
+$WAP_DIR      = Join-Path $PROJECT_DIR "wap-ui"
+$DIST_DIR     = Join-Path $PROJECT_DIR "dist"
 
-# 项目路径（根据脚本所在位置自动计算）
-$PROJECT_DIR  = Split-Path -Parent $MyInvocation.MyCommand.Path  # 脚本所在目录 = 项目根目录
-$BACKEND_DIR  = Join-Path $PROJECT_DIR "admin-go"                # 后端 Go 代码目录
-$FRONTEND_DIR = Join-Path $PROJECT_DIR "vue-vben-admin"          # 管理端前端目录
-$WAP_DIR      = Join-Path $PROJECT_DIR "wap-ui"                  # WAP 端目录
-$DIST_DIR     = Join-Path $PROJECT_DIR "dist"                    # 本地临时构建产物目录
-
-# ---------- 日志配置 ----------
-$LOG_DIR  = Join-Path $PROJECT_DIR "deploy-logs"                 # 部署日志目录
+# ---------- Log config ----------
+$LOG_DIR  = Join-Path $PROJECT_DIR "deploy-logs"
 if (-not (Test-Path $LOG_DIR)) { New-Item -ItemType Directory -Path $LOG_DIR -Force | Out-Null }
-$timestamp = Get-Date -Format "yyyyMMdd_HHmmss"                  # 日志时间戳
-$LOG_FILE = Join-Path $LOG_DIR "deploy_${timestamp}.log"         # 本次部署日志文件路径
+$logTimestamp = Get-Date -Format "yyyyMMdd_HHmmss"
+$LOG_FILE = Join-Path $LOG_DIR "deploy_${logTimestamp}.log"
 
-# ---------- 工具函数（同时输出到控制台和日志文件） ----------
-function Log($msg) {                                              # 写入日志文件（带时间戳）
+# ---------- Helper functions ----------
+function Log($msg) {
     $ts = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
-    "$ts $msg" | Out-File -Append -FilePath $LOG_FILE -Encoding utf8BOM
+    "$ts $msg" | Out-File -Append -FilePath $LOG_FILE -Encoding utf8
 }
 function Info($msg)  { Write-Host "[INFO] $msg" -ForegroundColor Green;  Log "[INFO] $msg" }
 function Warn($msg)  { Write-Host "[WARN] $msg" -ForegroundColor Yellow; Log "[WARN] $msg" }
 function Fail($msg)  { Write-Host "[FAIL] $msg" -ForegroundColor Red;    Log "[FAIL] $msg"; exit 1 }
 
-# 检查命令是否存在，不存在则报错退出
 function Check-Command($cmd) {
     if (-not (Get-Command $cmd -ErrorAction SilentlyContinue)) {
-        Fail "$cmd 未安装，请先安装"
+        Fail "$cmd not found, please install it first"
     }
 }
 
-# ---------- 前置检查：确保必备工具已安装 ----------
-Check-Command "go"    # Go 编译器
-Check-Command "ssh"   # SSH 客户端（Win11 自带）
-Check-Command "scp"   # SCP 文件传输（Win11 自带）
+# ---------- Pre-checks ----------
+Check-Command "go"
+Check-Command "ssh"
+Check-Command "scp"
 
-# ---------- 清理/创建本地临时目录 ----------
-if (Test-Path $DIST_DIR) { Remove-Item $DIST_DIR -Recurse -Force }         # 删除旧的 dist 目录
-New-Item -ItemType Directory -Path $DIST_DIR -Force | Out-Null             # 创建新的 dist 目录
-New-Item -ItemType Directory -Path (Join-Path $DIST_DIR "backend") -Force | Out-Null  # 创建 dist/backend 子目录
+# ---------- Clean/create dist dir ----------
+if (Test-Path $DIST_DIR) { Remove-Item $DIST_DIR -Recurse -Force }
+New-Item -ItemType Directory -Path $DIST_DIR -Force | Out-Null
+New-Item -ItemType Directory -Path (Join-Path $DIST_DIR "backend") -Force | Out-Null
 
 # ============================================
-# 1. 编译后端 Go 服务（交叉编译为 Linux 二进制）
+# 1. Build backend Go services (cross-compile for Linux)
 # ============================================
 function Build-Backend {
-    Info "===== 编译后端服务 ====="
+    Info "===== Building backend services ====="
 
-    # 设置 Go 交叉编译环境变量
-    $env:CGO_ENABLED = "0"                      # 禁用 CGO（纯 Go 编译，无需 C 编译器）
-    $env:GOOS = "linux"                         # 目标操作系统：Linux
-    $env:GOARCH = "amd64"                       # 目标架构：x86_64
-    $env:GOPROXY = "https://goproxy.cn,direct"  # Go 模块代理（加速国内下载）
+    $env:CGO_ENABLED = "0"
+    $env:GOOS = "linux"
+    $env:GOARCH = "amd64"
+    $env:GOPROXY = "https://goproxy.cn,direct"
 
-    Push-Location $BACKEND_DIR                  # 切换到后端目录
+    Push-Location $BACKEND_DIR
     try {
-        foreach ($app in $APPS) {               # 遍历 system、play、upload 三个服务
-            Info "编译 $app ..."
-            $outDir = Join-Path $DIST_DIR "backend\$app"                   # 输出目录：dist/backend/{app}
-            New-Item -ItemType Directory -Path $outDir -Force | Out-Null   # 创建输出目录
+        foreach ($app in $APPS) {
+            Info "Compiling $app ..."
+            $outDir = Join-Path $DIST_DIR "backend\$app"
+            New-Item -ItemType Directory -Path $outDir -Force | Out-Null
 
-            # 编译二进制：-ldflags "-s -w" 去除调试信息和符号表，减小体积
             $buildOutput = go build -ldflags "-s -w" -o "$outDir\$app" ".\app\$app\main.go" 2>&1
-            if ($buildOutput) { Log $buildOutput }             # 编译输出写入日志
-            if ($LASTEXITCODE -ne 0) { Fail "$app 编译失败: $buildOutput" }
+            if ($buildOutput) { Log $buildOutput }
+            if ($LASTEXITCODE -ne 0) { Fail "$app build failed: $buildOutput" }
 
-            # 复制 manifest 配置目录（包含 config.yaml 模板）
             $manifestSrc = Join-Path $BACKEND_DIR "app\$app\manifest"
             if (Test-Path $manifestSrc) {
                 Copy-Item $manifestSrc -Destination $outDir -Recurse -Force
             }
 
-            Info "$app 编译完成"
+            Info "$app build OK"
         }
     } finally {
-        Pop-Location            # 恢复原工作目录
-        $env:GOOS = ""          # 清除交叉编译环境变量，避免影响本地 Go 开发
+        Pop-Location
+        $env:GOOS = ""
         $env:GOARCH = ""
     }
 }
 
 # ============================================
-# 2. 构建管理端前端（Vben Admin + Ant Design Vue）
+# 2. Build admin frontend (Vben Admin + Ant Design Vue)
 # ============================================
 function Build-Frontend {
-    Info "===== 构建管理端前端 ====="
-    Check-Command "pnpm"                        # 检查 pnpm 是否安装
+    Info "===== Building admin frontend ====="
+    Check-Command "pnpm"
 
-    Push-Location $FRONTEND_DIR                 # 切换到前端目录
+    Push-Location $FRONTEND_DIR
     try {
-        pnpm build:antd                         # 执行 Vben Admin 的 Ant Design 版本构建
-        if ($LASTEXITCODE -ne 0) { Fail "前端构建失败" }
+        pnpm build:antd
+        if ($LASTEXITCODE -ne 0) { Fail "Frontend build failed" }
 
-        # 构建产物在 apps/web-antd/dist 目录下
         $distSrc = Join-Path $FRONTEND_DIR "apps\web-antd\dist"
-        if (-not (Test-Path $distSrc)) { Fail "前端 dist 目录不存在: $distSrc" }
+        if (-not (Test-Path $distSrc)) { Fail "Frontend dist not found: $distSrc" }
 
-        # 复制到统一的 dist/frontend 目录
         Copy-Item $distSrc -Destination (Join-Path $DIST_DIR "frontend") -Recurse -Force
-        Info "管理端前端构建完成"
+        Info "Admin frontend build OK"
     } finally {
         Pop-Location
     }
 }
 
 # ============================================
-# 3. 构建 WAP 端（Taro H5 模式）
+# 3. Build WAP (Taro H5)
 # ============================================
 function Build-Wap {
-    Info "===== 构建 WAP 端 (H5) ====="
-    Check-Command "pnpm"                        # 检查 pnpm 是否安装
+    Info "===== Building WAP (H5) ====="
+    Check-Command "pnpm"
 
-    Push-Location $WAP_DIR                      # 切换到 WAP 端目录
+    Push-Location $WAP_DIR
     try {
-        pnpm build:h5                           # 执行 Taro H5 构建
-        if ($LASTEXITCODE -ne 0) { Fail "WAP 构建失败" }
+        pnpm build:h5
+        if ($LASTEXITCODE -ne 0) { Fail "WAP build failed" }
 
-        $distSrc = Join-Path $WAP_DIR "dist"    # Taro 构建产物目录
-        if (-not (Test-Path $distSrc)) { Fail "WAP dist 目录不存在: $distSrc" }
+        $distSrc = Join-Path $WAP_DIR "dist"
+        if (-not (Test-Path $distSrc)) { Fail "WAP dist not found: $distSrc" }
 
-        # 复制到统一的 dist/wap 目录
         Copy-Item $distSrc -Destination (Join-Path $DIST_DIR "wap") -Recurse -Force
-        Info "WAP 端构建完成"
+        Info "WAP build OK"
     } finally {
         Pop-Location
     }
 }
 
 # ============================================
-# 4. 将所有构建产物打包成 tar.gz 压缩包
+# 4. Pack all into tar.gz
 # ============================================
 function Pack-All {
-    Info "===== 打包部署文件 ====="
+    Info "===== Packing deploy files ====="
 
-    $timestamp = Get-Date -Format "yyyyMMdd_HHmm"          # 时间戳，如 20260401_2130
-    $tarName = "gbaseadmin_$timestamp.tar.gz"               # 压缩包文件名
-    $script:TarFile = Join-Path $PROJECT_DIR $tarName       # $script: 作用域使变量在函数外可访问
+    $packTimestamp = Get-Date -Format "yyyyMMdd_HHmm"
+    $tarName = "gbaseadmin_$packTimestamp.tar.gz"
+    $script:TarFile = Join-Path $PROJECT_DIR $tarName
 
     Push-Location $DIST_DIR
     try {
-        tar -czf $script:TarFile *                          # 用 tar 压缩 dist 目录下所有内容
-        if ($LASTEXITCODE -ne 0) { Fail "打包失败" }
+        tar -czf $script:TarFile *
+        if ($LASTEXITCODE -ne 0) { Fail "Pack failed" }
 
-        # 显示压缩包大小
         $sizeMB = [math]::Round((Get-Item $script:TarFile).Length / 1MB, 2)
-        Info "打包完成: $tarName ($sizeMB MB)"
+        Info "Packed: $tarName ($sizeMB MB)"
     } finally {
         Pop-Location
     }
 }
 
 # ============================================
-# 5. 通过 SSH 上传到服务器并执行远程部署
+# 5. Upload to server and deploy via SSH
 # ============================================
 function Deploy-ToServer {
-    Info "===== 上传到服务器 ====="
+    Info "===== Uploading to server ====="
 
-    # SCP 上传压缩包到服务器 /tmp 目录
     scp $script:TarFile "${SERVER}:/tmp/gbaseadmin_deploy.tar.gz"
-    if ($LASTEXITCODE -ne 0) { Fail "上传失败" }
-    Info "上传完成"
+    if ($LASTEXITCODE -ne 0) { Fail "Upload failed" }
+    Info "Upload OK"
 
-    # 生成远程部署脚本（写入临时文件避免 PowerShell 变量转义问题）
-    $remoteShell = Join-Path $env:TEMP "gba_remote_deploy.sh"       # 本地临时 shell 脚本路径
-    # 用单引号 here-string，PowerShell 不会解析其中的 $ 符号
+    $remoteShell = Join-Path $env:TEMP "gba_remote_deploy.sh"
     $shellContent = @'
 #!/bin/bash
 set -e
 
 DEPLOY_DIR="__DEPLOY_DIR__"
 
-echo '[INFO] 解压部署文件...'
+echo '[INFO] Extracting deploy files...'
 cd /tmp
 rm -rf gbaseadmin_deploy && mkdir gbaseadmin_deploy
 tar -xzf gbaseadmin_deploy.tar.gz -C gbaseadmin_deploy
 
-# ---- 部署后端 ----
+# ---- Deploy backend ----
 if [ -d /tmp/gbaseadmin_deploy/backend ]; then
-    echo '[INFO] 部署后端服务...'
+    echo '[INFO] Deploying backend services...'
     for app in system play upload; do
         if [ -f /tmp/gbaseadmin_deploy/backend/$app/$app ]; then
-            echo "[INFO] 停止 gba-$app ..."
+            echo "[INFO] Stopping gba-$app ..."
             systemctl stop gba-$app 2>/dev/null || true
 
             cp /tmp/gbaseadmin_deploy/backend/$app/$app $DEPLOY_DIR/$app/$app
@@ -212,101 +194,98 @@ if [ -d /tmp/gbaseadmin_deploy/backend ]; then
             fi
 
             systemctl start gba-$app
-            echo "[INFO] gba-$app 已重启"
+            echo "[INFO] gba-$app restarted"
         fi
     done
 fi
 
-# ---- 部署管理端前端 ----
+# ---- Deploy admin frontend ----
 if [ -d /tmp/gbaseadmin_deploy/frontend ]; then
-    echo '[INFO] 部署管理端前端...'
+    echo '[INFO] Deploying admin frontend...'
     rm -rf $DEPLOY_DIR/admin/*
     mkdir -p $DEPLOY_DIR/admin
     cp -rf /tmp/gbaseadmin_deploy/frontend/* $DEPLOY_DIR/admin/
-    echo '[INFO] 管理端前端部署完成'
+    echo '[INFO] Admin frontend deployed'
 fi
 
-# ---- 部署 WAP 端 ----
+# ---- Deploy WAP ----
 if [ -d /tmp/gbaseadmin_deploy/wap ]; then
-    echo '[INFO] 部署 WAP 端...'
+    echo '[INFO] Deploying WAP...'
     rm -rf $DEPLOY_DIR/wap/*
     mkdir -p $DEPLOY_DIR/wap
     cp -rf /tmp/gbaseadmin_deploy/wap/* $DEPLOY_DIR/wap/
-    echo '[INFO] WAP 端部署完成'
+    echo '[INFO] WAP deployed'
 fi
 
-# ---- 清理临时文件 ----
+# ---- Cleanup ----
 rm -rf /tmp/gbaseadmin_deploy /tmp/gbaseadmin_deploy.tar.gz
 
 echo '[INFO] ========================================='
-echo '[INFO] 部署完成！'
+echo '[INFO] Deploy completed!'
 echo '[INFO] ========================================='
 
+# ---- Service status ----
 for app in system play upload; do
     status=$(systemctl is-active gba-$app 2>/dev/null || echo "unknown")
     echo "[INFO] gba-$app: $status"
 done
 '@
-    # 替换占位符为实际部署目录
     $shellContent = $shellContent.Replace("__DEPLOY_DIR__", $DEPLOY_DIR)
-    # 写入临时文件（确保 Linux 换行符 LF）
     $shellContent | Set-Content -Path $remoteShell -Encoding utf8 -NoNewline
     (Get-Content $remoteShell -Raw).Replace("`r`n", "`n") | Set-Content -Path $remoteShell -Encoding utf8 -NoNewline
 
-    # 上传脚本到服务器并执行
-    scp $remoteShell "${SERVER}:/tmp/gba_deploy.sh"                 # 上传部署脚本
-    if ($LASTEXITCODE -ne 0) { Fail "上传部署脚本失败" }
+    scp $remoteShell "${SERVER}:/tmp/gba_deploy.sh"
+    if ($LASTEXITCODE -ne 0) { Fail "Upload deploy script failed" }
 
-    # 执行远程脚本，输出同时显示在控制台和写入日志
     $remoteOutput = ssh $SERVER "bash /tmp/gba_deploy.sh && rm -f /tmp/gba_deploy.sh" 2>&1
-    $remoteOutput | ForEach-Object {                                # 逐行处理远程输出
-        Write-Host $_                                               # 显示到控制台
-        Log $_                                                      # 写入日志
+    $remoteOutput | ForEach-Object {
+        Write-Host $_
+        Log $_
     }
-    Remove-Item $remoteShell -Force -ErrorAction SilentlyContinue   # 删除本地临时脚本
-    if ($LASTEXITCODE -ne 0) { Fail "远程部署失败" }
+    Remove-Item $remoteShell -Force -ErrorAction SilentlyContinue
+    if ($LASTEXITCODE -ne 0) { Fail "Remote deploy failed" }
 }
 
 # ============================================
-# 主流程：按参数依次执行 构建 → 打包 → 上传部署
+# Main flow
 # ============================================
-$startTime = Get-Date                           # 记录开始时间
-Info "GBaseAdmin 一键部署开始"
-Info "部署目标: $Only"
-Info "部署日志: $LOG_FILE"
+$startTime = Get-Date
+Info "GBaseAdmin deploy started"
+Info "Target: $Only"
+Info "Log file: $LOG_FILE"
 
-# 步骤一：构建（除非 -SkipBuild）
+# Step 1: Build
 if (-not $SkipBuild) {
     switch ($Only) {
-        "backend"  { Build-Backend }                                    # 只编译后端
-        "frontend" { Build-Frontend }                                   # 只构建管理端前端
-        "wap"      { Build-Wap }                                        # 只构建 WAP 端
-        "all"      { Build-Backend; Build-Frontend; Build-Wap }         # 全量构建
+        "backend"  { Build-Backend }
+        "frontend" { Build-Frontend }
+        "wap"      { Build-Wap }
+        "all"      { Build-Backend; Build-Frontend; Build-Wap }
     }
 } else {
-    Warn "跳过构建步骤"
+    Warn "Skipping build"
 }
 
-# 步骤二：打包
+# Step 2: Pack
 Pack-All
 
-# 步骤三：上传部署（除非 -SkipUpload）
+# Step 3: Upload & Deploy
 if (-not $SkipUpload) {
     Deploy-ToServer
 } else {
-    Warn "跳过上传，打包文件: $($script:TarFile)"
+    Warn "Skipping upload, packed file: $($script:TarFile)"
 }
 
-# 步骤四：清理本地临时文件
-Remove-Item $DIST_DIR -Recurse -Force -ErrorAction SilentlyContinue     # 删除 dist 目录
-Remove-Item $script:TarFile -Force -ErrorAction SilentlyContinue         # 删除 tar.gz 文件
+# Step 4: Cleanup
+Remove-Item $DIST_DIR -Recurse -Force -ErrorAction SilentlyContinue
+Remove-Item $script:TarFile -Force -ErrorAction SilentlyContinue
 
-# 输出总耗时和日志位置
+# Done
 $elapsed = [math]::Round(((Get-Date) - $startTime).TotalSeconds)
-Info "全部完成！耗时 ${elapsed} 秒"
-Info "部署日志已保存: $LOG_FILE"
+Info "All done! Elapsed: ${elapsed}s"
+Info "Deploy log saved: $LOG_FILE"
 
-# 自动清理 30 天前的旧日志
+# Auto-cleanup logs older than 30 days
 Get-ChildItem $LOG_DIR -Filter "deploy_*.log" |
     Where-Object { $_.LastWriteTime -lt (Get-Date).AddDays(-30) } |
     Remove-Item -Force
