@@ -34,6 +34,7 @@ func (s *sActivityStep) Create(ctx context.Context, in *model.ActivityStepCreate
 		dao.PlayActivityStep.Columns().ExampleText:  in.ExampleText,
 		dao.PlayActivityStep.Columns().DescContent:  in.DescContent,
 		dao.PlayActivityStep.Columns().StepImage:    in.StepImage,
+		dao.PlayActivityStep.Columns().IsRequired:   in.IsRequired,
 		dao.PlayActivityStep.Columns().Sort:         in.Sort,
 		dao.PlayActivityStep.Columns().CreatedAt:    gtime.Now(),
 		dao.PlayActivityStep.Columns().UpdatedAt:    gtime.Now(),
@@ -51,6 +52,7 @@ func (s *sActivityStep) Update(ctx context.Context, in *model.ActivityStepUpdate
 		dao.PlayActivityStep.Columns().ExampleText:  in.ExampleText,
 		dao.PlayActivityStep.Columns().DescContent:  in.DescContent,
 		dao.PlayActivityStep.Columns().StepImage:    in.StepImage,
+		dao.PlayActivityStep.Columns().IsRequired:   in.IsRequired,
 		dao.PlayActivityStep.Columns().Sort:         in.Sort,
 		dao.PlayActivityStep.Columns().UpdatedAt:    gtime.Now(),
 	}

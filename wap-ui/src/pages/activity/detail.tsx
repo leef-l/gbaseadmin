@@ -127,6 +127,8 @@ export default function ActivityDetailPage() {
   const renderStepBody = (s: any, active: boolean) => {
     const t = s.stepType || 1;
 
+    const needFill = s.isRequired === 1;
+
     // 文字步骤：展示示例文字 + 立即复制按钮
     if (t === 1) {
       return (
@@ -172,14 +174,14 @@ export default function ActivityDetailPage() {
       );
     }
 
-    // 图片步骤：左边示例图片（右上角"示例"角标），右边用户上传区
+    // 图片步骤：左边示例图片（右上角"示例"角标），右边用户上传区（仅 isRequired=1 时显示上传区）
     if (t === 3) {
       const userImg = stepImages[s.stepId];
       const isUploading = uploadingStepId === s.stepId;
       return (
         <View className="step-body">
-          <View className="step-body__img-row">
-            {/* 左：示例图片 */}
+          <View className={needFill ? 'step-body__img-row' : ''}>
+            {/* 示例图片 */}
             <View className="step-body__img-wrap">
               {s.stepImage ? (
                 <>
@@ -192,25 +194,27 @@ export default function ActivityDetailPage() {
                 </View>
               )}
             </View>
-            {/* 右：用户上传 */}
-            <View
-              className={`step-body__img-wrap step-body__img-wrap--upload ${!active ? 'step-body__img-wrap--disabled' : ''}`}
-              onClick={() => active && handleChooseImage(s.stepId)}
-            >
-              {userImg ? (
-                <>
-                  <Image className="step-body__img" src={userImg} mode="aspectFill" />
-                  {active && !isUploading && (
-                    <Text className="step-body__img-badge step-body__img-badge--reupload">重新上传</Text>
-                  )}
-                </>
-              ) : (
-                <View className="step-body__img step-body__img--upload-placeholder">
-                  <Text className="step-body__upload-icon">📷</Text>
-                  <Text className="step-body__upload-text">{active ? '点击上传' : '请先报名'}</Text>
-                </View>
-              )}
-            </View>
+            {/* 右：用户上传区（仅需要填写时显示） */}
+            {needFill && (
+              <View
+                className={`step-body__img-wrap step-body__img-wrap--upload ${!active ? 'step-body__img-wrap--disabled' : ''}`}
+                onClick={() => active && handleChooseImage(s.stepId)}
+              >
+                {userImg ? (
+                  <>
+                    <Image className="step-body__img" src={userImg} mode="aspectFill" />
+                    {active && !isUploading && (
+                      <Text className="step-body__img-badge step-body__img-badge--reupload">重新上传</Text>
+                    )}
+                  </>
+                ) : (
+                  <View className="step-body__img step-body__img--upload-placeholder">
+                    <Text className="step-body__upload-icon">📷</Text>
+                    <Text className="step-body__upload-text">{active ? '点击上传' : '请先报名'}</Text>
+                  </View>
+                )}
+              </View>
+            )}
           </View>
         </View>
       );

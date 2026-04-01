@@ -105,6 +105,7 @@ func (s *sActivity) Detail(ctx context.Context, activityID string, memberID int6
 		StepType    int    `json:"step_type"`
 		ExampleText string `json:"example_text"`
 		StepImage   string `json:"step_image"`
+		IsRequired  int    `json:"is_required"`
 	}
 	err = dao.PlayActivityStep.Ctx(ctx).
 		Where(dao.PlayActivityStep.Columns().ActivityId, aid).
@@ -124,6 +125,7 @@ func (s *sActivity) Detail(ctx context.Context, activityID string, memberID int6
 			StepType:    st.StepType,
 			ExampleText: st.ExampleText,
 			StepImage:   st.StepImage,
+			IsRequired:  st.IsRequired,
 		})
 	}
 	// 查询奖励
@@ -149,62 +151,6 @@ func (s *sActivity) Detail(ctx context.Context, activityID string, memberID int6
 			RewardType:  rw.RewardType,
 			RewardValue: rw.RewardValue,
 		})
-	}
-
-	// 已登录会员：填充各步骤的提交状态
-	if memberID > 0 {
-		joinRec, _ := dao.PlayActivityJoin.Ctx(ctx).
-			Where(dao.PlayActivityJoin.Columns().ActivityId, aid).
-			Where(dao.PlayActivityJoin.Columns().MemberId, memberID).
-			Where(dao.PlayActivityJoin.Columns().DeletedAt, nil).
-			One()
-		if !joinRec.IsEmpty() {
-			joinID := joinRec[dao.PlayActivityJoin.Columns().Id].Int64()
-			// 查询所有步骤提交记录
-			var stepLogs []struct {
-				StepId      uint64 `orm:"step_id"`
-				SubmitText  string `orm:"submit_text"`
-				SubmitImage string `orm:"submit_image"`
-				AuditStatus int    `orm:"audit_status"`
-				AuditRemark string `orm:"audit_remark"`
-			}
-			_ = dao.PlayActivityStepLog.Ctx(ctx).
-				Where(dao.PlayActivityStepLog.Columns().JoinId, joinID).
-				Where(dao.PlayActivityStepLog.Columns().DeletedAt, nil).
-				Scan(&stepLogs)
-			// 构建 stepId -> log 索引
-			type stepLogInfo struct {
-				SubmitText  string
-				SubmitImage string
-				AuditStatus int
-				AuditRemark string
-			}
-			logMap := make(map[string]stepLogInfo, len(stepLogs))
-			for _, sl := range stepLogs {
-				logMap[strconv.FormatUint(sl.StepId, 10)] = stepLogInfo{
-					SubmitText:  sl.SubmitText,
-					SubmitImage: sl.SubmitImage,
-					AuditStatus: sl.AuditStatus,
-					AuditRemark: sl.AuditRemark,
-				}
-			}
-			// 填充到步骤列表
-			for i := range out.Steps {
-				if info, ok := logMap[out.Steps[i].StepID]; ok {
-					out.Steps[i].SubmitText = info.SubmitText
-					out.Steps[i].SubmitImage = info.SubmitImage
-					out.Steps[i].AuditStatus = info.AuditStatus
-					out.Steps[i].AuditRemark = info.AuditRemark
-				} else {
-					out.Steps[i].AuditStatus = -1 // 未提交
-				}
-			}
-		} else {
-			// 未参与活动，所有步骤标记为未提交
-			for i := range out.Steps {
-				out.Steps[i].AuditStatus = -1
-			}
-		}
 	}
 
 	return
@@ -265,7 +211,7 @@ func (s *sActivity) Join(ctx context.Context, memberID int64, activityID string)
 }
 
 // CompleteStep 完成活动步骤
-func (s *sActivity) CompleteStep(ctx context.Context, memberID int64, activityID, stepID, submitText, submitImage string) (currentStep int, isCompleted bool, err error) {
+func (s *sActivity) CompleteStep(ctx context.Context, memberID int64, activityID, stepID string) (currentStep int, isCompleted bool, err error) {
 	aid, _ := strconv.ParseUint(activityID, 10, 64)
 	sid, _ := strconv.ParseUint(stepID, 10, 64)
 	// 查询参与记录
@@ -302,76 +248,6 @@ func (s *sActivity) CompleteStep(ctx context.Context, memberID int64, activityID
 	stepNum := step[dao.PlayActivityStep.Columns().StepNum].Int()
 	if stepNum != curStep+1 {
 		err = gerror.New("请按顺序完成步骤")
-		return
-	}
-
-	// 校验提交内容（根据步骤类型）
-	stepType := step[dao.PlayActivityStep.Columns().StepType].Int()
-	switch stepType {
-	case 1: // 文字
-		if submitText == "" {
-			err = gerror.New("请输入文字内容")
-			return
-		}
-	case 2: // 链接
-		if submitText == "" {
-			err = gerror.New("请输入链接地址")
-			return
-		}
-	case 3: // 图片
-		if submitImage == "" {
-			err = gerror.New("请上传图片")
-			return
-		}
-	}
-
-	// 查询参与记录ID（joinID）
-	joinRecord, _ := dao.PlayActivityJoin.Ctx(ctx).
-		Where(dao.PlayActivityJoin.Columns().ActivityId, aid).
-		Where(dao.PlayActivityJoin.Columns().MemberId, memberID).
-		Where(dao.PlayActivityJoin.Columns().DeletedAt, nil).
-		One()
-	joinID := joinRecord[dao.PlayActivityJoin.Columns().Id].Int64()
-
-	// 检查是否已提交过该步骤
-	existCount, _ := dao.PlayActivityStepLog.Ctx(ctx).
-		Where(dao.PlayActivityStepLog.Columns().JoinId, joinID).
-		Where(dao.PlayActivityStepLog.Columns().StepId, sid).
-		Where(dao.PlayActivityStepLog.Columns().DeletedAt, nil).
-		Count()
-	if existCount > 0 {
-		err = gerror.New("该步骤已提交，请勿重复提交")
-		return
-	}
-
-	// 查询活动 is_auto_reward，决定审核状态
-	activity, _ := dao.PlayActivity.Ctx(ctx).
-		Where(dao.PlayActivity.Columns().Id, aid).
-		Where(dao.PlayActivity.Columns().DeletedAt, nil).
-		One()
-	auditStatus := 0
-	if activity[dao.PlayActivity.Columns().IsAutoReward].Int() == 1 {
-		auditStatus = 1
-	}
-
-	// 插入步骤提交记录
-	logID := snowflake.Generate()
-	_, err = dao.PlayActivityStepLog.Ctx(ctx).Data(g.Map{
-		dao.PlayActivityStepLog.Columns().Id:          logID,
-		dao.PlayActivityStepLog.Columns().ActivityId:  aid,
-		dao.PlayActivityStepLog.Columns().StepId:      sid,
-		dao.PlayActivityStepLog.Columns().JoinId:      joinID,
-		dao.PlayActivityStepLog.Columns().MemberId:    memberID,
-		dao.PlayActivityStepLog.Columns().StepType:    stepType,
-		dao.PlayActivityStepLog.Columns().SubmitText:  submitText,
-		dao.PlayActivityStepLog.Columns().SubmitImage: submitImage,
-		dao.PlayActivityStepLog.Columns().AuditStatus: auditStatus,
-		dao.PlayActivityStepLog.Columns().CreatedBy:   memberID,
-		dao.PlayActivityStepLog.Columns().DeptId:      0,
-		dao.PlayActivityStepLog.Columns().CreatedAt:   gtime.Now(),
-		dao.PlayActivityStepLog.Columns().UpdatedAt:   gtime.Now(),
-	}).Insert()
-	if err != nil {
 		return
 	}
 

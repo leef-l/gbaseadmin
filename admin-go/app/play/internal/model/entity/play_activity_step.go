@@ -18,6 +18,7 @@ type PlayActivityStep struct {
 	ExampleText string      `orm:"example_text" description:"示例文字或链接URL"`          // 示例文字或链接URL
 	DescContent string      `orm:"desc_content" description:"步骤说明（富文本，支持图文）"`      // 步骤说明（富文本，支持图文）
 	StepImage   string      `orm:"step_image"   description:"步骤示例图片"`              // 步骤示例图片
+	IsRequired  int         `orm:"is_required"  description:"是否需要填写:0=不需要,1=需要"`   // 是否需要填写:0=不需要,1=需要
 	Sort        int         `orm:"sort"         description:"排序（升序）"`              // 排序（升序）
 	CreatedBy   uint64      `orm:"created_by"   description:"创建人ID"`               // 创建人ID
 	DeptId      uint64      `orm:"dept_id"      description:"所属部门ID"`              // 所属部门ID

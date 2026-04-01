@@ -51,17 +51,14 @@ type ActivityDetailApiRes struct {
 }
 
 type ActivityStepApiItem struct {
-	StepID      string `json:"stepId" dc:"步骤ID"`
-	StepNo      int    `json:"stepNo" dc:"步骤序号"`
-	Title       string `json:"title" dc:"步骤标题"`
+	StepID      string `json:"stepId"      dc:"步骤ID"`
+	StepNo      int    `json:"stepNo"      dc:"步骤序号"`
+	Title       string `json:"title"       dc:"步骤标题"`
 	Description string `json:"description" dc:"步骤描述"`
-	StepType    int    `json:"stepType" dc:"步骤类型:1=文字,2=链接,3=图片"`
+	StepType    int    `json:"stepType"    dc:"步骤类型:1=文字,2=链接,3=图片"`
 	ExampleText string `json:"exampleText" dc:"示例文字或链接URL"`
-	StepImage   string `json:"stepImage" dc:"步骤示例图片"`
-	SubmitText  string `json:"submitText,omitempty" dc:"用户已提交的文字或链接"`
-	SubmitImage string `json:"submitImage,omitempty" dc:"用户已提交的图片URL"`
-	AuditStatus int    `json:"auditStatus" dc:"审核状态：-1=未提交 0=待审核 1=通过 2=驳回"`
-	AuditRemark string `json:"auditRemark,omitempty" dc:"审核备注"`
+	StepImage   string `json:"stepImage"   dc:"步骤示例图片"`
+	IsRequired  int    `json:"isRequired"  dc:"是否需要填写:0=不需要,1=需要"`
 }
 
 type ActivityRewardApiItem struct {
@@ -85,11 +82,9 @@ type ActivityJoinApiRes struct {
 // ==================== 完成活动步骤（MemberAuth） ====================
 
 type ActivityStepApiReq struct {
-	g.Meta      `path:"/activity/complete_step" method:"post" tags:"C端活动" summary:"完成活动步骤"`
-	ActivityID  string `json:"activityId" v:"required#活动ID不能为空" dc:"活动ID"`
-	StepID      string `json:"stepId" v:"required#步骤ID不能为空" dc:"步骤ID"`
-	SubmitText  string `json:"submitText" dc:"用户提交的文字或链接"`
-	SubmitImage string `json:"submitImage" dc:"用户提交的图片URL"`
+	g.Meta     `path:"/activity/complete_step" method:"post" tags:"C端活动" summary:"完成活动步骤"`
+	ActivityID string `json:"activityId" v:"required#活动ID不能为空" dc:"活动ID"`
+	StepID     string `json:"stepId" v:"required#步骤ID不能为空" dc:"步骤ID"`
 }
 
 type ActivityStepApiRes struct {

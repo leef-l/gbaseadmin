@@ -29,6 +29,7 @@ type PlayActivityStepColumns struct {
 	ExampleText string // 示例文字或链接URL
 	DescContent string // 步骤说明（富文本，支持图文）
 	StepImage   string // 步骤示例图片
+	IsRequired  string // 是否需要填写:0=不需要,1=需要
 	Sort        string // 排序（升序）
 	CreatedBy   string // 创建人ID
 	DeptId      string // 所属部门ID
@@ -47,6 +48,7 @@ var playActivityStepColumns = PlayActivityStepColumns{
 	ExampleText: "example_text",
 	DescContent: "desc_content",
 	StepImage:   "step_image",
+	IsRequired:  "is_required",
 	Sort:        "sort",
 	CreatedBy:   "created_by",
 	DeptId:      "dept_id",

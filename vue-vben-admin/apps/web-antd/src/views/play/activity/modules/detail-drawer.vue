@@ -13,6 +13,7 @@ const steps = ref<ActivityStepItem[]>([]);
 const loading = ref(false);
 const activityId = ref('');
 const activityTitle = ref('');
+const activityType = ref(0);
 const activeTab = ref('rewards');
 
 /** 奖励编辑状态 */
@@ -22,7 +23,7 @@ const rewardSaving = ref(false);
 
 /** 步骤编辑状态 */
 const stepModalVisible = ref(false);
-const stepForm = reactive({ id: '', title: '', stepNum: 1, stepType: 1, exampleText: '', descContent: '', stepImage: '', sort: 0 });
+const stepForm = reactive({ id: '', title: '', stepNum: 1, stepType: 1, exampleText: '', descContent: '', stepImage: '', isRequired: 0, sort: 0 });
 const stepSaving = ref(false);
 
 const stepTypeMap: Record<number, string> = { 1: '文字', 2: '链接', 3: '图片' };
@@ -53,6 +54,7 @@ const stepColumns = [
   { title: '序号', dataIndex: 'stepNum', key: 'stepNum', width: 60 },
   { title: '步骤标题', dataIndex: 'title', key: 'title' },
   { title: '类型', dataIndex: 'stepType', key: 'stepType', width: 80 },
+  { title: '是否填写', dataIndex: 'isRequired', key: 'isRequired', width: 100 },
   { title: '示例内容', dataIndex: 'exampleText', key: 'exampleText', ellipsis: true },
   { title: '示例图片', dataIndex: 'stepImage', key: 'stepImage', width: 80 },
   { title: '步骤说明', dataIndex: 'descContent', key: 'descContent', ellipsis: true },
@@ -118,6 +120,7 @@ function handleEditStep(row: ActivityStepItem) {
     exampleText: row.exampleText ?? '',
     descContent: row.descContent ?? '',
     stepImage: row.stepImage ?? '',
+    isRequired: row.isRequired ?? 0,
     sort: row.sort ?? 0,
   });
   stepModalVisible.value = true;
@@ -135,6 +138,7 @@ async function handleSaveStep() {
       exampleText: stepForm.exampleText,
       descContent: stepForm.descContent,
       stepImage: stepForm.stepImage,
+      isRequired: stepForm.isRequired,
       sort: stepForm.sort,
     };
     if (stepForm.id) {
@@ -160,6 +164,7 @@ const [DrawerModal, modalApi] = useVbenModal({
       if (data) {
         activityId.value = data.id;
         activityTitle.value = data.title;
+        activityType.value = data.type ?? 0;
         activeTab.value = data.tab || 'rewards';
         loadData(data.id);
       }
@@ -189,8 +194,8 @@ const [DrawerModal, modalApi] = useVbenModal({
         </Table>
       </Tabs.TabPane>
 
-      <!-- ====== 步骤管理 ====== -->
-      <Tabs.TabPane key="steps" tab="步骤管理">
+      <!-- ====== 步骤管理（仅图文步骤活动 type=4 显示） ====== -->
+      <Tabs.TabPane v-if="activityType === 4" key="steps" tab="步骤管理">
         <div style="margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
           <Button type="primary" size="small" @click="handleAddStep">新增步骤</Button>
           <span style="font-size: 12px; color: #999;">步骤按序号顺序执行，用户需依次完成</span>
@@ -200,6 +205,11 @@ const [DrawerModal, modalApi] = useVbenModal({
             <template v-if="column.key === 'stepType'">
               <Tag :color="stepTypeColor[record.stepType] || 'default'">
                 {{ stepTypeMap[record.stepType] || '文字' }}
+              </Tag>
+            </template>
+            <template v-if="column.key === 'isRequired'">
+              <Tag :color="record.isRequired === 1 ? 'blue' : 'default'">
+                {{ record.isRequired === 1 ? '需要填写' : '不需要' }}
               </Tag>
             </template>
             <template v-if="column.key === 'stepImage'">
@@ -280,6 +290,13 @@ const [DrawerModal, modalApi] = useVbenModal({
           <ImageUpload v-model:value="stepForm.stepImage" />
         </Form.Item>
 
+        <Form.Item label="是否需要填写" help="开启后 WAP 端用户需根据步骤类型填写内容或上传图片">
+          <Select
+            v-model:value="stepForm.isRequired"
+            :options="[{ label: '不需要', value: 0 }, { label: '需要填写', value: 1 }]"
+            style="width: 100%"
+          />
+        </Form.Item>
         <Form.Item label="步骤说明" help="对该步骤的补充说明，展示在步骤标题下方">
           <Input.TextArea v-model:value="stepForm.descContent" placeholder="请输入步骤说明（可选）" :rows="3" />
         </Form.Item>

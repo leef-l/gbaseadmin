@@ -22,8 +22,9 @@ type ActivityStepCreateReq struct {
 	StepType int `json:"stepType" d:"1" dc:"步骤类型：1=文字 2=链接 3=图片"`
 	ExampleText string `json:"exampleText" dc:"示例文字或链接URL"`
 	DescContent string `json:"descContent"  dc:"步骤说明（富文本，支持图文）"`
-	StepImage string `json:"stepImage"  dc:"步骤示例图片"`
-	Sort int `json:"sort"  dc:"排序（升序）"`
+	StepImage  string `json:"stepImage"  dc:"步骤示例图片"`
+	IsRequired int    `json:"isRequired" dc:"是否需要填写:0=不需要,1=需要"`
+	Sort       int    `json:"sort"       dc:"排序（升序）"`
 }
 
 // ActivityStepCreateRes 创建活动步骤表响应
@@ -41,8 +42,9 @@ type ActivityStepUpdateReq struct {
 	StepType int `json:"stepType" dc:"步骤类型：1=文字 2=链接 3=图片"`
 	ExampleText string `json:"exampleText" dc:"示例文字或链接URL"`
 	DescContent string `json:"descContent" dc:"步骤说明（富文本，支持图文）"`
-	StepImage string `json:"stepImage" dc:"步骤示例图片"`
-	Sort int `json:"sort" dc:"排序（升序）"`
+	StepImage  string `json:"stepImage"  dc:"步骤示例图片"`
+	IsRequired int    `json:"isRequired" dc:"是否需要填写:0=不需要,1=需要"`
+	Sort       int    `json:"sort"       dc:"排序（升序）"`
 }
 
 // ActivityStepUpdateRes 更新活动步骤表响应

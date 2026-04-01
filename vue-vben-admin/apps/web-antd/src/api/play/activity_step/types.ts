@@ -11,6 +11,7 @@ export interface ActivityStepItem {
   exampleText?: string; // 示例文字或链接URL
   descContent?: string;
   stepImage?: string;
+  isRequired?: number; // 0=不需要填写 1=需要填写
   sort?: number;
   createdAt?: string;
   updatedAt?: string;
@@ -32,6 +33,7 @@ export interface ActivityStepCreateParams {
   exampleText?: string;
   descContent?: string;
   stepImage?: string;
+  isRequired?: number;
   sort?: number;
 }
 
@@ -45,5 +47,6 @@ export interface ActivityStepUpdateParams {
   exampleText?: string;
   descContent?: string;
   stepImage?: string;
+  isRequired?: number;
   sort?: number;
 }

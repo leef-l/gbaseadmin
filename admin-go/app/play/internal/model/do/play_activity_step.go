@@ -20,6 +20,7 @@ type PlayActivityStep struct {
 	ExampleText any         // 示例文字或链接URL
 	DescContent any         // 步骤说明（富文本，支持图文）
 	StepImage   any         // 步骤示例图片
+	IsRequired  any         // 是否需要填写:0=不需要,1=需要
 	Sort        any         // 排序（升序）
 	CreatedBy   any         // 创建人ID
 	DeptId      any         // 所属部门ID

@@ -24,7 +24,7 @@ func (c *cActivity) Join(ctx context.Context, req *v1.ActivityJoinApiReq) (res *
 func (c *cActivity) CompleteStep(ctx context.Context, req *v1.ActivityStepApiReq) (res *v1.ActivityStepApiRes, err error) {
 	res = &v1.ActivityStepApiRes{}
 	memberID := g.RequestFromCtx(ctx).GetCtxVar("jwt_member_id").Int64()
-	res.CurrentStep, res.IsCompleted, err = service.PlayapiActivity().CompleteStep(ctx, memberID, req.ActivityID, req.StepID, req.SubmitText, req.SubmitImage)
+	res.CurrentStep, res.IsCompleted, err = service.PlayapiActivity().CompleteStep(ctx, memberID, req.ActivityID, req.StepID)
 	return
 }
 
