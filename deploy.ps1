@@ -13,7 +13,6 @@ param(
     [switch]$SkipBuild,
     [switch]$SkipUpload
 )
-
 # ---------- Config ----------
 $SERVER     = "root@pw.easytestdev.online"
 $DEPLOY_DIR = "/www/wwwroot/pw.easytestdev.online"
