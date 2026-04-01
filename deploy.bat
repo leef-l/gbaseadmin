@@ -1,5 +1,6 @@
 @echo off
 chcp 65001 >nul
+set PYTHONUTF8=1
 title GBaseAdmin 一键部署
 
 echo.
