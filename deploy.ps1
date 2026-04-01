@@ -166,33 +166,37 @@ function Deploy-ToServer {
     if ($LASTEXITCODE -ne 0) { Fail "上传失败" }
     Info "上传完成"
 
-    # 通过 SSH 在服务器上执行部署脚本（here-string 多行命令）
-    $remoteScript = @"
-set -e                                                              # 任何命令失败立即退出
+    # 生成远程部署脚本（写入临时文件避免 PowerShell 变量转义问题）
+    $remoteShell = Join-Path $env:TEMP "gba_remote_deploy.sh"       # 本地临时 shell 脚本路径
+    # 用单引号 here-string，PowerShell 不会解析其中的 $ 符号
+    $shellContent = @'
+#!/bin/bash
+set -e
+
+DEPLOY_DIR="__DEPLOY_DIR__"
 
 echo '[INFO] 解压部署文件...'
 cd /tmp
-rm -rf gbaseadmin_deploy && mkdir gbaseadmin_deploy                 # 清理并创建临时解压目录
-tar -xzf gbaseadmin_deploy.tar.gz -C gbaseadmin_deploy             # 解压压缩包
+rm -rf gbaseadmin_deploy && mkdir gbaseadmin_deploy
+tar -xzf gbaseadmin_deploy.tar.gz -C gbaseadmin_deploy
 
 # ---- 部署后端 ----
 if [ -d /tmp/gbaseadmin_deploy/backend ]; then
     echo '[INFO] 部署后端服务...'
-    for app in system play upload; do                               # 遍历三个服务
-        if [ -f /tmp/gbaseadmin_deploy/backend/\$app/\$app ]; then  # 检查二进制文件是否存在
-            echo "[INFO] 停止 gba-\$app ..."
-            systemctl stop gba-\$app 2>/dev/null || true            # 停止服务（忽略未运行的错误）
+    for app in system play upload; do
+        if [ -f /tmp/gbaseadmin_deploy/backend/$app/$app ]; then
+            echo "[INFO] 停止 gba-$app ..."
+            systemctl stop gba-$app 2>/dev/null || true
 
-            cp /tmp/gbaseadmin_deploy/backend/\$app/\$app $DEPLOY_DIR/\$app/\$app  # 替换二进制文件
-            chmod +x $DEPLOY_DIR/\$app/\$app                       # 添加执行权限
+            cp /tmp/gbaseadmin_deploy/backend/$app/$app $DEPLOY_DIR/$app/$app
+            chmod +x $DEPLOY_DIR/$app/$app
 
-            # 只在首次部署时复制配置文件，避免覆盖服务器已有配置
-            if [ ! -f $DEPLOY_DIR/\$app/manifest/config/config.yaml ]; then
-                cp -r /tmp/gbaseadmin_deploy/backend/\$app/manifest $DEPLOY_DIR/\$app/
+            if [ ! -f $DEPLOY_DIR/$app/manifest/config/config.yaml ]; then
+                cp -r /tmp/gbaseadmin_deploy/backend/$app/manifest $DEPLOY_DIR/$app/
             fi
 
-            systemctl start gba-\$app                              # 启动服务
-            echo "[INFO] gba-\$app 已重启"
+            systemctl start gba-$app
+            echo "[INFO] gba-$app 已重启"
         fi
     done
 fi
@@ -200,18 +204,18 @@ fi
 # ---- 部署管理端前端 ----
 if [ -d /tmp/gbaseadmin_deploy/frontend ]; then
     echo '[INFO] 部署管理端前端...'
-    rm -rf $DEPLOY_DIR/admin/*                                     # 清空旧的前端文件
-    mkdir -p $DEPLOY_DIR/admin                                     # 确保目录存在
-    cp -rf /tmp/gbaseadmin_deploy/frontend/* $DEPLOY_DIR/admin/    # 复制新的前端文件
+    rm -rf $DEPLOY_DIR/admin/*
+    mkdir -p $DEPLOY_DIR/admin
+    cp -rf /tmp/gbaseadmin_deploy/frontend/* $DEPLOY_DIR/admin/
     echo '[INFO] 管理端前端部署完成'
 fi
 
 # ---- 部署 WAP 端 ----
 if [ -d /tmp/gbaseadmin_deploy/wap ]; then
     echo '[INFO] 部署 WAP 端...'
-    rm -rf $DEPLOY_DIR/wap/*                                       # 清空旧的 WAP 文件
-    mkdir -p $DEPLOY_DIR/wap                                       # 确保目录存在
-    cp -rf /tmp/gbaseadmin_deploy/wap/* $DEPLOY_DIR/wap/           # 复制新的 WAP 文件
+    rm -rf $DEPLOY_DIR/wap/*
+    mkdir -p $DEPLOY_DIR/wap
+    cp -rf /tmp/gbaseadmin_deploy/wap/* $DEPLOY_DIR/wap/
     echo '[INFO] WAP 端部署完成'
 fi
 
@@ -222,14 +226,22 @@ echo '[INFO] ========================================='
 echo '[INFO] 部署完成！'
 echo '[INFO] ========================================='
 
-# 输出各服务运行状态
 for app in system play upload; do
-    status=\$(systemctl is-active gba-\$app 2>/dev/null || echo "unknown")  # 获取服务状态
-    echo "[INFO] gba-\$app: \$status"
+    status=$(systemctl is-active gba-$app 2>/dev/null || echo "unknown")
+    echo "[INFO] gba-$app: $status"
 done
-"@
+'@
+    # 替换占位符为实际部署目录
+    $shellContent = $shellContent.Replace("__DEPLOY_DIR__", $DEPLOY_DIR)
+    # 写入临时文件（确保 Linux 换行符 LF）
+    $shellContent | Set-Content -Path $remoteShell -Encoding utf8 -NoNewline
+    (Get-Content $remoteShell -Raw).Replace("`r`n", "`n") | Set-Content -Path $remoteShell -Encoding utf8 -NoNewline
 
-    ssh $SERVER $remoteScript                   # SSH 执行远程部署脚本
+    # 上传脚本到服务器并执行
+    scp $remoteShell "${SERVER}:/tmp/gba_deploy.sh"                 # 上传部署脚本
+    if ($LASTEXITCODE -ne 0) { Fail "上传部署脚本失败" }
+    ssh $SERVER "bash /tmp/gba_deploy.sh && rm -f /tmp/gba_deploy.sh"  # 执行后删除脚本
+    Remove-Item $remoteShell -Force -ErrorAction SilentlyContinue   # 删除本地临时脚本
     if ($LASTEXITCODE -ne 0) { Fail "远程部署失败" }
 }
 
