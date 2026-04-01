@@ -67,7 +67,7 @@ const formOptions: VbenFormProps = {
 const gridOptions: VxeGridProps<CoachApplyItem> = {
   columns: [
     { title: '序号', type: 'seq', width: 50 },
-    { field: 'memberID', title: '会员ID' },
+    { field: 'memberNickname', title: '申请会员' },
     { field: 'realName', title: '真实姓名' },
     { field: 'idCard', title: '身份证号' },
     { field: 'idCardFrontImage', title: '身份证正面照' },

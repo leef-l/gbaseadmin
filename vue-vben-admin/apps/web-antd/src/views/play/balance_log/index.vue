@@ -71,12 +71,12 @@ const formOptions: VbenFormProps = {
 const gridOptions: VxeGridProps<BalanceLogItem> = {
   columns: [
     { title: '序号', type: 'seq', width: 50 },
-    { field: 'memberID', title: '会员ID' },
+    { field: 'memberNickname', title: '会员' },
     { field: 'bizType', title: '业务类型', width: 120, slots: { default: 'bizType_cell' } },
     { field: 'bizID', title: '业务ID', slots: { header: () => h('span', {}, ['业务ID ', h(Tooltip, { title: '订单ID/充值订单ID/活动ID' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]) } },
-    { field: 'changeAmount', title: '变动金额', slots: { header: () => h('span', {}, ['变动金额 ', h(Tooltip, { title: '分，正数增加负数减少' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]) } },
-    { field: 'beforeBalance', title: '变动前余额', slots: { header: () => h('span', {}, ['变动前余额 ', h(Tooltip, { title: '单位：分' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]) } },
-    { field: 'afterBalance', title: '变动后余额', slots: { header: () => h('span', {}, ['变动后余额 ', h(Tooltip, { title: '单位：分' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]) } },
+    { field: 'changeAmount', title: '变动金额（元）', formatter: ({ cellValue }: { cellValue: number | null }) => cellValue != null ? (cellValue / 100).toFixed(2) : '-' },
+    { field: 'beforeBalance', title: '变动前余额（元）', formatter: ({ cellValue }: { cellValue: number | null }) => cellValue != null ? (cellValue / 100).toFixed(2) : '-' },
+    { field: 'afterBalance', title: '变动后余额（元）', formatter: ({ cellValue }: { cellValue: number | null }) => cellValue != null ? (cellValue / 100).toFixed(2) : '-' },
     { field: 'remark', title: '备注说明' },
     { field: 'createdAt', title: '创建时间', width: 180, formatter: 'formatDateTime' },
     { title: '操作', width: 200, fixed: 'right', slots: { default: 'action' } },

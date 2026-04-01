@@ -134,7 +134,7 @@ const gridOptions: VxeGridProps<MemberItem> = {
     { field: 'gender', title: '性别', width: 120, slots: { default: 'gender_cell' } },
     { field: 'memberLevelTitle', title: '会员等级' },
     { field: 'exp', title: '经验值' },
-    { field: 'balance', title: '余额', slots: { header: () => h('span', {}, ['余额 ', h(Tooltip, { title: '单位：分' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]) } },
+    { field: 'balance', title: '余额（元）', formatter: ({ cellValue }: { cellValue: number | null }) => cellValue != null ? (cellValue / 100).toFixed(2) : '-' },
     { field: 'isCoach', title: '是否陪玩师', width: 120, slots: { default: 'isCoach_cell' } },
     { field: 'status', title: '状态', width: 120, slots: { default: 'status_cell' } },
     { field: 'lastLoginAt', title: '最后登录时间', width: 180, formatter: 'formatDateTime' },

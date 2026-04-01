@@ -97,8 +97,8 @@ const gridOptions: VxeGridProps<ReviewItem> = {
   columns: [
     { title: '序号', type: 'seq', width: 50 },
     { field: 'orderID', title: '订单ID' },
-    { field: 'memberID', title: '评价会员ID' },
-    { field: 'coachID', title: '被评陪玩师ID' },
+    { field: 'memberNickname', title: '评价会员' },
+    { field: 'coachRealName', title: '被评陪玩师' },
     { field: 'score', title: '评分', slots: { header: () => h('span', {}, ['评分 ', h(Tooltip, { title: '乘100，如 500=5.00分' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]) } },
     { field: 'reviewContent', title: '评价内容' },
     { field: 'reviewImage', title: '评价图片', width: 120, slots: { default: 'reviewImage_cell', header: () => h('span', {}, ['评价图片 ', h(Tooltip, { title: '多张逗号分隔' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]) } },

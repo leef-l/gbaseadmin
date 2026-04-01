@@ -69,7 +69,7 @@ const gridOptions: VxeGridProps<CouponMemberItem> = {
   columns: [
     { title: '序号', type: 'seq', width: 50 },
     { field: 'couponTitle', title: '优惠券模板ID' },
-    { field: 'memberID', title: '会员ID' },
+    { field: 'memberNickname', title: '会员' },
     { field: 'orderID', title: '订单ID', slots: { header: () => h('span', {}, ['订单ID ', h(Tooltip, { title: '0表示未使用' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]) } },
     { field: 'useStatus', title: '使用状态', width: 120, slots: { default: 'useStatus_cell' } },
     { field: 'claimAt', title: '领取时间', width: 180, formatter: 'formatDateTime' },
