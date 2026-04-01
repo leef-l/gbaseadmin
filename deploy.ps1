@@ -185,6 +185,7 @@ if [ -d /tmp/gbaseadmin_deploy/backend ]; then
         if [ -f /tmp/gbaseadmin_deploy/backend/$app/$app ]; then
             echo "[INFO] Stopping gba-$app ..."
             systemctl stop gba-$app 2>/dev/null || true
+            sleep 2
 
             cp /tmp/gbaseadmin_deploy/backend/$app/$app $DEPLOY_DIR/$app/$app
             chmod +x $DEPLOY_DIR/$app/$app
@@ -231,8 +232,10 @@ for app in system play upload; do
 done
 '@
     $shellContent = $shellContent.Replace("__DEPLOY_DIR__", $DEPLOY_DIR)
-    $shellContent | Set-Content -Path $remoteShell -Encoding utf8 -NoNewline
-    (Get-Content $remoteShell -Raw).Replace("`r`n", "`n") | Set-Content -Path $remoteShell -Encoding utf8 -NoNewline
+    # Write with LF line endings and NO BOM (Linux bash chokes on UTF-8 BOM)
+    $utf8NoBom = New-Object System.Text.UTF8Encoding($false)
+    $shellContent = $shellContent.Replace("`r`n", "`n")
+    [System.IO.File]::WriteAllText($remoteShell, $shellContent, $utf8NoBom)
 
     scp $remoteShell "${SERVER}:/tmp/gba_deploy.sh"
     if ($LASTEXITCODE -ne 0) { Fail "Upload deploy script failed" }
