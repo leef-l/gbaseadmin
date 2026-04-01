@@ -21,17 +21,17 @@ type PlayActivityRewardDao struct {
 
 // PlayActivityRewardColumns defines and stores column names for the table play_activity_reward.
 type PlayActivityRewardColumns struct {
-	Id          string // å¥–åŠ±IDï¼ˆSnowflakeï¼‰
-	ActivityId  string // æ´»åŠ¨ID
-	RewardType  string // å¥–åŠ±ç±»åž‹:1=ä½™é¢,2=ä¼˜æƒ åˆ¸,3=ç»éªŒå€¼,4=ä¼šå‘˜ç­‰çº§å¤©æ•°
-	RewardValue string // å¥–åŠ±æ•°å€¼
-	RewardName  string // å¥–åŠ±åç§°
-	Sort        string // æŽ’åº
-	CreatedBy   string // åˆ›å»ºäººID
-	DeptId      string // æ‰€å±žéƒ¨é—¨ID
-	CreatedAt   string // åˆ›å»ºæ—¶é—´
-	UpdatedAt   string // æ›´æ–°æ—¶é—´
-	DeletedAt   string // è½¯åˆ é™¤æ—¶é—´
+	Id          string // 奖励ID（Snowflake）
+	ActivityId  string // 活动ID
+	RewardType  string // 奖励类型:1=余额,2=优惠券,3=经验值,4=会员等级天数
+	RewardValue string // 奖励数值（余额=分，优惠券=coupon_id，经验=值，等级天数=天）
+	RewardName  string // 奖励名称（展示用，如"送50元余额"）
+	Sort        string // 排序（升序）
+	CreatedBy   string // 创建人ID
+	DeptId      string // 所属部门ID
+	CreatedAt   string // 创建时间
+	UpdatedAt   string // 更新时间
+	DeletedAt   string // 软删除时间
 }
 
 // playActivityRewardColumns holds the columns for the table play_activity_reward.

@@ -12,15 +12,15 @@ import (
 // PlayActivityReward is the golang structure of table play_activity_reward for DAO operations like Where/Data.
 type PlayActivityReward struct {
 	g.Meta      `orm:"table:play_activity_reward, do:true"`
-	Id          any         // å¥–åŠ±IDï¼ˆSnowflakeï¼‰
-	ActivityId  any         // æ´»åŠ¨ID
-	RewardType  any         // å¥–åŠ±ç±»åž‹:1=ä½™é¢,2=ä¼˜æƒ åˆ¸,3=ç»éªŒå€¼,4=ä¼šå‘˜ç­‰çº§å¤©æ•°
-	RewardValue any         // å¥–åŠ±æ•°å€¼
-	RewardName  any         // å¥–åŠ±åç§°
-	Sort        any         // æŽ’åº
-	CreatedBy   any         // åˆ›å»ºäººID
-	DeptId      any         // æ‰€å±žéƒ¨é—¨ID
-	CreatedAt   *gtime.Time // åˆ›å»ºæ—¶é—´
-	UpdatedAt   *gtime.Time // æ›´æ–°æ—¶é—´
-	DeletedAt   *gtime.Time // è½¯åˆ é™¤æ—¶é—´
+	Id          any         // 奖励ID（Snowflake）
+	ActivityId  any         // 活动ID
+	RewardType  any         // 奖励类型:1=余额,2=优惠券,3=经验值,4=会员等级天数
+	RewardValue any         // 奖励数值（余额=分，优惠券=coupon_id，经验=值，等级天数=天）
+	RewardName  any         // 奖励名称（展示用，如"送50元余额"）
+	Sort        any         // 排序（升序）
+	CreatedBy   any         // 创建人ID
+	DeptId      any         // 所属部门ID
+	CreatedAt   *gtime.Time // 创建时间
+	UpdatedAt   *gtime.Time // 更新时间
+	DeletedAt   *gtime.Time // 软删除时间
 }

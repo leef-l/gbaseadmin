@@ -21,21 +21,21 @@ type PlayOauthDao struct {
 
 // PlayOauthColumns defines and stores column names for the table play_oauth.
 type PlayOauthColumns struct {
-	Id           string // è®°å½•IDï¼ˆSnowflakeï¼‰
-	MemberId     string // ä¼šå‘˜ID
-	Provider     string // ç¬¬ä¸‰æ–¹å¹³å°:1=å¾®ä¿¡,2=æ”¯ä»˜å®
-	OpenId       string // ç¬¬ä¸‰æ–¹OpenID
-	UnionId      string // ç¬¬ä¸‰æ–¹UnionID
-	Nickname     string // ç¬¬ä¸‰æ–¹æ˜µç§°
-	Avatar       string // ç¬¬ä¸‰æ–¹å¤´åƒ
-	AccessToken  string // è®¿é—®ä»¤ç‰Œ
-	RefreshToken string // åˆ·æ–°ä»¤ç‰Œ
-	ExpireAt     string // ä»¤ç‰Œè¿‡æœŸæ—¶é—´
-	CreatedBy    string // åˆ›å»ºäººID
-	DeptId       string // æ‰€å±žéƒ¨é—¨ID
-	CreatedAt    string // åˆ›å»ºæ—¶é—´
-	UpdatedAt    string // æ›´æ–°æ—¶é—´
-	DeletedAt    string // è½¯åˆ é™¤æ—¶é—´
+	Id           string // 记录ID（Snowflake）
+	MemberId     string // 会员ID
+	Provider     string // 第三方平台:1=微信,2=支付宝
+	OpenId       string // 第三方OpenID
+	UnionId      string // 第三方UnionID
+	Nickname     string // 第三方昵称
+	Avatar       string // 第三方头像
+	AccessToken  string // 访问令牌
+	RefreshToken string // 刷新令牌
+	ExpireAt     string // 令牌过期时间
+	CreatedBy    string // 创建人ID
+	DeptId       string // 所属部门ID
+	CreatedAt    string // 创建时间
+	UpdatedAt    string // 更新时间
+	DeletedAt    string // 软删除时间
 }
 
 // playOauthColumns holds the columns for the table play_oauth.

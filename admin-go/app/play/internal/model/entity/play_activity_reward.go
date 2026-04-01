@@ -10,15 +10,15 @@ import (
 
 // PlayActivityReward is the golang structure for table play_activity_reward.
 type PlayActivityReward struct {
-	Id          uint64      `orm:"id"           description:"å¥–åŠ±IDï¼ˆSnowflakeï¼‰"`                                            // å¥–åŠ±IDï¼ˆSnowflakeï¼‰
-	ActivityId  uint64      `orm:"activity_id"  description:"æ´»åŠ¨ID"`                                                           // æ´»åŠ¨ID
-	RewardType  int         `orm:"reward_type"  description:"å¥–åŠ±ç±»åž‹:1=ä½™é¢,2=ä¼˜æƒ åˆ¸,3=ç»éªŒå€¼,4=ä¼šå‘˜ç­‰çº§å¤©æ•°"` // å¥–åŠ±ç±»åž‹:1=ä½™é¢,2=ä¼˜æƒ åˆ¸,3=ç»éªŒå€¼,4=ä¼šå‘˜ç­‰çº§å¤©æ•°
-	RewardValue int64       `orm:"reward_value" description:"å¥–åŠ±æ•°å€¼"`                                                       // å¥–åŠ±æ•°å€¼
-	RewardName  string      `orm:"reward_name"  description:"å¥–åŠ±åç§°"`                                                       // å¥–åŠ±åç§°
-	Sort        int         `orm:"sort"         description:"æŽ’åº"`                                                             // æŽ’åº
-	CreatedBy   uint64      `orm:"created_by"   description:"åˆ›å»ºäººID"`                                                        // åˆ›å»ºäººID
-	DeptId      uint64      `orm:"dept_id"      description:"æ‰€å±žéƒ¨é—¨ID"`                                                     // æ‰€å±žéƒ¨é—¨ID
-	CreatedAt   *gtime.Time `orm:"created_at"   description:"åˆ›å»ºæ—¶é—´"`                                                       // åˆ›å»ºæ—¶é—´
-	UpdatedAt   *gtime.Time `orm:"updated_at"   description:"æ›´æ–°æ—¶é—´"`                                                       // æ›´æ–°æ—¶é—´
-	DeletedAt   *gtime.Time `orm:"deleted_at"   description:"è½¯åˆ é™¤æ—¶é—´"`                                                    // è½¯åˆ é™¤æ—¶é—´
+	Id          uint64      `orm:"id"           description:"奖励ID（Snowflake）"`                      // 奖励ID（Snowflake）
+	ActivityId  uint64      `orm:"activity_id"  description:"活动ID"`                                 // 活动ID
+	RewardType  int         `orm:"reward_type"  description:"奖励类型:1=余额,2=优惠券,3=经验值,4=会员等级天数"`       // 奖励类型:1=余额,2=优惠券,3=经验值,4=会员等级天数
+	RewardValue int64       `orm:"reward_value" description:"奖励数值（余额=分，优惠券=coupon_id，经验=值，等级天数=天）"` // 奖励数值（余额=分，优惠券=coupon_id，经验=值，等级天数=天）
+	RewardName  string      `orm:"reward_name"  description:"奖励名称（展示用，如\"送50元余额\"）"`                // 奖励名称（展示用，如"送50元余额"）
+	Sort        int         `orm:"sort"         description:"排序（升序）"`                               // 排序（升序）
+	CreatedBy   uint64      `orm:"created_by"   description:"创建人ID"`                                // 创建人ID
+	DeptId      uint64      `orm:"dept_id"      description:"所属部门ID"`                               // 所属部门ID
+	CreatedAt   *gtime.Time `orm:"created_at"   description:"创建时间"`                                 // 创建时间
+	UpdatedAt   *gtime.Time `orm:"updated_at"   description:"更新时间"`                                 // 更新时间
+	DeletedAt   *gtime.Time `orm:"deleted_at"   description:"软删除时间"`                                // 软删除时间
 }

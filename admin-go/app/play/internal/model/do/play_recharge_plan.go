@@ -12,16 +12,16 @@ import (
 // PlayRechargePlan is the golang structure of table play_recharge_plan for DAO operations like Where/Data.
 type PlayRechargePlan struct {
 	g.Meta     `orm:"table:play_recharge_plan, do:true"`
-	Id         any         // æ–¹æ¡ˆIDï¼ˆSnowflakeï¼‰
-	Title      any         // æ–¹æ¡ˆåç§°
-	Amount     any         // å……å€¼é‡‘é¢ï¼ˆåˆ†ï¼‰
-	GiftAmount any         // èµ é€é‡‘é¢ï¼ˆåˆ†ï¼‰
-	CoverImage any         // æ–¹æ¡ˆå°é¢å›¾
-	Sort       any         // æŽ’åºï¼ˆå‡åºï¼‰
-	Status     any         // çŠ¶æ€:0=å…³é—­,1=å¼€å¯
-	CreatedBy  any         // åˆ›å»ºäººID
-	DeptId     any         // æ‰€å±žéƒ¨é—¨ID
-	CreatedAt  *gtime.Time // åˆ›å»ºæ—¶é—´
-	UpdatedAt  *gtime.Time // æ›´æ–°æ—¶é—´
-	DeletedAt  *gtime.Time // è½¯åˆ é™¤æ—¶é—´
+	Id         any         // 方案ID（Snowflake）
+	Title      any         // 方案名称
+	Amount     any         // 充值金额（分）
+	GiftAmount any         // 赠送金额（分）
+	CoverImage any         // 方案封面图
+	Sort       any         // 排序（升序）
+	Status     any         // 状态:0=关闭,1=开启
+	CreatedBy  any         // 创建人ID
+	DeptId     any         // 所属部门ID
+	CreatedAt  *gtime.Time // 创建时间
+	UpdatedAt  *gtime.Time // 更新时间
+	DeletedAt  *gtime.Time // 软删除时间
 }

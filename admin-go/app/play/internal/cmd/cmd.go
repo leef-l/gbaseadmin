@@ -11,6 +11,7 @@ import (
 	"gbaseadmin/app/play/internal/controller/activity_join"
 	"gbaseadmin/app/play/internal/controller/activity_reward"
 	"gbaseadmin/app/play/internal/controller/activity_step"
+	"gbaseadmin/app/play/internal/controller/activity_step_log"
 	"gbaseadmin/app/play/internal/controller/balance_log"
 	"gbaseadmin/app/play/internal/controller/category"
 	"gbaseadmin/app/play/internal/controller/coach"
@@ -62,6 +63,7 @@ var (
 						activity.Activity,
 						activity_reward.ActivityReward,
 						activity_step.ActivityStep,
+						activity_step_log.ActivityStepLog,
 						activity_join.ActivityJoin,
 						coupon.Coupon,
 						coupon_member.CouponMember,

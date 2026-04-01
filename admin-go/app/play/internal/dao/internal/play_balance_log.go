@@ -21,19 +21,19 @@ type PlayBalanceLogDao struct {
 
 // PlayBalanceLogColumns defines and stores column names for the table play_balance_log.
 type PlayBalanceLogColumns struct {
-	Id            string // æµæ°´IDï¼ˆSnowflakeï¼‰
-	MemberId      string // ä¼šå‘˜ID
-	BizType       string // ä¸šåŠ¡ç±»åž‹:1=å……å€¼,2=æ¶ˆè´¹,3=é€€æ¬¾,4=æ´»åŠ¨èµ é€,5=æçŽ°
-	BizId         string // å…³è”ä¸šåŠ¡ID
-	ChangeAmount  string // å˜åŠ¨é‡‘é¢ï¼ˆåˆ†ï¼‰
-	BeforeBalance string // å˜åŠ¨å‰ä½™é¢ï¼ˆåˆ†ï¼‰
-	AfterBalance  string // å˜åŠ¨åŽä½™é¢ï¼ˆåˆ†ï¼‰
-	Remark        string // å¤‡æ³¨è¯´æ˜Ž
-	CreatedBy     string // åˆ›å»ºäººID
-	DeptId        string // æ‰€å±žéƒ¨é—¨ID
-	CreatedAt     string // åˆ›å»ºæ—¶é—´
-	UpdatedAt     string // æ›´æ–°æ—¶é—´
-	DeletedAt     string // è½¯åˆ é™¤æ—¶é—´
+	Id            string // 流水ID（Snowflake）
+	MemberId      string // 会员ID
+	BizType       string // 业务类型:1=充值,2=消费,3=退款,4=活动赠送,5=提现
+	BizId         string // 关联业务ID（订单ID/充值订单ID/活动ID）
+	ChangeAmount  string // 变动金额（分，正数增加负数减少）
+	BeforeBalance string // 变动前余额（分）
+	AfterBalance  string // 变动后余额（分）
+	Remark        string // 备注说明
+	CreatedBy     string // 创建人ID
+	DeptId        string // 所属部门ID
+	CreatedAt     string // 创建时间
+	UpdatedAt     string // 更新时间
+	DeletedAt     string // 软删除时间
 }
 
 // playBalanceLogColumns holds the columns for the table play_balance_log.

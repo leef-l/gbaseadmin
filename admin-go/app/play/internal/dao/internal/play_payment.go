@@ -21,23 +21,23 @@ type PlayPaymentDao struct {
 
 // PlayPaymentColumns defines and stores column names for the table play_payment.
 type PlayPaymentColumns struct {
-	Id              string // æ”¯ä»˜è®°å½•IDï¼ˆSnowflakeï¼‰
-	OrderId         string // è®¢å•ID
-	MemberId        string // ä¼šå‘˜ID
-	PaymentNo       string // æ”¯ä»˜æµæ°´å·
-	TradeNo         string // ç¬¬ä¸‰æ–¹äº¤æ˜“å·
-	PayType         string // æ”¯ä»˜æ–¹å¼:1=å¾®ä¿¡æ”¯ä»˜,2=æ”¯ä»˜å®æ”¯ä»˜,3=ä½™é¢æ”¯ä»˜
-	PayAmount       string // æ”¯ä»˜é‡‘é¢ï¼ˆåˆ†ï¼‰
-	PayStatus       string // æ”¯ä»˜çŠ¶æ€:0=å¾…æ”¯ä»˜,1=æ”¯ä»˜æˆåŠŸ,2=æ”¯ä»˜å¤±è´¥,3=å·²é€€æ¬¾
-	PayAt           string // æ”¯ä»˜æˆåŠŸæ—¶é—´
-	RefundAt        string // é€€æ¬¾æ—¶é—´
-	RefundAmount    string // é€€æ¬¾é‡‘é¢ï¼ˆåˆ†ï¼‰
-	CallbackContent string // å›žè°ƒæŠ¥æ–‡
-	CreatedBy       string // åˆ›å»ºäººID
-	DeptId          string // æ‰€å±žéƒ¨é—¨ID
-	CreatedAt       string // åˆ›å»ºæ—¶é—´
-	UpdatedAt       string // æ›´æ–°æ—¶é—´
-	DeletedAt       string // è½¯åˆ é™¤æ—¶é—´
+	Id              string // 支付记录ID（Snowflake）
+	OrderId         string // 订单ID
+	MemberId        string // 会员ID
+	PaymentNo       string // 支付流水号（平台内部）
+	TradeNo         string // 第三方交易号
+	PayType         string // 支付方式:1=微信支付,2=支付宝支付,3=余额支付
+	PayAmount       string // 支付金额（分）
+	PayStatus       string // 支付状态:0=待支付,1=支付成功,2=支付失败,3=已退款
+	PayAt           string // 支付成功时间
+	RefundAt        string // 退款时间
+	RefundAmount    string // 退款金额（分）
+	CallbackContent string // 回调报文
+	CreatedBy       string // 创建人ID
+	DeptId          string // 所属部门ID
+	CreatedAt       string // 创建时间
+	UpdatedAt       string // 更新时间
+	DeletedAt       string // 软删除时间
 }
 
 // playPaymentColumns holds the columns for the table play_payment.

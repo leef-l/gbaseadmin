@@ -12,19 +12,19 @@ import (
 // PlayRechargeOrder is the golang structure of table play_recharge_order for DAO operations like Where/Data.
 type PlayRechargeOrder struct {
 	g.Meta         `orm:"table:play_recharge_order, do:true"`
-	Id             any         // å……å€¼è®¢å•IDï¼ˆSnowflakeï¼‰
-	OrderNo        any         // å……å€¼è®¢å•å·
-	MemberId       any         // ä¼šå‘˜ID
-	RechargePlanId any         // å……å€¼æ–¹æ¡ˆID
-	Amount         any         // å……å€¼é‡‘é¢ï¼ˆåˆ†ï¼‰
-	GiftAmount     any         // èµ é€é‡‘é¢ï¼ˆåˆ†ï¼‰
-	PayType        any         // æ”¯ä»˜æ–¹å¼:1=å¾®ä¿¡æ”¯ä»˜,2=æ”¯ä»˜å®æ”¯ä»˜
-	TradeNo        any         // ç¬¬ä¸‰æ–¹äº¤æ˜“å·
-	PayStatus      any         // æ”¯ä»˜çŠ¶æ€:0=å¾…æ”¯ä»˜,1=æ”¯ä»˜æˆåŠŸ,2=æ”¯ä»˜å¤±è´¥
-	PayAt          *gtime.Time // æ”¯ä»˜æ—¶é—´
-	CreatedBy      any         // åˆ›å»ºäººID
-	DeptId         any         // æ‰€å±žéƒ¨é—¨ID
-	CreatedAt      *gtime.Time // åˆ›å»ºæ—¶é—´
-	UpdatedAt      *gtime.Time // æ›´æ–°æ—¶é—´
-	DeletedAt      *gtime.Time // è½¯åˆ é™¤æ—¶é—´
+	Id             any         // 充值订单ID（Snowflake）
+	OrderNo        any         // 充值订单号
+	MemberId       any         // 会员ID
+	RechargePlanId any         // 充值方案ID
+	Amount         any         // 充值金额（分）
+	GiftAmount     any         // 赠送金额（分）
+	PayType        any         // 支付方式:1=微信支付,2=支付宝支付
+	TradeNo        any         // 第三方交易号
+	PayStatus      any         // 支付状态:0=待支付,1=支付成功,2=支付失败
+	PayAt          *gtime.Time // 支付时间
+	CreatedBy      any         // 创建人ID
+	DeptId         any         // 所属部门ID
+	CreatedAt      *gtime.Time // 创建时间
+	UpdatedAt      *gtime.Time // 更新时间
+	DeletedAt      *gtime.Time // 软删除时间
 }

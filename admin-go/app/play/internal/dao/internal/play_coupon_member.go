@@ -21,19 +21,19 @@ type PlayCouponMemberDao struct {
 
 // PlayCouponMemberColumns defines and stores column names for the table play_coupon_member.
 type PlayCouponMemberColumns struct {
-	Id        string // è®°å½•IDï¼ˆSnowflakeï¼‰
-	CouponId  string // ä¼˜æƒ åˆ¸æ¨¡æ¿ID
-	MemberId  string // ä¼šå‘˜ID
-	OrderId   string // ä½¿ç”¨çš„è®¢å•ID
-	UseStatus string // ä½¿ç”¨çŠ¶æ€:0=æœªä½¿ç”¨,1=å·²ä½¿ç”¨,2=å·²è¿‡æœŸ
-	ClaimAt   string // é¢†å–æ—¶é—´
-	UseAt     string // ä½¿ç”¨æ—¶é—´
-	ExpireAt  string // è¿‡æœŸæ—¶é—´
-	CreatedBy string // åˆ›å»ºäººID
-	DeptId    string // æ‰€å±žéƒ¨é—¨ID
-	CreatedAt string // åˆ›å»ºæ—¶é—´
-	UpdatedAt string // æ›´æ–°æ—¶é—´
-	DeletedAt string // è½¯åˆ é™¤æ—¶é—´
+	Id        string // 记录ID（Snowflake）
+	CouponId  string // 优惠券模板ID
+	MemberId  string // 会员ID
+	OrderId   string // 使用的订单ID（0表示未使用）
+	UseStatus string // 使用状态:0=未使用,1=已使用,2=已过期
+	ClaimAt   string // 领取时间
+	UseAt     string // 使用时间
+	ExpireAt  string // 过期时间
+	CreatedBy string // 创建人ID
+	DeptId    string // 所属部门ID
+	CreatedAt string // 创建时间
+	UpdatedAt string // 更新时间
+	DeletedAt string // 软删除时间
 }
 
 // playCouponMemberColumns holds the columns for the table play_coupon_member.

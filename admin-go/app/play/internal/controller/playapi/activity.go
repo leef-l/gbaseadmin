@@ -24,7 +24,7 @@ func (c *cActivity) Join(ctx context.Context, req *v1.ActivityJoinApiReq) (res *
 func (c *cActivity) CompleteStep(ctx context.Context, req *v1.ActivityStepApiReq) (res *v1.ActivityStepApiRes, err error) {
 	res = &v1.ActivityStepApiRes{}
 	memberID := g.RequestFromCtx(ctx).GetCtxVar("jwt_member_id").Int64()
-	res.CurrentStep, res.IsCompleted, err = service.PlayapiActivity().CompleteStep(ctx, memberID, req.ActivityID, req.StepID)
+	res.CurrentStep, res.IsCompleted, err = service.PlayapiActivity().CompleteStep(ctx, memberID, req.ActivityID, req.StepID, req.SubmitText, req.SubmitImage)
 	return
 }
 
@@ -56,6 +56,8 @@ func (c *cActivityPublic) List(ctx context.Context, req *v1.ActivityListApiReq) 
 
 // Detail 活动详情
 func (c *cActivityPublic) Detail(ctx context.Context, req *v1.ActivityDetailApiReq) (res *v1.ActivityDetailApiRes, err error) {
-	res, err = service.PlayapiActivity().Detail(ctx, req.ActivityID)
+	// 尝试获取会员ID（未登录为 0）
+	memberID := g.RequestFromCtx(ctx).GetCtxVar("jwt_member_id").Int64()
+	res, err = service.PlayapiActivity().Detail(ctx, req.ActivityID, memberID)
 	return
 }

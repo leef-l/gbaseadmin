@@ -12,17 +12,17 @@ import (
 // PlayBalanceLog is the golang structure of table play_balance_log for DAO operations like Where/Data.
 type PlayBalanceLog struct {
 	g.Meta        `orm:"table:play_balance_log, do:true"`
-	Id            any         // æµæ°´IDï¼ˆSnowflakeï¼‰
-	MemberId      any         // ä¼šå‘˜ID
-	BizType       any         // ä¸šåŠ¡ç±»åž‹:1=å……å€¼,2=æ¶ˆè´¹,3=é€€æ¬¾,4=æ´»åŠ¨èµ é€,5=æçŽ°
-	BizId         any         // å…³è”ä¸šåŠ¡ID
-	ChangeAmount  any         // å˜åŠ¨é‡‘é¢ï¼ˆåˆ†ï¼‰
-	BeforeBalance any         // å˜åŠ¨å‰ä½™é¢ï¼ˆåˆ†ï¼‰
-	AfterBalance  any         // å˜åŠ¨åŽä½™é¢ï¼ˆåˆ†ï¼‰
-	Remark        any         // å¤‡æ³¨è¯´æ˜Ž
-	CreatedBy     any         // åˆ›å»ºäººID
-	DeptId        any         // æ‰€å±žéƒ¨é—¨ID
-	CreatedAt     *gtime.Time // åˆ›å»ºæ—¶é—´
-	UpdatedAt     *gtime.Time // æ›´æ–°æ—¶é—´
-	DeletedAt     *gtime.Time // è½¯åˆ é™¤æ—¶é—´
+	Id            any         // 流水ID（Snowflake）
+	MemberId      any         // 会员ID
+	BizType       any         // 业务类型:1=充值,2=消费,3=退款,4=活动赠送,5=提现
+	BizId         any         // 关联业务ID（订单ID/充值订单ID/活动ID）
+	ChangeAmount  any         // 变动金额（分，正数增加负数减少）
+	BeforeBalance any         // 变动前余额（分）
+	AfterBalance  any         // 变动后余额（分）
+	Remark        any         // 备注说明
+	CreatedBy     any         // 创建人ID
+	DeptId        any         // 所属部门ID
+	CreatedAt     *gtime.Time // 创建时间
+	UpdatedAt     *gtime.Time // 更新时间
+	DeletedAt     *gtime.Time // 软删除时间
 }

@@ -21,25 +21,25 @@ type PlayActivityDao struct {
 
 // PlayActivityColumns defines and stores column names for the table play_activity.
 type PlayActivityColumns struct {
-	Id             string // æ´»åŠ¨IDï¼ˆSnowflakeï¼‰
-	Title          string // æ´»åŠ¨åç§°
-	CoverImage     string // æ´»åŠ¨å°é¢å›¾
-	DescContent    string // æ´»åŠ¨è¯¦æƒ…æè¿°
-	Type           string // æ´»åŠ¨ç±»åž‹:1=å……å€¼æ´»åŠ¨,2=ä¸‹å•æ´»åŠ¨,3=æ³¨å†Œæ´»åŠ¨,4=å›¾æ–‡æ­¥éª¤æ´»åŠ¨,5=è‡ªå®šä¹‰æ´»åŠ¨
-	ConditionType  string // å‚ä¸Žæ¡ä»¶:0=æ— æ¡ä»¶,1=éœ€æŠ¥å,2=å……å€¼æ»¡é¢,3=ä¸‹å•æ»¡é¢,4=å®Œæˆæ­¥éª¤
-	ConditionValue string // æ¡ä»¶å€¼
-	IsAutoReward   string // æ˜¯å¦è‡ªåŠ¨å‘å¥–:0=å¦,1=æ˜¯
-	StartAt        string // æ´»åŠ¨å¼€å§‹æ—¶é—´
-	EndAt          string // æ´»åŠ¨ç»“æŸæ—¶é—´
-	MaxNum         string // å‚ä¸Žäººæ•°ä¸Šé™ï¼ˆ0ä¸é™ï¼‰
-	JoinNum        string // å·²å‚ä¸Žäººæ•°
-	Sort           string // æŽ’åº
-	Status         string // çŠ¶æ€:0=å…³é—­,1=å¼€å¯
-	CreatedBy      string // åˆ›å»ºäººID
-	DeptId         string // æ‰€å±žéƒ¨é—¨ID
-	CreatedAt      string // åˆ›å»ºæ—¶é—´
-	UpdatedAt      string // æ›´æ–°æ—¶é—´
-	DeletedAt      string // è½¯åˆ é™¤æ—¶é—´
+	Id             string // 活动ID（Snowflake）
+	Title          string // 活动名称
+	CoverImage     string // 活动封面图
+	DescContent    string // 活动详情描述（富文本，支持图文混排）
+	Type           string // 活动类型:1=充值活动,2=下单活动,3=注册活动,4=图文步骤活动,5=自定义活动
+	ConditionType  string // 参与条件:0=无条件,1=需报名,2=充值满额,3=下单满额,4=完成步骤
+	ConditionValue string // 条件值（分/次，如充值满5000分、下单满3次）
+	IsAutoReward   string // 是否自动发奖:0=否（需审核）,1=是（用户完成即发）
+	StartAt        string // 活动开始时间
+	EndAt          string // 活动结束时间
+	MaxNum         string // 参与人数上限（0表示不限）
+	JoinNum        string // 已参与人数
+	Sort           string // 排序（升序）
+	Status         string // 状态:0=关闭,1=开启
+	CreatedBy      string // 创建人ID
+	DeptId         string // 所属部门ID
+	CreatedAt      string // 创建时间
+	UpdatedAt      string // 更新时间
+	DeletedAt      string // 软删除时间
 }
 
 // playActivityColumns holds the columns for the table play_activity.

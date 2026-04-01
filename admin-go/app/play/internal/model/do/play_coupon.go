@@ -12,23 +12,23 @@ import (
 // PlayCoupon is the golang structure of table play_coupon for DAO operations like Where/Data.
 type PlayCoupon struct {
 	g.Meta       `orm:"table:play_coupon, do:true"`
-	Id           any         // ä¼˜æƒ åˆ¸IDï¼ˆSnowflakeï¼‰
-	Title        any         // ä¼˜æƒ åˆ¸åç§°
-	Type         any         // ä¼˜æƒ åˆ¸ç±»åž‹:1=æ»¡å‡åˆ¸,2=æŠ˜æ‰£åˆ¸,3=æ— é—¨æ§›åˆ¸
-	IsNewMember  any         // æ˜¯å¦æ–°äººä¸“äº«:0=å¦,1=æ˜¯
-	FaceValue    any         // é¢å€¼ï¼ˆåˆ†ï¼‰
-	MinAmount    any         // æœ€ä½Žæ¶ˆè´¹é‡‘é¢ï¼ˆåˆ†ï¼‰
-	TotalNum     any         // å‘æ”¾æ€»é‡ï¼ˆ0ä¸é™ï¼‰
-	UsedNum      any         // å·²ä½¿ç”¨æ•°é‡
-	ClaimNum     any         // å·²é¢†å–æ•°é‡
-	PerLimit     any         // æ¯äººé™é¢†å¼ æ•°
-	ValidStartAt *gtime.Time // æœ‰æ•ˆæœŸå¼€å§‹æ—¶é—´
-	ValidEndAt   *gtime.Time // æœ‰æ•ˆæœŸç»“æŸæ—¶é—´
-	Sort         any         // æŽ’åº
-	Status       any         // çŠ¶æ€:0=å…³é—­,1=å¼€å¯
-	CreatedBy    any         // åˆ›å»ºäººID
-	DeptId       any         // æ‰€å±žéƒ¨é—¨ID
-	CreatedAt    *gtime.Time // åˆ›å»ºæ—¶é—´
-	UpdatedAt    *gtime.Time // æ›´æ–°æ—¶é—´
-	DeletedAt    *gtime.Time // è½¯åˆ é™¤æ—¶é—´
+	Id           any         // 优惠券ID（Snowflake）
+	Title        any         // 优惠券名称
+	Type         any         // 优惠券类型:1=满减券,2=折扣券,3=无门槛券
+	IsNewMember  any         // 是否新人专享:0=否,1=是
+	FaceValue    any         // 面值（分，满减/无门槛时为抵扣额，折扣时为折扣值如 85=8.5折）
+	MinAmount    any         // 最低消费金额（分，0表示无门槛）
+	TotalNum     any         // 发放总量（0表示不限）
+	UsedNum      any         // 已使用数量
+	ClaimNum     any         // 已领取数量
+	PerLimit     any         // 每人限领张数
+	ValidStartAt *gtime.Time // 有效期开始时间
+	ValidEndAt   *gtime.Time // 有效期结束时间
+	Sort         any         // 排序（升序）
+	Status       any         // 状态:0=关闭,1=开启
+	CreatedBy    any         // 创建人ID
+	DeptId       any         // 所属部门ID
+	CreatedAt    *gtime.Time // 创建时间
+	UpdatedAt    *gtime.Time // 更新时间
+	DeletedAt    *gtime.Time // 软删除时间
 }

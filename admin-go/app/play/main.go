@@ -7,6 +7,7 @@ import (
 	_ "gbaseadmin/app/play/internal/logic/activity_join"
 	_ "gbaseadmin/app/play/internal/logic/activity_reward"
 	_ "gbaseadmin/app/play/internal/logic/activity_step"
+	_ "gbaseadmin/app/play/internal/logic/activity_step_log"
 	_ "gbaseadmin/app/play/internal/logic/balance_log"
 	_ "gbaseadmin/app/play/internal/logic/category"
 	_ "gbaseadmin/app/play/internal/logic/coach"
@@ -28,7 +29,6 @@ import (
 	_ "gbaseadmin/app/play/internal/logic/shop"
 
 	_ "github.com/gogf/gf/contrib/drivers/mysql/v2"
-	_ "github.com/gogf/gf/contrib/nosql/redis/v2"
 
 	"github.com/gogf/gf/v2/os/gctx"
 

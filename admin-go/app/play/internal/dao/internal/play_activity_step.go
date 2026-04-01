@@ -27,9 +27,9 @@ type PlayActivityStepColumns struct {
 	Title       string // 步骤标题
 	StepType    string // 步骤类型：1=文字 2=链接 3=图片
 	ExampleText string // 示例文字或链接URL
-	DescContent string // 步骤说明
+	DescContent string // 步骤说明（富文本，支持图文）
 	StepImage   string // 步骤示例图片
-	Sort        string // 排序
+	Sort        string // 排序（升序）
 	CreatedBy   string // 创建人ID
 	DeptId      string // 所属部门ID
 	CreatedAt   string // 创建时间
@@ -85,7 +85,7 @@ func (dao *PlayActivityStepDao) Group() string {
 	return dao.group
 }
 
-// Ctx creates and returns a Model for the current DAO.
+// Ctx creates and returns a Model for the current DAO. It automatically sets the context for the current operation.
 func (dao *PlayActivityStepDao) Ctx(ctx context.Context) *gdb.Model {
 	model := dao.DB().Model(dao.table)
 	for _, handler := range dao.handlers {
@@ -95,6 +95,11 @@ func (dao *PlayActivityStepDao) Ctx(ctx context.Context) *gdb.Model {
 }
 
 // Transaction wraps the transaction logic using function f.
+// It rolls back the transaction and returns the error if function f returns a non-nil error.
+// It commits the transaction and returns nil if function f returns nil.
+//
+// Note: Do not commit or roll back the transaction in function f,
+// as it is automatically handled by this function.
 func (dao *PlayActivityStepDao) Transaction(ctx context.Context, f func(ctx context.Context, tx gdb.TX) error) (err error) {
 	return dao.Ctx(ctx).Transaction(ctx, f)
 }

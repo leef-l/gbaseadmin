@@ -12,19 +12,19 @@ import (
 // PlayOauth is the golang structure of table play_oauth for DAO operations like Where/Data.
 type PlayOauth struct {
 	g.Meta       `orm:"table:play_oauth, do:true"`
-	Id           any         // è®°å½•IDï¼ˆSnowflakeï¼‰
-	MemberId     any         // ä¼šå‘˜ID
-	Provider     any         // ç¬¬ä¸‰æ–¹å¹³å°:1=å¾®ä¿¡,2=æ”¯ä»˜å®
-	OpenId       any         // ç¬¬ä¸‰æ–¹OpenID
-	UnionId      any         // ç¬¬ä¸‰æ–¹UnionID
-	Nickname     any         // ç¬¬ä¸‰æ–¹æ˜µç§°
-	Avatar       any         // ç¬¬ä¸‰æ–¹å¤´åƒ
-	AccessToken  any         // è®¿é—®ä»¤ç‰Œ
-	RefreshToken any         // åˆ·æ–°ä»¤ç‰Œ
-	ExpireAt     *gtime.Time // ä»¤ç‰Œè¿‡æœŸæ—¶é—´
-	CreatedBy    any         // åˆ›å»ºäººID
-	DeptId       any         // æ‰€å±žéƒ¨é—¨ID
-	CreatedAt    *gtime.Time // åˆ›å»ºæ—¶é—´
-	UpdatedAt    *gtime.Time // æ›´æ–°æ—¶é—´
-	DeletedAt    *gtime.Time // è½¯åˆ é™¤æ—¶é—´
+	Id           any         // 记录ID（Snowflake）
+	MemberId     any         // 会员ID
+	Provider     any         // 第三方平台:1=微信,2=支付宝
+	OpenId       any         // 第三方OpenID
+	UnionId      any         // 第三方UnionID
+	Nickname     any         // 第三方昵称
+	Avatar       any         // 第三方头像
+	AccessToken  any         // 访问令牌
+	RefreshToken any         // 刷新令牌
+	ExpireAt     *gtime.Time // 令牌过期时间
+	CreatedBy    any         // 创建人ID
+	DeptId       any         // 所属部门ID
+	CreatedAt    *gtime.Time // 创建时间
+	UpdatedAt    *gtime.Time // 更新时间
+	DeletedAt    *gtime.Time // 软删除时间
 }

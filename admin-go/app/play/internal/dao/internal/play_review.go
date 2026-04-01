@@ -21,22 +21,22 @@ type PlayReviewDao struct {
 
 // PlayReviewColumns defines and stores column names for the table play_review.
 type PlayReviewColumns struct {
-	Id            string // è¯„ä»·IDï¼ˆSnowflakeï¼‰
-	OrderId       string // è®¢å•ID
-	MemberId      string // è¯„ä»·ä¼šå‘˜ID
-	CoachId       string // è¢«è¯„é™ªçŽ©å¸ˆID
-	Score         string // è¯„åˆ†ï¼ˆä¹˜100ï¼‰
-	ReviewContent string // è¯„ä»·å†…å®¹
-	ReviewImage   string // è¯„ä»·å›¾ç‰‡ï¼ˆå¤šå¼ é€—å·åˆ†éš”ï¼‰
-	ReplyContent  string // é™ªçŽ©å¸ˆå›žå¤å†…å®¹
-	ReplyAt       string // å›žå¤æ—¶é—´
-	IsAnonymous   string // æ˜¯å¦åŒ¿å:0=å¦,1=æ˜¯
-	Status        string // çŠ¶æ€:0=éšè—,1=æ˜¾ç¤º
-	CreatedBy     string // åˆ›å»ºäººID
-	DeptId        string // æ‰€å±žéƒ¨é—¨ID
-	CreatedAt     string // åˆ›å»ºæ—¶é—´
-	UpdatedAt     string // æ›´æ–°æ—¶é—´
-	DeletedAt     string // è½¯åˆ é™¤æ—¶é—´
+	Id            string // 评价ID（Snowflake）
+	OrderId       string // 订单ID
+	MemberId      string // 评价会员ID
+	CoachId       string // 被评陪玩师ID
+	Score         string // 评分（乘100，如 500=5.00分）
+	ReviewContent string // 评价内容
+	ReviewImage   string // 评价图片（多张逗号分隔）
+	ReplyContent  string // 陪玩师回复内容
+	ReplyAt       string // 回复时间
+	IsAnonymous   string // 是否匿名:0=否,1=是
+	Status        string // 状态:0=隐藏,1=显示
+	CreatedBy     string // 创建人ID
+	DeptId        string // 所属部门ID
+	CreatedAt     string // 创建时间
+	UpdatedAt     string // 更新时间
+	DeletedAt     string // 软删除时间
 }
 
 // playReviewColumns holds the columns for the table play_review.

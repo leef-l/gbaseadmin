@@ -21,33 +21,33 @@ type PlayOrderDao struct {
 
 // PlayOrderColumns defines and stores column names for the table play_order.
 type PlayOrderColumns struct {
-	Id             string // è®¢å•IDï¼ˆSnowflakeï¼‰
-	OrderNo        string // è®¢å•ç¼–å·
-	MemberId       string // ä¸‹å•ä¼šå‘˜ID
-	CoachId        string // é™ªçŽ©å¸ˆID
-	ShopId         string // åº—é“ºID
-	GoodsId        string // å•†å“ID
-	GoodsTitle     string // å•†å“åç§°ï¼ˆå†—ä½™ï¼‰
-	GoodsPrice     string // å•†å“å•ä»·ï¼ˆåˆ†ï¼‰
-	Quantity       string // æ•°é‡
-	TotalAmount    string // è®¢å•æ€»é¢ï¼ˆåˆ†ï¼‰
-	DiscountAmount string // ä¼šå‘˜æŠ˜æ‰£é‡‘é¢ï¼ˆåˆ†ï¼‰
-	CouponAmount   string // ä¼˜æƒ åˆ¸æŠµæ‰£é‡‘é¢ï¼ˆåˆ†ï¼‰
-	PayAmount      string // å®žä»˜é‡‘é¢ï¼ˆåˆ†ï¼‰
-	CouponMemberId string // ä½¿ç”¨çš„ä¼˜æƒ åˆ¸é¢†å–è®°å½•ID
-	PayType        string // æ”¯ä»˜æ–¹å¼:0=æœªæ”¯ä»˜,1=å¾®ä¿¡æ”¯ä»˜,2=æ”¯ä»˜å®æ”¯ä»˜,3=ä½™é¢æ”¯ä»˜
-	OrderStatus    string // è®¢å•çŠ¶æ€:0=å¾…æ”¯ä»˜,1=å·²æ”¯ä»˜,2=è¿›è¡Œä¸­,3=å·²å®Œæˆ,4=å·²å–æ¶ˆ,5=é€€æ¬¾ä¸­,6=å·²é€€æ¬¾
-	PayAt          string // æ”¯ä»˜æ—¶é—´
-	StartAt        string // æœåŠ¡å¼€å§‹æ—¶é—´
-	FinishAt       string // æœåŠ¡å®Œæˆæ—¶é—´
-	CancelAt       string // å–æ¶ˆæ—¶é—´
-	CancelReason   string // å–æ¶ˆåŽŸå›
-	Remark         string // è®¢å•å¤‡æ³¨
-	CreatedBy      string // åˆ›å»ºäººID
-	DeptId         string // æ‰€å±žéƒ¨é—¨ID
-	CreatedAt      string // åˆ›å»ºæ—¶é—´
-	UpdatedAt      string // æ›´æ–°æ—¶é—´
-	DeletedAt      string // è½¯åˆ é™¤æ—¶é—´
+	Id             string // 订单ID（Snowflake）
+	OrderNo        string // 订单编号
+	MemberId       string // 下单会员ID
+	CoachId        string // 陪玩师ID
+	ShopId         string // 店铺ID（0表示无店铺）
+	GoodsId        string // 商品ID
+	GoodsTitle     string // 商品名称（冗余）
+	GoodsPrice     string // 商品单价（分，下单时快照）
+	Quantity       string // 数量
+	TotalAmount    string // 订单总额（分）
+	DiscountAmount string // 会员折扣金额（分）
+	CouponAmount   string // 优惠券抵扣金额（分）
+	PayAmount      string // 实付金额（分）
+	CouponMemberId string // 使用的优惠券领取记录ID
+	PayType        string // 支付方式:0=未支付,1=微信支付,2=支付宝支付,3=余额支付
+	OrderStatus    string // 订单状态:0=待支付,1=已支付,2=进行中,3=已完成,4=已取消,5=退款中,6=已退款
+	PayAt          string // 支付时间
+	StartAt        string // 服务开始时间
+	FinishAt       string // 服务完成时间
+	CancelAt       string // 取消时间
+	CancelReason   string // 取消原因
+	Remark         string // 订单备注
+	CreatedBy      string // 创建人ID
+	DeptId         string // 所属部门ID
+	CreatedAt      string // 创建时间
+	UpdatedAt      string // 更新时间
+	DeletedAt      string // 软删除时间
 }
 
 // playOrderColumns holds the columns for the table play_order.

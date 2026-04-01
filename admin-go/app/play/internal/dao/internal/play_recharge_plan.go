@@ -21,18 +21,18 @@ type PlayRechargePlanDao struct {
 
 // PlayRechargePlanColumns defines and stores column names for the table play_recharge_plan.
 type PlayRechargePlanColumns struct {
-	Id         string // æ–¹æ¡ˆIDï¼ˆSnowflakeï¼‰
-	Title      string // æ–¹æ¡ˆåç§°
-	Amount     string // å……å€¼é‡‘é¢ï¼ˆåˆ†ï¼‰
-	GiftAmount string // èµ é€é‡‘é¢ï¼ˆåˆ†ï¼‰
-	CoverImage string // æ–¹æ¡ˆå°é¢å›¾
-	Sort       string // æŽ’åºï¼ˆå‡åºï¼‰
-	Status     string // çŠ¶æ€:0=å…³é—­,1=å¼€å¯
-	CreatedBy  string // åˆ›å»ºäººID
-	DeptId     string // æ‰€å±žéƒ¨é—¨ID
-	CreatedAt  string // åˆ›å»ºæ—¶é—´
-	UpdatedAt  string // æ›´æ–°æ—¶é—´
-	DeletedAt  string // è½¯åˆ é™¤æ—¶é—´
+	Id         string // 方案ID（Snowflake）
+	Title      string // 方案名称
+	Amount     string // 充值金额（分）
+	GiftAmount string // 赠送金额（分）
+	CoverImage string // 方案封面图
+	Sort       string // 排序（升序）
+	Status     string // 状态:0=关闭,1=开启
+	CreatedBy  string // 创建人ID
+	DeptId     string // 所属部门ID
+	CreatedAt  string // 创建时间
+	UpdatedAt  string // 更新时间
+	DeletedAt  string // 软删除时间
 }
 
 // playRechargePlanColumns holds the columns for the table play_recharge_plan.

@@ -12,20 +12,20 @@ import (
 // PlayReview is the golang structure of table play_review for DAO operations like Where/Data.
 type PlayReview struct {
 	g.Meta        `orm:"table:play_review, do:true"`
-	Id            any         // è¯„ä»·IDï¼ˆSnowflakeï¼‰
-	OrderId       any         // è®¢å•ID
-	MemberId      any         // è¯„ä»·ä¼šå‘˜ID
-	CoachId       any         // è¢«è¯„é™ªçŽ©å¸ˆID
-	Score         any         // è¯„åˆ†ï¼ˆä¹˜100ï¼‰
-	ReviewContent any         // è¯„ä»·å†…å®¹
-	ReviewImage   any         // è¯„ä»·å›¾ç‰‡ï¼ˆå¤šå¼ é€—å·åˆ†éš”ï¼‰
-	ReplyContent  any         // é™ªçŽ©å¸ˆå›žå¤å†…å®¹
-	ReplyAt       *gtime.Time // å›žå¤æ—¶é—´
-	IsAnonymous   any         // æ˜¯å¦åŒ¿å:0=å¦,1=æ˜¯
-	Status        any         // çŠ¶æ€:0=éšè—,1=æ˜¾ç¤º
-	CreatedBy     any         // åˆ›å»ºäººID
-	DeptId        any         // æ‰€å±žéƒ¨é—¨ID
-	CreatedAt     *gtime.Time // åˆ›å»ºæ—¶é—´
-	UpdatedAt     *gtime.Time // æ›´æ–°æ—¶é—´
-	DeletedAt     *gtime.Time // è½¯åˆ é™¤æ—¶é—´
+	Id            any         // 评价ID（Snowflake）
+	OrderId       any         // 订单ID
+	MemberId      any         // 评价会员ID
+	CoachId       any         // 被评陪玩师ID
+	Score         any         // 评分（乘100，如 500=5.00分）
+	ReviewContent any         // 评价内容
+	ReviewImage   any         // 评价图片（多张逗号分隔）
+	ReplyContent  any         // 陪玩师回复内容
+	ReplyAt       *gtime.Time // 回复时间
+	IsAnonymous   any         // 是否匿名:0=否,1=是
+	Status        any         // 状态:0=隐藏,1=显示
+	CreatedBy     any         // 创建人ID
+	DeptId        any         // 所属部门ID
+	CreatedAt     *gtime.Time // 创建时间
+	UpdatedAt     *gtime.Time // 更新时间
+	DeletedAt     *gtime.Time // 软删除时间
 }

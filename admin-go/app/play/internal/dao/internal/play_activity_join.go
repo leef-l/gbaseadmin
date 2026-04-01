@@ -21,19 +21,19 @@ type PlayActivityJoinDao struct {
 
 // PlayActivityJoinColumns defines and stores column names for the table play_activity_join.
 type PlayActivityJoinColumns struct {
-	Id          string // è®°å½•IDï¼ˆSnowflakeï¼‰
-	ActivityId  string // æ´»åŠ¨ID
-	MemberId    string // ä¼šå‘˜ID
-	JoinStatus  string // å‚ä¸ŽçŠ¶æ€:0=å·²æŠ¥å,1=è¿›è¡Œä¸­,2=å·²å®Œæˆ,3=å·²é¢†å¥–
-	CurrentStep string // å½“å‰å®Œæˆåˆ°ç¬¬å‡ æ­¥
-	FinishAt    string // å®Œæˆæ—¶é—´
-	RewardAt    string // é¢†å¥–æ—¶é—´
-	Remark      string // å¤‡æ³¨
-	CreatedBy   string // åˆ›å»ºäººID
-	DeptId      string // æ‰€å±žéƒ¨é—¨ID
-	CreatedAt   string // åˆ›å»ºæ—¶é—´
-	UpdatedAt   string // æ›´æ–°æ—¶é—´
-	DeletedAt   string // è½¯åˆ é™¤æ—¶é—´
+	Id          string // 记录ID（Snowflake）
+	ActivityId  string // 活动ID
+	MemberId    string // 会员ID
+	JoinStatus  string // 参与状态:0=已报名,1=进行中,2=已完成,3=已领奖
+	CurrentStep string // 当前完成到第几步（步骤活动用）
+	FinishAt    string // 完成时间
+	RewardAt    string // 领奖时间
+	Remark      string // 备注
+	CreatedBy   string // 创建人ID
+	DeptId      string // 所属部门ID
+	CreatedAt   string // 创建时间
+	UpdatedAt   string // 更新时间
+	DeletedAt   string // 软删除时间
 }
 
 // playActivityJoinColumns holds the columns for the table play_activity_join.

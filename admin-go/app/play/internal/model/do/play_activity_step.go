@@ -12,16 +12,18 @@ import (
 // PlayActivityStep is the golang structure of table play_activity_step for DAO operations like Where/Data.
 type PlayActivityStep struct {
 	g.Meta      `orm:"table:play_activity_step, do:true"`
-	Id          any         // æ­¥éª¤IDï¼ˆSnowflakeï¼‰
-	ActivityId  any         // æ´»åŠ¨ID
-	StepNum     any         // æ­¥éª¤åºå·
-	Title       any         // æ­¥éª¤æ ‡é¢˜
-	DescContent any         // æ­¥éª¤è¯´æ˜Ž
-	StepImage   any         // æ­¥éª¤ç¤ºä¾‹å›¾ç‰‡
-	Sort        any         // æŽ’åº
-	CreatedBy   any         // åˆ›å»ºäººID
-	DeptId      any         // æ‰€å±žéƒ¨é—¨ID
-	CreatedAt   *gtime.Time // åˆ›å»ºæ—¶é—´
-	UpdatedAt   *gtime.Time // æ›´æ–°æ—¶é—´
-	DeletedAt   *gtime.Time // è½¯åˆ é™¤æ—¶é—´
+	Id          any         // 步骤ID（Snowflake）
+	ActivityId  any         // 活动ID
+	StepNum     any         // 步骤序号
+	Title       any         // 步骤标题
+	StepType    any         // 步骤类型：1=文字 2=链接 3=图片
+	ExampleText any         // 示例文字或链接URL
+	DescContent any         // 步骤说明（富文本，支持图文）
+	StepImage   any         // 步骤示例图片
+	Sort        any         // 排序（升序）
+	CreatedBy   any         // 创建人ID
+	DeptId      any         // 所属部门ID
+	CreatedAt   *gtime.Time // 创建时间
+	UpdatedAt   *gtime.Time // 更新时间
+	DeletedAt   *gtime.Time // 软删除时间
 }

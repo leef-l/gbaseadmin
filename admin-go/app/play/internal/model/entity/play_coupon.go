@@ -10,23 +10,23 @@ import (
 
 // PlayCoupon is the golang structure for table play_coupon.
 type PlayCoupon struct {
-	Id           uint64      `orm:"id"             description:"ä¼˜æƒ åˆ¸IDï¼ˆSnowflakeï¼‰"`                             // ä¼˜æƒ åˆ¸IDï¼ˆSnowflakeï¼‰
-	Title        string      `orm:"title"          description:"ä¼˜æƒ åˆ¸åç§°"`                                        // ä¼˜æƒ åˆ¸åç§°
-	Type         int         `orm:"type"           description:"ä¼˜æƒ åˆ¸ç±»åž‹:1=æ»¡å‡åˆ¸,2=æŠ˜æ‰£åˆ¸,3=æ— é—¨æ§›åˆ¸"` // ä¼˜æƒ åˆ¸ç±»åž‹:1=æ»¡å‡åˆ¸,2=æŠ˜æ‰£åˆ¸,3=æ— é—¨æ§›åˆ¸
-	IsNewMember  int         `orm:"is_new_member"  description:"æ˜¯å¦æ–°äººä¸“äº«:0=å¦,1=æ˜¯"`                         // æ˜¯å¦æ–°äººä¸“äº«:0=å¦,1=æ˜¯
-	FaceValue    int64       `orm:"face_value"     description:"é¢å€¼ï¼ˆåˆ†ï¼‰"`                                        // é¢å€¼ï¼ˆåˆ†ï¼‰
-	MinAmount    int64       `orm:"min_amount"     description:"æœ€ä½Žæ¶ˆè´¹é‡‘é¢ï¼ˆåˆ†ï¼‰"`                            // æœ€ä½Žæ¶ˆè´¹é‡‘é¢ï¼ˆåˆ†ï¼‰
-	TotalNum     int         `orm:"total_num"      description:"å‘æ”¾æ€»é‡ï¼ˆ0ä¸é™ï¼‰"`                              // å‘æ”¾æ€»é‡ï¼ˆ0ä¸é™ï¼‰
-	UsedNum      int         `orm:"used_num"       description:"å·²ä½¿ç”¨æ•°é‡"`                                        // å·²ä½¿ç”¨æ•°é‡
-	ClaimNum     int         `orm:"claim_num"      description:"å·²é¢†å–æ•°é‡"`                                        // å·²é¢†å–æ•°é‡
-	PerLimit     int         `orm:"per_limit"      description:"æ¯äººé™é¢†å¼ æ•°"`                                     // æ¯äººé™é¢†å¼ æ•°
-	ValidStartAt *gtime.Time `orm:"valid_start_at" description:"æœ‰æ•ˆæœŸå¼€å§‹æ—¶é—´"`                                  // æœ‰æ•ˆæœŸå¼€å§‹æ—¶é—´
-	ValidEndAt   *gtime.Time `orm:"valid_end_at"   description:"æœ‰æ•ˆæœŸç»“æŸæ—¶é—´"`                                  // æœ‰æ•ˆæœŸç»“æŸæ—¶é—´
-	Sort         int         `orm:"sort"           description:"æŽ’åº"`                                                 // æŽ’åº
-	Status       int         `orm:"status"         description:"çŠ¶æ€:0=å…³é—­,1=å¼€å¯"`                               // çŠ¶æ€:0=å…³é—­,1=å¼€å¯
-	CreatedBy    uint64      `orm:"created_by"     description:"åˆ›å»ºäººID"`                                            // åˆ›å»ºäººID
-	DeptId       uint64      `orm:"dept_id"        description:"æ‰€å±žéƒ¨é—¨ID"`                                         // æ‰€å±žéƒ¨é—¨ID
-	CreatedAt    *gtime.Time `orm:"created_at"     description:"åˆ›å»ºæ—¶é—´"`                                           // åˆ›å»ºæ—¶é—´
-	UpdatedAt    *gtime.Time `orm:"updated_at"     description:"æ›´æ–°æ—¶é—´"`                                           // æ›´æ–°æ—¶é—´
-	DeletedAt    *gtime.Time `orm:"deleted_at"     description:"è½¯åˆ é™¤æ—¶é—´"`                                        // è½¯åˆ é™¤æ—¶é—´
+	Id           uint64      `orm:"id"             description:"优惠券ID（Snowflake）"`                   // 优惠券ID（Snowflake）
+	Title        string      `orm:"title"          description:"优惠券名称"`                              // 优惠券名称
+	Type         int         `orm:"type"           description:"优惠券类型:1=满减券,2=折扣券,3=无门槛券"`           // 优惠券类型:1=满减券,2=折扣券,3=无门槛券
+	IsNewMember  int         `orm:"is_new_member"  description:"是否新人专享:0=否,1=是"`                     // 是否新人专享:0=否,1=是
+	FaceValue    int64       `orm:"face_value"     description:"面值（分，满减/无门槛时为抵扣额，折扣时为折扣值如 85=8.5折）"` // 面值（分，满减/无门槛时为抵扣额，折扣时为折扣值如 85=8.5折）
+	MinAmount    int64       `orm:"min_amount"     description:"最低消费金额（分，0表示无门槛）"`                   // 最低消费金额（分，0表示无门槛）
+	TotalNum     int         `orm:"total_num"      description:"发放总量（0表示不限）"`                        // 发放总量（0表示不限）
+	UsedNum      int         `orm:"used_num"       description:"已使用数量"`                              // 已使用数量
+	ClaimNum     int         `orm:"claim_num"      description:"已领取数量"`                              // 已领取数量
+	PerLimit     int         `orm:"per_limit"      description:"每人限领张数"`                             // 每人限领张数
+	ValidStartAt *gtime.Time `orm:"valid_start_at" description:"有效期开始时间"`                            // 有效期开始时间
+	ValidEndAt   *gtime.Time `orm:"valid_end_at"   description:"有效期结束时间"`                            // 有效期结束时间
+	Sort         int         `orm:"sort"           description:"排序（升序）"`                             // 排序（升序）
+	Status       int         `orm:"status"         description:"状态:0=关闭,1=开启"`                       // 状态:0=关闭,1=开启
+	CreatedBy    uint64      `orm:"created_by"     description:"创建人ID"`                              // 创建人ID
+	DeptId       uint64      `orm:"dept_id"        description:"所属部门ID"`                             // 所属部门ID
+	CreatedAt    *gtime.Time `orm:"created_at"     description:"创建时间"`                               // 创建时间
+	UpdatedAt    *gtime.Time `orm:"updated_at"     description:"更新时间"`                               // 更新时间
+	DeletedAt    *gtime.Time `orm:"deleted_at"     description:"软删除时间"`                              // 软删除时间
 }

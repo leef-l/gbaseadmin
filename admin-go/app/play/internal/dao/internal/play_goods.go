@@ -21,22 +21,22 @@ type PlayGoodsDao struct {
 
 // PlayGoodsColumns defines and stores column names for the table play_goods.
 type PlayGoodsColumns struct {
-	Id          string // å•†å“IDï¼ˆSnowflakeï¼‰
-	CategoryId  string // åˆ†ç±»ID
-	CoachId     string // é™ªçŽ©å¸ˆID
-	Title       string // å•†å“åç§°
-	CoverImage  string // å•†å“å°é¢å›¾
-	DescContent string // å•†å“è¯¦æƒ…æè¿°
-	Price       string // å•ä»·ï¼ˆåˆ†ï¼‰
-	Unit        string // è®¡é‡å•ä½
-	SalesNum    string // é”€é‡
-	Sort        string // æŽ’åºï¼ˆå‡åºï¼‰
-	Status      string // çŠ¶æ€:0=ä¸‹æž¶,1=ä¸Šæž¶
-	CreatedBy   string // åˆ›å»ºäººID
-	DeptId      string // æ‰€å±žéƒ¨é—¨ID
-	CreatedAt   string // åˆ›å»ºæ—¶é—´
-	UpdatedAt   string // æ›´æ–°æ—¶é—´
-	DeletedAt   string // è½¯åˆ é™¤æ—¶é—´
+	Id          string // 商品ID（Snowflake）
+	CategoryId  string // 分类ID
+	CoachId     string // 陪玩师ID
+	Title       string // 商品名称
+	CoverImage  string // 商品封面图
+	DescContent string // 商品详情描述
+	Price       string // 单价（分）
+	Unit        string // 计量单位（如：局、小时、把）
+	SalesNum    string // 销量
+	Sort        string // 排序（升序）
+	Status      string // 状态:0=下架,1=上架
+	CreatedBy   string // 创建人ID
+	DeptId      string // 所属部门ID
+	CreatedAt   string // 创建时间
+	UpdatedAt   string // 更新时间
+	DeletedAt   string // 软删除时间
 }
 
 // playGoodsColumns holds the columns for the table play_goods.

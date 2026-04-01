@@ -21,24 +21,24 @@ type PlayProfitLogDao struct {
 
 // PlayProfitLogColumns defines and stores column names for the table play_profit_log.
 type PlayProfitLogColumns struct {
-	Id             string // æµæ°´IDï¼ˆSnowflakeï¼‰
-	OrderId        string // è®¢å•ID
-	OrderNo        string // è®¢å•ç¼–å·
-	PayAmount      string // å®žä»˜é‡‘é¢ï¼ˆåˆ†ï¼‰
-	CoachId        string // é™ªçŽ©å¸ˆID
-	ShopId         string // åº—é“ºID
-	PlatformRate   string // å¹³å°æŠ½æˆæ¯”ä¾‹
-	PlatformAmount string // å¹³å°æŠ½æˆé‡‘é¢ï¼ˆåˆ†ï¼‰
-	ShopRate       string // åº—é“ºæŠ½æˆæ¯”ä¾‹
-	ShopAmount     string // åº—é“ºæŠ½æˆé‡‘é¢ï¼ˆåˆ†ï¼‰
-	CoachAmount    string // é™ªçŽ©å¸ˆæ”¶å…¥ï¼ˆåˆ†ï¼‰
-	SettleStatus   string // ç»“ç®—çŠ¶æ€:0=å¾…ç»“ç®—,1=å·²ç»“ç®—
-	SettleAt       string // ç»“ç®—æ—¶é—´
-	CreatedBy      string // åˆ›å»ºäººID
-	DeptId         string // æ‰€å±žéƒ¨é—¨ID
-	CreatedAt      string // åˆ›å»ºæ—¶é—´
-	UpdatedAt      string // æ›´æ–°æ—¶é—´
-	DeletedAt      string // è½¯åˆ é™¤æ—¶é—´
+	Id             string // 流水ID（Snowflake）
+	OrderId        string // 订单ID
+	OrderNo        string // 订单编号
+	PayAmount      string // 实付金额（分）
+	CoachId        string // 陪玩师ID
+	ShopId         string // 店铺ID（0表示无店铺）
+	PlatformRate   string // 平台抽成比例（百分比）
+	PlatformAmount string // 平台抽成金额（分）
+	ShopRate       string // 店铺抽成比例（百分比）
+	ShopAmount     string // 店铺抽成金额（分）
+	CoachAmount    string // 陪玩师收入（分）
+	SettleStatus   string // 结算状态:0=待结算,1=已结算
+	SettleAt       string // 结算时间
+	CreatedBy      string // 创建人ID
+	DeptId         string // 所属部门ID
+	CreatedAt      string // 创建时间
+	UpdatedAt      string // 更新时间
+	DeletedAt      string // 软删除时间
 }
 
 // playProfitLogColumns holds the columns for the table play_profit_log.

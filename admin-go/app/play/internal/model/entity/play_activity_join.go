@@ -10,17 +10,17 @@ import (
 
 // PlayActivityJoin is the golang structure for table play_activity_join.
 type PlayActivityJoin struct {
-	Id          uint64      `orm:"id"           description:"è®°å½•IDï¼ˆSnowflakeï¼‰"`                                      // è®°å½•IDï¼ˆSnowflakeï¼‰
-	ActivityId  uint64      `orm:"activity_id"  description:"æ´»åŠ¨ID"`                                                     // æ´»åŠ¨ID
-	MemberId    uint64      `orm:"member_id"    description:"ä¼šå‘˜ID"`                                                     // ä¼šå‘˜ID
-	JoinStatus  int         `orm:"join_status"  description:"å‚ä¸ŽçŠ¶æ€:0=å·²æŠ¥å,1=è¿›è¡Œä¸­,2=å·²å®Œæˆ,3=å·²é¢†å¥–"` // å‚ä¸ŽçŠ¶æ€:0=å·²æŠ¥å,1=è¿›è¡Œä¸­,2=å·²å®Œæˆ,3=å·²é¢†å¥–
-	CurrentStep int         `orm:"current_step" description:"å½“å‰å®Œæˆåˆ°ç¬¬å‡ æ­¥"`                                     // å½“å‰å®Œæˆåˆ°ç¬¬å‡ æ­¥
-	FinishAt    *gtime.Time `orm:"finish_at"    description:"å®Œæˆæ—¶é—´"`                                                 // å®Œæˆæ—¶é—´
-	RewardAt    *gtime.Time `orm:"reward_at"    description:"é¢†å¥–æ—¶é—´"`                                                 // é¢†å¥–æ—¶é—´
-	Remark      string      `orm:"remark"       description:"å¤‡æ³¨"`                                                       // å¤‡æ³¨
-	CreatedBy   uint64      `orm:"created_by"   description:"åˆ›å»ºäººID"`                                                  // åˆ›å»ºäººID
-	DeptId      uint64      `orm:"dept_id"      description:"æ‰€å±žéƒ¨é—¨ID"`                                               // æ‰€å±žéƒ¨é—¨ID
-	CreatedAt   *gtime.Time `orm:"created_at"   description:"åˆ›å»ºæ—¶é—´"`                                                 // åˆ›å»ºæ—¶é—´
-	UpdatedAt   *gtime.Time `orm:"updated_at"   description:"æ›´æ–°æ—¶é—´"`                                                 // æ›´æ–°æ—¶é—´
-	DeletedAt   *gtime.Time `orm:"deleted_at"   description:"è½¯åˆ é™¤æ—¶é—´"`                                              // è½¯åˆ é™¤æ—¶é—´
+	Id          uint64      `orm:"id"           description:"记录ID（Snowflake）"`              // 记录ID（Snowflake）
+	ActivityId  uint64      `orm:"activity_id"  description:"活动ID"`                         // 活动ID
+	MemberId    uint64      `orm:"member_id"    description:"会员ID"`                         // 会员ID
+	JoinStatus  int         `orm:"join_status"  description:"参与状态:0=已报名,1=进行中,2=已完成,3=已领奖"` // 参与状态:0=已报名,1=进行中,2=已完成,3=已领奖
+	CurrentStep int         `orm:"current_step" description:"当前完成到第几步（步骤活动用）"`              // 当前完成到第几步（步骤活动用）
+	FinishAt    *gtime.Time `orm:"finish_at"    description:"完成时间"`                         // 完成时间
+	RewardAt    *gtime.Time `orm:"reward_at"    description:"领奖时间"`                         // 领奖时间
+	Remark      string      `orm:"remark"       description:"备注"`                           // 备注
+	CreatedBy   uint64      `orm:"created_by"   description:"创建人ID"`                        // 创建人ID
+	DeptId      uint64      `orm:"dept_id"      description:"所属部门ID"`                       // 所属部门ID
+	CreatedAt   *gtime.Time `orm:"created_at"   description:"创建时间"`                         // 创建时间
+	UpdatedAt   *gtime.Time `orm:"updated_at"   description:"更新时间"`                         // 更新时间
+	DeletedAt   *gtime.Time `orm:"deleted_at"   description:"软删除时间"`                        // 软删除时间
 }

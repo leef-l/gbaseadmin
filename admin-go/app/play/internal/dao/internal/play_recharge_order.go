@@ -21,21 +21,21 @@ type PlayRechargeOrderDao struct {
 
 // PlayRechargeOrderColumns defines and stores column names for the table play_recharge_order.
 type PlayRechargeOrderColumns struct {
-	Id             string // å……å€¼è®¢å•IDï¼ˆSnowflakeï¼‰
-	OrderNo        string // å……å€¼è®¢å•å·
-	MemberId       string // ä¼šå‘˜ID
-	RechargePlanId string // å……å€¼æ–¹æ¡ˆID
-	Amount         string // å……å€¼é‡‘é¢ï¼ˆåˆ†ï¼‰
-	GiftAmount     string // èµ é€é‡‘é¢ï¼ˆåˆ†ï¼‰
-	PayType        string // æ”¯ä»˜æ–¹å¼:1=å¾®ä¿¡æ”¯ä»˜,2=æ”¯ä»˜å®æ”¯ä»˜
-	TradeNo        string // ç¬¬ä¸‰æ–¹äº¤æ˜“å·
-	PayStatus      string // æ”¯ä»˜çŠ¶æ€:0=å¾…æ”¯ä»˜,1=æ”¯ä»˜æˆåŠŸ,2=æ”¯ä»˜å¤±è´¥
-	PayAt          string // æ”¯ä»˜æ—¶é—´
-	CreatedBy      string // åˆ›å»ºäººID
-	DeptId         string // æ‰€å±žéƒ¨é—¨ID
-	CreatedAt      string // åˆ›å»ºæ—¶é—´
-	UpdatedAt      string // æ›´æ–°æ—¶é—´
-	DeletedAt      string // è½¯åˆ é™¤æ—¶é—´
+	Id             string // 充值订单ID（Snowflake）
+	OrderNo        string // 充值订单号
+	MemberId       string // 会员ID
+	RechargePlanId string // 充值方案ID
+	Amount         string // 充值金额（分）
+	GiftAmount     string // 赠送金额（分）
+	PayType        string // 支付方式:1=微信支付,2=支付宝支付
+	TradeNo        string // 第三方交易号
+	PayStatus      string // 支付状态:0=待支付,1=支付成功,2=支付失败
+	PayAt          string // 支付时间
+	CreatedBy      string // 创建人ID
+	DeptId         string // 所属部门ID
+	CreatedAt      string // 创建时间
+	UpdatedAt      string // 更新时间
+	DeletedAt      string // 软删除时间
 }
 
 // playRechargeOrderColumns holds the columns for the table play_recharge_order.

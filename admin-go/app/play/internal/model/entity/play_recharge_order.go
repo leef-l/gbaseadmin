@@ -10,19 +10,19 @@ import (
 
 // PlayRechargeOrder is the golang structure for table play_recharge_order.
 type PlayRechargeOrder struct {
-	Id             uint64      `orm:"id"               description:"å……å€¼è®¢å•IDï¼ˆSnowflakeï¼‰"`                          // å……å€¼è®¢å•IDï¼ˆSnowflakeï¼‰
-	OrderNo        string      `orm:"order_no"         description:"å……å€¼è®¢å•å·"`                                        // å……å€¼è®¢å•å·
-	MemberId       uint64      `orm:"member_id"        description:"ä¼šå‘˜ID"`                                               // ä¼šå‘˜ID
-	RechargePlanId uint64      `orm:"recharge_plan_id" description:"å……å€¼æ–¹æ¡ˆID"`                                         // å……å€¼æ–¹æ¡ˆID
-	Amount         int64       `orm:"amount"           description:"å……å€¼é‡‘é¢ï¼ˆåˆ†ï¼‰"`                                  // å……å€¼é‡‘é¢ï¼ˆåˆ†ï¼‰
-	GiftAmount     int64       `orm:"gift_amount"      description:"èµ é€é‡‘é¢ï¼ˆåˆ†ï¼‰"`                                  // èµ é€é‡‘é¢ï¼ˆåˆ†ï¼‰
-	PayType        int         `orm:"pay_type"         description:"æ”¯ä»˜æ–¹å¼:1=å¾®ä¿¡æ”¯ä»˜,2=æ”¯ä»˜å®æ”¯ä»˜"`          // æ”¯ä»˜æ–¹å¼:1=å¾®ä¿¡æ”¯ä»˜,2=æ”¯ä»˜å®æ”¯ä»˜
-	TradeNo        string      `orm:"trade_no"         description:"ç¬¬ä¸‰æ–¹äº¤æ˜“å·"`                                     // ç¬¬ä¸‰æ–¹äº¤æ˜“å·
-	PayStatus      int         `orm:"pay_status"       description:"æ”¯ä»˜çŠ¶æ€:0=å¾…æ”¯ä»˜,1=æ”¯ä»˜æˆåŠŸ,2=æ”¯ä»˜å¤±è´¥"` // æ”¯ä»˜çŠ¶æ€:0=å¾…æ”¯ä»˜,1=æ”¯ä»˜æˆåŠŸ,2=æ”¯ä»˜å¤±è´¥
-	PayAt          *gtime.Time `orm:"pay_at"           description:"æ”¯ä»˜æ—¶é—´"`                                           // æ”¯ä»˜æ—¶é—´
-	CreatedBy      uint64      `orm:"created_by"       description:"åˆ›å»ºäººID"`                                            // åˆ›å»ºäººID
-	DeptId         uint64      `orm:"dept_id"          description:"æ‰€å±žéƒ¨é—¨ID"`                                         // æ‰€å±žéƒ¨é—¨ID
-	CreatedAt      *gtime.Time `orm:"created_at"       description:"åˆ›å»ºæ—¶é—´"`                                           // åˆ›å»ºæ—¶é—´
-	UpdatedAt      *gtime.Time `orm:"updated_at"       description:"æ›´æ–°æ—¶é—´"`                                           // æ›´æ–°æ—¶é—´
-	DeletedAt      *gtime.Time `orm:"deleted_at"       description:"è½¯åˆ é™¤æ—¶é—´"`                                        // è½¯åˆ é™¤æ—¶é—´
+	Id             uint64      `orm:"id"               description:"充值订单ID（Snowflake）"`        // 充值订单ID（Snowflake）
+	OrderNo        string      `orm:"order_no"         description:"充值订单号"`                    // 充值订单号
+	MemberId       uint64      `orm:"member_id"        description:"会员ID"`                     // 会员ID
+	RechargePlanId uint64      `orm:"recharge_plan_id" description:"充值方案ID"`                   // 充值方案ID
+	Amount         int64       `orm:"amount"           description:"充值金额（分）"`                  // 充值金额（分）
+	GiftAmount     int64       `orm:"gift_amount"      description:"赠送金额（分）"`                  // 赠送金额（分）
+	PayType        int         `orm:"pay_type"         description:"支付方式:1=微信支付,2=支付宝支付"`      // 支付方式:1=微信支付,2=支付宝支付
+	TradeNo        string      `orm:"trade_no"         description:"第三方交易号"`                   // 第三方交易号
+	PayStatus      int         `orm:"pay_status"       description:"支付状态:0=待支付,1=支付成功,2=支付失败"` // 支付状态:0=待支付,1=支付成功,2=支付失败
+	PayAt          *gtime.Time `orm:"pay_at"           description:"支付时间"`                     // 支付时间
+	CreatedBy      uint64      `orm:"created_by"       description:"创建人ID"`                    // 创建人ID
+	DeptId         uint64      `orm:"dept_id"          description:"所属部门ID"`                   // 所属部门ID
+	CreatedAt      *gtime.Time `orm:"created_at"       description:"创建时间"`                     // 创建时间
+	UpdatedAt      *gtime.Time `orm:"updated_at"       description:"更新时间"`                     // 更新时间
+	DeletedAt      *gtime.Time `orm:"deleted_at"       description:"软删除时间"`                    // 软删除时间
 }
