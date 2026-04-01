@@ -17,14 +17,22 @@ type Claims struct {
 }
 
 var (
-	secret     []byte
-	expireTime time.Duration
+	secret       []byte
+	memberSecret []byte
+	expireTime   time.Duration
 )
 
 func init() {
 	ctx := gctx.New()
 	key, _ := g.Cfg().Get(ctx, "jwt.secret", "gbaseadmin-secret-key")
 	secret = []byte(key.String())
+	// 会员端独立 secret，未配置时回退到管理端 secret
+	mKey, _ := g.Cfg().Get(ctx, "jwt.memberSecret", "")
+	if mKey.String() != "" {
+		memberSecret = []byte(mKey.String())
+	} else {
+		memberSecret = secret
+	}
 	hours, _ := g.Cfg().Get(ctx, "jwt.expire", 24)
 	expireTime = time.Duration(hours.Int()) * time.Hour
 }
@@ -86,13 +94,23 @@ func GenerateMemberToken(memberID int64, phone string, isCoach int, coachID int6
 		},
 	}
 	token := gojwt.NewWithClaims(gojwt.SigningMethodHS256, claims)
-	return token.SignedString(secret)
+	return token.SignedString(memberSecret)
+}
+
+// VerifyAnyToken 只验证 token 签名合法且未过期，不关心是哪种身份
+func VerifyAnyToken(tokenStr string) bool {
+	_, err := ParseToken(tokenStr)
+	if err == nil {
+		return true
+	}
+	_, err = ParseMemberToken(tokenStr)
+	return err == nil
 }
 
 // ParseMemberToken 解析会员 JWT Token
 func ParseMemberToken(tokenStr string) (*MemberClaims, error) {
 	token, err := gojwt.ParseWithClaims(tokenStr, &MemberClaims{}, func(t *gojwt.Token) (interface{}, error) {
-		return secret, nil
+		return memberSecret, nil
 	})
 	if err != nil {
 		return nil, err

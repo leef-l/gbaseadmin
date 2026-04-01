@@ -9,7 +9,7 @@ import (
 	"gbaseadmin/utility/response"
 )
 
-// Auth JWT 鉴权中间件
+// Auth JWT 鉴权中间件，只验证 token 合法性，不区分身份
 func Auth(r *ghttp.Request) {
 	tokenStr := r.GetHeader("Authorization")
 	if tokenStr == "" {
@@ -17,7 +17,6 @@ func Auth(r *ghttp.Request) {
 		return
 	}
 
-	// 支持 Bearer token 格式
 	tokenStr = strings.TrimPrefix(tokenStr, "Bearer ")
 	tokenStr = strings.TrimSpace(tokenStr)
 	if tokenStr == "" {
@@ -25,17 +24,10 @@ func Auth(r *ghttp.Request) {
 		return
 	}
 
-	claims, err := jwt.ParseToken(tokenStr)
-	if err != nil {
+	if !jwt.VerifyAnyToken(tokenStr) {
 		response.Unauthorized(r, "Token无效或已过期")
 		return
 	}
-
-	// 将用户信息写入 context
-	r.SetCtxVar("jwt_user_id", claims.UserID)
-	r.SetCtxVar("jwt_username", claims.Username)
-	r.SetCtxVar("jwt_dept_id", claims.DeptID)
-	r.SetCtxVar("jwt_claims", claims)
 
 	r.Middleware.Next()
 }
