@@ -35,6 +35,13 @@ const config = {
     },
     devServer: {
       port: 10086,
+      hot: true,
+      watchFiles: {
+        options: {
+          poll: 1000,
+          aggregateTimeout: 300,
+        },
+      },
       proxy: {
         '/api/playapi': {
           target: 'https://pw.easytestdev.online',
