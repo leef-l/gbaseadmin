@@ -19,6 +19,9 @@ const config = {
   defineConstants: {},
   copy: { patterns: [], options: {} },
   framework: 'react',
+  cache: {
+    enable: true,
+  },
   compiler: 'webpack5',
   mini: {
     postcss: {
