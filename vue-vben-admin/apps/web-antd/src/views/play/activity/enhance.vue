@@ -285,7 +285,7 @@ function handleSteps(row: ActivityItem) {
       </template>
       <template #action="{ row }">
         <Button type="link" size="small" @click="handleRewards(row)">管理奖励</Button>
-        <Button v-if="row.type === 4" type="link" size="small" @click="handleSteps(row)">管理步骤</Button>
+        <Button type="link" size="small" @click="handleSteps(row)">管理步骤</Button>
         <Button type="link" size="small" @click="handleEdit(row)">编辑</Button>
         <Button type="link" danger size="small" @click="handleDelete(row)">删除</Button>
       </template>

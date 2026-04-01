@@ -1,18 +1,18 @@
 <script setup lang="ts">
 import { ref, reactive } from 'vue';
 import { useVbenModal } from '@vben/common-ui';
-import { Tabs, Table, Button, Modal, Form, Input, InputNumber, Select, message, Popconfirm } from 'ant-design-vue';
+import { Tabs, Table, Button, Modal, Form, Input, InputNumber, Select, message, Popconfirm, Tag } from 'ant-design-vue';
 import { getActivityRewardList, createActivityReward, updateActivityReward, deleteActivityReward } from '#/api/play/activity_reward';
 import { getActivityStepList, createActivityStep, updateActivityStep, deleteActivityStep } from '#/api/play/activity_step';
 import type { ActivityRewardItem } from '#/api/play/activity_reward/types';
 import type { ActivityStepItem } from '#/api/play/activity_step/types';
+import ImageUpload from '#/components/upload/image-upload.vue';
 
 const rewards = ref<ActivityRewardItem[]>([]);
 const steps = ref<ActivityStepItem[]>([]);
 const loading = ref(false);
 const activityId = ref('');
 const activityTitle = ref('');
-const activityType = ref(0);
 const activeTab = ref('rewards');
 
 /** 奖励编辑状态 */
@@ -26,10 +26,11 @@ const stepForm = reactive({ id: '', title: '', stepNum: 1, stepType: 1, exampleT
 const stepSaving = ref(false);
 
 const stepTypeMap: Record<number, string> = { 1: '文字', 2: '链接', 3: '图片' };
+const stepTypeColor: Record<number, string> = { 1: 'blue', 2: 'green', 3: 'orange' };
 const stepTypeOptions = [
-  { label: '文字', value: 1 },
-  { label: '链接', value: 2 },
-  { label: '图片', value: 3 },
+  { label: '文字（用户需复制示例文字）', value: 1 },
+  { label: '链接（用户需前往目标链接）', value: 2 },
+  { label: '图片（用户需上传截图）', value: 3 },
 ];
 
 const rewardTypeMap: Record<number, string> = { 1: '余额', 2: '优惠券', 3: '经验值', 4: '会员等级天数' };
@@ -42,22 +43,23 @@ const rewardTypeOptions = [
 
 const rewardColumns = [
   { title: '奖励名称', dataIndex: 'rewardName', key: 'rewardName' },
-  { title: '奖励类型', dataIndex: 'rewardType', key: 'rewardType', customRender: ({ text }: any) => rewardTypeMap[text] || text },
-  { title: '奖励数值', dataIndex: 'rewardValue', key: 'rewardValue' },
-  { title: '排序', dataIndex: 'sort', key: 'sort', width: 80 },
-  { title: '操作', key: 'action', width: 150 },
+  { title: '奖励类型', dataIndex: 'rewardType', key: 'rewardType', width: 120, customRender: ({ text }: any) => rewardTypeMap[text] || text },
+  { title: '奖励数值', dataIndex: 'rewardValue', key: 'rewardValue', width: 100 },
+  { title: '排序', dataIndex: 'sort', key: 'sort', width: 70 },
+  { title: '操作', key: 'action', width: 120 },
 ];
 
 const stepColumns = [
-  { title: '步骤序号', dataIndex: 'stepNum', key: 'stepNum', width: 80 },
+  { title: '序号', dataIndex: 'stepNum', key: 'stepNum', width: 60 },
   { title: '步骤标题', dataIndex: 'title', key: 'title' },
-  { title: '步骤类型', dataIndex: 'stepType', key: 'stepType', width: 80, customRender: ({ text }: any) => stepTypeMap[text] || '文字' },
+  { title: '类型', dataIndex: 'stepType', key: 'stepType', width: 80 },
   { title: '示例内容', dataIndex: 'exampleText', key: 'exampleText', ellipsis: true },
-  { title: '步骤图片', dataIndex: 'stepImage', key: 'stepImage', width: 80 },
+  { title: '示例图片', dataIndex: 'stepImage', key: 'stepImage', width: 80 },
   { title: '步骤说明', dataIndex: 'descContent', key: 'descContent', ellipsis: true },
-  { title: '排序', dataIndex: 'sort', key: 'sort', width: 80 },
-  { title: '操作', key: 'action', width: 150 },
+  { title: '排序', dataIndex: 'sort', key: 'sort', width: 70 },
+  { title: '操作', key: 'action', width: 120 },
 ];
+
 async function loadData(id: string) {
   loading.value = true;
   try {
@@ -104,18 +106,37 @@ async function handleDeleteReward(row: ActivityRewardItem) {
 
 /** 步骤 CRUD */
 function handleAddStep() {
-  Object.assign(stepForm, { id: '', title: '', stepNum: steps.value.length + 1, stepType: 1, exampleText: '', descContent: '', stepImage: '', sort: 0 });
+  Object.assign(stepForm, { id: '', title: '', stepNum: steps.value.length + 1, stepType: 1, exampleText: '', descContent: '', stepImage: '', sort: steps.value.length });
   stepModalVisible.value = true;
 }
 function handleEditStep(row: ActivityStepItem) {
-  Object.assign(stepForm, { id: row.id, title: row.title, stepNum: row.stepNum ?? 1, stepType: row.stepType ?? 1, exampleText: row.exampleText ?? '', descContent: row.descContent ?? '', stepImage: row.stepImage ?? '', sort: row.sort ?? 0 });
+  Object.assign(stepForm, {
+    id: row.id,
+    title: row.title,
+    stepNum: row.stepNum ?? 1,
+    stepType: row.stepType ?? 1,
+    exampleText: row.exampleText ?? '',
+    descContent: row.descContent ?? '',
+    stepImage: row.stepImage ?? '',
+    sort: row.sort ?? 0,
+  });
   stepModalVisible.value = true;
 }
 async function handleSaveStep() {
   if (!stepForm.title.trim()) { message.warning('请输入步骤标题'); return; }
+  if (stepForm.stepType === 3 && !stepForm.stepImage) { message.warning('图片类型步骤请上传示例图片'); return; }
   stepSaving.value = true;
   try {
-    const payload = { activityID: activityId.value, title: stepForm.title, stepNum: stepForm.stepNum, stepType: stepForm.stepType, exampleText: stepForm.exampleText, descContent: stepForm.descContent, stepImage: stepForm.stepImage, sort: stepForm.sort };
+    const payload = {
+      activityID: activityId.value,
+      title: stepForm.title,
+      stepNum: stepForm.stepNum,
+      stepType: stepForm.stepType,
+      exampleText: stepForm.exampleText,
+      descContent: stepForm.descContent,
+      stepImage: stepForm.stepImage,
+      sort: stepForm.sort,
+    };
     if (stepForm.id) {
       await updateActivityStep({ id: stepForm.id, ...payload });
     } else {
@@ -139,7 +160,6 @@ const [DrawerModal, modalApi] = useVbenModal({
       if (data) {
         activityId.value = data.id;
         activityTitle.value = data.title;
-        activityType.value = data.type;
         activeTab.value = data.tab || 'rewards';
         loadData(data.id);
       }
@@ -149,8 +169,10 @@ const [DrawerModal, modalApi] = useVbenModal({
 </script>
 
 <template>
-  <DrawerModal :title="`活动管理 - ${activityTitle}`" :footer="null">
+  <DrawerModal :title="`活动管理 - ${activityTitle}`" :footer="null" width="860">
     <Tabs v-model:activeKey="activeTab">
+
+      <!-- ====== 奖励管理 ====== -->
       <Tabs.TabPane key="rewards" tab="奖励管理">
         <div style="margin-bottom: 12px">
           <Button type="primary" size="small" @click="handleAddReward">新增奖励</Button>
@@ -159,44 +181,63 @@ const [DrawerModal, modalApi] = useVbenModal({
           <template #bodyCell="{ column, record }">
             <template v-if="column.key === 'action'">
               <Button type="link" size="small" @click="handleEditReward(record)">编辑</Button>
-              <Popconfirm title="确定删除？" @confirm="handleDeleteReward(record)">
+              <Popconfirm title="确定删除该奖励？" @confirm="handleDeleteReward(record)">
                 <Button type="link" danger size="small">删除</Button>
               </Popconfirm>
             </template>
           </template>
         </Table>
       </Tabs.TabPane>
-      <Tabs.TabPane v-if="activityType === 4" key="steps" tab="步骤管理">
-        <div style="margin-bottom: 12px">
+
+      <!-- ====== 步骤管理 ====== -->
+      <Tabs.TabPane key="steps" tab="步骤管理">
+        <div style="margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
           <Button type="primary" size="small" @click="handleAddStep">新增步骤</Button>
+          <span style="font-size: 12px; color: #999;">步骤按序号顺序执行，用户需依次完成</span>
         </div>
         <Table :columns="stepColumns" :data-source="steps" :loading="loading" :pagination="false" row-key="id" size="small">
           <template #bodyCell="{ column, record }">
+            <template v-if="column.key === 'stepType'">
+              <Tag :color="stepTypeColor[record.stepType] || 'default'">
+                {{ stepTypeMap[record.stepType] || '文字' }}
+              </Tag>
+            </template>
             <template v-if="column.key === 'stepImage'">
-              <img v-if="record.stepImage" :src="record.stepImage" style="width:40px;height:40px;object-fit:cover;border-radius:4px;" />
-              <span v-else>-</span>
+              <img
+                v-if="record.stepImage"
+                :src="record.stepImage"
+                style="width:40px;height:40px;object-fit:cover;border-radius:4px;cursor:pointer;"
+                @click="() => {}"
+              />
+              <span v-else style="color:#ccc;">-</span>
             </template>
             <template v-if="column.key === 'action'">
               <Button type="link" size="small" @click="handleEditStep(record)">编辑</Button>
-              <Popconfirm title="确定删除？" @confirm="handleDeleteStep(record)">
+              <Popconfirm title="确定删除该步骤？" @confirm="handleDeleteStep(record)">
                 <Button type="link" danger size="small">删除</Button>
               </Popconfirm>
             </template>
           </template>
         </Table>
       </Tabs.TabPane>
+
     </Tabs>
 
-    <!-- 奖励编辑弹窗 -->
-    <Modal v-model:open="rewardModalVisible" :title="rewardForm.id ? '编辑奖励' : '新增奖励'" :confirm-loading="rewardSaving" @ok="handleSaveReward">
-      <Form layout="vertical">
+    <!-- ====== 奖励编辑弹窗 ====== -->
+    <Modal
+      v-model:open="rewardModalVisible"
+      :title="rewardForm.id ? '编辑奖励' : '新增奖励'"
+      :confirm-loading="rewardSaving"
+      @ok="handleSaveReward"
+    >
+      <Form layout="vertical" style="margin-top: 16px;">
         <Form.Item label="奖励名称" required>
-          <Input v-model:value="rewardForm.rewardName" placeholder="请输入奖励名称" />
+          <Input v-model:value="rewardForm.rewardName" placeholder="请输入奖励展示名称" />
         </Form.Item>
         <Form.Item label="奖励类型" required>
-          <Select v-model:value="rewardForm.rewardType" :options="rewardTypeOptions" placeholder="请选择奖励类型" style="width: 100%" />
+          <Select v-model:value="rewardForm.rewardType" :options="rewardTypeOptions" style="width: 100%" />
         </Form.Item>
-        <Form.Item label="奖励数值">
+        <Form.Item label="奖励数值" help="余额单位：分；优惠券填 coupon_id；经验值/天数填数字">
           <Input v-model:value="rewardForm.rewardValue" placeholder="请输入奖励数值" />
         </Form.Item>
         <Form.Item label="排序">
@@ -204,30 +245,43 @@ const [DrawerModal, modalApi] = useVbenModal({
         </Form.Item>
       </Form>
     </Modal>
-    <!-- 步骤编辑弹窗 -->
-    <Modal v-model:open="stepModalVisible" :title="stepForm.id ? '编辑步骤' : '新增步骤'" :confirm-loading="stepSaving" @ok="handleSaveStep">
-      <Form layout="vertical">
+
+    <!-- ====== 步骤编辑弹窗 ====== -->
+    <Modal
+      v-model:open="stepModalVisible"
+      :title="stepForm.id ? '编辑步骤' : '新增步骤'"
+      :confirm-loading="stepSaving"
+      @ok="handleSaveStep"
+      width="560"
+    >
+      <Form layout="vertical" style="margin-top: 16px;">
         <Form.Item label="步骤标题" required>
           <Input v-model:value="stepForm.title" placeholder="请输入步骤标题" />
         </Form.Item>
-        <Form.Item label="步骤序号">
+        <Form.Item label="步骤序号" help="决定用户完成顺序，序号小的先完成">
           <InputNumber v-model:value="stepForm.stepNum" :min="1" style="width: 100%" />
         </Form.Item>
         <Form.Item label="步骤类型" required>
-          <Select v-model:value="stepForm.stepType" :options="stepTypeOptions" placeholder="请选择步骤类型" />
+          <Select v-model:value="stepForm.stepType" :options="stepTypeOptions" style="width: 100%" />
         </Form.Item>
-        <Form.Item v-if="stepForm.stepType === 1" label="示例文字">
-          <Input.TextArea v-model:value="stepForm.exampleText" placeholder="用户可复制的示例文字" :rows="3" />
+
+        <!-- 文字类型：示例文字 -->
+        <Form.Item v-if="stepForm.stepType === 1" label="示例文字" help="WAP 端展示给用户参考，用户可一键复制">
+          <Input.TextArea v-model:value="stepForm.exampleText" placeholder="请输入用户需要复制/参考的文字内容" :rows="3" />
         </Form.Item>
-        <Form.Item v-if="stepForm.stepType === 2" label="链接URL">
-          <Input v-model:value="stepForm.exampleText" placeholder="用户可复制并打开的链接地址" />
+
+        <!-- 链接类型：目标链接 -->
+        <Form.Item v-if="stepForm.stepType === 2" label="目标链接" help="WAP 端展示给用户，用户可一键前往">
+          <Input v-model:value="stepForm.exampleText" placeholder="请输入 http(s):// 开头的完整链接地址" />
         </Form.Item>
-        <Form.Item v-if="stepForm.stepType === 3" label="示例图片">
-          <Input v-model:value="stepForm.stepImage" placeholder="请输入示例图片URL" />
-          <img v-if="stepForm.stepImage" :src="stepForm.stepImage" style="margin-top:8px;width:80px;height:80px;object-fit:cover;border-radius:4px;border:1px solid #d9d9d9;" />
+
+        <!-- 图片类型：示例图片 -->
+        <Form.Item v-if="stepForm.stepType === 3" label="示例图片" required help="WAP 端左侧展示，右侧为用户上传区域">
+          <ImageUpload v-model:value="stepForm.stepImage" />
         </Form.Item>
-        <Form.Item label="步骤说明">
-          <Input.TextArea v-model:value="stepForm.descContent" placeholder="请输入步骤说明" :rows="5" />
+
+        <Form.Item label="步骤说明" help="对该步骤的补充说明，展示在步骤标题下方">
+          <Input.TextArea v-model:value="stepForm.descContent" placeholder="请输入步骤说明（可选）" :rows="3" />
         </Form.Item>
         <Form.Item label="排序">
           <InputNumber v-model:value="stepForm.sort" :min="0" style="width: 100%" />
