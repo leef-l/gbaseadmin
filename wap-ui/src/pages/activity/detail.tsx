@@ -1,7 +1,7 @@
 import { useState, useCallback } from 'react';
 import { View, Text, Image, RichText } from '@tarojs/components';
 import Taro, { useLoad, useRouter } from '@tarojs/taro';
-import { getActivityDetail, joinActivity, quitActivity, completeStep } from '../../api/activity';
+import { getActivityDetail, joinActivity, quitActivity, completeStep, claimReward } from '../../api/activity';
 import { useAuthStore } from '../../store/auth';
 import './detail.scss';
 
@@ -59,7 +59,7 @@ export default function ActivityDetailPage() {
   });
 
   const handleJoin = async () => {
-    if (!detail || joining || detail.joined) return;
+    if (!detail || joining || detail.hasJoined) return;
     setJoining(true);
     try {
       await joinActivity(detail.activityId);
@@ -91,6 +91,18 @@ export default function ActivityDetailPage() {
         }
       },
     });
+  };
+
+  const handleClaimReward = async () => {
+    if (!detail.rewards?.length) return;
+    const reward = detail.rewards[0];
+    try {
+      await claimReward(detail.activityId, reward.rewardId);
+      Taro.showToast({ title: '领取成功', icon: 'success' });
+      fetchDetail(detail.activityId);
+    } catch {
+      Taro.showToast({ title: '领取失败', icon: 'none' });
+    }
   };
 
   const handleCompleteStep = async (stepId: string) => {
@@ -144,13 +156,11 @@ export default function ActivityDetailPage() {
     }
   };
 
-  const isStepDone = (stepId: string) => detail.completedSteps?.includes(stepId);
+  const isStepDone = (stepNo: number) =>
+    !!(detail.myProgress && stepNo <= detail.myProgress.currentStep);
 
-  const isStepActive = (index: number) => {
-    if (!detail.joined) return false;
-    if (index === 0) return true;
-    return isStepDone(detail.steps[index - 1]?.stepId);
-  };
+  const isStepActive = (stepNo: number) =>
+    !!(detail.hasJoined && detail.myProgress && stepNo === detail.myProgress.currentStep + 1);
 
   const renderStepBody = (s: any, active: boolean) => {
     const t = s.stepType || 1;
@@ -297,8 +307,8 @@ export default function ActivityDetailPage() {
           <Text className="activity-detail__section-title">活动步骤</Text>
           <View className="activity-detail__steps">
             {detail.steps.map((s: any, i: number) => {
-              const done = isStepDone(s.stepId);
-              const active = isStepActive(i);
+              const done = isStepDone(s.stepNo);
+              const active = isStepActive(s.stepNo);
               return (
                 <View key={s.stepId} className={`step-card ${done ? 'step-card--done' : ''} ${active && !done ? 'step-card--active' : ''}`}>
                   <View className="step-card__header">
@@ -316,14 +326,14 @@ export default function ActivityDetailPage() {
 
                   {renderStepBody(s, active)}
 
-                  {detail.joined && !done && active && (
+                  {detail.hasJoined && !done && active && (
                     <View className="step-card__complete" onClick={() => handleCompleteStep(s.stepId)}>
                       完成此步骤
                     </View>
                   )}
                   {!active && !done && (
                     <View className="step-card__locked">
-                      {!detail.joined ? '请先报名' : '请先完成上一步骤'}
+                      {!detail.hasJoined ? '请先报名' : '请先完成上一步骤'}
                     </View>
                   )}
                 </View>
@@ -333,22 +343,42 @@ export default function ActivityDetailPage() {
         </View>
       )}
 
-      <View className="activity-detail__bottom safe-bottom">
-        {detail.joined && (
-          <View
-            className={`activity-detail__btn activity-detail__btn--outline ${quitting ? 'activity-detail__btn--disabled' : ''}`}
-            onClick={handleQuit}
-          >
-            {quitting ? '处理中...' : '取消报名'}
+      {(() => {
+        const activityEnded = detail.endTime && new Date(detail.endTime) < new Date();
+        return (
+          <View className="activity-detail__bottom safe-bottom">
+            {/* 取消报名：进行中可取消，已完成不可取消 */}
+            {detail.hasJoined && !detail.myProgress?.isCompleted && (
+              <View
+                className={`activity-detail__btn activity-detail__btn--outline ${quitting ? 'activity-detail__btn--disabled' : ''}`}
+                onClick={handleQuit}
+              >
+                {quitting ? '处理中...' : '取消报名'}
+              </View>
+            )}
+
+            {/* 主按钮 */}
+            {activityEnded && !detail.hasJoined ? (
+              <View className="activity-detail__btn activity-detail__btn--disabled">活动已结束</View>
+            ) : !detail.hasJoined ? (
+              <View
+                className={`activity-detail__btn ${joining ? 'activity-detail__btn--disabled' : ''}`}
+                onClick={handleJoin}
+              >
+                {joining ? '处理中...' : '立即参与'}
+              </View>
+            ) : detail.myProgress?.isRewarded ? (
+              <View className="activity-detail__btn activity-detail__btn--disabled">已完成</View>
+            ) : detail.myProgress?.isCompleted ? (
+              <View className="activity-detail__btn activity-detail__btn--reward" onClick={handleClaimReward}>
+                领取奖励
+              </View>
+            ) : (
+              <View className="activity-detail__btn activity-detail__btn--disabled">继续完成</View>
+            )}
           </View>
-        )}
-        <View
-          className={`activity-detail__btn ${detail.joined || joining ? 'activity-detail__btn--disabled' : ''}`}
-          onClick={handleJoin}
-        >
-          {detail.joined ? '已参与' : joining ? '处理中...' : '立即参与'}
-        </View>
-      </View>
+        );
+      })()}
     </View>
   );
 }
