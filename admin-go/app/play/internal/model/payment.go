@@ -44,6 +44,7 @@ type PaymentDetailOutput struct {
 	ID snowflake.JsonInt64 `json:"id"`
 	OrderID snowflake.JsonInt64 `json:"orderID"`
 	MemberID snowflake.JsonInt64 `json:"memberID"`
+	MemberNickname string `json:"memberNickname"`
 	PaymentNo string `json:"paymentNo"`
 	TradeNo string `json:"tradeNo"`
 	PayType int `json:"payType"`
@@ -62,6 +63,7 @@ type PaymentListOutput struct {
 	ID snowflake.JsonInt64 `json:"id"`
 	OrderID snowflake.JsonInt64 `json:"orderID"`
 	MemberID snowflake.JsonInt64 `json:"memberID"`
+	MemberNickname string `json:"memberNickname"`
 	PaymentNo string `json:"paymentNo"`
 	TradeNo string `json:"tradeNo"`
 	PayType int `json:"payType"`

@@ -48,6 +48,7 @@ type ProfitLogDetailOutput struct {
 	OrderNo string `json:"orderNo"`
 	PayAmount int64 `json:"payAmount"`
 	CoachID snowflake.JsonInt64 `json:"coachID"`
+	CoachRealName string `json:"coachRealName"`
 	ShopID snowflake.JsonInt64 `json:"shopID"`
 	ShopTitle string `json:"shopTitle"`
 	PlatformRate int `json:"platformRate"`
@@ -68,6 +69,7 @@ type ProfitLogListOutput struct {
 	OrderNo string `json:"orderNo"`
 	PayAmount int64 `json:"payAmount"`
 	CoachID snowflake.JsonInt64 `json:"coachID"`
+	CoachRealName string `json:"coachRealName"`
 	ShopID snowflake.JsonInt64 `json:"shopID"`
 	ShopTitle string `json:"shopTitle"`
 	PlatformRate int `json:"platformRate"`

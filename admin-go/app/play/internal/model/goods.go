@@ -43,6 +43,7 @@ type GoodsDetailOutput struct {
 	CategoryID snowflake.JsonInt64 `json:"categoryID"`
 	CategoryTitle string `json:"categoryTitle"`
 	CoachID snowflake.JsonInt64 `json:"coachID"`
+	CoachRealName string `json:"coachRealName"`
 	Title string `json:"title"`
 	CoverImage string `json:"coverImage"`
 	DescContent string `json:"descContent"`
@@ -61,6 +62,7 @@ type GoodsListOutput struct {
 	CategoryID snowflake.JsonInt64 `json:"categoryID"`
 	CategoryTitle string `json:"categoryTitle"`
 	CoachID snowflake.JsonInt64 `json:"coachID"`
+	CoachRealName string `json:"coachRealName"`
 	Title string `json:"title"`
 	CoverImage string `json:"coverImage"`
 	DescContent string `json:"descContent"`

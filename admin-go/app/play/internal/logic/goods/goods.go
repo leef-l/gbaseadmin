@@ -84,6 +84,11 @@ func (s *sGoods) Detail(ctx context.Context, id snowflake.JsonInt64) (out *model
 			out.CategoryTitle = val.String()
 		}
 	}
+	// 查询陪玩师真实姓名
+	if out.CoachID != 0 {
+		val, _ := g.DB().Ctx(ctx).Model("play_coach").Where("id", out.CoachID).Value("real_name")
+		out.CoachRealName = val.String()
+	}
 	return
 }
 
@@ -108,6 +113,10 @@ func (s *sGoods) List(ctx context.Context, in *model.GoodsListInput) (list []*mo
 			if err == nil {
 				item.CategoryTitle = val.String()
 			}
+		}
+		if item.CoachID != 0 {
+			val, _ := g.DB().Ctx(ctx).Model("play_coach").Where("id", item.CoachID).Value("real_name")
+			item.CoachRealName = val.String()
 		}
 	}
 	return

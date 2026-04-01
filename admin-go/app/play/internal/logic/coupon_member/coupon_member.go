@@ -78,6 +78,11 @@ func (s *sCouponMember) Detail(ctx context.Context, id snowflake.JsonInt64) (out
 			out.CouponTitle = val.String()
 		}
 	}
+	// 查询会员昵称
+	if out.MemberID != 0 {
+		val, _ := g.DB().Ctx(ctx).Model("play_member").Where("id", out.MemberID).Value("nickname")
+		out.MemberNickname = val.String()
+	}
 	return
 }
 
@@ -102,6 +107,10 @@ func (s *sCouponMember) List(ctx context.Context, in *model.CouponMemberListInpu
 			if err == nil {
 				item.CouponTitle = val.String()
 			}
+		}
+		if item.MemberID != 0 {
+			val, _ := g.DB().Ctx(ctx).Model("play_member").Where("id", item.MemberID).Value("nickname")
+			item.MemberNickname = val.String()
 		}
 	}
 	return

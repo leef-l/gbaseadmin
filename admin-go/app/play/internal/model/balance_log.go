@@ -35,6 +35,7 @@ type BalanceLogUpdateInput struct {
 type BalanceLogDetailOutput struct {
 	ID snowflake.JsonInt64 `json:"id"`
 	MemberID snowflake.JsonInt64 `json:"memberID"`
+	MemberNickname string `json:"memberNickname"`
 	BizType int `json:"bizType"`
 	BizID snowflake.JsonInt64 `json:"bizID"`
 	ChangeAmount int64 `json:"changeAmount"`
@@ -49,6 +50,7 @@ type BalanceLogDetailOutput struct {
 type BalanceLogListOutput struct {
 	ID snowflake.JsonInt64 `json:"id"`
 	MemberID snowflake.JsonInt64 `json:"memberID"`
+	MemberNickname string `json:"memberNickname"`
 	BizType int `json:"bizType"`
 	BizID snowflake.JsonInt64 `json:"bizID"`
 	ChangeAmount int64 `json:"changeAmount"`

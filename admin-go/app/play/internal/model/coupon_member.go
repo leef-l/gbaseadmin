@@ -37,6 +37,7 @@ type CouponMemberDetailOutput struct {
 	CouponID snowflake.JsonInt64 `json:"couponID"`
 	CouponTitle string `json:"couponTitle"`
 	MemberID snowflake.JsonInt64 `json:"memberID"`
+	MemberNickname string `json:"memberNickname"`
 	OrderID snowflake.JsonInt64 `json:"orderID"`
 	UseStatus int `json:"useStatus"`
 	ClaimAt *gtime.Time `json:"claimAt"`
@@ -52,6 +53,7 @@ type CouponMemberListOutput struct {
 	CouponID snowflake.JsonInt64 `json:"couponID"`
 	CouponTitle string `json:"couponTitle"`
 	MemberID snowflake.JsonInt64 `json:"memberID"`
+	MemberNickname string `json:"memberNickname"`
 	OrderID snowflake.JsonInt64 `json:"orderID"`
 	UseStatus int `json:"useStatus"`
 	ClaimAt *gtime.Time `json:"claimAt"`

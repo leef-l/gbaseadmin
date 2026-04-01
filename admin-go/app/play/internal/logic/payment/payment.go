@@ -79,6 +79,11 @@ func (s *sPayment) Detail(ctx context.Context, id snowflake.JsonInt64) (out *mod
 	if err != nil {
 		return nil, err
 	}
+	// 查询会员昵称
+	if out.MemberID != 0 {
+		val, _ := g.DB().Ctx(ctx).Model("play_member").Where("id", out.MemberID).Value("nickname")
+		out.MemberNickname = val.String()
+	}
 	return
 }
 
@@ -98,6 +103,13 @@ func (s *sPayment) List(ctx context.Context, in *model.PaymentListInput) (list [
 	err = m.Page(in.PageNum, in.PageSize).OrderAsc(dao.PlayPayment.Columns().Id).Scan(&list)
 	if err != nil {
 		return
+	}
+	// 填充关联显示字段
+	for _, item := range list {
+		if item.MemberID != 0 {
+			val, _ := g.DB().Ctx(ctx).Model("play_member").Where("id", item.MemberID).Value("nickname")
+			item.MemberNickname = val.String()
+		}
 	}
 	return
 }

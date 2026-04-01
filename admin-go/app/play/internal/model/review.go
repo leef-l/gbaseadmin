@@ -42,7 +42,9 @@ type ReviewDetailOutput struct {
 	ID snowflake.JsonInt64 `json:"id"`
 	OrderID snowflake.JsonInt64 `json:"orderID"`
 	MemberID snowflake.JsonInt64 `json:"memberID"`
+	MemberNickname string `json:"memberNickname"`
 	CoachID snowflake.JsonInt64 `json:"coachID"`
+	CoachRealName string `json:"coachRealName"`
 	Score int `json:"score"`
 	ReviewContent string `json:"reviewContent"`
 	ReviewImage string `json:"reviewImage"`
@@ -59,7 +61,9 @@ type ReviewListOutput struct {
 	ID snowflake.JsonInt64 `json:"id"`
 	OrderID snowflake.JsonInt64 `json:"orderID"`
 	MemberID snowflake.JsonInt64 `json:"memberID"`
+	MemberNickname string `json:"memberNickname"`
 	CoachID snowflake.JsonInt64 `json:"coachID"`
+	CoachRealName string `json:"coachRealName"`
 	Score int `json:"score"`
 	ReviewContent string `json:"reviewContent"`
 	ReviewImage string `json:"reviewImage"`

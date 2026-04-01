@@ -106,6 +106,16 @@ func (s *sOrder) Detail(ctx context.Context, id snowflake.JsonInt64) (out *model
 			out.ShopTitle = val.String()
 		}
 	}
+	// 查询会员昵称
+	if out.MemberID != 0 {
+		val, _ := g.DB().Ctx(ctx).Model("play_member").Where("id", out.MemberID).Value("nickname")
+		out.MemberNickname = val.String()
+	}
+	// 查询陪玩师真实姓名
+	if out.CoachID != 0 {
+		val, _ := g.DB().Ctx(ctx).Model("play_coach").Where("id", out.CoachID).Value("real_name")
+		out.CoachRealName = val.String()
+	}
 	return
 }
 
@@ -133,6 +143,14 @@ func (s *sOrder) List(ctx context.Context, in *model.OrderListInput) (list []*mo
 			if err == nil {
 				item.ShopTitle = val.String()
 			}
+		}
+		if item.MemberID != 0 {
+			val, _ := g.DB().Ctx(ctx).Model("play_member").Where("id", item.MemberID).Value("nickname")
+			item.MemberNickname = val.String()
+		}
+		if item.CoachID != 0 {
+			val, _ := g.DB().Ctx(ctx).Model("play_coach").Where("id", item.CoachID).Value("real_name")
+			item.CoachRealName = val.String()
 		}
 	}
 	return

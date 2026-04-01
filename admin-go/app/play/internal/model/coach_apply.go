@@ -39,6 +39,7 @@ type CoachApplyUpdateInput struct {
 type CoachApplyDetailOutput struct {
 	ID snowflake.JsonInt64 `json:"id"`
 	MemberID snowflake.JsonInt64 `json:"memberID"`
+	MemberNickname string `json:"memberNickname"`
 	RealName string `json:"realName"`
 	IDCard string `json:"idCard"`
 	IDCardFrontImage string `json:"idCardFrontImage"`
@@ -55,6 +56,7 @@ type CoachApplyDetailOutput struct {
 type CoachApplyListOutput struct {
 	ID snowflake.JsonInt64 `json:"id"`
 	MemberID snowflake.JsonInt64 `json:"memberID"`
+	MemberNickname string `json:"memberNickname"`
 	RealName string `json:"realName"`
 	IDCard string `json:"idCard"`
 	IDCardFrontImage string `json:"idCardFrontImage"`

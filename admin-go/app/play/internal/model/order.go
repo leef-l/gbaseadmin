@@ -64,7 +64,9 @@ type OrderDetailOutput struct {
 	ID snowflake.JsonInt64 `json:"id"`
 	OrderNo string `json:"orderNo"`
 	MemberID snowflake.JsonInt64 `json:"memberID"`
+	MemberNickname string `json:"memberNickname"`
 	CoachID snowflake.JsonInt64 `json:"coachID"`
+	CoachRealName string `json:"coachRealName"`
 	ShopID snowflake.JsonInt64 `json:"shopID"`
 	ShopTitle string `json:"shopTitle"`
 	GoodsID snowflake.JsonInt64 `json:"goodsID"`
@@ -93,7 +95,9 @@ type OrderListOutput struct {
 	ID snowflake.JsonInt64 `json:"id"`
 	OrderNo string `json:"orderNo"`
 	MemberID snowflake.JsonInt64 `json:"memberID"`
+	MemberNickname string `json:"memberNickname"`
 	CoachID snowflake.JsonInt64 `json:"coachID"`
+	CoachRealName string `json:"coachRealName"`
 	ShopID snowflake.JsonInt64 `json:"shopID"`
 	ShopTitle string `json:"shopTitle"`
 	GoodsID snowflake.JsonInt64 `json:"goodsID"`
