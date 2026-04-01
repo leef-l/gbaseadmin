@@ -37,7 +37,7 @@ export default function ActivityListPage() {
   }, [activeTab, loading]);
 
   useLoad(() => {
-    fetchList(true);
+    // 首次加载由下方 useEffect([activeTab]) 统一触发，此处不重复请求
   });
 
   usePullDownRefresh(async () => {

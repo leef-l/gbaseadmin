@@ -13,7 +13,12 @@ export default function SettingsPage() {
       content: '确定清除缓存？',
       success: (res) => {
         if (res.confirm) {
+          // 保留登录凭证，只清除非关键缓存
+          const savedToken = Taro.getStorageSync('token');
+          const savedUserInfo = Taro.getStorageSync('userInfo');
           Taro.clearStorageSync();
+          if (savedToken) Taro.setStorageSync('token', savedToken);
+          if (savedUserInfo) Taro.setStorageSync('userInfo', savedUserInfo);
           Taro.showToast({ title: '缓存已清除', icon: 'success' });
         }
       },

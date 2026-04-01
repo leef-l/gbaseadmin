@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { View, Text } from '@tarojs/components';
 import Taro, { useLoad, useRouter } from '@tarojs/taro';
 import { getOrderDetail } from '../../api/order';
@@ -12,12 +12,24 @@ const payMethods = [
   { key: 'balance', icon: '💜', name: '余额支付', color: '#7c3aed' },
 ];
 
+// 30 分钟倒计时总秒数
+const COUNTDOWN_SECONDS = 30 * 60;
+
+function formatCountdown(seconds: number): string {
+  const m = Math.floor(seconds / 60);
+  const s = seconds % 60;
+  return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+}
+
 export default function PayPage() {
   const { params } = useRouter();
   const [selected, setSelected] = useState('wechat');
   const [amount, setAmount] = useState(0);
   const [orderNo, setOrderNo] = useState('');
   const [balance, setBalance] = useState(0);
+  const [countdown, setCountdown] = useState(COUNTDOWN_SECONDS);
+  const [expired, setExpired] = useState(false);
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   useLoad(async () => {
     try {
@@ -28,8 +40,38 @@ export default function PayPage() {
       setAmount(orderData?.payAmount || 0);
       setOrderNo(orderData?.orderNo || params.orderId || '');
       setBalance(memberData?.balance || 0);
+
+      // 若接口返回订单创建时间，则基于该时间计算剩余秒数
+      if (orderData?.createdAt) {
+        const createdMs = new Date(orderData.createdAt).getTime();
+        const elapsed = Math.floor((Date.now() - createdMs) / 1000);
+        const remaining = COUNTDOWN_SECONDS - elapsed;
+        if (remaining <= 0) {
+          setExpired(true);
+          setCountdown(0);
+          return;
+        }
+        setCountdown(remaining);
+      }
     } catch {}
   });
+
+  useEffect(() => {
+    if (expired) return;
+    timerRef.current = setInterval(() => {
+      setCountdown((prev) => {
+        if (prev <= 1) {
+          clearInterval(timerRef.current!);
+          setExpired(true);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+    return () => {
+      if (timerRef.current) clearInterval(timerRef.current);
+    };
+  }, [expired]);
 
   const handlePay = async () => {
     if (selected === 'balance' && balance < amount) {
@@ -49,7 +91,9 @@ export default function PayPage() {
 
   return (
     <View className="pay">
-      <View className="pay__countdown">请在 29:59 内完成支付</View>
+      <View className="pay__countdown">
+        {expired ? '支付超时，订单已关闭' : `请在 ${formatCountdown(countdown)} 内完成支付`}
+      </View>
       <View className="pay__amount">
         <Text className="pay__price">¥{(amount / 100).toFixed(2)}</Text>
         <Text className="pay__order-no">订单编号: {orderNo}</Text>

@@ -5,6 +5,33 @@ import { updateMember } from '../../api/member';
 import { useAuthStore } from '../../store/auth';
 import './profile.scss';
 
+const BASE_URL = process.env.TARO_APP_API || '';
+
+async function uploadAvatar(filePath: string): Promise<string> {
+  const token = useAuthStore.getState().token;
+  return new Promise((resolve, reject) => {
+    Taro.uploadFile({
+      url: `${BASE_URL}/api/upload/uploader/upload`,
+      filePath,
+      name: 'file',
+      header: token ? { Authorization: `Bearer ${token}` } : {},
+      success: (res) => {
+        try {
+          const body = JSON.parse(res.data);
+          if (body.code === 0 && body.data?.url) {
+            resolve(body.data.url as string);
+          } else {
+            reject(new Error(body.message || '上传失败'));
+          }
+        } catch {
+          reject(new Error('解析响应失败'));
+        }
+      },
+      fail: (err) => reject(err),
+    });
+  });
+}
+
 const genderOptions = ['保密', '男', '女'];
 
 export default function ProfilePage() {
@@ -22,15 +49,25 @@ export default function ProfilePage() {
     }
   });
 
-  const handleChooseAvatar = () => {
-    Taro.chooseImage({
-      count: 1,
-      sizeType: ['compressed'],
-      sourceType: ['album', 'camera'],
-      success: (res) => {
-        setAvatar(res.tempFilePaths[0]);
-      },
-    });
+  const handleChooseAvatar = async () => {
+    try {
+      const res = await Taro.chooseImage({
+        count: 1,
+        sizeType: ['compressed'],
+        sourceType: ['album', 'camera'],
+      });
+      const tempPath = res.tempFilePaths[0];
+      // 先用本地路径显示预览
+      setAvatar(tempPath);
+      Taro.showLoading({ title: '上传中...' });
+      const url = await uploadAvatar(tempPath);
+      setAvatar(url);
+      Taro.showToast({ title: '头像已更新', icon: 'success' });
+    } catch {
+      Taro.showToast({ title: '头像上传失败，请重试', icon: 'none' });
+    } finally {
+      Taro.hideLoading();
+    }
   };
 
   const handleSave = async () => {
