@@ -110,7 +110,7 @@ func (s *sActivity) Detail(ctx context.Context, activityID string, memberID int6
 	err = dao.PlayActivityStep.Ctx(ctx).
 		Where(dao.PlayActivityStep.Columns().ActivityId, aid).
 		Where(dao.PlayActivityStep.Columns().DeletedAt, nil).
-		OrderAsc(dao.PlayActivityStep.Columns().StepNum).
+		OrderDesc(dao.PlayActivityStep.Columns().StepNum).
 		Scan(&steps)
 	if err != nil {
 		return

@@ -95,7 +95,7 @@ func (s *sActivityStep) List(ctx context.Context, in *model.ActivityStepListInpu
 	if err != nil {
 		return
 	}
-	err = m.Page(in.PageNum, in.PageSize).OrderAsc(dao.PlayActivityStep.Columns().Id).Scan(&list)
+	err = m.Page(in.PageNum, in.PageSize).OrderDesc(dao.PlayActivityStep.Columns().StepNum).Scan(&list)
 	if err != nil {
 		return
 	}
