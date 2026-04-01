@@ -8,8 +8,8 @@ set -e
 
 # ---------- 配置区 ----------
 DOMAIN="pw.easytestdev.online"          # 替换为你的域名
-DEPLOY_DIR="/www/wwwroot/project/gbaseadmin"
-FRONTEND_DIR="/www/wwwroot/${DOMAIN}"
+DEPLOY_DIR="/www/wwwroot/${DOMAIN}"
+FRONTEND_DIR="/www/wwwroot/${DOMAIN}/frontend"
 DB_NAME="gbaseadmin"
 DB_USER="gbaseadmin"
 DB_PASS="gbaseadmin123"
@@ -21,6 +21,7 @@ APPS=("system" "play" "upload")
 PORTS=("8000" "8001" "8002")
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+SOURCE_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
 
 # 加载 Go 环境（sudo 下 PATH 可能丢失）
 export PATH=$PATH:/usr/local/go/bin:$HOME/go/bin
@@ -113,16 +114,17 @@ done
 
 # ---------- 5. 初始化数据库 ----------
 info "检查数据库..."
-if mysql -u"$DB_USER" -p"$DB_PASS" -h"$DB_HOST" -P"$DB_PORT" -e "USE $DB_NAME" 2>/dev/null; then
+# 用 root 检查数据库是否存在（DB_USER 可能尚无权限）
+if mysql -u root -p"$DB_PASS" -h"$DB_HOST" -P"$DB_PORT" -e "USE $DB_NAME" 2>/dev/null; then
   warn "数据库 $DB_NAME 已存在，跳过初始化"
 else
   info "创建数据库并导入..."
-  mysql -u root -p"$DB_PASS" -h"$DB_HOST" -P"$DB_PORT" -e "CREATE DATABASE IF NOT EXISTS $DB_NAME DEFAULT CHARSET utf8mb4 COLLATE utf8mb4_general_ci;"
+  mysql -u root -p"$DB_PASS" -h"$DB_HOST" -P"$DB_PORT" -e "CREATE DATABASE IF NOT EXISTS \`$DB_NAME\` DEFAULT CHARSET utf8mb4 COLLATE utf8mb4_general_ci;"
   mysql -u root -p"$DB_PASS" -h"$DB_HOST" -P"$DB_PORT" -e "CREATE USER IF NOT EXISTS '$DB_USER'@'%' IDENTIFIED BY '$DB_PASS';"
   mysql -u root -p"$DB_PASS" -h"$DB_HOST" -P"$DB_PORT" -e "CREATE USER IF NOT EXISTS '$DB_USER'@'localhost' IDENTIFIED BY '$DB_PASS';"
-  mysql -u root -p"$DB_PASS" -h"$DB_HOST" -P"$DB_PORT" -e "GRANT ALL ON $DB_NAME.* TO '$DB_USER'@'%'; GRANT ALL ON $DB_NAME.* TO '$DB_USER'@'localhost'; FLUSH PRIVILEGES;"
+  mysql -u root -p"$DB_PASS" -h"$DB_HOST" -P"$DB_PORT" -e "GRANT ALL ON \`$DB_NAME\`.* TO '$DB_USER'@'%'; GRANT ALL ON \`$DB_NAME\`.* TO '$DB_USER'@'localhost'; FLUSH PRIVILEGES;"
   if [ -f "$SCRIPT_DIR/codegen/sql/init.sql" ]; then
-    mysql -u root -p"$DB_PASS" -h"$DB_HOST" -P"$DB_PORT" "$DB_NAME" < "$SCRIPT_DIR/codegen/sql/init.sql"
+    mysql -u root -p"$DB_PASS" -h"$DB_HOST" -P"$DB_PORT" --default-character-set=utf8mb4 "$DB_NAME" < "$SCRIPT_DIR/codegen/sql/init.sql"
     info "数据库导入完成"
   else
     warn "init.sql 不存在，请手动导入数据库"
@@ -321,6 +323,6 @@ for app in "${APPS[@]}"; do
 done
 info ""
 info "前端构建后将 dist 内容复制到 $FRONTEND_DIR:"
-info "  cd vue-vben-admin && pnpm build"
+info "  cd $SOURCE_DIR/vue-vben-admin && pnpm build"
 info "  cp -rf apps/web-antd/dist/* $FRONTEND_DIR/"
 info "========================================="
