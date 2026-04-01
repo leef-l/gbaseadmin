@@ -8,9 +8,12 @@ interface UserInfo {
   phone: string;
   levelId: string;
   levelName: string;
+  levelTitle?: string;
   balance: number;
   isCoach: number;
   currentRole: 'member' | 'coach';
+  exp?: number;
+  couponCount?: number;
 }
 
 interface AuthState {

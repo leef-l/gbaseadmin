@@ -2,11 +2,12 @@ import { useState, useRef, useCallback } from 'react';
 import { View, Text, Input } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import { sendCode, login } from '../../api/auth';
+import { getMemberInfo } from '../../api/member';
 import { useAuthStore } from '../../store/auth';
 import './index.scss';
 
 export default function LoginPage() {
-  const { setToken } = useAuthStore();
+  const { setToken, setUserInfo } = useAuthStore();
   const [phone, setPhone] = useState('');
   const [code, setCode] = useState('');
   const [agreed, setAgreed] = useState(false);
@@ -61,6 +62,12 @@ export default function LoginPage() {
       const res = await login(phone, code);
       if (res?.token) {
         setToken(res.token);
+        try {
+          const info = await getMemberInfo();
+          if (info) setUserInfo(info);
+        } catch (_) {
+          // 获取用户信息失败不阻塞登录流程
+        }
         Taro.showToast({ title: '登录成功', icon: 'success' });
         setTimeout(() => Taro.navigateBack(), 1000);
       }

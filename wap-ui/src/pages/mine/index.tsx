@@ -1,4 +1,4 @@
-import { View, Text } from '@tarojs/components';
+import { View, Text, Image } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import { useAuthStore } from '../../store/auth';
 import './index.scss';
@@ -31,7 +31,9 @@ export default function MinePage() {
       <View className="mine__header">
         <View className="mine__user" onClick={goLogin}>
           <View className="mine__avatar">
-            {userInfo?.avatar ? '👤' : '👤'}
+            {userInfo?.avatar
+              ? <Image src={userInfo.avatar} className="mine__avatar-img" mode="aspectFill" />
+              : <Text>👤</Text>}
           </View>
           <View className="mine__info">
             <Text className="mine__name">
@@ -53,11 +55,12 @@ export default function MinePage() {
           <Text className="mine__asset-label">余额</Text>
         </View>
         <View onClick={() => isLoggedIn && Taro.navigateTo({ url: '/pages/coupon/list' })}>
-          <Text className="mine__asset-value">0</Text>
+          {/* couponCount 字段由后端 getMemberInfo 返回 */}
+          <Text className="mine__asset-value">{isLoggedIn ? (userInfo?.couponCount ?? 0) : 0}</Text>
           <Text className="mine__asset-label">优惠券</Text>
         </View>
         <View>
-          <Text className="mine__asset-value">0</Text>
+          <Text className="mine__asset-value">{isLoggedIn ? (userInfo?.exp ?? 0) : 0}</Text>
           <Text className="mine__asset-label">经验值</Text>
         </View>
       </View>
