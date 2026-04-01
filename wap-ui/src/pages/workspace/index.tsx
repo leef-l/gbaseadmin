@@ -2,19 +2,22 @@ import { useState, useCallback } from 'react';
 import { View, Text } from '@tarojs/components';
 import Taro, { useLoad, usePullDownRefresh } from '@tarojs/taro';
 import { useAuthStore } from '../../store/auth';
-import { getIncome, getCoachOrders } from '../../api/coach';
+import { getIncome, getCoachOrders, setOnline } from '../../api/coach';
 import './index.scss';
 
 const shortcuts = [
   { icon: '📋', text: '接单管理', url: '/pages/workspace/orders' },
   { icon: '💰', text: '收入统计', url: '/pages/workspace/income' },
   { icon: '🛍️', text: '商品管理', url: '/pages/workspace/goods' },
+  { icon: '⭐', text: '评价管理', url: '/pages/workspace/reviews' },
 ];
 
 export default function WorkspacePage() {
   const { userInfo } = useAuthStore();
   const [stats, setStats] = useState({ todayOrders: 0, todayIncome: 0, totalIncome: 0, totalOrders: 0 });
   const [recentOrders, setRecentOrders] = useState<any[]>([]);
+  const [isOnline, setIsOnline] = useState(false);
+  const [onlineLoading, setOnlineLoading] = useState(false);
 
   const fetchData = useCallback(async () => {
     try {
@@ -32,6 +35,18 @@ export default function WorkspacePage() {
     } catch { /* ignore */ }
   }, []);
 
+  const handleToggleOnline = useCallback(async () => {
+    if (onlineLoading) return;
+    setOnlineLoading(true);
+    const next = isOnline ? 0 : 1;
+    try {
+      await setOnline(next);
+      setIsOnline(next === 1);
+      Taro.showToast({ title: next === 1 ? '已上线，开始接单' : '已下线', icon: 'success' });
+    } catch { /* ignore */ }
+    setOnlineLoading(false);
+  }, [isOnline, onlineLoading]);
+
   useLoad(() => { fetchData(); });
   usePullDownRefresh(() => { fetchData().then(() => Taro.stopPullDownRefresh()); });
 
@@ -43,6 +58,13 @@ export default function WorkspacePage() {
           <View className="workspace__info">
             <Text className="workspace__name">{userInfo?.nickname || '陪玩师'}</Text>
             <Text className="workspace__level">{userInfo?.levelTitle || 'Lv.1'}</Text>
+          </View>
+          <View
+            className={`workspace__online-toggle ${isOnline ? 'workspace__online-toggle--on' : ''} ${onlineLoading ? 'workspace__online-toggle--loading' : ''}`}
+            onClick={handleToggleOnline}
+          >
+            <View className="workspace__online-dot" />
+            <Text className="workspace__online-text">{onlineLoading ? '...' : (isOnline ? '在线' : '离线')}</Text>
           </View>
         </View>
       </View>

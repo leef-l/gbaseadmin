@@ -96,4 +96,103 @@
     border: 1px solid #7c3aed;
     color: #7c3aed;
   }
+
+  // 发布商品弹窗
+  &__modal-mask {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 100;
+    display: flex;
+    align-items: flex-end;
+  }
+
+  &__modal {
+    width: 100%;
+    background: #fff;
+    border-radius: 20px 20px 0 0;
+    padding-bottom: env(safe-area-inset-bottom, 16px);
+  }
+
+  &__modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 18px 20px 12px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  &__modal-title {
+    font-size: 16px;
+    font-weight: 700;
+  }
+
+  &__modal-close {
+    font-size: 16px;
+    color: var(--text-light);
+    padding: 4px;
+  }
+
+  &__modal-body {
+    padding: 12px 20px;
+    max-height: 60vh;
+    overflow-y: auto;
+  }
+
+  &__field {
+    margin-bottom: 16px;
+  }
+
+  &__field-label {
+    font-size: 13px;
+    color: var(--text-secondary);
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 500;
+  }
+
+  &__field-input {
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 12px;
+    font-size: 14px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  &__cats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  &__cat {
+    font-size: 13px;
+    padding: 5px 14px;
+    border-radius: 14px;
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
+
+    &--active {
+      border-color: #7c3aed;
+      color: #7c3aed;
+      background: rgba(124, 58, 237, 0.06);
+      font-weight: 600;
+    }
+  }
+
+  &__modal-submit {
+    margin: 8px 20px 16px;
+    background: linear-gradient(135deg, #7c3aed, #6d28d9);
+    color: #fff;
+    text-align: center;
+    padding: 14px;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 600;
+
+    &--loading {
+      opacity: 0.6;
+    }
+  }
 }

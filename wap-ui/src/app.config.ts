@@ -28,6 +28,7 @@ export default defineAppConfig({
     'pages/workspace/orders',
     'pages/workspace/income',
     'pages/workspace/goods',
+    'pages/workspace/reviews',
     'pages/webview/index',
   ],
   tabBar: {
