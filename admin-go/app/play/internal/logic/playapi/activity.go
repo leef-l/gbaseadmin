@@ -153,6 +153,33 @@ func (s *sActivity) Detail(ctx context.Context, activityID string, memberID int6
 		})
 	}
 
+	// 查询当前用户报名状态及已完成步骤
+	if memberID > 0 {
+		joinCnt, e := dao.PlayActivityJoin.Ctx(ctx).
+			Where(dao.PlayActivityJoin.Columns().ActivityId, aid).
+			Where(dao.PlayActivityJoin.Columns().MemberId, memberID).
+			Where(dao.PlayActivityJoin.Columns().DeletedAt, nil).
+			Count()
+		if e == nil && joinCnt > 0 {
+			out.Joined = true
+		}
+		var stepLogs []struct {
+			StepId uint64 `json:"step_id"`
+		}
+		e = dao.PlayActivityStepLog.Ctx(ctx).
+			Fields(dao.PlayActivityStepLog.Columns().StepId).
+			Where(dao.PlayActivityStepLog.Columns().ActivityId, aid).
+			Where(dao.PlayActivityStepLog.Columns().MemberId, memberID).
+			Where(dao.PlayActivityStepLog.Columns().DeletedAt, nil).
+			Scan(&stepLogs)
+		if e == nil {
+			out.CompletedSteps = make([]string, 0, len(stepLogs))
+			for _, sl := range stepLogs {
+				out.CompletedSteps = append(out.CompletedSteps, strconv.FormatUint(sl.StepId, 10))
+			}
+		}
+	}
+
 	return
 }
 
@@ -211,7 +238,7 @@ func (s *sActivity) Join(ctx context.Context, memberID int64, activityID string)
 }
 
 // CompleteStep 完成活动步骤
-func (s *sActivity) CompleteStep(ctx context.Context, memberID int64, activityID, stepID string) (currentStep int, isCompleted bool, err error) {
+func (s *sActivity) CompleteStep(ctx context.Context, memberID int64, activityID, stepID, imageUrl string) (currentStep int, isCompleted bool, err error) {
 	aid, _ := strconv.ParseUint(activityID, 10, 64)
 	sid, _ := strconv.ParseUint(stepID, 10, 64)
 	// 查询参与记录
@@ -272,9 +299,28 @@ func (s *sActivity) CompleteStep(ctx context.Context, memberID int64, activityID
 	} else if curStep == 0 {
 		data[dao.PlayActivityJoin.Columns().JoinStatus] = 1
 	}
-	_, err = dao.PlayActivityJoin.Ctx(ctx).
-		Where(dao.PlayActivityJoin.Columns().Id, joinUID).
-		Data(data).Update()
+	err = dao.PlayActivityJoin.Transaction(ctx, func(ctx context.Context, tx gdb.TX) error {
+		_, e := dao.PlayActivityJoin.Ctx(ctx).
+			Where(dao.PlayActivityJoin.Columns().Id, joinUID).
+			Data(data).Update()
+		if e != nil {
+			return e
+		}
+		logID := snowflake.Generate()
+		_, e = dao.PlayActivityStepLog.Ctx(ctx).Data(g.Map{
+			dao.PlayActivityStepLog.Columns().Id:          logID,
+			dao.PlayActivityStepLog.Columns().ActivityId:  aid,
+			dao.PlayActivityStepLog.Columns().StepId:      sid,
+			dao.PlayActivityStepLog.Columns().JoinId:      joinUID,
+			dao.PlayActivityStepLog.Columns().MemberId:    memberID,
+			dao.PlayActivityStepLog.Columns().StepType:    step[dao.PlayActivityStep.Columns().StepType].Int(),
+			dao.PlayActivityStepLog.Columns().SubmitImage: imageUrl,
+			dao.PlayActivityStepLog.Columns().AuditStatus: 0,
+			dao.PlayActivityStepLog.Columns().CreatedAt:   gtime.Now(),
+			dao.PlayActivityStepLog.Columns().UpdatedAt:   gtime.Now(),
+		}).Insert()
+		return e
+	})
 	return
 }
 
@@ -430,4 +476,39 @@ func (s *sActivity) MyJoins(ctx context.Context, memberID int64, page, pageSize 
 		list = append(list, item)
 	}
 	return
+}
+
+// Quit 取消报名
+func (s *sActivity) Quit(ctx context.Context, memberID int64, activityID string) error {
+	aid, _ := strconv.ParseUint(activityID, 10, 64)
+	join, err := dao.PlayActivityJoin.Ctx(ctx).
+		Where(dao.PlayActivityJoin.Columns().ActivityId, aid).
+		Where(dao.PlayActivityJoin.Columns().MemberId, memberID).
+		Where(dao.PlayActivityJoin.Columns().DeletedAt, nil).
+		One()
+	if err != nil {
+		return err
+	}
+	if join.IsEmpty() {
+		return gerror.New("您未参与该活动")
+	}
+	if join[dao.PlayActivityJoin.Columns().JoinStatus].Int() >= 2 {
+		return gerror.New("活动已完成，无法取消")
+	}
+	return dao.PlayActivityJoin.Transaction(ctx, func(ctx context.Context, tx gdb.TX) error {
+		joinID := join[dao.PlayActivityJoin.Columns().Id].Uint64()
+		_, err := dao.PlayActivityJoin.Ctx(ctx).
+			Where(dao.PlayActivityJoin.Columns().Id, joinID).
+			Data(g.Map{
+				dao.PlayActivityJoin.Columns().DeletedAt: gtime.Now(),
+				dao.PlayActivityJoin.Columns().UpdatedAt: gtime.Now(),
+			}).Update()
+		if err != nil {
+			return err
+		}
+		_, err = dao.PlayActivity.Ctx(ctx).
+			Where(dao.PlayActivity.Columns().Id, aid).
+			Decrement(dao.PlayActivity.Columns().JoinNum, 1)
+		return err
+	})
 }

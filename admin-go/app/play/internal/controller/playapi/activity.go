@@ -24,7 +24,7 @@ func (c *cActivity) Join(ctx context.Context, req *v1.ActivityJoinApiReq) (res *
 func (c *cActivity) CompleteStep(ctx context.Context, req *v1.ActivityStepApiReq) (res *v1.ActivityStepApiRes, err error) {
 	res = &v1.ActivityStepApiRes{}
 	memberID := g.RequestFromCtx(ctx).GetCtxVar("jwt_member_id").Int64()
-	res.CurrentStep, res.IsCompleted, err = service.PlayapiActivity().CompleteStep(ctx, memberID, req.ActivityID, req.StepID)
+	res.CurrentStep, res.IsCompleted, err = service.PlayapiActivity().CompleteStep(ctx, memberID, req.ActivityID, req.StepID, req.ImageUrl)
 	return
 }
 
@@ -40,6 +40,13 @@ func (c *cActivity) MyJoins(ctx context.Context, req *v1.ActivityMyJoinsReq) (re
 	res = &v1.ActivityMyJoinsRes{}
 	memberID := g.RequestFromCtx(ctx).GetCtxVar("jwt_member_id").Int64()
 	res.List, res.Total, err = service.PlayapiActivity().MyJoins(ctx, memberID, req.Page, req.PageSize)
+	return
+}
+
+// Quit 取消报名
+func (c *cActivity) Quit(ctx context.Context, req *v1.ActivityQuitApiReq) (res *v1.ActivityQuitApiRes, err error) {
+	memberID := g.RequestFromCtx(ctx).GetCtxVar("jwt_member_id").Int64()
+	err = service.PlayapiActivity().Quit(ctx, memberID, req.ActivityID)
 	return
 }
 

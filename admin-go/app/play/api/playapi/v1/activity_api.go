@@ -37,17 +37,19 @@ type ActivityDetailApiReq struct {
 }
 
 type ActivityDetailApiRes struct {
-	g.Meta      `mime:"application/json"`
-	ActivityID  string                    `json:"activityId" dc:"活动ID"`
-	Title       string                    `json:"title" dc:"活动标题"`
-	Cover       string                    `json:"cover" dc:"封面图"`
-	Content     string                    `json:"content" dc:"活动详情(富文本)"`
-	Type        int                       `json:"type" dc:"类型"`
-	StartTime   string                    `json:"startTime" dc:"开始时间"`
-	EndTime     string                    `json:"endTime" dc:"结束时间"`
-	JoinCount   int                       `json:"joinCount" dc:"参与人数"`
-	Steps       []ActivityStepApiItem     `json:"steps" dc:"活动步骤列表"`
-	Rewards     []ActivityRewardApiItem   `json:"rewards" dc:"奖励列表"`
+	g.Meta         `mime:"application/json"`
+	ActivityID     string                  `json:"activityId"      dc:"活动ID"`
+	Title          string                  `json:"title"           dc:"活动标题"`
+	Cover          string                  `json:"cover"           dc:"封面图"`
+	Content        string                  `json:"content"         dc:"活动详情(富文本)"`
+	Type           int                     `json:"type"            dc:"类型"`
+	StartTime      string                  `json:"startTime"       dc:"开始时间"`
+	EndTime        string                  `json:"endTime"         dc:"结束时间"`
+	JoinCount      int                     `json:"joinCount"       dc:"参与人数"`
+	Steps          []ActivityStepApiItem   `json:"steps"           dc:"活动步骤列表"`
+	Rewards        []ActivityRewardApiItem `json:"rewards"         dc:"奖励列表"`
+	Joined         bool                    `json:"joined"          dc:"是否已报名"`
+	CompletedSteps []string                `json:"completedSteps"  dc:"已完成的步骤ID列表"`
 }
 
 type ActivityStepApiItem struct {
@@ -85,12 +87,24 @@ type ActivityStepApiReq struct {
 	g.Meta     `path:"/activity/complete_step" method:"post" tags:"C端活动" summary:"完成活动步骤"`
 	ActivityID string `json:"activityId" v:"required#活动ID不能为空" dc:"活动ID"`
 	StepID     string `json:"stepId" v:"required#步骤ID不能为空" dc:"步骤ID"`
+	ImageUrl   string `json:"imageUrl" dc:"用户上传的图片URL（图片步骤时传入）"`
 }
 
 type ActivityStepApiRes struct {
 	g.Meta      `mime:"application/json"`
 	CurrentStep int  `json:"currentStep" dc:"当前步骤序号"`
 	IsCompleted bool `json:"isCompleted" dc:"是否已完成全部步骤"`
+}
+
+// ==================== 取消报名（MemberAuth） ====================
+
+type ActivityQuitApiReq struct {
+	g.Meta     `path:"/activity/quit" method:"post" tags:"C端活动" summary:"取消报名"`
+	ActivityID string `json:"activityId" v:"required#活动ID不能为空" dc:"活动ID"`
+}
+
+type ActivityQuitApiRes struct {
+	g.Meta `mime:"application/json"`
 }
 
 // ==================== 领取奖励（MemberAuth） ====================
