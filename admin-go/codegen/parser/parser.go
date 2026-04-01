@@ -136,6 +136,15 @@ func (p *Parser) ParseTable(tableName string) (*TableMeta, error) {
 		if field.IsMoney {
 			meta.HasMoney = true
 		}
+		if field.Name == "created_by" {
+			meta.HasCreatedBy = true
+		}
+		if field.Name == "dept_id" {
+			meta.HasDeptID = true
+		}
+		if field.DictType != "" {
+			meta.HasDict = true
+		}
 		if field.IsSearchable {
 			meta.HasSearchable = true
 		}
@@ -143,6 +152,11 @@ func (p *Parser) ParseTable(tableName string) (*TableMeta, error) {
 			meta.HasTreeSelect = true
 		}
 	}
+
+	// HasBatchEdit：有 status 枚举字段就支持批量编辑
+	meta.HasBatchEdit = meta.HasStatus
+	// HasImport：非树形表默认支持导入
+	meta.HasImport = !meta.HasParentID
 
 	// 解析关联字段：对 *_id 外键和 parent_id 查找关联表的显示字段
 	for i := range meta.Fields {
@@ -388,8 +402,53 @@ func buildFieldMeta(col columnInfo) FieldMeta {
 		field.MaxLength = int(col.CharMaxLength.Int64)
 	}
 
+	// 字典类型检测：如果 EnumValues 有 __dict__ 标记，提取字典类型
+	if len(field.EnumValues) == 1 && field.EnumValues[0].Value == "__dict__" {
+		field.DictType = field.EnumValues[0].Label
+		field.EnumValues = nil // 清除标记
+		field.IsEnum = false   // 字典字段不算硬编码枚举
+	}
+
+	// 自动推导验证规则
+	field.ValidationRules, field.FrontendRules = buildValidationRules(field)
+
 	// 映射前端组件
 	field.Component = MapComponent(field)
 
 	return field
+}
+
+// buildValidationRules 根据字段名和类型自动推导验证规则
+func buildValidationRules(f FieldMeta) (goRules []string, frontendRule string) {
+	if f.IsID || f.IsHidden {
+		return nil, ""
+	}
+	// 必填
+	if f.IsRequired {
+		goRules = append(goRules, "required")
+	}
+	// 邮箱
+	if f.Name == "email" || strings.HasSuffix(f.Name, "_email") {
+		goRules = append(goRules, "email")
+		frontendRule = "email"
+	}
+	// 手机号
+	if f.Name == "phone" || f.Name == "mobile" || strings.HasSuffix(f.Name, "_phone") || strings.HasSuffix(f.Name, "_mobile") {
+		goRules = append(goRules, "phone-loose")
+		frontendRule = "phone"
+	}
+	// URL
+	if f.Name == "url" || strings.HasSuffix(f.Name, "_url") || strings.HasSuffix(f.Name, "_link") {
+		goRules = append(goRules, "url")
+		frontendRule = "url"
+	}
+	// 长度限制（仅 string 类型且有 MaxLength）
+	if f.GoType == "string" && f.MaxLength > 0 && !f.IsPassword {
+		goRules = append(goRules, fmt.Sprintf("max-length:%d", f.MaxLength))
+	}
+	// 密码
+	if f.IsPassword {
+		goRules = append(goRules, "length:6,32")
+	}
+	return
 }

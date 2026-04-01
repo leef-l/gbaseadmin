@@ -27,14 +27,23 @@ type FrontendConfig struct {
 type MenuAppConfig struct {
 	Title string `yaml:"title"`
 	Icon  string `yaml:"icon"`
+	Sort  int    `yaml:"sort"` // 目录排序，默认 50
+}
+
+// MenuModuleConfig 模块级菜单配置
+type MenuModuleConfig struct {
+	Sort   int  `yaml:"sort"`    // 菜单排序
+	IsShow *int `yaml:"is_show"` // 菜单是否显示（nil=默认1）
 }
 
 type Config struct {
-	Database   DatabaseConfig           `yaml:"database"`
-	Backend    BackendConfig            `yaml:"backend"`
-	Frontend   FrontendConfig           `yaml:"frontend"`
-	SkipFields []string                 `yaml:"skip_fields"`
-	MenuApps   map[string]MenuAppConfig `yaml:"menu_apps"`
+	Database     DatabaseConfig                      `yaml:"database"`
+	Backend      BackendConfig                       `yaml:"backend"`
+	Frontend     FrontendConfig                      `yaml:"frontend"`
+	SkipFields   []string                            `yaml:"skip_fields"`
+	MenuApps     map[string]MenuAppConfig            `yaml:"menu_apps"`
+	MenuModules  map[string]MenuModuleConfig         `yaml:"menu_modules"`  // key: "appName/moduleName"
+	OperationLog bool                                `yaml:"operation_log"` // 全局操作日志开关
 }
 
 func LoadConfig(path string) (*Config, error) {

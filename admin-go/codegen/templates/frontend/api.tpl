@@ -61,3 +61,27 @@ export async function get{{.ModelName}}Tree(params?: {{.ModelName}}TreeParams) {
   return res?.list ?? [];
 }
 {{- end}}
+{{- if .HasImport}}
+
+/** 导入{{.Comment}} */
+export function import{{.ModelName}}(data: FormData) {
+  return requestClient.post<{ success: number; fail: number }>(
+    `${PREFIX}/import`,
+    data,
+  );
+}
+
+/** 下载{{.Comment}}导入模板 */
+export function downloadImportTemplate{{.ModelName}}() {
+  return requestClient.get(`${PREFIX}/import-template`, {
+    responseType: 'blob',
+  });
+}
+{{- end}}
+{{- if .HasBatchEdit}}
+
+/** 批量编辑{{.Comment}} */
+export function batchUpdate{{.ModelName}}(data: { ids: string[]; status?: number }) {
+  return requestClient.put(`${PREFIX}/batch-update`, data);
+}
+{{- end}}

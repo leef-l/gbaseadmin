@@ -18,7 +18,7 @@ type {{.ModelName}}CreateReq struct {
 	g.Meta `path:"/{{.ModuleName}}/create" method:"post" tags:"{{.Comment}}" summary:"创建{{.Comment}}"`
 {{- range .Fields}}
 {{- if and (not .IsID) (not .IsHidden)}}
-	{{.NameCamel}} {{if .IsForeignKey}}snowflake.JsonInt64{{else}}{{.GoType}}{{end}} `json:"{{.NameLower}}" {{if .IsRequired}}v:"required#{{.Label}}不能为空"{{end}} dc:"{{.Label}}"`
+	{{.NameCamel}} {{if .IsForeignKey}}snowflake.JsonInt64{{else}}{{.GoType}}{{end}} `json:"{{.NameLower}}" {{if .ValidationRules}}v:"{{range $i, $v := .ValidationRules}}{{if $i}}|{{end}}{{$v}}{{end}}"{{end}} dc:"{{.Label}}"`
 {{- end}}
 {{- end}}
 }
@@ -65,7 +65,19 @@ type {{.ModelName}}BatchDeleteReq struct {
 type {{.ModelName}}BatchDeleteRes struct {
 	g.Meta `mime:"application/json"`
 }
+{{if .HasBatchEdit}}
+// {{.ModelName}}BatchUpdateReq 批量编辑{{.Comment}}请求
+type {{.ModelName}}BatchUpdateReq struct {
+	g.Meta `path:"/{{.ModuleName}}/batch-update" method:"put" tags:"{{.Comment}}" summary:"批量编辑{{.Comment}}"`
+	IDs    []snowflake.JsonInt64 `json:"ids" v:"required#ID列表不能为空" dc:"{{.Comment}}ID列表"`
+	Status *int                  `json:"status" dc:"状态"`
+}
 
+// {{.ModelName}}BatchUpdateRes 批量编辑{{.Comment}}响应
+type {{.ModelName}}BatchUpdateRes struct {
+	g.Meta `mime:"application/json"`
+}
+{{end}}
 // {{.ModelName}}DetailReq 获取{{.Comment}}详情请求
 type {{.ModelName}}DetailReq struct {
 	g.Meta `path:"/{{.ModuleName}}/detail" method:"get" tags:"{{.Comment}}" summary:"获取{{.Comment}}详情"`
@@ -149,5 +161,28 @@ type {{.ModelName}}TreeReq struct {
 type {{.ModelName}}TreeRes struct {
 	g.Meta `mime:"application/json"`
 	List   []*model.{{.ModelName}}TreeOutput `json:"list" dc:"树形数据"`
+}
+{{end}}
+{{if .HasImport}}
+// {{.ModelName}}ImportReq 导入{{.Comment}}请求
+type {{.ModelName}}ImportReq struct {
+	g.Meta `path:"/{{.ModuleName}}/import" method:"post" mime:"multipart/form-data" tags:"{{.Comment}}" summary:"导入{{.Comment}}"`
+}
+
+// {{.ModelName}}ImportRes 导入{{.Comment}}响应
+type {{.ModelName}}ImportRes struct {
+	g.Meta  `mime:"application/json"`
+	Success int `json:"success" dc:"成功条数"`
+	Fail    int `json:"fail" dc:"失败条数"`
+}
+
+// {{.ModelName}}ImportTemplateReq 下载{{.Comment}}导入模板
+type {{.ModelName}}ImportTemplateReq struct {
+	g.Meta `path:"/{{.ModuleName}}/import-template" method:"get" tags:"{{.Comment}}" summary:"下载{{.Comment}}导入模板"`
+}
+
+// {{.ModelName}}ImportTemplateRes 下载{{.Comment}}导入模板响应
+type {{.ModelName}}ImportTemplateRes struct {
+	g.Meta `mime:"text/csv"`
 }
 {{end}}

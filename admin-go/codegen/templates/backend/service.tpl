@@ -4,6 +4,9 @@ import (
 	"context"
 	"gbaseadmin/app/{{.AppName}}/internal/model"
 	"gbaseadmin/utility/snowflake"
+{{- if .HasImport}}
+	"github.com/gogf/gf/v2/net/ghttp"
+{{- end}}
 )
 
 type I{{.ModelName}} interface {
@@ -16,6 +19,12 @@ type I{{.ModelName}} interface {
 	Export(ctx context.Context, in *model.{{.ModelName}}ListInput) (list []*model.{{.ModelName}}ListOutput, err error)
 {{- if .HasParentID}}
 	Tree(ctx context.Context, in *model.{{.ModelName}}TreeInput) (tree []*model.{{.ModelName}}TreeOutput, err error)
+{{- end}}
+{{- if .HasBatchEdit}}
+	BatchUpdate(ctx context.Context, in *model.{{.ModelName}}BatchUpdateInput) error
+{{- end}}
+{{- if .HasImport}}
+	Import(ctx context.Context, file *ghttp.UploadFile) (success int, fail int, err error)
 {{- end}}
 }
 

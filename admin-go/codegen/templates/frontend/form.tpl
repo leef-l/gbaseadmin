@@ -18,6 +18,9 @@ import {
   update{{.ModelName}},{{if .HasParentID}}
   get{{.ModelName}}Tree,{{end}}
 } from '#/api/{{.AppName}}/{{.ModuleName}}';
+{{- if .HasDict}}
+import { getDictByType } from '#/api/system/dict';
+{{- end}}
 {{- if or .HasParentID .HasTreeSelect}}
 import type { {{.ModelName}}Item } from '#/api/{{.AppName}}/{{.ModuleName}}/types';
 
@@ -45,6 +48,11 @@ const {{.NameLower}}Options = [
 {{- range .Fields}}
 {{- if and .IsForeignKey (not .IsHidden) .RefTable}}
 const {{.NameLower}}Options = ref<{ label: string; value: string }[]>([]);
+{{- end}}
+{{- end}}
+{{- range .Fields}}
+{{- if and (not .IsHidden) .DictType}}
+const {{.NameLower}}DictOptions = ref<{ label: string; value: string | number }[]>([]);
 {{- end}}
 {{- end}}
 {{- if .HasTooltip}}
@@ -130,6 +138,16 @@ const [Form, formApi] = useVbenForm({
       rules: 'selectRequired',
 {{- end}}
       componentProps: { options: {{.NameLower}}Options, placeholder: '请选择{{.Label}}', allowClear: true, class: 'w-full' },
+    },
+{{- else if .DictType}}
+    {
+      component: 'Select',
+      fieldName: '{{.NameLower}}',
+      label: {{if .TooltipText}}tooltipLabel('{{.ShortLabel}}', '{{.TooltipText}}'){{else}}'{{.Label}}'{{end}},
+{{- if .IsRequired}}
+      rules: 'selectRequired',
+{{- end}}
+      componentProps: { options: {{.NameLower}}DictOptions, placeholder: '请选择{{.Label}}', allowClear: true, class: 'w-full' },
     },
 {{- else if .IsForeignKey}}
 {{- if .RefIsTree}}
@@ -293,8 +311,15 @@ const [Form, formApi] = useVbenForm({
       component: 'Input',
       fieldName: '{{.NameLower}}',
       label: {{if .TooltipText}}tooltipLabel('{{.ShortLabel}}', '{{.TooltipText}}'){{else}}'{{.Label}}'{{end}},
+{{- if or .IsRequired (eq .FrontendRules "url")}}
+      rules: [
 {{- if .IsRequired}}
-      rules: 'required',
+        { required: true, message: '{{.Label}}不能为空' },
+{{- end}}
+{{- if eq .FrontendRules "url"}}
+        { type: 'url', message: '请输入正确的URL地址' },
+{{- end}}
+      ],
 {{- end}}
       componentProps: { placeholder: '请输入URL地址'{{if gt .MaxLength 0}}, maxlength: {{.MaxLength}}{{end}}, addonBefore: 'https://' },
     },
@@ -303,8 +328,21 @@ const [Form, formApi] = useVbenForm({
       component: 'Input',
       fieldName: '{{.NameLower}}',
       label: {{if .TooltipText}}tooltipLabel('{{.ShortLabel}}', '{{.TooltipText}}'){{else}}'{{.Label}}'{{end}},
+{{- if or .IsRequired (eq .FrontendRules "email") (eq .FrontendRules "phone") (eq .FrontendRules "url")}}
+      rules: [
 {{- if .IsRequired}}
-      rules: 'required',
+        { required: true, message: '{{.Label}}不能为空' },
+{{- end}}
+{{- if eq .FrontendRules "email"}}
+        { type: 'email', message: '请输入正确的邮箱地址' },
+{{- end}}
+{{- if eq .FrontendRules "phone"}}
+        { pattern: /^1\d{10}$/, message: '请输入正确的手机号' },
+{{- end}}
+{{- if eq .FrontendRules "url"}}
+        { type: 'url', message: '请输入正确的URL地址' },
+{{- end}}
+      ],
 {{- end}}
       componentProps: { placeholder: '请输入{{.Label}}'{{if gt .MaxLength 0}}, maxlength: {{.MaxLength}}{{end}} },
     },
@@ -386,6 +424,20 @@ const [Modal, modalApi] = useVbenModal({
         // ignore
       }
 {{- end}}
+{{- end}}
+{{- end}}
+{{- range .Fields}}
+{{- if and (not .IsHidden) .DictType}}
+      // 加载{{.Label}}字典
+      try {
+        const dictRes = await getDictByType('{{.DictType}}');
+        {{.NameLower}}DictOptions.value = (dictRes ?? []).map((item: any) => ({
+          label: item.label,
+          value: item.value,
+        }));
+      } catch {
+        // ignore
+      }
 {{- end}}
 {{- end}}
       if (data?.id) {

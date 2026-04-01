@@ -15,9 +15,9 @@ import { Button, message, Modal, Tag } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 {{- if .HasParentID}}
-import { get{{.ModelName}}Tree, delete{{.ModelName}}, export{{.ModelName}} } from '#/api/{{.AppName}}/{{.ModuleName}}';
+import { get{{.ModelName}}Tree, delete{{.ModelName}}, export{{.ModelName}}{{if .HasImport}}, import{{.ModelName}}, downloadImportTemplate{{.ModelName}}{{end}} } from '#/api/{{.AppName}}/{{.ModuleName}}';
 {{- else}}
-import { get{{.ModelName}}List, delete{{.ModelName}}, batchDelete{{.ModelName}}, export{{.ModelName}} } from '#/api/{{.AppName}}/{{.ModuleName}}';
+import { get{{.ModelName}}List, delete{{.ModelName}}, batchDelete{{.ModelName}}, export{{.ModelName}}{{if .HasImport}}, import{{.ModelName}}, downloadImportTemplate{{.ModelName}}{{end}}{{if .HasBatchEdit}}, batchUpdate{{.ModelName}}{{end}} } from '#/api/{{.AppName}}/{{.ModuleName}}';
 {{- end}}
 import type { {{.ModelName}}Item } from '#/api/{{.AppName}}/{{.ModuleName}}/types';
 import FormModal from './modules/form.vue';
@@ -292,6 +292,65 @@ async function handleExport() {
     message.error('导出失败');
   }
 }
+{{- if .HasImport}}
+
+/** 导入 */
+async function handleImport() {
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = '.csv,.xlsx,.xls';
+  input.onchange = async () => {
+    const file = input.files?.[0];
+    if (!file) return;
+    const formData = new FormData();
+    formData.append('file', file);
+    try {
+      const res = await import{{.ModelName}}(formData);
+      message.success(`导入完成：成功 ${res?.success ?? 0} 条，失败 ${res?.fail ?? 0} 条`);
+      gridApi.reload();
+    } catch {
+      message.error('导入失败');
+    }
+  };
+  input.click();
+}
+
+/** 下载导入模板 */
+async function handleDownloadTemplate() {
+  try {
+    const blob = await downloadImportTemplate{{.ModelName}}();
+    const url = URL.createObjectURL(blob as any);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = '{{.Comment}}导入模板.csv';
+    a.click();
+    URL.revokeObjectURL(url);
+  } catch {
+    message.error('下载模板失败');
+  }
+}
+{{- end}}
+{{- if .HasBatchEdit}}
+
+/** 批量修改状态 */
+function handleBatchUpdateStatus() {
+  const rows = gridApi.grid.getCheckboxRecords();
+  if (rows.length === 0) {
+    message.warning('请先选择要修改的数据');
+    return;
+  }
+  Modal.confirm({
+    title: '批量修改状态',
+    content: `确定要将选中的 ${rows.length} 条数据的状态切换吗？`,
+    async onOk() {
+      const newStatus = rows[0]?.status === 1 ? 0 : 1;
+      await batchUpdate{{.ModelName}}({ ids: rows.map((r: {{.ModelName}}Item) => r.id), status: newStatus });
+      message.success('批量修改成功');
+      gridApi.reload();
+    },
+  });
+}
+{{- end}}
 </script>
 
 <template>
@@ -300,11 +359,18 @@ async function handleExport() {
     <DetailDrawerComp />
     <Grid>
       <template #toolbar-actions>
-        <Button type="primary" @click="handleCreate">新建</Button>
+        <Button v-auth="['{{.AppName}}:{{.ModuleName}}:create']" type="primary" @click="handleCreate">新建</Button>
 {{- if not .HasParentID}}
-        <Button danger class="ml-2" @click="handleBatchDelete">批量删除</Button>
+        <Button v-auth="['{{.AppName}}:{{.ModuleName}}:batch-delete']" danger class="ml-2" @click="handleBatchDelete">批量删除</Button>
 {{- end}}
-        <Button class="ml-2" @click="handleExport">导出</Button>
+        <Button v-auth="['{{.AppName}}:{{.ModuleName}}:export']" class="ml-2" @click="handleExport">导出</Button>
+{{- if .HasImport}}
+        <Button v-auth="['{{.AppName}}:{{.ModuleName}}:import']" class="ml-2" @click="handleImport">导入</Button>
+        <Button class="ml-2" @click="handleDownloadTemplate">模板下载</Button>
+{{- end}}
+{{- if .HasBatchEdit}}
+        <Button v-auth="['{{.AppName}}:{{.ModuleName}}:batch-update']" class="ml-2" @click="handleBatchUpdateStatus">批量修改状态</Button>
+{{- end}}
       </template>
 {{- range .Fields}}
 {{- if and (not .IsHidden) (not .IsID) (not .IsParentID) (not .IsTimeField) (not .IsMultiFK) (.IsEnum)}}
@@ -321,9 +387,9 @@ async function handleExport() {
 {{- end}}
 {{- end}}
       <template #action="{ row }">
-        <Button type="link" size="small" @click="handleView(row)">查看</Button>
-        <Button type="link" size="small" @click="handleEdit(row)">编辑</Button>
-        <Button type="link" danger size="small" @click="handleDelete(row)">删除</Button>
+        <Button v-auth="['{{.AppName}}:{{.ModuleName}}:detail']" type="link" size="small" @click="handleView(row)">查看</Button>
+        <Button v-auth="['{{.AppName}}:{{.ModuleName}}:update']" type="link" size="small" @click="handleEdit(row)">编辑</Button>
+        <Button v-auth="['{{.AppName}}:{{.ModuleName}}:delete']" type="link" danger size="small" @click="handleDelete(row)">删除</Button>
       </template>
     </Grid>
   </Page>

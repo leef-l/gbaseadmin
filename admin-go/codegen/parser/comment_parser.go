@@ -69,6 +69,13 @@ func ParseComment(comment string) (label string, shortLabel string, tooltipText 
 		return label, shortLabel, tooltipText, nil
 	}
 
+	// 如果是字典引用（如 dict:gender），不解析枚举
+	if strings.HasPrefix(enumPart, "dict:") {
+		dictType := strings.TrimPrefix(enumPart, "dict:")
+		enums = []EnumValue{{Value: "__dict__", Label: dictType, NameIdent: ""}}
+		return label, shortLabel, tooltipText, enums
+	}
+
 	pairs := strings.Split(enumPart, ",")
 	for _, pair := range pairs {
 		pair = strings.TrimSpace(pair)

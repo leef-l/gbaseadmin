@@ -15,6 +15,7 @@ import (
 	"gbaseadmin/codegen/generator/backend"
 	"gbaseadmin/codegen/generator/frontend"
 	"gbaseadmin/codegen/generator/menu"
+	"gbaseadmin/codegen/generator/util"
 	"gbaseadmin/codegen/parser"
 )
 
@@ -71,6 +72,9 @@ func main() {
 	cwd, _ := os.Getwd()
 	templateDir := filepath.Join(cwd, "templates")
 
+	// 创建全局模板缓存
+	tplCache := util.NewTemplateCache()
+
 	// 按应用分组：记录每个应用的模块名和表名
 	appModules := make(map[string][]string) // appName -> []moduleName
 	appTables := make(map[string][]string)  // appName -> []tableName
@@ -89,6 +93,9 @@ func main() {
 			fmt.Printf("[codegen] ✗ 表名 %s 缺少应用前缀（格式: {app}_{module}，如 system_dept）\n", tableName)
 			continue
 		}
+
+		// 设置操作日志开关
+		meta.EnableOpLog = cfg.OperationLog
 
 		fmt.Printf("[codegen] 应用: %s, 模块: %s, DAO: %s\n", meta.AppName, meta.ModuleName, meta.DaoName)
 
@@ -109,56 +116,81 @@ func main() {
 			initCmd.Stdout = os.Stdout
 			initCmd.Stderr = os.Stderr
 			if err := initCmd.Run(); err != nil {
-				fmt.Printf("[codegen] ⚠ gf init 执行失败: %v，尝试手动创建目录\n", err)
+				fmt.Printf("[codegen] gf init 执行失败: %v，尝试手动创建目录\n", err)
 				if mkErr := os.MkdirAll(appDir, 0755); mkErr != nil {
 					fmt.Printf("[codegen] ✗ 创建目录失败: %v\n", mkErr)
 					continue
 				}
 			}
-			fmt.Printf("[codegen] ✓ 应用 %s 创建完成\n", meta.AppName)
+			fmt.Printf("[codegen] 应用 %s 创建完成\n", meta.AppName)
 		}
 
 		var files []string
 
-		// 生成后端代码
-		if only != "frontend" && only != "menu" {
-			backendOutput := filepath.Join(cfg.Backend.Output, meta.AppName)
-			backendGen := backend.New(backend.Config{
-				TemplateDir: filepath.Join(templateDir, "backend"),
-				OutputDir:   backendOutput,
-				Force:       force,
-			})
-			if dryRun {
-				fmt.Println("[codegen] [dry-run] 后端文件将生成到:", backendOutput)
-			} else {
+		if dryRun {
+			// dry-run 模式：生成到内存并显示 diff
+			if only != "frontend" && only != "menu" {
+				backendGen := backend.New(backend.Config{
+					TemplateDir: filepath.Join(templateDir, "backend"),
+					OutputDir:   filepath.Join(cfg.Backend.Output, meta.AppName),
+					Cache:       tplCache,
+				})
+				memFiles, err := backendGen.GenerateToMemory(meta)
+				if err != nil {
+					fmt.Printf("[codegen] ✗ 后端预览失败: %v\n", err)
+				} else {
+					printDiff(memFiles)
+				}
+			}
+			if only != "backend" && only != "menu" {
+				frontendGen := frontend.New(frontend.Config{
+					TemplateDir: filepath.Join(templateDir, "frontend"),
+					OutputDir:   cfg.Frontend.Output,
+					Cache:       tplCache,
+				})
+				memFiles, err := frontendGen.GenerateToMemory(meta)
+				if err != nil {
+					fmt.Printf("[codegen] ✗ 前端预览失败: %v\n", err)
+				} else {
+					printDiff(memFiles)
+				}
+			}
+		} else {
+			// 正常生成模式
+			// 生成后端代码
+			if only != "frontend" && only != "menu" {
+				backendOutput := filepath.Join(cfg.Backend.Output, meta.AppName)
+				backendGen := backend.New(backend.Config{
+					TemplateDir: filepath.Join(templateDir, "backend"),
+					OutputDir:   backendOutput,
+					Force:       force,
+					Cache:       tplCache,
+				})
 				generated, err := backendGen.Generate(meta)
 				if err != nil {
 					fmt.Printf("[codegen] ✗ 后端生成失败: %v\n", err)
 				} else {
 					for _, f := range generated {
-						fmt.Printf("[codegen] ✓ 后端: %s\n", f)
+						fmt.Printf("[codegen] 后端: %s\n", f)
 					}
 					files = append(files, generated...)
 				}
 			}
-		}
 
-		// 生成前端代码
-		if only != "backend" && only != "menu" {
-			frontendGen := frontend.New(frontend.Config{
-				TemplateDir: filepath.Join(templateDir, "frontend"),
-				OutputDir:   cfg.Frontend.Output,
-				Force:       force,
-			})
-			if dryRun {
-				fmt.Println("[codegen] [dry-run] 前端文件将生成到:", cfg.Frontend.Output)
-			} else {
+			// 生成前端代码
+			if only != "backend" && only != "menu" {
+				frontendGen := frontend.New(frontend.Config{
+					TemplateDir: filepath.Join(templateDir, "frontend"),
+					OutputDir:   cfg.Frontend.Output,
+					Force:       force,
+					Cache:       tplCache,
+				})
 				generated, err := frontendGen.Generate(meta)
 				if err != nil {
 					fmt.Printf("[codegen] ✗ 前端生成失败: %v\n", err)
 				} else {
 					for _, f := range generated {
-						fmt.Printf("[codegen] ✓ 前端: %s\n", f)
+						fmt.Printf("[codegen] 前端: %s\n", f)
 					}
 					files = append(files, generated...)
 				}
@@ -172,13 +204,22 @@ func main() {
 		if only == "menu" || withMenu {
 			menuApps := make(map[string]menu.MenuAppConfig, len(cfg.MenuApps))
 			for k, v := range cfg.MenuApps {
-				menuApps[k] = menu.MenuAppConfig{Title: v.Title, Icon: v.Icon}
+				menuApps[k] = menu.MenuAppConfig{Title: v.Title, Icon: v.Icon, Sort: v.Sort}
+			}
+			menuModules := make(map[string]menu.MenuModuleConfig, len(cfg.MenuModules))
+			for k, v := range cfg.MenuModules {
+				modCfg := menu.MenuModuleConfig{Sort: v.Sort}
+				if v.IsShow != nil {
+					modCfg.IsShow = v.IsShow
+				}
+				menuModules[k] = modCfg
 			}
 			menuGen := menu.New(menu.Config{
-				DSN:      cfg.Database.DSN(),
-				Force:    force,
-				DryRun:   dryRun,
-				MenuApps: menuApps,
+				DSN:         cfg.Database.DSN(),
+				Force:       force,
+				DryRun:      dryRun,
+				MenuApps:    menuApps,
+				MenuModules: menuModules,
 			})
 			menuCount, err := menuGen.Generate(meta)
 			if err != nil {
@@ -220,7 +261,7 @@ func main() {
 				); err != nil {
 					fmt.Printf("[codegen] ✗ 生成 hack/config.yaml 失败: %v\n", err)
 				} else {
-					fmt.Printf("[codegen] ✓ hack/config.yaml\n")
+					fmt.Printf("[codegen] hack/config.yaml\n")
 					totalFiles++
 				}
 			}
@@ -232,9 +273,9 @@ func main() {
 			daoCmd.Stdout = os.Stdout
 			daoCmd.Stderr = os.Stderr
 			if err := daoCmd.Run(); err != nil {
-				fmt.Printf("[codegen] ⚠ gf gen dao 执行失败: %v\n", err)
+				fmt.Printf("[codegen] gf gen dao 执行失败: %v\n", err)
 			} else {
-				fmt.Printf("[codegen] ✓ gf gen dao 完成\n")
+				fmt.Printf("[codegen] gf gen dao 完成\n")
 			}
 
 			// 5. 生成 main.go
@@ -251,7 +292,7 @@ func main() {
 			); err != nil {
 				fmt.Printf("[codegen] ✗ 生成 main.go 失败: %v\n", err)
 			} else {
-				fmt.Printf("[codegen] ✓ main.go\n")
+				fmt.Printf("[codegen] main.go\n")
 				totalFiles++
 			}
 
@@ -273,7 +314,7 @@ func main() {
 				); err != nil {
 					fmt.Printf("[codegen] ✗ 生成 cmd.go 失败: %v\n", err)
 				} else {
-					fmt.Printf("[codegen] ✓ internal/cmd/cmd.go\n")
+					fmt.Printf("[codegen] internal/cmd/cmd.go\n")
 					totalFiles++
 				}
 			}
@@ -293,7 +334,7 @@ func main() {
 						if err := os.WriteFile(mwFile, content, 0644); err != nil {
 							fmt.Printf("[codegen] ✗ 写入 middleware/auth.go 失败: %v\n", err)
 						} else {
-							fmt.Printf("[codegen] ✓ internal/middleware/auth.go\n")
+							fmt.Printf("[codegen] internal/middleware/auth.go\n")
 							totalFiles++
 						}
 					}
@@ -312,7 +353,7 @@ func main() {
 					if err := os.WriteFile(packedFile, []byte("package packed\n"), 0644); err != nil {
 						fmt.Printf("[codegen] ✗ 写入 packed.go 失败: %v\n", err)
 					} else {
-						fmt.Printf("[codegen] ✓ internal/packed/packed.go\n")
+						fmt.Printf("[codegen] internal/packed/packed.go\n")
 						totalFiles++
 					}
 				}
@@ -322,6 +363,27 @@ func main() {
 
 	elapsed := time.Since(start)
 	fmt.Printf("\n[codegen] 全部完成！共生成 %d 个文件，耗时 %.1fs\n", totalFiles, elapsed.Seconds())
+}
+
+// printDiff 打印文件 diff 预览
+func printDiff(files map[string][]byte) {
+	for path, newContent := range files {
+		existing, err := os.ReadFile(path)
+		if err != nil {
+			// 新文件
+			fmt.Printf("\n\033[32m+ 新文件: %s (%d bytes)\033[0m\n", path, len(newContent))
+			continue
+		}
+		if bytes.Equal(existing, newContent) {
+			fmt.Printf("  无变化: %s\n", path)
+			continue
+		}
+		// 有差异
+		fmt.Printf("\n\033[33m~ 有变化: %s\033[0m\n", path)
+		oldLines := bytes.Split(existing, []byte("\n"))
+		newLines := bytes.Split(newContent, []byte("\n"))
+		fmt.Printf("  原文件: %d 行 -> 新文件: %d 行\n", len(oldLines), len(newLines))
+	}
 }
 
 // scanExistingModules 扫描应用目录下已有的 logic 子目录，合并新模块，返回去重排序后的列表
@@ -392,7 +454,7 @@ func scanExistingTables(appDir string, appName string, newTables []string) []str
 	}
 
 	// 也扫描 internal/dao/internal/ 下的 .go 文件名作为表名推断
-	// DAO 文件名就是完整表名（如 play_activity.go → play_activity）
+	// DAO 文件名就是完整表名（如 play_activity.go -> play_activity）
 	daoInternalDir := filepath.Join(appDir, "internal", "dao", "internal")
 	entries, err := os.ReadDir(daoInternalDir)
 	if err == nil {

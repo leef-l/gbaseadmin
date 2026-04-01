@@ -2,18 +2,33 @@ package {{.PackageName}}
 
 import (
 	"context"
+{{- if .HasImport}}
+	"encoding/csv"
+{{- end}}
+{{- if or .EnableOpLog .HasImport}}
+	"fmt"
+{{- end}}
 
 	"github.com/gogf/gf/v2/database/gdb"
 	"github.com/gogf/gf/v2/frame/g"
+{{- if .HasImport}}
+	"github.com/gogf/gf/v2/net/ghttp"
+{{- end}}
 	"github.com/gogf/gf/v2/os/gtime"
 {{- if .HasPassword}}
 	"golang.org/x/crypto/bcrypt"
 {{- end}}
 
 	"gbaseadmin/app/{{.AppName}}/internal/dao"
+{{- if or .HasCreatedBy .HasDeptID}}
+	"gbaseadmin/app/{{.AppName}}/internal/middleware"
+{{- end}}
 	"gbaseadmin/app/{{.AppName}}/internal/model"
 	"gbaseadmin/app/{{.AppName}}/internal/service"
 	"gbaseadmin/utility/snowflake"
+{{- if .EnableOpLog}}
+	"gbaseadmin/utility/oplog"
+{{- end}}
 )
 
 func init() {
@@ -48,9 +63,20 @@ func (s *s{{.ModelName}}) Create(ctx context.Context, in *model.{{.ModelName}}Cr
 {{- end}}
 {{- end}}
 {{- end}}
+{{- if .HasCreatedBy}}
+		dao.{{.DaoName}}.Columns().CreatedBy: middleware.GetUserID(ctx),
+{{- end}}
+{{- if .HasDeptID}}
+		dao.{{.DaoName}}.Columns().DeptId: middleware.GetDeptID(ctx),
+{{- end}}
 		dao.{{.DaoName}}.Columns().CreatedAt: gtime.Now(),
 		dao.{{.DaoName}}.Columns().UpdatedAt: gtime.Now(),
 	}).Insert()
+{{- if .EnableOpLog}}
+	if err == nil {
+		go oplog.Record(ctx, "{{.ModuleName}}", "create", fmt.Sprintf("%v", id), "")
+	}
+{{- end}}
 	return err
 }
 
@@ -75,7 +101,30 @@ func (s *s{{.ModelName}}) Update(ctx context.Context, in *model.{{.ModelName}}Up
 	}
 {{- end}}
 {{- end}}
+{{- if .HasMoney}}
+	// 含金额字段，使用事务 + 行锁保证并发安全
+	err := dao.{{.DaoName}}.Transaction(ctx, func(ctx context.Context, tx gdb.TX) error {
+		// FOR UPDATE 行锁
+		_, err := tx.Model(dao.{{.DaoName}}.Table()).Ctx(ctx).
+			Where(dao.{{.DaoName}}.Columns().Id, in.ID).
+			LockUpdate().
+			Value(dao.{{.DaoName}}.Columns().Id)
+		if err != nil {
+			return err
+		}
+		_, err = tx.Model(dao.{{.DaoName}}.Table()).Ctx(ctx).
+			Where(dao.{{.DaoName}}.Columns().Id, in.ID).
+			Data(data).Update()
+		return err
+	})
+{{- else}}
 	_, err := dao.{{.DaoName}}.Ctx(ctx).Where(dao.{{.DaoName}}.Columns().Id, in.ID).Data(data).Update()
+{{- end}}
+{{- if .EnableOpLog}}
+	if err == nil {
+		go oplog.Record(ctx, "{{.ModuleName}}", "update", fmt.Sprintf("%v", in.ID), "")
+	}
+{{- end}}
 	return err
 }
 
@@ -84,6 +133,11 @@ func (s *s{{.ModelName}}) Delete(ctx context.Context, id snowflake.JsonInt64) er
 	_, err := dao.{{.DaoName}}.Ctx(ctx).Where(dao.{{.DaoName}}.Columns().Id, id).Data(g.Map{
 		dao.{{.DaoName}}.Columns().DeletedAt: gtime.Now(),
 	}).Update()
+{{- if .EnableOpLog}}
+	if err == nil {
+		go oplog.Record(ctx, "{{.ModuleName}}", "delete", fmt.Sprintf("%v", id), "")
+	}
+{{- end}}
 	return err
 }
 
@@ -92,6 +146,11 @@ func (s *s{{.ModelName}}) BatchDelete(ctx context.Context, ids []snowflake.JsonI
 	_, err := dao.{{.DaoName}}.Ctx(ctx).WhereIn(dao.{{.DaoName}}.Columns().Id, ids).Data(g.Map{
 		dao.{{.DaoName}}.Columns().DeletedAt: gtime.Now(),
 	}).Update()
+{{- if .EnableOpLog}}
+	if err == nil {
+		go oplog.Record(ctx, "{{.ModuleName}}", "batch-delete", fmt.Sprintf("%v", ids), "")
+	}
+{{- end}}
 	return err
 }
 
@@ -143,6 +202,10 @@ func (s *s{{.ModelName}}) applyListFilter(ctx context.Context, in *model.{{.Mode
 	if in.EndTime != "" {
 		m = m.WhereLTE(dao.{{.DaoName}}.Columns().CreatedAt, in.EndTime)
 	}
+{{- if or .HasCreatedBy .HasDeptID}}
+	// 数据权限过滤
+	m = middleware.ApplyDataScope(ctx, m{{if .HasCreatedBy}}, dao.{{.DaoName}}.Columns().CreatedBy{{end}}{{if .HasDeptID}}, dao.{{.DaoName}}.Columns().DeptId{{end}})
+{{- end}}
 	return m
 }
 
@@ -279,6 +342,67 @@ func (s *s{{.ModelName}}) Tree(ctx context.Context, in *model.{{.ModelName}}Tree
 			tree = append(tree, item)
 		} else if parent, ok := nodeMap[int64(item.ParentID)]; ok {
 			parent.Children = append(parent.Children, item)
+		}
+	}
+	return
+}
+{{end}}
+{{if .HasBatchEdit}}
+// BatchUpdate 批量编辑{{.Comment}}
+func (s *s{{.ModelName}}) BatchUpdate(ctx context.Context, in *model.{{.ModelName}}BatchUpdateInput) error {
+	data := g.Map{
+		dao.{{.DaoName}}.Columns().UpdatedAt: gtime.Now(),
+	}
+	if in.Status != nil {
+		data[dao.{{.DaoName}}.Columns().Status] = *in.Status
+	}
+	_, err := dao.{{.DaoName}}.Ctx(ctx).WhereIn(dao.{{.DaoName}}.Columns().Id, in.IDs).Data(data).Update()
+	return err
+}
+{{end}}
+{{if .HasImport}}
+// Import 导入{{.Comment}}
+func (s *s{{.ModelName}}) Import(ctx context.Context, file *ghttp.UploadFile) (success int, fail int, err error) {
+	f, err := file.Open()
+	if err != nil {
+		return 0, 0, err
+	}
+	defer f.Close()
+
+	reader := csv.NewReader(f)
+	// 跳过表头
+	if _, err = reader.Read(); err != nil {
+		return 0, 0, fmt.Errorf("读取CSV表头失败: %w", err)
+	}
+
+	for {
+		record, readErr := reader.Read()
+		if readErr != nil {
+			break
+		}
+		if len(record) == 0 {
+			continue
+		}
+		// 逐行插入
+		id := snowflake.Generate()
+		data := g.Map{
+			dao.{{.DaoName}}.Columns().Id:        id,
+			dao.{{.DaoName}}.Columns().CreatedAt: gtime.Now(),
+			dao.{{.DaoName}}.Columns().UpdatedAt: gtime.Now(),
+		}
+		idx := 0
+{{- range .Fields}}
+{{- if and (not .IsHidden) (not .IsID) (not .IsPassword) (not .IsTimeField)}}
+		if idx < len(record) {
+			data[dao.{{$.DaoName}}.Columns().{{.NameDao}}] = record[idx]
+		}
+		idx++
+{{- end}}
+{{- end}}
+		if _, insertErr := dao.{{.DaoName}}.Ctx(ctx).Data(data).Insert(); insertErr != nil {
+			fail++
+		} else {
+			success++
 		}
 	}
 	return

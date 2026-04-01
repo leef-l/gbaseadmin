@@ -2,6 +2,9 @@ package {{.PackageName}}
 
 import (
 	"context"
+{{- if .HasImport}}
+	"fmt"
+{{- end}}
 
 	"github.com/gogf/gf/v2/frame/g"
 
@@ -50,7 +53,16 @@ func (c *c{{.ModelName}}) BatchDelete(ctx context.Context, req *v1.{{.ModelName}
 	err = service.{{.ModelName}}().BatchDelete(ctx, req.IDs)
 	return
 }
-
+{{if .HasBatchEdit}}
+// BatchUpdate 批量编辑{{.Comment}}
+func (c *c{{.ModelName}}) BatchUpdate(ctx context.Context, req *v1.{{.ModelName}}BatchUpdateReq) (res *v1.{{.ModelName}}BatchUpdateRes, err error) {
+	err = service.{{.ModelName}}().BatchUpdate(ctx, &model.{{.ModelName}}BatchUpdateInput{
+		IDs:    req.IDs,
+		Status: req.Status,
+	})
+	return
+}
+{{end}}
 // Detail 获取{{.Comment}}详情
 func (c *c{{.ModelName}}) Detail(ctx context.Context, req *v1.{{.ModelName}}DetailReq) (res *v1.{{.ModelName}}DetailRes, err error) {
 	res = &v1.{{.ModelName}}DetailRes{}
@@ -126,6 +138,32 @@ func (c *c{{.ModelName}}) Export(ctx context.Context, req *v1.{{.ModelName}}Expo
 	}
 	return
 }
+{{if .HasImport}}
+// Import 导入{{.Comment}}
+func (c *c{{.ModelName}}) Import(ctx context.Context, req *v1.{{.ModelName}}ImportReq) (res *v1.{{.ModelName}}ImportRes, err error) {
+	r := g.RequestFromCtx(ctx)
+	file := r.GetUploadFile("file")
+	if file == nil {
+		return nil, fmt.Errorf("请上传文件")
+	}
+	success, fail, err := service.{{.ModelName}}().Import(ctx, file)
+	if err != nil {
+		return nil, err
+	}
+	res = &v1.{{.ModelName}}ImportRes{Success: success, Fail: fail}
+	return
+}
+
+// ImportTemplate 下载{{.Comment}}导入模板
+func (c *c{{.ModelName}}) ImportTemplate(ctx context.Context, req *v1.{{.ModelName}}ImportTemplateReq) (res *v1.{{.ModelName}}ImportTemplateRes, err error) {
+	r := g.RequestFromCtx(ctx)
+	r.Response.Header().Set("Content-Type", "text/csv; charset=utf-8")
+	r.Response.Header().Set("Content-Disposition", `attachment; filename="{{.ModuleName}}_template.csv"`)
+	r.Response.Write("\xEF\xBB\xBF") // UTF-8 BOM
+	r.Response.Writeln("{{- $first := true}}{{- range .Fields}}{{- if and (not .IsHidden) (not .IsID) (not .IsPassword) (not .IsTimeField)}}{{if not $first}},{{end}}{{.ShortLabel}}{{$first = false}}{{- end}}{{- end}}")
+	return
+}
+{{end}}
 {{if .HasParentID}}
 // Tree 获取{{.Comment}}树形结构
 func (c *c{{.ModelName}}) Tree(ctx context.Context, req *v1.{{.ModelName}}TreeReq) (res *v1.{{.ModelName}}TreeRes, err error) {

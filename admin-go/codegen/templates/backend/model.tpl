@@ -107,3 +107,10 @@ type {{.ModelName}}TreeOutput struct {
 	Children []*{{.ModelName}}TreeOutput `json:"children"`
 }
 {{end}}
+{{if .HasBatchEdit}}
+// {{.ModelName}}BatchUpdateInput 批量编辑{{.Comment}}输入
+type {{.ModelName}}BatchUpdateInput struct {
+	IDs    []snowflake.JsonInt64 `json:"ids"`
+	Status *int                  `json:"status"`
+}
+{{end}}
