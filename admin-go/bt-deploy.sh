@@ -103,14 +103,14 @@ EOF
 done
 
 # play 额外添加 redis 配置（如需要取消注释）
-# cat >> "$DEPLOY_DIR/play/manifest/config/config.yaml" <<EOF
-#
-# redis:
-#   default:
-#     address: "127.0.0.1:6379"
-#     pass: ""
-#     db: 1
-# EOF
+cat >> "$DEPLOY_DIR/play/manifest/config/config.yaml" <<EOF
+
+redis:
+  default:
+    address: "127.0.0.1:6379"
+    pass: ""
+    db: 1
+EOF
 
 # ---------- 5. 初始化数据库 ----------
 info "检查数据库..."
