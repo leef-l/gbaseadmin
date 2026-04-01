@@ -185,7 +185,11 @@ if [ -d /tmp/gbaseadmin_deploy/backend ]; then
         if [ -f /tmp/gbaseadmin_deploy/backend/$app/$app ]; then
             echo "[INFO] Stopping gba-$app ..."
             systemctl stop gba-$app 2>/dev/null || true
-            sleep 2
+            # Wait until process fully exits (up to 10s)
+            for i in $(seq 1 10); do
+                if ! pgrep -x "$app" >/dev/null 2>&1; then break; fi
+                sleep 1
+            done
 
             cp /tmp/gbaseadmin_deploy/backend/$app/$app $DEPLOY_DIR/$app/$app
             chmod +x $DEPLOY_DIR/$app/$app
