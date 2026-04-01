@@ -294,7 +294,9 @@ export default function ActivityDetailPage() {
                     </View>
                   )}
                   {!active && !done && (
-                    <View className="step-card__locked">请先完成上一步骤</View>
+                    <View className="step-card__locked">
+                      {!detail.joined ? '请先报名' : '请先完成上一步骤'}
+                    </View>
                   )}
                 </View>
               );
