@@ -1,13 +1,11 @@
 # ============================================
-# GBaseAdmin Fast Deploy (optimized for cross-ocean, low-bandwidth)
+# GBaseAdmin Fast Deploy
 # Usage: .\deploy-fast.ps1 [-Only backend|frontend|wap|all] [-SkipBuild] [-Force]
 #
 # Optimizations:
 #   - Parallel Go compilation (all services at once)
 #   - SHA256 hash check: skip upload if binary unchanged
-#   - SSH ControlMaster: reuse single connection (saves ~400ms per command)
-#   - zstd compression for frontend/wap (30% smaller than gzip)
-#   - scp -C compressed transfer for binaries
+#   - scp -C compressed transfer (great for cross-ocean)
 #   - Sequential restart on server (2C4G safe)
 # ============================================
 
@@ -20,7 +18,6 @@ param(
 
 # ---------- Config ----------
 $SERVER     = "root@pw.easytestdev.online"
-$SERVER_HOST = "pw.easytestdev.online"
 $DEPLOY_DIR = "/www/wwwroot/pw.easytestdev.online"
 $APPS       = @("system", "play", "upload")
 
@@ -48,7 +45,7 @@ function Log($msg) {
 }
 function Info($msg)  { Write-Host "[INFO] $msg" -ForegroundColor Green;  Log "[INFO] $msg" }
 function Warn($msg)  { Write-Host "[WARN] $msg" -ForegroundColor Yellow; Log "[WARN] $msg" }
-function Fail($msg)  { Write-Host "[FAIL] $msg" -ForegroundColor Red;    Log "[FAIL] $msg"; Stop-SshMaster; exit 1 }
+function Fail($msg)  { Write-Host "[FAIL] $msg" -ForegroundColor Red;    Log "[FAIL] $msg"; exit 1 }
 
 function Check-Command($cmd) {
     if (-not (Get-Command $cmd -ErrorAction SilentlyContinue)) {
@@ -65,17 +62,17 @@ function Write-LfTempFile {
     return $path
 }
 
-# Run script on remote server via scp + ssh
+# Run script on remote server
 function Run-RemoteScript {
     param([string]$Name, [string]$Script)
     $localFile = Write-LfTempFile -Name $Name -Content $Script
 
-    scp -q -o ControlPath=$script:sshControlPath $localFile "${SERVER}:/tmp/gba_${Name}.sh"
+    scp -q $localFile "${SERVER}:/tmp/gba_${Name}.sh"
     $scpExit = $LASTEXITCODE
     Remove-Item $localFile -Force -ErrorAction SilentlyContinue
     if ($scpExit -ne 0) { Fail "[$Name] Upload script failed" }
 
-    $output = ssh -o ControlPath=$script:sshControlPath $SERVER "bash /tmp/gba_${Name}.sh; ret=`$?; rm -f /tmp/gba_${Name}.sh; exit `$ret" 2>&1
+    $output = ssh $SERVER "bash /tmp/gba_${Name}.sh; ret=`$?; rm -f /tmp/gba_${Name}.sh; exit `$ret" 2>&1
     $output | ForEach-Object {
         Write-Host "  $_"
         Log "  $_"
@@ -89,25 +86,16 @@ function Get-FileHash256($path) {
     return (Get-FileHash -Path $path -Algorithm SHA256).Hash
 }
 
-# ---------- SSH ControlMaster ----------
-# Reuse a single SSH connection for all commands (saves ~400ms per command over cross-ocean)
-$script:sshControlPath = Join-Path $env:TEMP "gba_ssh_ctrl"
-
-function Start-SshMaster {
-    Info "Opening SSH tunnel ..."
-    ssh -o ControlMaster=yes -o ControlPath=$script:sshControlPath -o ControlPersist=300 -o ConnectTimeout=10 -fN $SERVER
-    if ($LASTEXITCODE -ne 0) { Fail "Cannot connect to $SERVER. Check SSH key and network." }
-    Info "SSH tunnel OK"
-}
-
-function Stop-SshMaster {
-    ssh -o ControlPath=$script:sshControlPath -O exit $SERVER 2>$null
-}
-
 # ---------- Pre-checks ----------
 Check-Command "go"
 Check-Command "ssh"
 Check-Command "scp"
+
+# Verify SSH connectivity
+Info "Checking server connectivity ..."
+ssh -o ConnectTimeout=10 -o BatchMode=yes $SERVER "echo ok" >$null 2>&1
+if ($LASTEXITCODE -ne 0) { Fail "Cannot connect to $SERVER. Check SSH key and network." }
+Info "Server connectivity OK"
 
 # Create dirs
 if (-not (Test-Path $HASH_DIR)) { New-Item -ItemType Directory -Path $HASH_DIR -Force | Out-Null }
@@ -248,19 +236,18 @@ function Deploy-Backend {
 
         Info "--- [$app] Start ---"
 
-        # Upload with compression (scp -C uses gzip, great for cross-ocean)
-        Info "[$app] Uploading binary (compressed) ..."
+        # Upload with compression
         $sizeMB = [math]::Round((Get-Item $localBinary).Length / 1MB, 2)
-        Info "[$app] Binary size: $sizeMB MB"
+        Info "[$app] Uploading binary ($sizeMB MB, compressed) ..."
 
-        ssh -o ControlPath=$script:sshControlPath $SERVER "mkdir -p /tmp/gba_stage/$app"
-        scp -C -q -o ControlPath=$script:sshControlPath "$localBinary" "${SERVER}:/tmp/gba_stage/$app/$app"
+        ssh $SERVER "mkdir -p /tmp/gba_stage/$app"
+        scp -C -q "$localBinary" "${SERVER}:/tmp/gba_stage/$app/$app"
         if ($LASTEXITCODE -ne 0) { Fail "[$app] Upload binary failed" }
 
         # Upload manifest
         $manifestDir = Join-Path $DIST_DIR "backend\$app\manifest"
         if (Test-Path $manifestDir) {
-            scp -C -q -r -o ControlPath=$script:sshControlPath "$manifestDir" "${SERVER}:/tmp/gba_stage/$app/"
+            scp -C -q -r "$manifestDir" "${SERVER}:/tmp/gba_stage/$app/"
         }
         Info "[$app] Upload OK"
 
@@ -337,7 +324,7 @@ function Deploy-Frontend {
     $sizeMB = [math]::Round((Get-Item $tarFile).Length / 1MB, 2)
     Info "Frontend packed: $sizeMB MB"
 
-    scp -C -q -o ControlPath=$script:sshControlPath $tarFile "${SERVER}:/tmp/gba_frontend.tar.gz"
+    scp -C -q $tarFile "${SERVER}:/tmp/gba_frontend.tar.gz"
     if ($LASTEXITCODE -ne 0) { Fail "Frontend upload failed" }
 
     $script = @'
@@ -373,7 +360,7 @@ function Deploy-Wap {
     $sizeMB = [math]::Round((Get-Item $tarFile).Length / 1MB, 2)
     Info "WAP packed: $sizeMB MB"
 
-    scp -C -q -o ControlPath=$script:sshControlPath $tarFile "${SERVER}:/tmp/gba_wap.tar.gz"
+    scp -C -q $tarFile "${SERVER}:/tmp/gba_wap.tar.gz"
     if ($LASTEXITCODE -ne 0) { Fail "WAP upload failed" }
 
     $script = @'
@@ -399,53 +386,45 @@ Info "GBaseAdmin FAST deploy started"
 Info "Target: $Only | Force: $Force"
 Info "Log file: $LOG_FILE"
 
-# Step 1: Open SSH tunnel (reused for all operations)
-Start-SshMaster
-
-try {
-    # Step 2: Build
-    if (-not $SkipBuild) {
-        switch ($Only) {
-            "backend"  { Build-Backend }
-            "frontend" { Build-Frontend }
-            "wap"      { Build-Wap }
-            "all"      { Build-Backend; Build-Frontend; Build-Wap }
-        }
-    } else {
-        Warn "Skipping build"
-    }
-
-    # Step 3: Deploy
+# Step 1: Build
+if (-not $SkipBuild) {
     switch ($Only) {
-        "backend"  { Deploy-Backend }
-        "frontend" { Deploy-Frontend }
-        "wap"      { Deploy-Wap }
-        "all"      {
-            Deploy-Backend
-            Deploy-Frontend
-            Deploy-Wap
-        }
+        "backend"  { Build-Backend }
+        "frontend" { Build-Frontend }
+        "wap"      { Build-Wap }
+        "all"      { Build-Backend; Build-Frontend; Build-Wap }
     }
+} else {
+    Warn "Skipping build"
+}
 
-    # Step 4: Final status
-    if ($Only -eq "all" -or $Only -eq "backend") {
-        Info "===== Final service status ====="
-        $statusScript = @'
+# Step 2: Deploy
+switch ($Only) {
+    "backend"  { Deploy-Backend }
+    "frontend" { Deploy-Frontend }
+    "wap"      { Deploy-Wap }
+    "all"      {
+        Deploy-Backend
+        Deploy-Frontend
+        Deploy-Wap
+    }
+}
+
+# Step 3: Final status
+if ($Only -eq "all" -or $Only -eq "backend") {
+    Info "===== Final service status ====="
+    $statusScript = @'
 #!/bin/bash
 for app in system play upload; do
     status=$(systemctl is-active gba-$app 2>/dev/null || echo "unknown")
     echo "gba-$app: $status"
 done
 '@
-        Run-RemoteScript -Name "status_check" -Script $statusScript
-    }
-} finally {
-    # Always close SSH tunnel
-    Stop-SshMaster
-
-    # Cleanup dist
-    Remove-Item $DIST_DIR -Recurse -Force -ErrorAction SilentlyContinue
+    Run-RemoteScript -Name "status_check" -Script $statusScript
 }
+
+# Cleanup dist
+Remove-Item $DIST_DIR -Recurse -Force -ErrorAction SilentlyContinue
 
 # Done
 $elapsed = [math]::Round(((Get-Date) - $startTime).TotalSeconds)
