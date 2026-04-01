@@ -331,24 +331,24 @@ func scanExistingModules(appDir string, newModules []string) []string {
 		moduleSet[m] = true
 	}
 
-	// 扫描 internal/logic/ 下的子目录
+	// 扫描 internal/logic/ 下的子目录（只包含有 .go 文件的目录）
 	logicDir := filepath.Join(appDir, "internal", "logic")
 	entries, err := os.ReadDir(logicDir)
 	if err == nil {
 		for _, e := range entries {
 			if e.IsDir() {
-				moduleSet[e.Name()] = true
-			}
-		}
-	}
-
-	// 扫描 internal/controller/ 下的子目录
-	ctrlDir := filepath.Join(appDir, "internal", "controller")
-	entries, err = os.ReadDir(ctrlDir)
-	if err == nil {
-		for _, e := range entries {
-			if e.IsDir() {
-				moduleSet[e.Name()] = true
+				// 检查该目录下是否有 .go 文件，避免引入空目录或仅存在于 controller 的模块
+				subEntries, _ := os.ReadDir(filepath.Join(logicDir, e.Name()))
+				hasGo := false
+				for _, se := range subEntries {
+					if !se.IsDir() && filepath.Ext(se.Name()) == ".go" {
+						hasGo = true
+						break
+					}
+				}
+				if hasGo {
+					moduleSet[e.Name()] = true
+				}
 			}
 		}
 	}

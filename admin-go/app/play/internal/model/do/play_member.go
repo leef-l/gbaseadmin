@@ -19,6 +19,7 @@ type PlayMember struct {
 	Avatar        any         // 头像
 	Gender        any         // 性别:0=未知,1=男,2=女
 	MemberLevelId any         // 会员等级ID
+	VipExpireAt   *gtime.Time // VIP到期时间
 	Exp           any         // 经验值
 	Balance       any         // 账户余额（分）
 	IsCoach       any         // 是否陪玩师:0=否,1=是

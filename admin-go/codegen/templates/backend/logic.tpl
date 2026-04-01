@@ -3,6 +3,7 @@ package {{.PackageName}}
 import (
 	"context"
 
+	"github.com/gogf/gf/v2/database/gdb"
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/os/gtime"
 {{- if .HasPassword}}
@@ -116,7 +117,7 @@ func (s *s{{.ModelName}}) Detail(ctx context.Context, id snowflake.JsonInt64) (o
 }
 
 // applyListFilter 应用列表通用过滤条件
-func (s *s{{.ModelName}}) applyListFilter(ctx context.Context, in *model.{{.ModelName}}ListInput) *g.Model {
+func (s *s{{.ModelName}}) applyListFilter(ctx context.Context, in *model.{{.ModelName}}ListInput) *gdb.Model {
 	m := dao.{{.DaoName}}.Ctx(ctx).Where(dao.{{.DaoName}}.Columns().DeletedAt, nil)
 {{- range .Fields}}
 {{- if and (not .IsHidden) (not .IsID) (.IsEnum)}}

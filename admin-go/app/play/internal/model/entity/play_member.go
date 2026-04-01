@@ -17,6 +17,7 @@ type PlayMember struct {
 	Avatar        string      `orm:"avatar"          description:"头像"`              // 头像
 	Gender        int         `orm:"gender"          description:"性别:0=未知,1=男,2=女"` // 性别:0=未知,1=男,2=女
 	MemberLevelId uint64      `orm:"member_level_id" description:"会员等级ID"`          // 会员等级ID
+	VipExpireAt   *gtime.Time `orm:"vip_expire_at"   description:"VIP到期时间"`         // VIP到期时间
 	Exp           int         `orm:"exp"             description:"经验值"`             // 经验值
 	Balance       int64       `orm:"balance"         description:"账户余额（分）"`         // 账户余额（分）
 	IsCoach       int         `orm:"is_coach"        description:"是否陪玩师:0=否,1=是"`   // 是否陪玩师:0=否,1=是

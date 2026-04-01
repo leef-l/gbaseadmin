@@ -28,6 +28,7 @@ type PlayMemberColumns struct {
 	Avatar        string // 头像
 	Gender        string // 性别:0=未知,1=男,2=女
 	MemberLevelId string // 会员等级ID
+	VipExpireAt   string // VIP到期时间
 	Exp           string // 经验值
 	Balance       string // 账户余额（分）
 	IsCoach       string // 是否陪玩师:0=否,1=是
@@ -49,6 +50,7 @@ var playMemberColumns = PlayMemberColumns{
 	Avatar:        "avatar",
 	Gender:        "gender",
 	MemberLevelId: "member_level_id",
+	VipExpireAt:   "vip_expire_at",
 	Exp:           "exp",
 	Balance:       "balance",
 	IsCoach:       "is_coach",

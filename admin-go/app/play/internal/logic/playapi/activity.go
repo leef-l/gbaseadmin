@@ -416,8 +416,42 @@ func (s *sActivity) ClaimReward(ctx context.Context, memberID int64, activityID 
 				if err != nil {
 					return err
 				}
-			case 4: // 会员天数（暂不支持，记录日志跳过）
-				g.Log().Infof(ctx, "活动奖励-会员天数暂未实现: memberID=%d, rewardValue=%d天", memberID, rw.RewardValue)
+			case 4: // 会员天数
+				days := rw.RewardValue
+				if days <= 0 {
+					g.Log().Warningf(ctx, "活动奖励-会员天数无效: memberID=%d, rewardValue=%d", memberID, days)
+					continue
+				}
+				// 查询当前 vip_expire_at
+				memberRec, e := dao.PlayMember.Ctx(ctx).
+					Fields(dao.PlayMember.Columns().VipExpireAt).
+					Where(dao.PlayMember.Columns().Id, memberID).
+					One()
+				if e != nil {
+					return e
+				}
+				now := gtime.Now()
+				var baseTime *gtime.Time
+				if !memberRec.IsEmpty() && memberRec[dao.PlayMember.Columns().VipExpireAt].GTime() != nil {
+					expire := memberRec[dao.PlayMember.Columns().VipExpireAt].GTime()
+					if expire.After(now) {
+						baseTime = expire
+					}
+				}
+				if baseTime == nil {
+					baseTime = now
+				}
+				newExpire := baseTime.AddDate(0, 0, int(days))
+				_, e = dao.PlayMember.Ctx(ctx).
+					Where(dao.PlayMember.Columns().Id, memberID).
+					Data(g.Map{
+						dao.PlayMember.Columns().VipExpireAt: newExpire,
+						dao.PlayMember.Columns().UpdatedAt:   now,
+					}).Update()
+				if e != nil {
+					return e
+				}
+				g.Log().Infof(ctx, "活动奖励-会员天数已发放: memberID=%d, days=%d, newExpire=%s", memberID, days, newExpire.String())
 			}
 		}
 		// 更新参与记录为已领奖

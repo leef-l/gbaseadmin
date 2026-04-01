@@ -312,7 +312,9 @@ func queryColumns(db *sql.DB, dbName, tableName string) ([]columnInfo, error) {
 func buildFieldMeta(col columnInfo) FieldMeta {
 	name := col.ColumnName
 	isID := name == "id"
-	isForeignKey := strings.HasSuffix(name, "_id") && name != "id" && name != "dept_id"
+	// 外键判断：_id 后缀 + 排除特殊字段 + 必须是整数类型（varchar/char 类型的 _id 字段视为业务关联ID，非真正外键）
+	isIntType := col.DataType == "bigint" || col.DataType == "int" || col.DataType == "smallint" || col.DataType == "tinyint" || col.DataType == "mediumint"
+	isForeignKey := strings.HasSuffix(name, "_id") && name != "id" && name != "dept_id" && isIntType
 	isMultiFK := strings.HasSuffix(name, "_ids")
 	isParentID := name == "parent_id"
 	isPassword := name == "password" || strings.HasSuffix(name, "_password") || strings.HasSuffix(name, "_pwd")

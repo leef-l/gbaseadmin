@@ -19,6 +19,7 @@ import (
 	_ "gbaseadmin/app/play/internal/logic/goods"
 	_ "gbaseadmin/app/play/internal/logic/member"
 	_ "gbaseadmin/app/play/internal/logic/member_level"
+	_ "gbaseadmin/app/play/internal/logic/message"
 	_ "gbaseadmin/app/play/internal/logic/oauth"
 	_ "gbaseadmin/app/play/internal/logic/order"
 	_ "gbaseadmin/app/play/internal/logic/payment"
@@ -28,9 +29,10 @@ import (
 	_ "gbaseadmin/app/play/internal/logic/recharge_plan"
 	_ "gbaseadmin/app/play/internal/logic/review"
 	_ "gbaseadmin/app/play/internal/logic/shop"
+	_ "gbaseadmin/app/play/internal/logic/statistics"
+	_ "gbaseadmin/app/play/internal/logic/withdraw"
 
 	_ "github.com/gogf/gf/contrib/drivers/mysql/v2"
-	_ "github.com/gogf/gf/contrib/nosql/redis/v2"
 
 	"github.com/gogf/gf/v2/os/gctx"
 

@@ -12,7 +12,7 @@ gfcli:
   gen:
     dao:
       - link: "mysql:root:gbaseadmin123@tcp(127.0.0.1:3306)/gbaseadmin?charset=utf8mb4"
-        tables: "play_activity,play_activity_join,play_activity_reward,play_activity_step,play_activity_step_log,play_balance_log,play_banner,play_category,play_coach,play_coach_apply,play_coach_level,play_coupon,play_coupon_member,play_goods,play_member,play_member_level,play_oauth,play_order,play_payment,play_profit_log,play_recharge_order,play_recharge_plan,play_review,play_shop"
+        tables: "play_activity,play_activity_join,play_activity_reward,play_activity_step,play_activity_step_log,play_balance_log,play_banner,play_category,play_coach,play_coach_apply,play_coach_level,play_coupon,play_coupon_member,play_goods,play_member,play_member_level,play_message,play_oauth,play_order,play_payment,play_profit_log,play_recharge_order,play_recharge_plan,play_review,play_shop,play_withdraw"
         descriptionTag: true
         noJsonTag: true
         noModelComment: false
