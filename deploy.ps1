@@ -188,8 +188,10 @@ function Deploy-Backend {
         Info "[$app] Upload OK"
 
         # Step 2: stop -> replace -> start (on server)
+        # Write shell script with LF line endings to avoid \r\n issues
         Info "[$app] Stopping, replacing, starting ..."
-        $remoteCmd = @"
+        $scriptContent = @"
+#!/bin/bash
 set -e
 echo '[$app] Stopping service...'
 systemctl stop gba-$app 2>/dev/null || true
@@ -223,7 +225,15 @@ echo "[$app] Status: `$status"
 
 rm -rf /tmp/gba_stage/$app
 "@
-        $output = ssh $SERVER $remoteCmd 2>&1
+        $localScript = Join-Path $env:TEMP "gba_deploy_$app.sh"
+        $utf8NoBom = New-Object System.Text.UTF8Encoding($false)
+        [System.IO.File]::WriteAllText($localScript, $scriptContent.Replace("`r`n", "`n"), $utf8NoBom)
+
+        scp -q $localScript "${SERVER}:/tmp/gba_deploy_$app.sh"
+        if ($LASTEXITCODE -ne 0) { Fail "[$app] Upload deploy script failed" }
+        Remove-Item $localScript -Force -ErrorAction SilentlyContinue
+
+        $output = ssh $SERVER "bash /tmp/gba_deploy_$app.sh && rm -f /tmp/gba_deploy_$app.sh" 2>&1
         $output | ForEach-Object {
             Write-Host "  $_"
             Log "  $_"
