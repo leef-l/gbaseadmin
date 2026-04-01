@@ -171,7 +171,7 @@ export default function ActivityDetailPage() {
     !!(detail.hasJoined && detail.myProgress && stepNo === detail.myProgress.currentStep + 1);
 
   const renderStepBody = (s: any, active: boolean) => {
-    const t = s.stepType || 1;
+    const t = s.stepType ?? 1;
     const needFill = s.isRequired === 1;
 
     // 文字步骤
