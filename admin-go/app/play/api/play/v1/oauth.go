@@ -18,8 +18,8 @@ type OauthCreateReq struct {
 	g.Meta `path:"/oauth/create" method:"post" tags:"第三方登录绑定表" summary:"创建第三方登录绑定表"`
 	MemberID snowflake.JsonInt64 `json:"memberID" v:"required#会员ID不能为空" dc:"会员ID"`
 	Provider int `json:"provider" v:"required#第三方平台不能为空" dc:"第三方平台"`
-	OpenID snowflake.JsonInt64 `json:"openID" v:"required#第三方OpenID不能为空" dc:"第三方OpenID"`
-	UnionID snowflake.JsonInt64 `json:"unionID"  dc:"第三方UnionID"`
+	OpenID string `json:"openID" v:"required#第三方OpenID不能为空" dc:"第三方OpenID"`
+	UnionID string `json:"unionID"  dc:"第三方UnionID"`
 	Nickname string `json:"nickname"  dc:"第三方昵称"`
 	Avatar string `json:"avatar"  dc:"第三方头像"`
 	AccessToken string `json:"accessToken"  dc:"访问令牌"`
@@ -38,8 +38,8 @@ type OauthUpdateReq struct {
 	ID     snowflake.JsonInt64 `json:"id" v:"required#ID不能为空" dc:"第三方登录绑定表ID"`
 	MemberID snowflake.JsonInt64 `json:"memberID" dc:"会员ID"`
 	Provider int `json:"provider" dc:"第三方平台"`
-	OpenID snowflake.JsonInt64 `json:"openID" dc:"第三方OpenID"`
-	UnionID snowflake.JsonInt64 `json:"unionID" dc:"第三方UnionID"`
+	OpenID string `json:"openID" dc:"第三方OpenID"`
+	UnionID string `json:"unionID" dc:"第三方UnionID"`
 	Nickname string `json:"nickname" dc:"第三方昵称"`
 	Avatar string `json:"avatar" dc:"第三方头像"`
 	AccessToken string `json:"accessToken" dc:"访问令牌"`

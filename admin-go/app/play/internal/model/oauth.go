@@ -12,8 +12,8 @@ import (
 type OauthCreateInput struct {
 	MemberID snowflake.JsonInt64 `json:"memberID"`
 	Provider int `json:"provider"`
-	OpenID snowflake.JsonInt64 `json:"openID"`
-	UnionID snowflake.JsonInt64 `json:"unionID"`
+	OpenID string `json:"openID"`
+	UnionID string `json:"unionID"`
 	Nickname string `json:"nickname"`
 	Avatar string `json:"avatar"`
 	AccessToken string `json:"accessToken"`
@@ -26,8 +26,8 @@ type OauthUpdateInput struct {
 	ID snowflake.JsonInt64 `json:"id"`
 	MemberID snowflake.JsonInt64 `json:"memberID"`
 	Provider int `json:"provider"`
-	OpenID snowflake.JsonInt64 `json:"openID"`
-	UnionID snowflake.JsonInt64 `json:"unionID"`
+	OpenID string `json:"openID"`
+	UnionID string `json:"unionID"`
 	Nickname string `json:"nickname"`
 	Avatar string `json:"avatar"`
 	AccessToken string `json:"accessToken"`
@@ -40,8 +40,8 @@ type OauthDetailOutput struct {
 	ID snowflake.JsonInt64 `json:"id"`
 	MemberID snowflake.JsonInt64 `json:"memberID"`
 	Provider int `json:"provider"`
-	OpenID snowflake.JsonInt64 `json:"openID"`
-	UnionID snowflake.JsonInt64 `json:"unionID"`
+	OpenID string `json:"openID"`
+	UnionID string `json:"unionID"`
 	Nickname string `json:"nickname"`
 	Avatar string `json:"avatar"`
 	AccessToken string `json:"accessToken"`
@@ -56,8 +56,8 @@ type OauthListOutput struct {
 	ID snowflake.JsonInt64 `json:"id"`
 	MemberID snowflake.JsonInt64 `json:"memberID"`
 	Provider int `json:"provider"`
-	OpenID snowflake.JsonInt64 `json:"openID"`
-	UnionID snowflake.JsonInt64 `json:"unionID"`
+	OpenID string `json:"openID"`
+	UnionID string `json:"unionID"`
 	Nickname string `json:"nickname"`
 	Avatar string `json:"avatar"`
 	AccessToken string `json:"accessToken"`
