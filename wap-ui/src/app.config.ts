@@ -28,6 +28,7 @@ export default defineAppConfig({
     'pages/workspace/orders',
     'pages/workspace/income',
     'pages/workspace/goods',
+    'pages/webview/index',
   ],
   tabBar: {
     color: '#B2BEC3',
