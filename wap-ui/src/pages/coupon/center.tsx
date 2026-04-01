@@ -1,22 +1,49 @@
-import { useState, useCallback } from 'react';
+import { useState, useRef, useCallback, useEffect } from 'react';
 import { View, Text } from '@tarojs/components';
-import Taro, { useLoad } from '@tarojs/taro';
+import Taro, { useLoad, usePullDownRefresh, useReachBottom } from '@tarojs/taro';
 import { getAvailableCoupons, receiveCoupon } from '../../api/coupon';
+import LoadMore from '../../components/LoadMore';
 import './center.scss';
+
+const PAGE_SIZE = 10;
 
 export default function CouponCenterPage() {
   const [coupons, setCoupons] = useState<any[]>([]);
+  const [hasMore, setHasMore] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const pageRef = useRef(1);
 
-  const fetchList = useCallback(async () => {
+  const fetchList = useCallback(async (reset = false) => {
+    if (loading) return;
+    if (reset) pageRef.current = 1;
+    setLoading(true);
     try {
-      const res = await getAvailableCoupons();
-      setCoupons(res?.list || []);
+      const res = await getAvailableCoupons({ page: pageRef.current, pageSize: PAGE_SIZE });
+      const rows = res?.list || [];
+      if (reset) {
+        setCoupons(rows);
+      } else {
+        setCoupons((prev) => [...prev, ...rows]);
+      }
+      setHasMore(rows.length >= PAGE_SIZE);
+      pageRef.current += 1;
     } catch (e) {
       console.error(e);
+    } finally {
+      setLoading(false);
     }
-  }, []);
+  }, [loading]);
 
-  useLoad(() => { fetchList(); });
+  useLoad(() => { fetchList(true); });
+
+  usePullDownRefresh(async () => {
+    await fetchList(true);
+    Taro.stopPullDownRefresh();
+  });
+
+  useReachBottom(() => {
+    if (hasMore && !loading) fetchList();
+  });
 
   const handleReceive = async (couponId: string) => {
     try {
@@ -32,7 +59,7 @@ export default function CouponCenterPage() {
 
   return (
     <View className="coupon-center">
-      {coupons.length === 0 && (
+      {coupons.length === 0 && !loading && (
         <View className="coupon-center__empty">
           <Text>暂无可领取的优惠券</Text>
         </View>
@@ -58,6 +85,7 @@ export default function CouponCenterPage() {
           </View>
         </View>
       ))}
+      {coupons.length > 0 && <LoadMore hasMore={hasMore} />}
     </View>
   );
 }

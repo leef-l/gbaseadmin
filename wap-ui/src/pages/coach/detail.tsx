@@ -1,17 +1,70 @@
-import { useState } from 'react';
+import { useState, useRef, useCallback, useEffect } from 'react';
 import { View, Text, Image } from '@tarojs/components';
-import Taro, { useLoad, useRouter } from '@tarojs/taro';
+import Taro, { useLoad, useRouter, useReachBottom } from '@tarojs/taro';
 import { getCoachDetail } from '../../api/coach';
 import { getGoodsList } from '../../api/goods';
 import { getReviewList } from '../../api/review';
+import LoadMore from '../../components/LoadMore';
 import './detail.scss';
+
+const PAGE_SIZE = 10;
 
 export default function CoachDetailPage() {
   const { params } = useRouter();
   const [activeTab, setActiveTab] = useState(0);
   const [detail, setDetail] = useState<any>(null);
+
+  // 服务项目分页
   const [goodsList, setGoodsList] = useState<any[]>([]);
+  const [goodsHasMore, setGoodsHasMore] = useState(false);
+  const [goodsLoading, setGoodsLoading] = useState(false);
+  const goodsPageRef = useRef(1);
+
+  // 评价分页
   const [reviews, setReviews] = useState<any[]>([]);
+  const [reviewHasMore, setReviewHasMore] = useState(false);
+  const [reviewLoading, setReviewLoading] = useState(false);
+  const reviewPageRef = useRef(1);
+
+  const fetchGoods = useCallback(async (reset = false) => {
+    if (goodsLoading) return;
+    if (reset) goodsPageRef.current = 1;
+    setGoodsLoading(true);
+    try {
+      const data = await getGoodsList({ coachId: params.id, page: goodsPageRef.current, pageSize: PAGE_SIZE });
+      const rows = data?.list || [];
+      if (reset) {
+        setGoodsList(rows);
+      } else {
+        setGoodsList((prev) => [...prev, ...rows]);
+      }
+      setGoodsHasMore(rows.length >= PAGE_SIZE);
+      goodsPageRef.current += 1;
+    } catch {
+      Taro.showToast({ title: '加载失败', icon: 'none' });
+    } finally {
+      setGoodsLoading(false);
+    }
+  }, [params.id, goodsLoading]);
+
+  const fetchReviews = useCallback(async (reset = false) => {
+    if (reviewLoading) return;
+    if (reset) reviewPageRef.current = 1;
+    setReviewLoading(true);
+    try {
+      const data = await getReviewList({ coachId: params.id, page: reviewPageRef.current, pageSize: PAGE_SIZE });
+      const rows = data?.list || [];
+      if (reset) {
+        setReviews(rows);
+      } else {
+        setReviews((prev) => [...prev, ...rows]);
+      }
+      setReviewHasMore(rows.length >= PAGE_SIZE);
+      reviewPageRef.current += 1;
+    } catch {} finally {
+      setReviewLoading(false);
+    }
+  }, [params.id, reviewLoading]);
 
   useLoad(async () => {
     try {
@@ -20,14 +73,23 @@ export default function CoachDetailPage() {
     } catch {
       Taro.showToast({ title: '加载失败', icon: 'none' });
     }
-    try {
-      const data = await getGoodsList({ coachId: params.id, page: 1, pageSize: 20 });
-      setGoodsList(data?.list || []);
-    } catch {}
-    try {
-      const data = await getReviewList({ coachId: params.id, page: 1, pageSize: 10 });
-      setReviews(data?.list || []);
-    } catch {}
+  });
+
+  // tab 切换时重置并加载对应数据
+  useEffect(() => {
+    if (activeTab === 0) {
+      fetchGoods(true);
+    } else {
+      fetchReviews(true);
+    }
+  }, [activeTab]);
+
+  useReachBottom(() => {
+    if (activeTab === 0) {
+      if (goodsHasMore && !goodsLoading) fetchGoods();
+    } else {
+      if (reviewHasMore && !reviewLoading) fetchReviews();
+    }
   });
 
   if (!detail) return <View />;
@@ -79,6 +141,7 @@ export default function CoachDetailPage() {
               </View>
             </View>
           ))}
+          {goodsList.length > 0 && <LoadMore hasMore={goodsHasMore} />}
         </View>
       ) : (
         <View className="coach-detail__reviews">
@@ -93,6 +156,7 @@ export default function CoachDetailPage() {
               <Text className="coach-detail__review-content">{r.content}</Text>
             </View>
           ))}
+          {reviews.length > 0 && <LoadMore hasMore={reviewHasMore} />}
         </View>
       )}
 

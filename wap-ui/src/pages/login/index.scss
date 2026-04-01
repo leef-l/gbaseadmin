@@ -112,4 +112,66 @@
     font-size: 12px;
     color: var(--text-secondary);
   }
+
+  &__divider {
+    display: flex;
+    align-items: center;
+    margin-top: 32px;
+    gap: 12px;
+  }
+
+  &__divider-line {
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  &__divider-text {
+    font-size: 12px;
+    color: var(--text-light);
+    white-space: nowrap;
+  }
+
+  &__third-party {
+    display: flex;
+    justify-content: center;
+    gap: 48px;
+    margin-top: 24px;
+    padding-bottom: 40px;
+  }
+
+  &__third-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+
+  &__third-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &--wx {
+      background: #07c160;
+    }
+
+    &--alipay {
+      background: #1677ff;
+    }
+  }
+
+  &__third-icon-text {
+    color: #fff;
+    font-size: 20px;
+    font-weight: 700;
+  }
+
+  &__third-label {
+    font-size: 12px;
+    color: var(--text-secondary);
+  }
 }
