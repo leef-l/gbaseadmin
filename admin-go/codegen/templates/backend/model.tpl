@@ -59,15 +59,33 @@ type {{.ModelName}}ListOutput struct {
 
 // {{.ModelName}}ListInput {{.Comment}}列表查询输入
 type {{.ModelName}}ListInput struct {
-	PageNum  int `json:"pageNum"`
-	PageSize int `json:"pageSize"`
+	PageNum   int    `json:"pageNum"`
+	PageSize  int    `json:"pageSize"`
+	OrderBy   string `json:"orderBy"`
+	OrderDir  string `json:"orderDir"`
+	StartTime string `json:"startTime"`
+	EndTime   string `json:"endTime"`
 {{- range .Fields}}
 {{- if and (not .IsHidden) (not .IsID) (.IsEnum)}}
 	{{.NameCamel}} *int `json:"{{.NameLower}}"`
 {{- end}}
 {{- end}}
+{{- range .Fields}}
+{{- if .IsSearchable}}
+	{{.NameCamel}} string `json:"{{.NameLower}}"`
+{{- end}}
+{{- end}}
 }
 {{if .HasParentID}}
+// {{.ModelName}}TreeInput {{.Comment}}树形查询输入
+type {{.ModelName}}TreeInput struct {
+{{- range .Fields}}
+{{- if and (not .IsHidden) (not .IsID) (not .IsParentID) (.IsEnum)}}
+	{{.NameCamel}} *int `json:"{{.NameLower}}"`
+{{- end}}
+{{- end}}
+}
+
 // {{.ModelName}}TreeOutput {{.Comment}}树形输出
 type {{.ModelName}}TreeOutput struct {
 	ID snowflake.JsonInt64 `json:"id"`

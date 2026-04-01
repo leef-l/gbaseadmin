@@ -22,6 +22,7 @@ var mappings = []templateMapping{
 	{"api.tpl", "api/{app}/{module}/index.ts"},
 	{"list.tpl", "views/{app}/{module}/index.vue"},
 	{"form.tpl", "views/{app}/{module}/modules/form.vue"},
+	{"detail-drawer.tpl", "views/{app}/{module}/modules/detail-drawer.vue"},
 }
 
 // Config 前端生成器配置

@@ -120,6 +120,15 @@ func (p *Parser) ParseTable(tableName string) (*TableMeta, error) {
 		if field.TooltipText != "" {
 			meta.HasTooltip = true
 		}
+		if field.Component == "RichText" || field.Component == "JsonEditor" {
+			meta.HasRichText = true
+		}
+		if field.IsMoney {
+			meta.HasMoney = true
+		}
+		if field.IsSearchable {
+			meta.HasSearchable = true
+		}
 	}
 
 	// 解析关联字段：对 *_id 外键和 parent_id 查找关联表的显示字段
@@ -321,6 +330,31 @@ func buildFieldMeta(col columnInfo) FieldMeta {
 		IsEnum:       len(enums) > 0,
 		IsPassword:   isPassword,
 		DefaultValue: col.ColumnDefault.String,
+	}
+
+	// 判断是否可搜索的文本字段（用于关键词模糊查询）
+	searchableNames := map[string]bool{
+		"title": true, "name": true, "username": true, "nickname": true,
+		"phone": true, "mobile": true, "email": true, "real_name": true,
+		"order_no": true, "remark": true,
+	}
+	goType := field.GoType
+	if searchableNames[name] || strings.HasSuffix(name, "_name") || strings.HasSuffix(name, "_title") || strings.HasSuffix(name, "_no") {
+		if goType == "string" && !isID && !isForeignKey && !isPassword {
+			field.IsSearchable = true
+		}
+	}
+
+	// 判断是否金额字段（单位：分，列表需要分→元格式化）
+	moneyNames := map[string]bool{
+		"price": true, "amount": true, "balance": true, "quantity": false,
+		"income_total": true, "income_balance": true,
+	}
+	if moneyNames[name] ||
+		strings.HasSuffix(name, "_price") || strings.HasSuffix(name, "_amount") ||
+		strings.HasSuffix(name, "_balance") || strings.HasSuffix(name, "_income") ||
+		strings.HasSuffix(name, "_fee") || strings.HasSuffix(name, "_cost") {
+		field.IsMoney = true
 	}
 
 	if col.CharMaxLength.Valid {

@@ -55,6 +55,17 @@ type {{.ModelName}}DeleteRes struct {
 	g.Meta `mime:"application/json"`
 }
 
+// {{.ModelName}}BatchDeleteReq 批量删除{{.Comment}}请求
+type {{.ModelName}}BatchDeleteReq struct {
+	g.Meta `path:"/{{.ModuleName}}/batch-delete" method:"delete" tags:"{{.Comment}}" summary:"批量删除{{.Comment}}"`
+	IDs    []snowflake.JsonInt64 `json:"ids" v:"required#ID列表不能为空" dc:"{{.Comment}}ID列表"`
+}
+
+// {{.ModelName}}BatchDeleteRes 批量删除{{.Comment}}响应
+type {{.ModelName}}BatchDeleteRes struct {
+	g.Meta `mime:"application/json"`
+}
+
 // {{.ModelName}}DetailReq 获取{{.Comment}}详情请求
 type {{.ModelName}}DetailReq struct {
 	g.Meta `path:"/{{.ModuleName}}/detail" method:"get" tags:"{{.Comment}}" summary:"获取{{.Comment}}详情"`
@@ -69,12 +80,21 @@ type {{.ModelName}}DetailRes struct {
 
 // {{.ModelName}}ListReq 获取{{.Comment}}列表请求
 type {{.ModelName}}ListReq struct {
-	g.Meta   `path:"/{{.ModuleName}}/list" method:"get" tags:"{{.Comment}}" summary:"获取{{.Comment}}列表"`
-	PageNum  int `json:"pageNum" d:"1" dc:"页码"`
-	PageSize int `json:"pageSize" d:"10" dc:"每页数量"`
+	g.Meta    `path:"/{{.ModuleName}}/list" method:"get" tags:"{{.Comment}}" summary:"获取{{.Comment}}列表"`
+	PageNum   int    `json:"pageNum" d:"1" dc:"页码"`
+	PageSize  int    `json:"pageSize" d:"10" dc:"每页数量"`
+	OrderBy   string `json:"orderBy" dc:"排序字段"`
+	OrderDir  string `json:"orderDir" d:"asc" dc:"排序方向:asc/desc"`
+	StartTime string `json:"startTime" dc:"开始时间"`
+	EndTime   string `json:"endTime" dc:"结束时间"`
 {{- range .Fields}}
 {{- if and (not .IsHidden) (not .IsID) (.IsEnum)}}
 	{{.NameCamel}} *int `json:"{{.NameLower}}" dc:"{{.Label}}"`
+{{- end}}
+{{- end}}
+{{- range .Fields}}
+{{- if .IsSearchable}}
+	{{.NameCamel}} string `json:"{{.NameLower}}" dc:"{{.Label}}"`
 {{- end}}
 {{- end}}
 }
@@ -85,6 +105,28 @@ type {{.ModelName}}ListRes struct {
 	List   []*model.{{.ModelName}}ListOutput `json:"list" dc:"列表数据"`
 	Total  int                               `json:"total" dc:"总数"`
 }
+// {{.ModelName}}ExportReq 导出{{.Comment}}请求
+type {{.ModelName}}ExportReq struct {
+	g.Meta    `path:"/{{.ModuleName}}/export" method:"get" tags:"{{.Comment}}" summary:"导出{{.Comment}}"`
+	StartTime string `json:"startTime" dc:"开始时间"`
+	EndTime   string `json:"endTime" dc:"结束时间"`
+{{- range .Fields}}
+{{- if and (not .IsHidden) (not .IsID) (.IsEnum)}}
+	{{.NameCamel}} *int `json:"{{.NameLower}}" dc:"{{.Label}}"`
+{{- end}}
+{{- end}}
+{{- range .Fields}}
+{{- if .IsSearchable}}
+	{{.NameCamel}} string `json:"{{.NameLower}}" dc:"{{.Label}}"`
+{{- end}}
+{{- end}}
+}
+
+// {{.ModelName}}ExportRes 导出{{.Comment}}响应
+type {{.ModelName}}ExportRes struct {
+	g.Meta `mime:"text/csv"`
+}
+
 {{if .HasParentID}}
 // {{.ModelName}}TreeReq 获取{{.Comment}}树形结构请求
 type {{.ModelName}}TreeReq struct {

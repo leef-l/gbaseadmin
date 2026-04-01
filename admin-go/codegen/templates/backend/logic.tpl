@@ -86,6 +86,14 @@ func (s *s{{.ModelName}}) Delete(ctx context.Context, id snowflake.JsonInt64) er
 	return err
 }
 
+// BatchDelete 批量软删除{{.Comment}}
+func (s *s{{.ModelName}}) BatchDelete(ctx context.Context, ids []snowflake.JsonInt64) error {
+	_, err := dao.{{.DaoName}}.Ctx(ctx).WhereIn(dao.{{.DaoName}}.Columns().Id, ids).Data(g.Map{
+		dao.{{.DaoName}}.Columns().DeletedAt: gtime.Now(),
+	}).Update()
+	return err
+}
+
 // Detail 获取{{.Comment}}详情
 func (s *s{{.ModelName}}) Detail(ctx context.Context, id snowflake.JsonInt64) (out *model.{{.ModelName}}DetailOutput, err error) {
 	out = &model.{{.ModelName}}DetailOutput{}
@@ -117,11 +125,35 @@ func (s *s{{.ModelName}}) List(ctx context.Context, in *model.{{.ModelName}}List
 	}
 {{- end}}
 {{- end}}
+{{- range .Fields}}
+{{- if .IsSearchable}}
+	if in.{{.NameCamel}} != "" {
+		m = m.WhereLike(dao.{{$.DaoName}}.Columns().{{.NameDao}}, "%"+in.{{.NameCamel}}+"%")
+	}
+{{- end}}
+{{- end}}
+	// 时间范围筛选
+	if in.StartTime != "" {
+		m = m.WhereGTE(dao.{{.DaoName}}.Columns().CreatedAt, in.StartTime)
+	}
+	if in.EndTime != "" {
+		m = m.WhereLTE(dao.{{.DaoName}}.Columns().CreatedAt, in.EndTime)
+	}
 	total, err = m.Count()
 	if err != nil {
 		return
 	}
-	err = m.Page(in.PageNum, in.PageSize).OrderAsc(dao.{{.DaoName}}.Columns().Id).Scan(&list)
+	// 动态排序
+	if in.OrderBy != "" {
+		if in.OrderDir == "desc" {
+			m = m.OrderDesc(in.OrderBy)
+		} else {
+			m = m.OrderAsc(in.OrderBy)
+		}
+	} else {
+		m = m.OrderAsc(dao.{{.DaoName}}.Columns().Id)
+	}
+	err = m.Page(in.PageNum, in.PageSize).Scan(&list)
 	if err != nil {
 		return
 	}
@@ -170,11 +202,46 @@ func (s *s{{.ModelName}}) List(ctx context.Context, in *model.{{.ModelName}}List
 {{- end}}
 	return
 }
+// Export 导出{{.Comment}}（不分页）
+func (s *s{{.ModelName}}) Export(ctx context.Context, in *model.{{.ModelName}}ListInput) (list []*model.{{.ModelName}}ListOutput, err error) {
+	m := dao.{{.DaoName}}.Ctx(ctx).Where(dao.{{.DaoName}}.Columns().DeletedAt, nil)
+{{- range .Fields}}
+{{- if and (not .IsHidden) (not .IsID) (.IsEnum)}}
+	if in.{{.NameCamel}} != nil {
+		m = m.Where(dao.{{$.DaoName}}.Columns().{{.NameDao}}, *in.{{.NameCamel}})
+	}
+{{- end}}
+{{- end}}
+{{- range .Fields}}
+{{- if .IsSearchable}}
+	if in.{{.NameCamel}} != "" {
+		m = m.WhereLike(dao.{{$.DaoName}}.Columns().{{.NameDao}}, "%"+in.{{.NameCamel}}+"%")
+	}
+{{- end}}
+{{- end}}
+	if in.StartTime != "" {
+		m = m.WhereGTE(dao.{{.DaoName}}.Columns().CreatedAt, in.StartTime)
+	}
+	if in.EndTime != "" {
+		m = m.WhereLTE(dao.{{.DaoName}}.Columns().CreatedAt, in.EndTime)
+	}
+	err = m.OrderAsc(dao.{{.DaoName}}.Columns().Id).Scan(&list)
+	return
+}
+
 {{if .HasParentID}}
 // Tree 获取{{.Comment}}树形结构
-func (s *s{{.ModelName}}) Tree(ctx context.Context) (tree []*model.{{.ModelName}}TreeOutput, err error) {
+func (s *s{{.ModelName}}) Tree(ctx context.Context, in *model.{{.ModelName}}TreeInput) (tree []*model.{{.ModelName}}TreeOutput, err error) {
 	var list []*model.{{.ModelName}}TreeOutput
-	err = dao.{{.DaoName}}.Ctx(ctx).Where(dao.{{.DaoName}}.Columns().DeletedAt, nil).{{if .HasSort}}OrderAsc(dao.{{.DaoName}}.Columns().Sort).{{end}}Scan(&list)
+	m := dao.{{.DaoName}}.Ctx(ctx).Where(dao.{{.DaoName}}.Columns().DeletedAt, nil)
+{{- range .Fields}}
+{{- if and (not .IsHidden) (not .IsID) (not .IsParentID) (.IsEnum)}}
+	if in.{{.NameCamel}} != nil {
+		m = m.Where(dao.{{$.DaoName}}.Columns().{{.NameDao}}, *in.{{.NameCamel}})
+	}
+{{- end}}
+{{- end}}
+	err = m.{{if .HasSort}}OrderAsc(dao.{{.DaoName}}.Columns().Sort).{{end}}Scan(&list)
 	if err != nil {
 		return
 	}

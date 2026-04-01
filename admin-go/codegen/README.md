@@ -90,6 +90,7 @@ go run . --table system_dept --menu
 | `api.tpl` | `api/{app}/{module}/index.ts` | API 请求函数 |
 | `list.tpl` | `views/{app}/{module}/index.vue` | 列表页面 |
 | `form.tpl` | `views/{app}/{module}/modules/form.vue` | 表单弹窗 |
+| `detail-drawer.tpl` | `views/{app}/{module}/modules/detail-drawer.vue` | 详情抽屉 |
 
 ## 配置文件
 
@@ -312,6 +313,13 @@ database:
 | 软删除 | 存在 `deleted_at` 字段 | 查询自动过滤已删除记录 |
 | 枚举常量 | 字段注释包含枚举定义 | 后端生成 Go 常量，前端生成 options |
 | Tooltip 提示 | 字段注释标签含 `（）` 或 `()` | 前端表单 label 和列头自动渲染 Tooltip 问号图标 |
+| 模糊搜索 | 字段名为 `title`/`name`/`phone`/`email` 等 | 后端 `WhereLike` 模糊查询，前端搜索栏自动添加 Input |
+| 金额格式化 | 字段名含 `price`/`amount`/`balance`/`fee`/`cost` | 列表自动"分→元"格式化显示（`/ 100`） |
+| 批量删除 | 所有表 | 前端勾选框 + 批量删除按钮，后端 `WhereIn` 批量软删除 |
+| CSV 导出 | 所有表 | 后端 CSV 流式输出，前端导出按钮（Blob 下载） |
+| 详情抽屉 | 所有表 | 只读详情展示，枚举 Tag、图片预览、富文本渲染 |
+| 时间范围筛选 | 所有表 | 前端 RangePicker + 后端 `created_at` 区间查询 |
+| 列表排序 | 所有表 | 前端列头排序 + 后端动态 `OrderBy`/`OrderDir` |
 
 ## 菜单生成
 

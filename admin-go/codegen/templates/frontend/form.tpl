@@ -62,10 +62,13 @@ const [Form, formApi] = useVbenForm({
       component: 'InputPassword',
       fieldName: '{{.NameLower}}',
       label: {{if .TooltipText}}() => h('span', {}, ['{{.ShortLabel}} ', h(Tooltip, { title: '{{.TooltipText}}' }, { default: () => h(QuestionCircleOutlined, { style: { color: '#999', marginLeft: '4px' } }) })]){{else}}'{{.Label}}'{{end}},
-{{- if .IsRequired}}
-      rules: 'required',
-{{- end}}
-      componentProps: { placeholder: '请输入{{.Label}}' },
+      rules: isEdit.value ? undefined : 'required',
+      componentProps: { placeholder: isEdit.value ? '不填则不修改' : '请输入{{.Label}}' },
+      dependencies: {
+        triggerFields: ['id'],
+        if: () => !isEdit.value,
+        rules: 'required',
+      },
     },
 {{- else if eq .Component "InputNumber"}}
     {
@@ -397,7 +400,7 @@ const [Modal, modalApi] = useVbenModal({
 </script>
 
 <template>
-  <Modal class="w-[600px]">
+  <Modal class="w-[{{if .HasRichText}}800px{{else}}600px{{end}}]">
     <Form />
   </Modal>
 </template>

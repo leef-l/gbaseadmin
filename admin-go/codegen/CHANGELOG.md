@@ -1,5 +1,26 @@
 # Codegen 更新日志
 
+## v1.5.0 — 2026-04-01
+
+### 新增功能
+
+- **批量删除** — 前后端完整支持，API（`/batch-delete`）+ Service + Logic + 前端勾选框 + 批量删除按钮
+- **CSV 导出** — 后端 Export 接口（不分页查询 + CSV 流式输出），前端导出按钮（Blob 下载），支持筛选条件透传
+- **查看详情 Drawer** — 新增 `detail-drawer.tpl` 模板，使用 Ant Design `Descriptions` 组件只读展示所有字段，支持枚举 Tag、金额分→元、图片预览、富文本 HTML 渲染
+- **关键词模糊搜索** — Parser 自动识别 `title`/`name`/`phone`/`email` 等字段为可搜索字段，后端 `WhereLike`，前端搜索表单自动添加 Input
+- **时间范围筛选** — 列表页自动添加 `RangePicker` 时间范围筛选，后端 `WhereGTE`/`WhereLTE` 过滤 `created_at`
+- **列表排序** — 前端列头点击排序（`sortConfig: remote`），后端动态 `OrderBy`/`OrderDir` 排序，`createdAt` 列默认可排序
+- **金额字段自动格式化** — Parser 识别 `*_price`/`*_amount`/`*_balance`/`*_fee`/`*_cost` 等字段，列表自动 `(cellValue / 100).toFixed(2)` 分→元显示
+
+### 模板优化
+
+- **Tree 接口筛选参数贯通** — Tree 请求支持枚举筛选参数透传（`TreeReq` → `TreeInput` → Logic 条件过滤）
+- **编辑时密码字段条件隐藏** — 编辑模式下密码字段使用 `dependencies` 联动隐藏，placeholder 显示"不填则不修改"
+- **含 RichText/JsonEditor 时弹窗自动加宽** — 表单弹窗宽度根据 `HasRichText` 动态切换 800px/600px
+- **Export 接口筛选条件支持** — 导出接口复用 ListInput，支持枚举筛选 + 关键词搜索 + 时间范围
+
+---
+
 ## v1.4.0 — 2026-04-01
 
 ### BUG 修复

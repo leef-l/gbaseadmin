@@ -51,6 +51,8 @@ type FieldMeta struct {
 	IsHidden     bool // 表单中隐藏（id/created_at/updated_at/deleted_at/created_by/dept_id）
 	IsEnum       bool // 是否有枚举值
 	IsPassword   bool // 是否是密码字段
+	IsSearchable bool // 是否可用于关键词搜索（title/name/nickname/phone/email/order_no 等文本字段）
+	IsMoney      bool // 是否是金额字段（*_price/*_amount/*_balance/*_income，单位：分）
 	MaxLength    int
 	DefaultValue string
 	// 关联字段信息（仅 IsForeignKey 或 IsParentID 时有值）
@@ -82,4 +84,7 @@ type TableMeta struct {
 	HasSort      bool // 有 sort 字段
 	HasPassword  bool // 有 password 字段
 	HasTooltip   bool // 有字段需要 Tooltip 提示
+	HasRichText  bool // 有 RichText 或 JsonEditor 字段（用于弹窗加宽）
+	HasMoney     bool // 有金额字段（用于列表格式化）
+	HasSearchable bool // 有可搜索的文本字段
 }
