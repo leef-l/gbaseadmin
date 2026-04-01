@@ -153,30 +153,25 @@ func (s *sActivity) Detail(ctx context.Context, activityID string, memberID int6
 		})
 	}
 
-	// 查询当前用户报名状态及已完成步骤
+	// 查询当前用户报名状态及进度
 	if memberID > 0 {
-		joinCnt, e := dao.PlayActivityJoin.Ctx(ctx).
+		join, e := dao.PlayActivityJoin.Ctx(ctx).
 			Where(dao.PlayActivityJoin.Columns().ActivityId, aid).
 			Where(dao.PlayActivityJoin.Columns().MemberId, memberID).
 			Where(dao.PlayActivityJoin.Columns().DeletedAt, nil).
-			Count()
-		if e == nil && joinCnt > 0 {
-			out.Joined = true
-		}
-		var stepLogs []struct {
-			StepId uint64 `json:"step_id"`
-		}
-		e = dao.PlayActivityStepLog.Ctx(ctx).
-			Fields(dao.PlayActivityStepLog.Columns().StepId).
-			Where(dao.PlayActivityStepLog.Columns().ActivityId, aid).
-			Where(dao.PlayActivityStepLog.Columns().MemberId, memberID).
-			Where(dao.PlayActivityStepLog.Columns().DeletedAt, nil).
-			Scan(&stepLogs)
-		if e == nil {
-			out.CompletedSteps = make([]string, 0, len(stepLogs))
-			for _, sl := range stepLogs {
-				out.CompletedSteps = append(out.CompletedSteps, strconv.FormatUint(sl.StepId, 10))
+			One()
+		if e == nil && !join.IsEmpty() {
+			out.HasJoined = true
+			joinStatus := join[dao.PlayActivityJoin.Columns().JoinStatus].Int()
+			progress := &v1.ActivityProgressInfo{
+				CurrentStep: join[dao.PlayActivityJoin.Columns().CurrentStep].Int(),
+				IsCompleted: joinStatus >= 2,
+				IsRewarded:  joinStatus >= 3,
 			}
+			if join[dao.PlayActivityJoin.Columns().CreatedAt].GTime() != nil {
+				progress.JoinedAt = join[dao.PlayActivityJoin.Columns().CreatedAt].String()
+			}
+			out.MyProgress = progress
 		}
 	}
 

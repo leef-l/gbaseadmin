@@ -48,8 +48,8 @@ type ActivityDetailApiRes struct {
 	JoinCount      int                     `json:"joinCount"       dc:"参与人数"`
 	Steps          []ActivityStepApiItem   `json:"steps"           dc:"活动步骤列表"`
 	Rewards        []ActivityRewardApiItem `json:"rewards"         dc:"奖励列表"`
-	Joined         bool                    `json:"joined"          dc:"是否已报名"`
-	CompletedSteps []string                `json:"completedSteps"  dc:"已完成的步骤ID列表"`
+	HasJoined  bool                  `json:"hasJoined"  dc:"是否已参与"`
+	MyProgress *ActivityProgressInfo `json:"myProgress" dc:"我的进度（已参与时返回）"`
 }
 
 type ActivityStepApiItem struct {
@@ -131,6 +131,13 @@ type ActivityMyJoinsRes struct {
 	g.Meta `mime:"application/json"`
 	Total  int                      `json:"total" dc:"总数"`
 	List   []ActivityMyJoinsItem    `json:"list" dc:"我参与的活动列表"`
+}
+
+type ActivityProgressInfo struct {
+	CurrentStep int    `json:"currentStep" dc:"当前步骤序号"`
+	IsCompleted bool   `json:"isCompleted" dc:"是否已完成活动"`
+	IsRewarded  bool   `json:"isRewarded"  dc:"是否已领取奖励"`
+	JoinedAt    string `json:"joinedAt"    dc:"参与时间"`
 }
 
 type ActivityMyJoinsItem struct {
