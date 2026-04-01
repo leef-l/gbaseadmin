@@ -229,9 +229,8 @@ server {
         proxy_read_timeout 60s;
     }
 
-    # play WAP端 API（/api/playapi/ 重写为 /api/play/）
+    # play WAP端 API（直接透传，后端有独立 /api/playapi 路由）
     location /api/playapi/ {
-        rewrite ^/api/playapi/(.*)$ /api/play/$1 break;
         proxy_pass http://127.0.0.1:8001;
         proxy_http_version 1.1;
         proxy_set_header Connection "";
