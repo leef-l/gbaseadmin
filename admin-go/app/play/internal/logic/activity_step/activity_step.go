@@ -3,6 +3,7 @@ package activity_step
 import (
 	"context"
 
+	"github.com/gogf/gf/v2/errors/gerror"
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/os/gtime"
 
@@ -22,8 +23,30 @@ func New() *sActivityStep {
 
 type sActivityStep struct{}
 
+// checkStepNumDuplicate 检查同一活动下步骤序号是否重复（excludeID 为编辑时排除自身）
+func (s *sActivityStep) checkStepNumDuplicate(ctx context.Context, activityID snowflake.JsonInt64, stepNum int, excludeID ...snowflake.JsonInt64) error {
+	m := dao.PlayActivityStep.Ctx(ctx).
+		Where(dao.PlayActivityStep.Columns().ActivityId, activityID).
+		Where(dao.PlayActivityStep.Columns().StepNum, stepNum).
+		Where(dao.PlayActivityStep.Columns().DeletedAt, nil)
+	if len(excludeID) > 0 && excludeID[0] != 0 {
+		m = m.WhereNot(dao.PlayActivityStep.Columns().Id, excludeID[0])
+	}
+	count, err := m.Count()
+	if err != nil {
+		return err
+	}
+	if count > 0 {
+		return gerror.Newf("该活动下已存在步骤序号 %d，请使用其他序号", stepNum)
+	}
+	return nil
+}
+
 // Create 创建活动步骤表
 func (s *sActivityStep) Create(ctx context.Context, in *model.ActivityStepCreateInput) error {
+	if err := s.checkStepNumDuplicate(ctx, in.ActivityID, in.StepNum); err != nil {
+		return err
+	}
 	id := snowflake.Generate()
 	_, err := dao.PlayActivityStep.Ctx(ctx).Data(g.Map{
 		dao.PlayActivityStep.Columns().Id:          id,
@@ -44,6 +67,9 @@ func (s *sActivityStep) Create(ctx context.Context, in *model.ActivityStepCreate
 
 // Update 更新活动步骤表
 func (s *sActivityStep) Update(ctx context.Context, in *model.ActivityStepUpdateInput) error {
+	if err := s.checkStepNumDuplicate(ctx, in.ActivityID, in.StepNum, in.ID); err != nil {
+		return err
+	}
 	data := g.Map{
 		dao.PlayActivityStep.Columns().ActivityId:   in.ActivityID,
 		dao.PlayActivityStep.Columns().StepNum:      in.StepNum,
