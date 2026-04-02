@@ -112,19 +112,13 @@ function handleAddReward() {
   rewardModalVisible.value = true;
 }
 function handleEditReward(row: ActivityRewardItem) {
-  let levelId = '', days = 1;
-  if (row.rewardType === 4 && row.rewardValue) {
-    const parts = String(row.rewardValue).split(':');
-    levelId = parts[0] || '';
-    days = parseInt(parts[1] || '1', 10);
-  }
   Object.assign(rewardForm, {
     id: row.id,
     rewardName: row.rewardName,
     rewardType: row.rewardType ?? 1,
-    rewardValue: row.rewardType === 4 ? '' : (row.rewardValue ?? ''),
-    rewardLevelId: levelId,
-    rewardDays: days,
+    rewardValue: row.rewardValue ?? '',
+    rewardLevelId: row.rewardLevelId ? String(row.rewardLevelId) : '',
+    rewardDays: row.rewardType === 4 ? (row.rewardValue ?? 1) : 1,
     sort: row.sort ?? 0,
   });
   rewardModalVisible.value = true;
@@ -132,15 +126,18 @@ function handleEditReward(row: ActivityRewardItem) {
 async function handleSaveReward() {
   if (!rewardForm.rewardName.trim()) { message.warning('请输入奖励名称'); return; }
   let finalValue = rewardForm.rewardValue;
+  let levelId = '';
   if (rewardForm.rewardType === 4) {
     if (!rewardForm.rewardLevelId) { message.warning('请选择会员等级'); return; }
-    finalValue = `${rewardForm.rewardLevelId}:${rewardForm.rewardDays}`;
+    if (!rewardForm.rewardDays || rewardForm.rewardDays <= 0) { message.warning('请输入天数'); return; }
+    finalValue = rewardForm.rewardDays;
+    levelId = rewardForm.rewardLevelId;
   } else if (rewardForm.rewardType === 2) {
     if (!rewardForm.rewardValue) { message.warning('请选择优惠券'); return; }
   }
   rewardSaving.value = true;
   try {
-    const payload = { activityID: activityId.value, rewardName: rewardForm.rewardName, rewardType: rewardForm.rewardType, rewardValue: finalValue, sort: rewardForm.sort };
+    const payload = { activityID: activityId.value, rewardName: rewardForm.rewardName, rewardType: rewardForm.rewardType, rewardValue: finalValue, rewardLevelId: levelId, sort: rewardForm.sort };
     if (rewardForm.id) {
       await updateActivityReward({ id: rewardForm.id, ...payload });
     } else {

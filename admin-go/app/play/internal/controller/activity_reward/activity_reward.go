@@ -15,11 +15,12 @@ type cActivityReward struct{}
 // Create 创建活动奖励表
 func (c *cActivityReward) Create(ctx context.Context, req *v1.ActivityRewardCreateReq) (res *v1.ActivityRewardCreateRes, err error) {
 	err = service.ActivityReward().Create(ctx, &model.ActivityRewardCreateInput{
-		ActivityID: req.ActivityID,
-		RewardType: req.RewardType,
-		RewardValue: req.RewardValue,
-		RewardName: req.RewardName,
-		Sort: req.Sort,
+		ActivityID:    req.ActivityID,
+		RewardType:    req.RewardType,
+		RewardValue:   req.RewardValue,
+		RewardLevelId: req.RewardLevelId,
+		RewardName:    req.RewardName,
+		Sort:          req.Sort,
 	})
 	return
 }
@@ -27,12 +28,13 @@ func (c *cActivityReward) Create(ctx context.Context, req *v1.ActivityRewardCrea
 // Update 更新活动奖励表
 func (c *cActivityReward) Update(ctx context.Context, req *v1.ActivityRewardUpdateReq) (res *v1.ActivityRewardUpdateRes, err error) {
 	err = service.ActivityReward().Update(ctx, &model.ActivityRewardUpdateInput{
-		ID: req.ID,
-		ActivityID: req.ActivityID,
-		RewardType: req.RewardType,
-		RewardValue: req.RewardValue,
-		RewardName: req.RewardName,
-		Sort: req.Sort,
+		ID:            req.ID,
+		ActivityID:    req.ActivityID,
+		RewardType:    req.RewardType,
+		RewardValue:   req.RewardValue,
+		RewardLevelId: req.RewardLevelId,
+		RewardName:    req.RewardName,
+		Sort:          req.Sort,
 	})
 	return
 }

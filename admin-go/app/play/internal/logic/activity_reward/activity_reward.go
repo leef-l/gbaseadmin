@@ -26,14 +26,15 @@ type sActivityReward struct{}
 func (s *sActivityReward) Create(ctx context.Context, in *model.ActivityRewardCreateInput) error {
 	id := snowflake.Generate()
 	_, err := dao.PlayActivityReward.Ctx(ctx).Data(g.Map{
-		dao.PlayActivityReward.Columns().Id:        id,
-		dao.PlayActivityReward.Columns().ActivityId: in.ActivityID,
-		dao.PlayActivityReward.Columns().RewardType: in.RewardType,
-		dao.PlayActivityReward.Columns().RewardValue: in.RewardValue,
-		dao.PlayActivityReward.Columns().RewardName: in.RewardName,
-		dao.PlayActivityReward.Columns().Sort: in.Sort,
-		dao.PlayActivityReward.Columns().CreatedAt: gtime.Now(),
-		dao.PlayActivityReward.Columns().UpdatedAt: gtime.Now(),
+		dao.PlayActivityReward.Columns().Id:            id,
+		dao.PlayActivityReward.Columns().ActivityId:    in.ActivityID,
+		dao.PlayActivityReward.Columns().RewardType:    in.RewardType,
+		dao.PlayActivityReward.Columns().RewardValue:   in.RewardValue,
+		dao.PlayActivityReward.Columns().RewardLevelId: in.RewardLevelId,
+		dao.PlayActivityReward.Columns().RewardName:    in.RewardName,
+		dao.PlayActivityReward.Columns().Sort:          in.Sort,
+		dao.PlayActivityReward.Columns().CreatedAt:     gtime.Now(),
+		dao.PlayActivityReward.Columns().UpdatedAt:     gtime.Now(),
 	}).Insert()
 	return err
 }
@@ -41,12 +42,13 @@ func (s *sActivityReward) Create(ctx context.Context, in *model.ActivityRewardCr
 // Update 更新活动奖励表
 func (s *sActivityReward) Update(ctx context.Context, in *model.ActivityRewardUpdateInput) error {
 	data := g.Map{
-		dao.PlayActivityReward.Columns().ActivityId: in.ActivityID,
-		dao.PlayActivityReward.Columns().RewardType: in.RewardType,
-		dao.PlayActivityReward.Columns().RewardValue: in.RewardValue,
-		dao.PlayActivityReward.Columns().RewardName: in.RewardName,
-		dao.PlayActivityReward.Columns().Sort: in.Sort,
-		dao.PlayActivityReward.Columns().UpdatedAt: gtime.Now(),
+		dao.PlayActivityReward.Columns().ActivityId:    in.ActivityID,
+		dao.PlayActivityReward.Columns().RewardType:    in.RewardType,
+		dao.PlayActivityReward.Columns().RewardValue:   in.RewardValue,
+		dao.PlayActivityReward.Columns().RewardLevelId: in.RewardLevelId,
+		dao.PlayActivityReward.Columns().RewardName:    in.RewardName,
+		dao.PlayActivityReward.Columns().Sort:          in.Sort,
+		dao.PlayActivityReward.Columns().UpdatedAt:     gtime.Now(),
 	}
 	_, err := dao.PlayActivityReward.Ctx(ctx).Where(dao.PlayActivityReward.Columns().Id, in.ID).Data(data).Update()
 	return err

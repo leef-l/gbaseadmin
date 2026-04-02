@@ -15,12 +15,15 @@ type cActivityStep struct{}
 // Create 创建活动步骤表
 func (c *cActivityStep) Create(ctx context.Context, req *v1.ActivityStepCreateReq) (res *v1.ActivityStepCreateRes, err error) {
 	err = service.ActivityStep().Create(ctx, &model.ActivityStepCreateInput{
-		ActivityID: req.ActivityID,
-		StepNum: req.StepNum,
-		Title: req.Title,
+		ActivityID:  req.ActivityID,
+		StepNum:     req.StepNum,
+		Title:       req.Title,
+		StepType:    req.StepType,
+		ExampleText: req.ExampleText,
 		DescContent: req.DescContent,
-		StepImage: req.StepImage,
-		Sort: req.Sort,
+		StepImage:   req.StepImage,
+		IsRequired:  req.IsRequired,
+		Sort:        req.Sort,
 	})
 	return
 }
@@ -28,13 +31,16 @@ func (c *cActivityStep) Create(ctx context.Context, req *v1.ActivityStepCreateRe
 // Update 更新活动步骤表
 func (c *cActivityStep) Update(ctx context.Context, req *v1.ActivityStepUpdateReq) (res *v1.ActivityStepUpdateRes, err error) {
 	err = service.ActivityStep().Update(ctx, &model.ActivityStepUpdateInput{
-		ID: req.ID,
-		ActivityID: req.ActivityID,
-		StepNum: req.StepNum,
-		Title: req.Title,
+		ID:          req.ID,
+		ActivityID:  req.ActivityID,
+		StepNum:     req.StepNum,
+		Title:       req.Title,
+		StepType:    req.StepType,
+		ExampleText: req.ExampleText,
 		DescContent: req.DescContent,
-		StepImage: req.StepImage,
-		Sort: req.Sort,
+		StepImage:   req.StepImage,
+		IsRequired:  req.IsRequired,
+		Sort:        req.Sort,
 	})
 	return
 }

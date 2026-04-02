@@ -7,6 +7,7 @@ export interface ActivityRewardItem {
   activityTitle?: string;
   rewardType?: number;
   rewardValue?: string;
+  rewardLevelId?: string;
   rewardName: string;
   sort?: number;
   createdAt?: string;
@@ -26,6 +27,7 @@ export interface ActivityRewardCreateParams {
   activityID: string;
   rewardType?: number;
   rewardValue?: string;
+  rewardLevelId?: string;
   rewardName: string;
   sort?: number;
 }
@@ -36,6 +38,7 @@ export interface ActivityRewardUpdateParams {
   activityID: string;
   rewardType?: number;
   rewardValue?: string;
+  rewardLevelId?: string;
   rewardName: string;
   sort?: number;
 }

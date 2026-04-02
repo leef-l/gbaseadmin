@@ -130,10 +130,11 @@ func (s *sActivity) Detail(ctx context.Context, activityID string, memberID int6
 	}
 	// 查询奖励
 	var rewards []struct {
-		Id          uint64 `json:"id"`
-		RewardType  int    `json:"reward_type"`
-		RewardValue int64  `json:"reward_value"`
-		RewardName  string `json:"reward_name"`
+		Id            uint64 `json:"id"`
+		RewardType    int    `json:"reward_type"`
+		RewardValue   int64  `json:"reward_value"`
+		RewardLevelId uint64 `json:"reward_level_id"`
+		RewardName    string `json:"reward_name"`
 	}
 	err = dao.PlayActivityReward.Ctx(ctx).
 		Where(dao.PlayActivityReward.Columns().ActivityId, aid).
@@ -356,10 +357,11 @@ func (s *sActivity) ClaimReward(ctx context.Context, memberID int64, activityID 
 	}
 	// 查询该活动所有奖励
 	var rewards []struct {
-		Id          uint64 `json:"id"`
-		RewardType  int    `json:"reward_type"`
-		RewardValue int64  `json:"reward_value"`
-		RewardName  string `json:"reward_name"`
+		Id            uint64 `json:"id"`
+		RewardType    int    `json:"reward_type"`
+		RewardValue   int64  `json:"reward_value"`
+		RewardLevelId uint64 `json:"reward_level_id"`
+		RewardName    string `json:"reward_name"`
 	}
 	err = dao.PlayActivityReward.Ctx(ctx).
 		Where(dao.PlayActivityReward.Columns().ActivityId, aid).
@@ -424,7 +426,7 @@ func (s *sActivity) ClaimReward(ctx context.Context, memberID int64, activityID 
 				}
 				// 查询当前 vip_expire_at
 				memberRec, e := dao.PlayMember.Ctx(ctx).
-					Fields(dao.PlayMember.Columns().VipExpireAt).
+					Fields(dao.PlayMember.Columns().VipExpireAt, dao.PlayMember.Columns().MemberLevelId).
 					Where(dao.PlayMember.Columns().Id, memberID).
 					One()
 				if e != nil {
@@ -442,16 +444,21 @@ func (s *sActivity) ClaimReward(ctx context.Context, memberID int64, activityID 
 					baseTime = now
 				}
 				newExpire := baseTime.AddDate(0, 0, int(days))
+				updateData := g.Map{
+					dao.PlayMember.Columns().VipExpireAt: newExpire,
+					dao.PlayMember.Columns().UpdatedAt:   now,
+				}
+				// 如果奖励指定了会员等级，同时更新会员等级
+				if rw.RewardLevelId > 0 {
+					updateData[dao.PlayMember.Columns().MemberLevelId] = rw.RewardLevelId
+				}
 				_, e = dao.PlayMember.Ctx(ctx).
 					Where(dao.PlayMember.Columns().Id, memberID).
-					Data(g.Map{
-						dao.PlayMember.Columns().VipExpireAt: newExpire,
-						dao.PlayMember.Columns().UpdatedAt:   now,
-					}).Update()
+					Data(updateData).Update()
 				if e != nil {
 					return e
 				}
-				g.Log().Infof(ctx, "活动奖励-会员天数已发放: memberID=%d, days=%d, newExpire=%s", memberID, days, newExpire.String())
+				g.Log().Infof(ctx, "活动奖励-会员天数已发放: memberID=%d, days=%d, levelId=%d, newExpire=%s", memberID, days, rw.RewardLevelId, newExpire.String())
 			}
 		}
 		// 更新参与记录为已领奖

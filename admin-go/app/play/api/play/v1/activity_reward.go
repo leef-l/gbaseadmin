@@ -16,11 +16,12 @@ var _ = gtime.New
 // ActivityRewardCreateReq 创建活动奖励表请求
 type ActivityRewardCreateReq struct {
 	g.Meta `path:"/activity_reward/create" method:"post" tags:"活动奖励表" summary:"创建活动奖励表"`
-	ActivityID snowflake.JsonInt64 `json:"activityID" v:"required#活动ID不能为空" dc:"活动ID"`
-	RewardType int `json:"rewardType"  dc:"奖励类型"`
-	RewardValue int64 `json:"rewardValue"  dc:"奖励数值（余额=分，优惠券=coupon_id，经验=值，等级天数=天）"`
-	RewardName string `json:"rewardName" v:"required#奖励名称（展示用，如"送50元余额"）不能为空" dc:"奖励名称（展示用，如"送50元余额"）"`
-	Sort int `json:"sort"  dc:"排序（升序）"`
+	ActivityID    snowflake.JsonInt64 `json:"activityID" v:"required#活动ID不能为空" dc:"活动ID"`
+	RewardType    int                 `json:"rewardType"  dc:"奖励类型"`
+	RewardValue   int64               `json:"rewardValue"  dc:"奖励数值（余额=分，优惠券=coupon_id，经验=值，等级天数=天）"`
+	RewardLevelId snowflake.JsonInt64 `json:"rewardLevelId" dc:"会员等级ID（type=4时使用）"`
+	RewardName    string              `json:"rewardName" v:"required#奖励名称不能为空" dc:"奖励名称"`
+	Sort          int                 `json:"sort"  dc:"排序（升序）"`
 }
 
 // ActivityRewardCreateRes 创建活动奖励表响应
@@ -31,12 +32,13 @@ type ActivityRewardCreateRes struct {
 // ActivityRewardUpdateReq 更新活动奖励表请求
 type ActivityRewardUpdateReq struct {
 	g.Meta `path:"/activity_reward/update" method:"put" tags:"活动奖励表" summary:"更新活动奖励表"`
-	ID     snowflake.JsonInt64 `json:"id" v:"required#ID不能为空" dc:"活动奖励表ID"`
-	ActivityID snowflake.JsonInt64 `json:"activityID" dc:"活动ID"`
-	RewardType int `json:"rewardType" dc:"奖励类型"`
-	RewardValue int64 `json:"rewardValue" dc:"奖励数值（余额=分，优惠券=coupon_id，经验=值，等级天数=天）"`
-	RewardName string `json:"rewardName" dc:"奖励名称（展示用，如"送50元余额"）"`
-	Sort int `json:"sort" dc:"排序（升序）"`
+	ID            snowflake.JsonInt64 `json:"id" v:"required#ID不能为空" dc:"活动奖励表ID"`
+	ActivityID    snowflake.JsonInt64 `json:"activityID" dc:"活动ID"`
+	RewardType    int                 `json:"rewardType" dc:"奖励类型"`
+	RewardValue   int64               `json:"rewardValue" dc:"奖励数值（余额=分，优惠券=coupon_id，经验=值，等级天数=天）"`
+	RewardLevelId snowflake.JsonInt64 `json:"rewardLevelId" dc:"会员等级ID（type=4时使用）"`
+	RewardName    string              `json:"rewardName" dc:"奖励名称"`
+	Sort          int                 `json:"sort" dc:"排序（升序）"`
 }
 
 // ActivityRewardUpdateRes 更新活动奖励表响应
