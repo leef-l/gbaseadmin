@@ -353,7 +353,7 @@ export default function ActivityDetailPage() {
               const done = isStepDone(s.stepNo);
               const active = isStepActive(s.stepNo);
               return (
-                <View key={s.stepId} className={`step-card ${done ? 'step-card--done' : ''} ${active && !done ? 'step-card--active' : ''}`}>
+                <View key={s.stepId} className={`step-card ${done ? 'step-card--done' : ''} ${active && !done ? 'step-card--active' : ''} ${s.isRequired === 0 ? 'step-card--no-fill' : ''}`}>
                   <View className="step-card__header">
                     <View className={`step-card__num ${done ? 'step-card__num--done' : ''}`}>
                       {done ? '✓' : (s.stepNo || i + 1)}

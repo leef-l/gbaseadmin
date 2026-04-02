@@ -190,6 +190,11 @@
     background: #f0fdf4;
     border-color: var(--success);
   }
+
+  &--no-fill {
+    opacity: 1;
+    background: #f8f9fe;
+  }
   &__header {
     display: flex;
     align-items: center;
