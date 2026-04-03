@@ -221,6 +221,22 @@ go run . -table play_order -only menu
 
 ## 7. 本地开发入口
 
+### 统一配置入口
+
+数据库密码、数据库端口、Redis 密码、后端服务端口、WAP 端口等统一放在：
+
+```text
+admin-go/.env
+```
+
+仓库内保留模板文件：
+
+```text
+admin-go/.env.example
+```
+
+`docker-compose*.yml`、`codegen/codegen.yaml`、`codegenMcp/codegen.yaml` 都应以这里的变量为准。`codegen` 与 `codegenMcp` 现在也会自动读取 `admin-go/.env`。
+
 ### 后端
 
 ```bash

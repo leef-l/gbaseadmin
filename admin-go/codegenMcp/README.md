@@ -33,7 +33,7 @@ go build -o codegenMcp.exe .
 
 ## 启动
 
-默认读取当前目录下的 `codegen.yaml`：
+默认读取当前目录下的 `codegen.yaml`，并自动读取上一级 `admin-go/.env`：
 
 ```bash
 codegenMcp.exe
@@ -138,7 +138,7 @@ codegenMcp.exe
 
 ## 配置文件
 
-示例配置见 `codegen.yaml`。
+示例配置见 `codegen.yaml`，数据库连接建议统一来自 `admin-go/.env`。
 
 关键字段：
 

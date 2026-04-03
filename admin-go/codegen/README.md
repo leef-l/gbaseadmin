@@ -98,11 +98,11 @@ go run . --table system_dept --menu
 
 ```yaml
 database:
-  host: 127.0.0.1
-  port: 3306
-  user: root
-  password: "gbaseadmin123"   # 支持环境变量：password: "${DB_PASSWORD}"
-  dbname: gbaseadmin
+  host: ${MYSQL_HOST}
+  port: ${MYSQL_PORT}
+  user: ${MYSQL_USER}
+  password: ${MYSQL_PASSWORD}
+  dbname: ${MYSQL_DATABASE}
 
 backend:
   output: ../app/             # 后端输出根目录
@@ -131,11 +131,15 @@ menu_apps:                    # 菜单应用目录配置（新增应用在此添
 
 ### 环境变量支持
 
-数据库密码支持 `${ENV_VAR}` 语法，避免明文存储：
+推荐统一使用 `admin-go/.env`。`codegen` 会自动读取该文件，再展开 `codegen.yaml` 里的 `${...}` 变量：
 
 ```yaml
 database:
-  password: "${DB_PASSWORD}"   # 从环境变量 DB_PASSWORD 读取
+  host: ${MYSQL_HOST}
+  port: ${MYSQL_PORT}
+  user: ${MYSQL_USER}
+  password: ${MYSQL_PASSWORD}
+  dbname: ${MYSQL_DATABASE}
 ```
 
 ### 菜单应用配置

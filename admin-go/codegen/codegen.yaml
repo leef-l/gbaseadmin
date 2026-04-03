@@ -1,10 +1,10 @@
 # 数据库连接
 database:
-  host: 127.0.0.1
-  port: 3306
-  user: root
-  password: "gbaseadmin123"
-  dbname: gbaseadmin
+  host: ${MYSQL_HOST}
+  port: ${MYSQL_PORT}
+  user: ${MYSQL_USER}
+  password: ${MYSQL_PASSWORD}
+  dbname: ${MYSQL_DATABASE}
 
 # 后端输出配置
 backend:

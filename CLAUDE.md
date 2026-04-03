@@ -278,6 +278,22 @@ vue-vben-admin/apps/web-antd/src/
 
 ## 10. 常用命令
 
+### 统一环境配置
+
+数据库密码、数据库端口、Redis 密码、各服务端口等统一以：
+
+```text
+admin-go/.env
+```
+
+为准，模板在：
+
+```text
+admin-go/.env.example
+```
+
+`admin-go/docker-compose*.yml`、`admin-go/codegen/codegen.yaml`、`admin-go/codegenMcp/codegen.yaml` 共用这套变量约定。不要再把数据库密码写死到工具配置里。
+
 ### 后端编译
 
 ```bash

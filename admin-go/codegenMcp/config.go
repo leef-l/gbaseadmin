@@ -1,8 +1,12 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
 	"os"
+	"path/filepath"
+	"regexp"
+	"strings"
 
 	"gopkg.in/yaml.v3"
 )
@@ -60,28 +64,63 @@ type Config struct {
 
 // LoadConfig 从 YAML 文件加载配置
 func LoadConfig(path string) (*Config, error) {
+	loadEnvFileIfExists(filepath.Join(filepath.Dir(path), "..", ".env"))
+
 	data, err := os.ReadFile(path)
 	if err != nil {
 		return nil, fmt.Errorf("读取配置文件失败: %w", err)
 	}
+	expanded := expandEnvPlaceholders(string(data))
 	var cfg Config
-	if err := yaml.Unmarshal(data, &cfg); err != nil {
+	if err := yaml.Unmarshal([]byte(expanded), &cfg); err != nil {
 		return nil, fmt.Errorf("解析配置文件失败: %w", err)
 	}
-	// 支持环境变量语法 ${ENV_VAR}
-	cfg.Database.Password = expandEnvVar(cfg.Database.Password)
 	return &cfg, nil
 }
 
-// expandEnvVar 如果值形如 ${VAR_NAME}，则从环境变量读取替换
-func expandEnvVar(val string) string {
-	if len(val) > 3 && val[:2] == "${" && val[len(val)-1] == '}' {
-		envName := val[2 : len(val)-1]
-		if envVal := os.Getenv(envName); envVal != "" {
-			return envVal
+var envPattern = regexp.MustCompile(`\$\{([A-Za-z_][A-Za-z0-9_]*)\}`)
+
+func expandEnvPlaceholders(input string) string {
+	return envPattern.ReplaceAllStringFunc(input, func(match string) string {
+		sub := envPattern.FindStringSubmatch(match)
+		if len(sub) != 2 {
+			return match
 		}
+		if value, ok := os.LookupEnv(sub[1]); ok {
+			return value
+		}
+		return match
+	})
+}
+
+func loadEnvFileIfExists(path string) {
+	file, err := os.Open(path)
+	if err != nil {
+		return
 	}
-	return val
+	defer file.Close()
+
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		line := strings.TrimSpace(scanner.Text())
+		if line == "" || strings.HasPrefix(line, "#") {
+			continue
+		}
+		key, value, ok := strings.Cut(line, "=")
+		if !ok {
+			continue
+		}
+		key = strings.TrimSpace(key)
+		if key == "" {
+			continue
+		}
+		if _, exists := os.LookupEnv(key); exists {
+			continue
+		}
+		value = strings.TrimSpace(value)
+		value = strings.Trim(value, `"'`)
+		_ = os.Setenv(key, value)
+	}
 }
 
 // DSN 生成标准数据库连接字符串
