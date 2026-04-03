@@ -6,10 +6,10 @@ import { defineOverridesPreferences } from '@vben/preferences';
  * !!! 更改配置后请清空缓存，否则可能不生效
  */
 export const overridesPreferences = defineOverridesPreferences({
-  // overrides
   app: {
     name: import.meta.env.VITE_APP_TITLE,
     accessMode: 'backend',
+    defaultHomePath: '/system/dept',
     enableRefreshToken: false,
   },
 });

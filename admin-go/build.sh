@@ -3,7 +3,7 @@ set -e
 
 cd "$(dirname "$0")"
 
-APPS=("system" "play" "upload")
+APPS=("system" "upload")
 
 for app in "${APPS[@]}"; do
   echo "编译 $app ..."

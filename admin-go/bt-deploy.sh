@@ -17,8 +17,8 @@ DB_HOST="127.0.0.1"
 DB_PORT="3306"
 JWT_SECRET="gbaseadmin-secret-key-2026"
 
-APPS=("system" "play" "upload")
-PORTS=("8000" "8001" "8002")
+APPS=("system" "upload")
+PORTS=("8000" "8002")
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 SOURCE_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
@@ -102,15 +102,6 @@ EOF
   info "$app 配置已生成"
 done
 
-# play 额外添加 redis 配置（如需要取消注释）
-cat >> "$DEPLOY_DIR/play/manifest/config/config.yaml" <<EOF
-
-redis:
-  default:
-    address: "127.0.0.1:6379"
-    pass: ""
-    db: 1
-EOF
 
 # ---------- 5. 初始化数据库 ----------
 info "检查数据库..."
@@ -214,35 +205,6 @@ server {
         add_header Cache-Control "public";
         access_log off;
     }
-
-    # play 后端 API（具体路径优先匹配）
-    location /api/play/ {
-        proxy_pass http://127.0.0.1:8001;
-        proxy_http_version 1.1;
-        proxy_set_header Connection "";
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-        proxy_connect_timeout 10s;
-        proxy_send_timeout 60s;
-        proxy_read_timeout 60s;
-    }
-
-    # play WAP端 API（直接透传，后端有独立 /api/playapi 路由）
-    location /api/playapi/ {
-        proxy_pass http://127.0.0.1:8001;
-        proxy_http_version 1.1;
-        proxy_set_header Connection "";
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-        proxy_connect_timeout 10s;
-        proxy_send_timeout 60s;
-        proxy_read_timeout 60s;
-    }
-
     # upload 后端 API
     location /api/upload/ {
         proxy_pass http://127.0.0.1:8002;
@@ -272,24 +234,15 @@ server {
     }
 
     # 管理端 Vue Router history 模式
-    location /admin/ {
+    location / {
         try_files $uri $uri/ /admin/index.html;
         location = /admin/index.html {
             add_header Cache-Control "no-cache, no-store, must-revalidate";
         }
     }
-
-    # WAP端 Vue Router history 模式
-    location /wap/ {
-        try_files $uri $uri/ /wap/index.html;
-        location = /wap/index.html {
-            add_header Cache-Control "no-cache, no-store, must-revalidate";
-        }
-    }
-
-    # 根路径跳转到 WAP
+    # 根路径回退到后台应用
     location / {
-        return 302 /wap/;
+        try_files $uri $uri/ /admin/index.html;
     }
 
     # 安全 Header

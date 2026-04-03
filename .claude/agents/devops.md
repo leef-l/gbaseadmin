@@ -32,12 +32,13 @@ tools: Read, Write, Edit, Bash, Glob, Grep
 ├── docker-compose.prod.yml     # 生产环境（精简，无 adminer）
 ├── .env.example                # 环境变量示例
 ├── .env                        # 实际环境变量（加入 .gitignore）
-└── deploy/
+└── docker/
+    ├── build/
+    │   └── Dockerfile.system   # 后端 Go 服务 Dockerfile
     ├── mysql/
     │   └── init.sql            # 数据库初始化 SQL（建表语句）
-    ├── nginx/
-    │   └── nginx.conf          # 前端反向代理配置（生产用）
-    └── Dockerfile.system       # 后端 Go 服务 Dockerfile
+    └── nginx/
+        └── nginx.conf          # 前端反向代理配置（生产用）
 ```
 
 ## docker-compose.yml 要求
@@ -53,7 +54,7 @@ services:
       MYSQL_DATABASE: ${MYSQL_DATABASE}
     volumes:
       - mysql_data:/var/lib/mysql
-      - ./deploy/mysql/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./docker/mysql/init.sql:/docker-entrypoint-initdb.d/init.sql
     ports:
       - "3306:3306"
     healthcheck:  # 健康检查，其他服务等待 MySQL 就绪后再启动
@@ -69,7 +70,7 @@ services:
   system:
     build:
       context: .
-      dockerfile: deploy/Dockerfile.system
+      dockerfile: docker/build/Dockerfile.system
     depends_on:
       mysql:
         condition: service_healthy
@@ -126,7 +127,7 @@ JWT_SECRET=your-secret-key-change-in-production
 VITE_GLOB_API_URL=http://localhost:8000
 ```
 
-## deploy/mysql/init.sql
+## docker/mysql/init.sql
 
 包含架构设计文档中所有建表 SQL：
 - dept
@@ -144,7 +145,7 @@ VITE_GLOB_API_URL=http://localhost:8000
 - 超级管理员角色（data_scope=1，全部权限）
 - 基础菜单树（系统管理/部门管理/角色管理/菜单管理/用户管理）
 
-## deploy/Dockerfile.system
+## docker/build/Dockerfile.system
 
 ```dockerfile
 FROM golang:1.22-alpine AS builder

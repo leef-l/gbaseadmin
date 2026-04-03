@@ -1,8 +1,0 @@
-// TabBar 图标占位说明
-// 请将以下图标文件放入 src/assets/tab/ 目录：
-// home.png / home-active.png
-// category.png / category-active.png
-// gift.png / gift-active.png
-// message.png / message-active.png
-// user.png / user-active.png
-// 建议尺寸：81x81px，PNG 格式
