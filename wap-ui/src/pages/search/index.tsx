@@ -25,6 +25,7 @@ export default function SearchPage() {
   const coachPageRef = useRef(1);
   const goodsPageRef = useRef(1);
   const currentKeywordRef = useRef('');
+  const searchSeqRef = useRef(0);
 
   const [history, setHistory] = useState<string[]>(() => {
     try { return Taro.getStorageSync(HISTORY_KEY) || []; } catch { return []; }
@@ -47,6 +48,8 @@ export default function SearchPage() {
   const doSearch = async (searchWord?: string) => {
     const kw = (searchWord ?? keyword).trim();
     if (!kw) return;
+    const searchSeq = searchSeqRef.current + 1;
+    searchSeqRef.current = searchSeq;
     setKeyword(kw);
     setSearched(true);
     saveHistory(kw);
@@ -61,6 +64,9 @@ export default function SearchPage() {
       ]);
       const coachRows = (coachRes as any)?.list || [];
       const goodsRows = (goodsRes as any)?.list || [];
+      if (searchSeqRef.current !== searchSeq || currentKeywordRef.current !== kw) {
+        return;
+      }
       setCoaches(coachRows);
       setGoods(goodsRows);
       setCoachHasMore(coachRows.length >= PAGE_SIZE);
@@ -68,6 +74,13 @@ export default function SearchPage() {
       coachPageRef.current = 2;
       goodsPageRef.current = 2;
     } catch {
+      if (searchSeqRef.current !== searchSeq || currentKeywordRef.current !== kw) {
+        return;
+      }
+      setCoaches([]);
+      setGoods([]);
+      setCoachHasMore(false);
+      setGoodsHasMore(false);
       Taro.showToast({ title: '搜索失败', icon: 'none' });
     } finally {
       setLoading(false);
@@ -141,14 +154,14 @@ export default function SearchPage() {
           {resultTab === 0 ? (
             coaches.length === 0 ? <EmptyState text="未找到相关内容" /> : (
               <View className="search__grid">
-                {coaches.map((c) => <CoachCard key={c.id} {...c} onClick={() => Taro.navigateTo({ url: `/pages/coach/detail?id=${c.id}` })} />)}
+                {coaches.map((c) => <CoachCard key={c.coachId} {...c} onClick={() => Taro.navigateTo({ url: `/pages/coach/detail?id=${c.coachId}` })} />)}
                 <LoadMore hasMore={coachHasMore} />
               </View>
             )
           ) : (
             goods.length === 0 ? <EmptyState text="未找到相关内容" /> : (
               <View className="search__list">
-                {goods.map((g) => <GoodsCard key={g.id} {...g} onClick={() => Taro.navigateTo({ url: `/pages/goods/detail?id=${g.id}` })} />)}
+                {goods.map((g) => <GoodsCard key={g.goodsId} {...g} onClick={() => Taro.navigateTo({ url: `/pages/goods/detail?id=${g.goodsId}` })} />)}
                 <LoadMore hasMore={goodsHasMore} />
               </View>
             )

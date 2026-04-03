@@ -24,7 +24,15 @@
   &__coupon-name { font-size: 13px; color: var(--text-secondary); }
 
   &__remark { margin-bottom: 12px; padding: 12px; }
-  &__remark-input { width: 100%; border: none; background: transparent; font-size: 14px; }
+  &__remark-input {
+    width: 100%;
+    min-height: 100px;
+    border: none;
+    background: transparent;
+    font-size: 14px;
+    line-height: 1.6;
+    box-sizing: border-box;
+  }
 
   &__amount { padding: 12px; margin-bottom: 12px; }
   &__amount-row { display: flex; justify-content: space-between; padding: 6px 0; font-size: 13px; color: var(--text-secondary); }

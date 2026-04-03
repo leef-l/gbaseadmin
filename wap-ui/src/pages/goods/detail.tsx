@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { View, Text, Image } from '@tarojs/components';
+import { View, Text, Image, Button } from '@tarojs/components';
 import Taro, { useLoad, useRouter } from '@tarojs/taro';
 import { getGoodsDetail } from '../../api/goods';
 import { getReviewList } from '../../api/review';
@@ -10,7 +10,7 @@ export default function GoodsDetailPage() {
   const { params } = useRouter();
   const [detail, setDetail] = useState<any>(null);
   const [reviews, setReviews] = useState<any[]>([]);
-  const setOrder = useCartStore((s) => s.setOrder);
+  const startOrder = useCartStore((s) => s.startOrder);
 
   useLoad(async () => {
     try {
@@ -27,7 +27,7 @@ export default function GoodsDetailPage() {
 
   const handleOrder = () => {
     if (!detail) return;
-    setOrder({
+    startOrder({
       goodsId: detail.goodsId,
       goodsName: detail.title,
       coachId: detail.coachId,
@@ -35,7 +35,9 @@ export default function GoodsDetailPage() {
       price: detail.price,
       quantity: 1,
     });
-    Taro.navigateTo({ url: '/pages/order/confirm' });
+    Taro.navigateTo({
+      url: `/pages/order/confirm?goodsId=${detail.goodsId}&goodsName=${encodeURIComponent(detail.title || '')}&coachName=${encodeURIComponent(detail.coachName || '')}&price=${detail.price || 0}`,
+    });
   };
 
   if (!detail) return <View />;
@@ -87,7 +89,7 @@ export default function GoodsDetailPage() {
           <Text style={{ fontSize: '20px' }}>💬</Text>
           <Text style={{ fontSize: '20px' }}>❤️</Text>
         </View>
-        <View className="btn-primary" onClick={handleOrder}>立即下单</View>
+        <Button className="btn-primary" onClick={handleOrder}>立即下单</Button>
       </View>
     </View>
   );

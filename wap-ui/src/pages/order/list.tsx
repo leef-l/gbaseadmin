@@ -5,6 +5,7 @@ import { getOrderList, cancelOrder } from '../../api/order';
 import OrderCard from '../../components/OrderCard';
 import EmptyState from '../../components/EmptyState';
 import LoadMore from '../../components/LoadMore';
+import { requireAuth } from '../../utils/auth';
 import './list.scss';
 
 const tabs = [
@@ -25,6 +26,11 @@ export default function OrderListPage() {
   const [page, setPage] = useState(1);
 
   const fetchList = useCallback(async (p: number, status: number, reset = false) => {
+    if (!requireAuth()) {
+      setList([]);
+      setHasMore(false);
+      return;
+    }
     try {
       const reqParams: any = { page: p, pageSize: 10 };
       if (status >= 0) reqParams.status = status;
@@ -37,13 +43,13 @@ export default function OrderListPage() {
   }, []);
 
   useLoad(() => {
-    fetchList(1, tabs[activeTab].status, true);
+    void fetchList(1, tabs[activeTab].status, true);
   });
 
   const switchTab = (i: number) => {
     setActiveTab(i);
     setList([]);
-    fetchList(1, tabs[i].status, true);
+    void fetchList(1, tabs[i].status, true);
   };
 
   usePullDownRefresh(() => {
@@ -51,14 +57,15 @@ export default function OrderListPage() {
   });
 
   useReachBottom(() => {
-    if (hasMore) fetchList(page + 1, tabs[activeTab].status);
+    if (hasMore) void fetchList(page + 1, tabs[activeTab].status);
   });
 
   const handleCancel = async (id: string) => {
+    if (!requireAuth()) return;
     try {
       await cancelOrder(id);
       Taro.showToast({ title: '已取消', icon: 'success' });
-      fetchList(1, tabs[activeTab].status, true);
+      void fetchList(1, tabs[activeTab].status, true);
     } catch {}
   };
 

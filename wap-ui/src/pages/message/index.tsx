@@ -4,6 +4,7 @@ import Taro, { useLoad, usePullDownRefresh, useReachBottom } from '@tarojs/taro'
 import { getMessageList, markAllRead } from '../../api/message';
 import EmptyState from '../../components/EmptyState';
 import LoadMore from '../../components/LoadMore';
+import { requireAuth } from '../../utils/auth';
 import './index.scss';
 
 const PAGE_SIZE = 20;
@@ -21,6 +22,11 @@ export default function MessagePage() {
   const pageRef = useRef(1);
 
   const fetchMessages = useCallback(async (reset = false) => {
+    if (!requireAuth()) {
+      setMessages([]);
+      setHasMore(false);
+      return;
+    }
     if (loading) return;
     if (reset) pageRef.current = 1;
     setLoading(true);
@@ -40,7 +46,7 @@ export default function MessagePage() {
   }, [loading]);
 
   useLoad(() => {
-    fetchMessages(true);
+    void fetchMessages(true);
   });
 
   usePullDownRefresh(async () => {
@@ -49,12 +55,13 @@ export default function MessagePage() {
   });
 
   useReachBottom(() => {
-    if (hasMore && !loading) fetchMessages();
+    if (hasMore && !loading) void fetchMessages();
   });
 
   const handleMarkAllRead = async () => {
+    if (!requireAuth()) return;
     await markAllRead();
-    fetchMessages(true);
+    void fetchMessages(true);
   };
 
   return (

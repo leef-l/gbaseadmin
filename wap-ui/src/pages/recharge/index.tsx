@@ -3,6 +3,7 @@ import { View, Text } from '@tarojs/components';
 import Taro, { useLoad } from '@tarojs/taro';
 import { getRechargePlans, createRecharge } from '../../api/recharge';
 import { useAuthStore } from '../../store/auth';
+import { requireAuth } from '../../utils/auth';
 import './index.scss';
 
 export default function RechargePage() {
@@ -12,6 +13,11 @@ export default function RechargePage() {
   const [loading, setLoading] = useState(false);
 
   const fetchPlans = useCallback(async () => {
+    if (!requireAuth()) {
+      setPlans([]);
+      setSelectedId('');
+      return;
+    }
     try {
       const res = await getRechargePlans();
       const list = res?.list || [];
@@ -22,9 +28,10 @@ export default function RechargePage() {
     }
   }, []);
 
-  useLoad(() => { fetchPlans(); });
+  useLoad(() => { void fetchPlans(); });
 
   const handleRecharge = async () => {
+    if (!requireAuth()) return;
     if (!selectedId || loading) return;
     setLoading(true);
     try {
