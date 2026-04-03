@@ -1,12 +1,10 @@
-import { PropsWithChildren, useEffect } from 'react';
+import { PropsWithChildren } from 'react';
 import { useAuthStore } from './store/auth';
 import './app.scss';
 
-function App({ children }: PropsWithChildren) {
-  useEffect(() => {
-    useAuthStore.getState().loadFromStorage();
-  }, []);
+useAuthStore.getState().loadFromStorage();
 
+function App({ children }: PropsWithChildren) {
   return <>{children}</>;
 }
 

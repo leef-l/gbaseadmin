@@ -1,3 +1,5 @@
+const isDev = process.env.NODE_ENV === 'development';
+
 const config = {
   projectName: 'wap-ui',
   date: '2026-3-30',
@@ -30,7 +32,7 @@ const config = {
     },
   },
   h5: {
-    publicPath: '/wap/',
+    publicPath: isDev ? '/' : '/wap/',
     staticDirectory: 'static',
     postcss: {
       autoprefixer: { enable: true, config: {} },

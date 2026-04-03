@@ -1,13 +1,13 @@
 import { useState, useRef, useCallback } from 'react';
 import { View, Text, Input } from '@tarojs/components';
-import Taro from '@tarojs/taro';
+import Taro, { useUnload } from '@tarojs/taro';
 import { sendCode, login, wxLogin } from '../../api/auth';
 import { getMemberInfo } from '../../api/member';
 import { useAuthStore } from '../../store/auth';
 import './index.scss';
 
 export default function LoginPage() {
-  const { setToken, setUserInfo } = useAuthStore();
+  const { setToken, setRefreshToken, setUserInfo } = useAuthStore();
   const [phone, setPhone] = useState('');
   const [code, setCode] = useState('');
   const [agreed, setAgreed] = useState(false);
@@ -16,6 +16,9 @@ export default function LoginPage() {
   const timerRef = useRef<any>(null);
 
   const startCountdown = useCallback(() => {
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
+    }
     setCountdown(60);
     timerRef.current = setInterval(() => {
       setCountdown((prev) => {
@@ -27,6 +30,13 @@ export default function LoginPage() {
       });
     }, 1000);
   }, []);
+
+  useUnload(() => {
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
+      timerRef.current = null;
+    }
+  });
 
   const handleSendCode = async () => {
     if (countdown > 0) return;
@@ -62,6 +72,9 @@ export default function LoginPage() {
       const res = await login(phone, code);
       if (res?.token) {
         setToken(res.token);
+        if (res.refreshToken) {
+          setRefreshToken(res.refreshToken);
+        }
         try {
           const info = await getMemberInfo();
           if (info) setUserInfo(info);
@@ -87,6 +100,9 @@ export default function LoginPage() {
         const res = await wxLogin(loginRes.code);
         if (res?.token) {
           setToken(res.token);
+          if (res.refreshToken) {
+            setRefreshToken(res.refreshToken);
+          }
           try {
             const info = await getMemberInfo();
             if (info) setUserInfo(info);

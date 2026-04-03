@@ -27,6 +27,15 @@ interface AuthState {
   loadFromStorage: () => void;
 }
 
+function parseStoredUserInfo(raw: string): UserInfo | null {
+  try {
+    return raw ? JSON.parse(raw) : null;
+  } catch {
+    Taro.removeStorageSync('userInfo');
+    return null;
+  }
+}
+
 export const useAuthStore = create<AuthState>((set) => ({
   token: '',
   refreshToken: '',
@@ -53,7 +62,7 @@ export const useAuthStore = create<AuthState>((set) => ({
     const token = Taro.getStorageSync('token') || '';
     const refreshToken = Taro.getStorageSync('refreshToken') || '';
     const raw = Taro.getStorageSync('userInfo');
-    const userInfo = raw ? JSON.parse(raw) : null;
+    const userInfo = parseStoredUserInfo(raw);
     set({ token, refreshToken, userInfo });
   },
 }));
